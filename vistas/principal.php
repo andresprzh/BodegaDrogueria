@@ -1,0 +1,120 @@
+<?php
+  session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>principal</title>
+    <link rel="icon" href="vistas/imagenes/plantilla/logo.png">
+
+<!-- ============================================================================================================================
+                            ESTILOS
+  ============================================================================================================================ -->
+<!-- Font Awesome -->
+<link rel="stylesheet" href="vistas\lib\font-awesome\css\all.css">
+
+
+<!-- Estilos -->
+<link rel="stylesheet" href="vistas/css/style.css">
+
+<!-- Materialize -->
+<link rel="stylesheet" href="vistas/lib/materialize/css/materialize.css">
+
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css" href="vistas/lib/DataTables/datatables.css"/>
+ 
+
+
+<!-- ============================================================================================================================
+                        PLUGINS JAVASCRIPT
+============================================================================================================================= -->
+<!-- jQuery 3 -->
+<script src="vistas/lib/jquery/dist/jquery.min.js"></script>
+
+<!-- FastClick -->
+<script src="vistas/lib/fastclick/lib/fastclick.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" src="vistas/lib/DataTables/datatables.min.js"></script>
+
+<!-- SweetAlert 2 -->
+<script src="vistas/plugins/sweetalert2/sweetalert.min.js"></script>
+
+<!-- Materialize -->
+<script src="vistas/lib/materialize/js/materialize.js"></script>
+<script src="vistas/lib/materialize/js/init.js"></script>
+
+<!-- JS Principal -->
+<script src="vistas/js/principal.js"></script>
+
+
+</head>
+<!-- ============================================================================================================================
+                            CUERPO DOCUMENTO
+  ============================================================================================================================= -->
+<body class="" >
+
+  <?php
+  
+  if(isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"]=="ok"){
+    
+    /* ============================================================================================================================
+                BARRA DE NAVEGACION
+    ============================================================================================================================== */
+    include "modulos/navbar.php";
+    
+    
+    // Posibles vistas en el contenido
+    $pages=[
+        "inicio",
+        "requerir",
+        "alistar",
+        "cajas",
+        "salir"
+        ];
+
+    echo "<main>";
+
+    if (isset($_GET["ruta"])) {
+
+        if(in_array($_GET["ruta"],$pages)){
+
+         
+          /* =================================================================================================================================
+                             CONTENIDO
+           =================================================================================================================================*/
+          include "modulos/".$_GET["ruta"].".php";
+
+        }else{
+
+        //   include "modulos/404.php";
+
+        }
+
+    }else{
+
+        include "modulos/inicio.php";
+
+    }
+    echo "</main>";
+
+    /*============================================================================================================================
+                    FOOTER
+    ==============================================================================================================================*/
+    include "modulos/footer.php";
+
+  } else {
+    include "modulos/login.php";
+  } 
+    
+  ?>
+
+</body>
+
+</html>

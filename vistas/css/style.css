@@ -1,0 +1,50 @@
+/* Custom Stylesheet */
+/**
+ * Use this file to override Materialize files so you can update
+ * the core Materialize files in the future
+ *
+ * Made By MaterializeCSS.com
+ */
+
+ body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.icon-block {
+  padding: 0 15px;
+}
+.icon-block .material-icons {
+	font-size: inherit;
+}
+p,text{
+  font-size: 20px;
+  padding: 0;
+}
+
+
+.login{
+  
+  padding-top: 8%;
+  
+}
+
+.login-box{
+  
+  border: 2px solid rgba(15, 102, 15, 0.37);
+}
+
+.border {
+  border-top: 2px solid rgba(15, 102, 15);
+  border-right: 2px solid rgba(15, 102, 15);
+  padding: 0%;
+}
+
+
+
+
