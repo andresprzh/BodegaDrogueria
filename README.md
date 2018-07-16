@@ -15,6 +15,6 @@ Proyecto para automatizar el proceso de packing en drogueria usando PHP, JAVASCR
 </ul>
 
 ## Sistema de gestion de base de datos usado:
-ul>
+<ul>
   <li>Mysql</li>
 </ul>
