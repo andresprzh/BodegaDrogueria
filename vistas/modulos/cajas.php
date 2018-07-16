@@ -63,11 +63,20 @@
 
 <div class="modal-content grey lighten-3">
 
+<<<<<<< HEAD
     <div class="modal-header grey lighten-3">
 
     <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times red-text'></i></a>
 
     </div>
+=======
+    <div class="modal-footer">
+
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
+
+    </div>
+
+>>>>>>> caja
     <h4 class="center">Editar caja</h4>
     
     <table class="tablas "  >
