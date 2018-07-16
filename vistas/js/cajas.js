@@ -82,11 +82,6 @@ function MostrarCajas(){
         method:"POST",
         data: {"Req":Req},
         dataType: "JSON",
-        error: function (xhr, status) {
-
-            alert(status);
-
-        },
         success: function (res) {
             console.log(res['estado']);
             var caja=res['contenido'];
@@ -114,6 +109,8 @@ function MostrarCajas(){
                                         caja[i]['cerrar']+"</td><td>"+
                                         "<button  onclick='MostrarItemsCaja("+caja[i]['no_caja']+")'  title='Editar'  data-target='EdicarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'><i class='fas fa-edit'></i></button>"+
                                         "<button  id='Eliminar' title='Eliminar'  class='btn waves-effect waves-light red darken-3'><i class='fas fa-times'></i></button></td></tr>"));  
+
+                    $( "#TablaCajas" ).removeClass( "hide" );
 
                 }                  
                 

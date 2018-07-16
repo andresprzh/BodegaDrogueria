@@ -20,14 +20,10 @@
     
 
 
-    <div class="divider green darken-4"></div>
-    <div class="divider green darken-4"></div>
-    <div class="divider green darken-4"></div>
-    <div class="divider green darken-4"></div>
-    <div class="divider green darken-4"></div>
+    <div class="divider green darken-4"></div>  
 
 
-    <div class="row ">
+    <div class="row hide" id="TablaCajas">
 
 <!-- ============================================================================================================================
                                                     Tabla que lista todas las cajas  
@@ -63,10 +59,15 @@
     </div>
 </div>
 <!-- Modal Editar caja -->
-<div id="EdicarCaja" class="modal">
+<div id="EdicarCaja" class="modal ">
 
-<div class="modal-content">
+<div class="modal-content grey lighten-3">
 
+    <div class="modal-header grey lighten-3">
+
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times red-text'></i></a>
+
+    </div>
     <h4 class="center">Editar caja</h4>
     
     <table class="tablas "  >
@@ -101,11 +102,7 @@
 
 </div>
 
-<div class="modal-footer">
 
-    <a href="#!" class="modal-close waves-effect waves-green btn-flat"><i class='fas fa-times'></i></a>
-    
-</div>
 
 </div>
 
