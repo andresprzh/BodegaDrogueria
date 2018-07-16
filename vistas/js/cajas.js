@@ -6,7 +6,7 @@ $(document).ready(function(){
 
     // pone items en el input select
     $.ajax({
-        url:"ajax/requisicion.ajax.php",
+        url:"ajax/alistar.requisicion.ajax.php",
         method:"POST",
         data: '',
         contentType: false,
@@ -27,6 +27,7 @@ $(document).ready(function(){
         } 
     });
 
+
 /* ============================================================================================================================
                                                 EVENTOS   
 ============================================================================================================================*/
@@ -38,7 +39,7 @@ $(document).ready(function(){
         //muestra los items en la tabla
         table.destroy();
         //espera a que la funcion termine para reiniciar las tablas
-        $.when(MostrarItems()).done(function(){
+        $.when(MostrarCajas()).done(function(){
             //muestra la tabla y al reinicia
             $( "#TablaM" ).removeClass( "hide" );
             $( ".input_barras" ).removeClass( "hide" ); 
@@ -61,6 +62,63 @@ $(document).ready(function(){
 /* ============================================================================================================================
                                                    FUNCIONES   
 ============================================================================================================================*/
+
+// FUNCION QUE PONE LOS ITEMS  EN LA TABLA
+function MostrarCajas(){
+        
+    var item;
+    //consigue el numero de requerido
+    var requeridos=$(".requeridos").val();
+    //id usuario es obtenida de las variables de sesion
+    var Req=[requeridos,id_usuario];
+
+    return $.ajax({
+
+        url:"ajax/cajas.ajax.php",
+        method:"POST",
+        data: {"Req":Req},
+        dataType: "JSON",
+        error: function (xhr, status) {
+
+            alert(status);
+
+        },
+        success: function (res) {
+            console.log(res['estado']);
+            var caja=res['contenido'];
+            
+            //refresca la tabla, para volver a cargar los datos
+            $('#tablacajas').html("");
+            table.clear();
+            
+            //si no encuentra la caja muestra en pantalla que no se encontro
+            if (res['estado']=="error"){
+                
+            }
+            //en caso de contrar el item mostrarlo en la tabla
+            else{
+                
+                var caja=res['contenido'];
+                
+                for (var i in caja) {
+
+                    $('#tablacajas').append($("<tr><td>"+
+                                        caja[i]['no_caja']+"</td><td>"+
+                                        caja[i]['alistador']+"</td><td>"+
+                                        caja[i]['tipocaja']+"</td><td>"+
+                                        caja[i]['abrir']+"</td><td>"+
+                                        caja[i]['cerrar']+"</td></tr>"));  
+
+                }                  
+                
+            }
+
+        }
+
+  }); 
+
+} 
+
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla(){
     
@@ -101,63 +159,3 @@ function iniciar_tabla(){
    return tabla;
    
 }
-
-// FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function MostrarItems(){
-        
-    var item;
-    //consigue el numero de requerido
-    var requeridos=$(".requeridos").val();
-    //id usuario es obtenida de las variables de sesion
-    var Req=[requeridos,id_usuario];
-
-    return $.ajax({
-
-        url:"ajax/cajas.ajax.php",
-        method:"POST",
-        data: {"Req":Req},
-        dataType: "JSON",
-        error: function (xhr, status) {
-
-            alert(status);
-
-        },
-        success: function (res) {
-
-            var item=res['contenido'];
-            
-            //refresca la tabla, para volver a cargar los datos
-           
-            $('#tablavista').html("");
-            table.clear();
-            
-            //si no encuentra el item muestra en pantalla que no se encontro
-            if (res['estado']=="error"){
-                
-            }
-            //en caso de contrar el item mostrarlo en la tabla
-            else{
-                
-                // $('#Rerror').hide();
-                
-                var item=res['contenido'];
-                
-                for (var i in item) {
-                    $('#tablavista').append($("<tr><td>"+
-                                        item[i]['codigo']+"</td><td>"+
-                                        item[i]['referencia']+"</td><td>"+
-                                        item[i]['descripcion']+"</td><td>"+
-                                        item[i]['disponibilidad']+"</td><td>"+
-                                        item[i]['pedidos']+"</td><td>"+
-                                        item[i]['alistados']+"</td><td>"+
-                                        item[i]['ubicacion']+"</td></tr>"));  
-                    
-                }                  
-                
-            }
-
-        }
-
-  }); 
-
-} 
