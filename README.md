@@ -1,6 +1,6 @@
 # BodegaDrogueria
 
-Proyecto para automatizar el proceso de packing en drogueria usando PHP, JAVASCRIPT, HTML y baase de datos MYSQL.
+Proyecto para automatizar el proceso de packing en drogueria usando PHP, JAVASCRIPT, HTML y base de datos MYSQL.
 ## framework de diseño usados:
 <ul>
   <li>Fontawesome</li>
@@ -12,4 +12,9 @@ Proyecto para automatizar el proceso de packing en drogueria usando PHP, JAVASCR
   <li>Datatable</li>
   <li>Jquery</li>
   <li>Sweetalert</li>
+</ul>
+
+## Sistema de gestion de base de datos usado:
+ul>
+  <li>Mysql</li>
 </ul>
