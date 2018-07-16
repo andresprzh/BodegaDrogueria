@@ -6,7 +6,7 @@ class ControladorCajas extends ControladorAlistar {
                                                         ATRIBUTOS   
     ============================================================================================================================*/
     
-    private $moddelo;
+    private $modelo;
 
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
@@ -73,6 +73,43 @@ class ControladorCajas extends ControladorAlistar {
 
             return ['estado'=>"error",
                     'contenido'=>"Caja no encontrado en la base de datos!"];
+
+        }
+
+    }
+    
+    public function ctrBuscarItemCaja($NumCaja){
+        
+        $busqueda=$this->modelo->mslMostrarItemsCaja($NumCaja);
+
+        if ($busqueda->rowCount() > 0) {
+
+            $itembus["estado"]=["encontrado"];
+
+            $cont=0;
+
+            while($row = $busqueda->fetch()){
+              
+                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                    "referencia"=>$row["id_referencia"],
+                                    "descripcion"=>$row["descripcion"],
+                                    "disponibilidad"=>$row["disp"],
+                                    "pedidos"=>$row["pedido"],
+                                    "alistados"=>$row["alistado"],
+                                    'ubicacion'=>$row["ubicacion"]
+                                    ];
+                
+                $cont++;
+
+            }
+            
+            return $itembus;
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"Item no encontrado en la base de datos!"];
 
         }
 

@@ -24,7 +24,7 @@ class ModeloAlistar extends Conexion{
     public function mdlMostrarItems($Cod_barras){
         
         $no_req=$this->req[0];$alistador=$this->req[1];
-        $stmt= $this->link->prepare("CALL buscarcod(:Cod_barras,:no_req,:alistador);");
+        $stmt= $this->link->prepare("CALL buscarcod(:Cod_barras,:no_req,:alistador,'%%');");
 
         $stmt->bindParam(":Cod_barras",$Cod_barras,PDO::PARAM_STR);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);

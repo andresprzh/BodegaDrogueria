@@ -96,8 +96,6 @@
 
         <h4 class="header center green-text text-darken-3"  ><b>Alistar</b></h4>
 
-        
-
             <table class="tablas "  >
             
                 <thead>

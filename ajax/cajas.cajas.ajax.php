@@ -18,16 +18,18 @@ $controlador=new ControladorCajas($Req);
 if (isset($_POST['NumCaja'])) {
 
     $NumCaja=$_POST['NumCaja'];
-
+    // regresa el resultado de la buqueda como un objeto JSON
+    $respuesta=$controlador->ctrBuscarItemCaja($NumCaja);
+    
 // si no se paso el numeor de la caja busca todas las cajas de la requisicion  seleccionada
 }else{
 
     $NumCaja='%%';
+    // regresa el resultado de la buqueda como un objeto JSON
+    $respuesta=$controlador->ctrBuscarCaja($NumCaja);
     
 }
 
-// regresa el resultado de la buqueda como un objeto JSON
-$respuesta=$controlador->ctrBuscarCaja($NumCaja);
 
 // muestra el vector como dato JSON
 print json_encode($respuesta);

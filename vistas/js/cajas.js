@@ -1,5 +1,7 @@
 $(document).ready(function(){
-
+    
+    //INICIA EL MODAL
+    $('.modal').modal();
     // INICIA DATATABLE
     table=iniciar_tabla();
     
@@ -57,6 +59,8 @@ $(document).ready(function(){
             
     });
 
+    
+
 });
 
 /* ============================================================================================================================
@@ -74,7 +78,7 @@ function MostrarCajas(){
 
     return $.ajax({
 
-        url:"ajax/cajas.ajax.php",
+        url:"ajax/cajas.cajas.ajax.php",
         method:"POST",
         data: {"Req":Req},
         dataType: "JSON",
@@ -107,8 +111,77 @@ function MostrarCajas(){
                                         caja[i]['alistador']+"</td><td>"+
                                         caja[i]['tipocaja']+"</td><td>"+
                                         caja[i]['abrir']+"</td><td>"+
-                                        caja[i]['cerrar']+"</td></tr>"));  
+                                        caja[i]['cerrar']+"</td><td>"+
+                                        "<button  onclick='MostrarItemsCaja("+caja[i]['no_caja']+")'  title='Editar'  data-target='EdicarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'><i class='fas fa-edit'></i></button>"+
+                                        "<button  id='Eliminar' title='Eliminar'  class='btn waves-effect waves-light red darken-3'><i class='fas fa-times'></i></button></td></tr>"));  
 
+                }                  
+                
+            }
+
+        }
+
+  }); 
+
+} 
+
+function MostrarItemsCaja(NumCaja) {
+    //muestra los items en la tabla
+    table.destroy();
+    
+    
+    //espera a que la funcion termine para reiniciar las tablas
+    $.when(MostrarItems(NumCaja)).done(function(){
+        //Reinicia Tabla
+        table=iniciar_tabla();
+    });
+}
+
+// FUNCION QUE PONE LOS ITEMS  EN LA TABLA
+function MostrarItems(NumCaja){
+        
+    var item;
+    //consigue el numero de requerido
+    var requeridos=$(".requeridos").val();
+    //id usuario es obtenida de las variables de sesion
+    var Req=[requeridos,id_usuario];
+
+    return $.ajax({
+
+        url:"ajax/cajas.cajas.ajax.php",
+        method:"POST",
+        data: {"Req":Req, "NumCaja":NumCaja},
+        dataType: "JSON",
+        success: function (res) {
+            
+            var item=res['contenido'];
+            
+            //refresca la tabla, para volver a cargar los datos
+           
+            $('#tablavista').html("");
+            table.clear();
+            
+            //si no encuentra el item muestra en pantalla que no se encontro
+            if (res['estado']=="error"){
+                
+            }
+            //en caso de contrar el item mostrarlo en la tabla
+            else{
+                
+                // $('#Rerror').hide();
+                
+                var item=res['contenido'];
+                
+                for (var i in item) {
+                    $('#tablavista').append($("<tr><td>"+
+                                        item[i]['codigo']+"</td><td>"+
+                                        item[i]['referencia']+"</td><td>"+
+                                        item[i]['descripcion']+"</td><td>"+
+                                        item[i]['disponibilidad']+"</td><td>"+
+                                        item[i]['pedidos']+"</td><td> <input type= 'number' class='alistados' value="+
+                                        item[i]['alistados']+"></input></td><td>"+
+                                        item[i]['ubicacion']+"</td></tr>"));  
+                    
                 }                  
                 
             }
@@ -121,7 +194,6 @@ function MostrarCajas(){
 
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla(){
-    
     
     var tabla= $(".tablas").DataTable({
                            

@@ -48,6 +48,7 @@
                         <th>Tipo de caja</th>
                         <th>Abierta</th>
                         <th>Cerrada</th>
+                        <th>Editar</th>
                         
                     </tr>
 
@@ -58,8 +59,54 @@
                 </table>  
                     
         </div>
+        
+    </div>
+</div>
+<!-- Modal Editar caja -->
+<div id="EdicarCaja" class="modal">
+
+<div class="modal-content">
+
+    <h4 class="center">Editar caja</h4>
+    
+    <table class="tablas "  >
+            
+                <thead>
+
+                <tr  class="white-text green darken-3" >
+
+                    <th>Codigo de barras</th>
+                    <th>Referencia</th>
+                    <th>Descripción</th>
+                    <th>Disponibilidad</th>
+                    <th>Pedidos</th>
+                    <th>Alistados</th>
+                    <th>Ubicacion</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody id="tablavista"></tbody>
+
+    </table> 
+    
+    <div>
+
+        <button id="Guardar" title="Guardar" class="btn waves-effect green darken-4 col s12 m12 l8" >
+            <i class="fas fa-save"></i>
+        </button>
 
     </div>
+
+</div>
+
+<div class="modal-footer">
+
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat"><i class='fas fa-times'></i></a>
+    
+</div>
+
 </div>
 
 <!-- ============================================================================================================================
