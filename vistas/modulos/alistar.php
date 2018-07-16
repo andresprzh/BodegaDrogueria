@@ -33,7 +33,7 @@
             
             <div class="input-field col s12 m1 l1 hide input_barras">
 
-                <button id="buscar" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
+                <button id="agregar" title="Buscar Item extra" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
                     <i class="fas fa-plus"></i>
                 </button>
                 

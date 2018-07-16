@@ -62,7 +62,9 @@
         
     </div>
 </div>
-<!-- Modal Editar caja -->
+<!-- ============================================================================================================================
+                                                    MODAL EDITAR CAJA 
+============================================================================================================================ -->
 <div id="EdicarCaja" class="modal">
 
 <div class="modal-content">
@@ -74,7 +76,26 @@
     </div>
 
     <h4 class="center">Editar caja</h4>
-    
+
+    <div class="row container">
+
+            <div class="input-field col s9 m10 l10 hide  input_barras">
+
+                <input  id="codbarras" type="text" class="validate">
+                <label for="codbarras" >Codigo de barras</label>
+
+            </div>  
+            
+            <div class="input-field col s3 m2 l2 hide input_barras">
+
+                <button id="agregar" title="Agregar Item" class="btn waves-effect waves-light green darken-3 col s12" >
+                    <i class="fas fa-plus"></i>
+                </button>
+                
+            </div> 
+
+    </div>
+
     <table class="tablas "  >
             
                 <thead>
@@ -93,7 +114,7 @@
 
                 </thead>
 
-                <tbody id="tablavista"></tbody>
+                <tbody id="tablaeditable"></tbody>
 
     </table> 
     
@@ -125,6 +146,8 @@
 
 <!-- JS QUE MANEJA LOS EVENTOS DE LA PAGINA -->
 <script src="vistas/js/cajas.js">
+
+
 
 </script>
 

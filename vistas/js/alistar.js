@@ -99,8 +99,8 @@ $(document).ready(function(){
     });
 
     
-    // EVENTO SI SE PRESIONA EL BOTON DE BUSCAR CODIGO DE BARRAS(+)
-    $("#buscar").click(function (e) {
+    // EVENTO SI SE PRESIONA EL BOTON DE AGREGAR CODIGO DE BARRAS(+)
+    $("#agregar").click(function (e) {
         
         //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
         table.destroy();

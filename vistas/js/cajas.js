@@ -59,7 +59,54 @@ $(document).ready(function(){
             
     });
 
+    // EVENTO INPUT  CODIGO DE BARRAS
+ 	$("#codbarras").keydown(function (e) {
+        // permite: spacio, eliminar , tab, escape, enter y  .
+       if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            // permite: Ctrl+letra, Command+letra
+           ((e.keyCode >=0 ) && (e.ctrlKey === true || e.metaKey === true)) || 
+            // permite: home, fin, izquierda, derecha, abajo, arriba
+           (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // no hace nada si cumple la condicion
+                return;
+       }
+       // solo acepta numeros
+       if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+           //previene mandar los datos al input
+           e.preventDefault();
+       }		
+    });
     
+
+    // EVENTO INPUT  CODIGO DE BARRAS
+    $("#codbarras").keypress(function (e) {
+    
+    //si se presiona enter busca el item y lo pone en la pagina
+    if (e.which == 13  ) {
+            
+            //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
+            table.destroy();
+            //espera a que las 2 funciones terminen para reiniciar las tablas
+            $.when(MostrarItems(),BuscarCodBar()).done(function(){
+                table=iniciar_tabla();
+            });
+        }
+
+    });
+
+    
+    // EVENTO SI SE PRESIONA EL BOTON DE AGREGAR CODIGO DE BARRAS(+)
+    $("#agregar").click(function (e) {
+        
+        //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
+        table.destroy();
+        //espera a que las 2 funciones terminen para reiniciar las tablas
+        $.when(MostrarItems(),BuscarCodBar()).done(function(){
+            
+            table=iniciar_tabla();
+        });
+
+    });
 
 });
 
@@ -129,17 +176,19 @@ function MostrarItemsCaja(NumCaja) {
     //muestra los items en la tabla
     table.destroy();
     
-    
+    //refresca la tabla, para volver a cargar los datos
+    $('#tablaeditable').html("");
+    table.clear();
     //espera a que la funcion termine para reiniciar las tablas
-    $.when(MostrarItems(NumCaja)).done(function(){
+    $.when(MostrarItems2(NumCaja)).done(function(){
         //Reinicia Tabla
         table=iniciar_tabla();
     });
 }
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function MostrarItems(NumCaja){
-        
+function MostrarItems2(NumCaja){
+
     var item;
     //consigue el numero de requerido
     var requeridos=$(".requeridos").val();
@@ -173,7 +222,7 @@ function MostrarItems(NumCaja){
                 var item=res['contenido'];
                 
                 for (var i in item) {
-                    $('#tablavista').append($("<tr><td>"+
+                    $('#tablaeditable').append($("<tr><td>"+
                                         item[i]['codigo']+"</td><td>"+
                                         item[i]['referencia']+"</td><td>"+
                                         item[i]['descripcion']+"</td><td>"+
@@ -191,6 +240,71 @@ function MostrarItems(NumCaja){
   }); 
 
 } 
+
+// FUNCION QUE BUSCA EL CODIGO DE BARRAS
+function BuscarCodBar(){
+    
+    //consigue el codigo de barras
+    codigo= $('#codbarras').val();
+    //consigue el numero de requerido
+    var requeridos=$(".requeridos").val();
+    //id usuario es obtenida de las variables de sesion
+    var Req=[requeridos,id_usuario];
+    
+    //ajax para ejecutar un script php mandando los datos
+    return $.ajax({
+      url: 'ajax/alistar.items.ajax.php',//url de la funcion
+      type: 'post',//metodo post para mandar datos
+      data: {"codigo":codigo,"Req":Req},//datos que se enviaran
+      dataType: 'json',
+      error: function (xhr, status) {
+
+        alert(status);
+
+        },
+      success: function (res) {
+        AgregarItem(res);
+      }
+      
+    }); 
+
+
+}
+
+
+//FUNCION QUE AGREGA ITEM A LA TABLA EDITABLE
+function AgregarItem(res){
+    //busca el estado de del resultado
+    switch (res['estado']) {
+     //si encontro el codigo de barras muestar el contenido de la busqueda
+     case 'encontrado':
+       
+       var item=res['contenido'];
+
+       $('#tablaeditable').append($("<tr><td class='barras'>"+
+                           item['codigo']+"</td><td>"+
+                           item['referencia']+"</td><td>"+
+                           item['descripcion']+"</td><td>"+
+                           item['disponibilidad']+"</td><td>"+
+                           item['pedidos']+"</td><td> <input type= 'number' class='alistados' value="+
+                           item['alistados']+"></input></td><td>"+
+                           item['ubicacion']+"</td></tr>"));                  
+        // muestra la tabla y los input de cerrar caja
+        $( "#TablaE" ).removeClass( "hide" );
+        $( "#input_cerrar" ).removeClass( "hide" );
+       break;
+       
+
+     //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
+     default:
+        swal(res['contenido'], {
+            icon: "warning",
+        })
+    //    $('#error').show();
+    //    $("#error").html(res['contenido']);
+       break;
+   }
+ }
 
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla(){
