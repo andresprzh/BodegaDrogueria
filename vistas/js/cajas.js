@@ -1,7 +1,11 @@
 $(document).ready(function(){
-    
+/* ============================================================================================================================
+                                                INICIAN  COMPONENTE DE LA PAGINA
+============================================================================================================================*/
+
     //INICIA EL MODAL
-    var modal=$('.modal').modal();
+    $('.modal').modal();
+    
     // INICIA DATATABLE
     table=iniciar_tabla('.tablas');
      
@@ -132,15 +136,16 @@ function MostrarCajas(){
                 
                 for (var i in caja) {
                     
-                    $('#tablacajas').append($("<tr><td>"+
-                                        caja[i]['no_caja']+"</td><td class='alistadores'>"+
-                                        caja[i]['alistador']+"</td><td class='tipocajas'>"+
-                                        caja[i]['tipocaja']+"</td><td>"+
-                                        caja[i]['abrir']+"</td><td class='cierres'>"+
-                                        caja[i]['cerrar']+"</td><td>"+
-                                        "<button  onclick='MostrarItemsCaja("+caja[i]['no_caja']+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
+                    $('#tablacajas').append($("<tr>"+
+                                        "<td class='NumCaja'>"+caja[i]['no_caja']+"</td>"+
+                                        "<td class='alistadores'>"+caja[i]['alistador']+"</td>"+
+                                        "<td class='tipocajas'>"+caja[i]['tipocaja']+"</td>"+
+                                        "<td>"+caja[i]['abrir']+"</td>"+
+                                        "<td class='cierres'>"+caja[i]['cerrar']+"</td><td>"+
+                                        "<button  onclick='MostrarItemsCaja("+i+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
                                             "<i class='fas fa-file-alt'></i>"+
-                                        "</button></td></tr>"));  
+                                        "</button></td>"+
+                                        "</tr>"));  
 
                 }                  
                 
@@ -152,10 +157,25 @@ function MostrarCajas(){
 
 } 
 
-function MostrarItemsCaja(NumCaja) {
+function MostrarItemsCaja(e) {
+    
 
+    //obtienen los datos de la caja para pasarlo al modal
+    var NumCaja=$(".NumCaja");
+    NumCaja=$(NumCaja[e]).html();
+    var alistador=$(".alistadores");
+    alistador=$(alistador[e]).html();
+    var tipocaja=$(".tipocajas");
+    tipocaja=$(tipocaja[e]).html();
+    var cierre=$(".cierres");
+    cierre=$(cierre[e]).html();
    
+
+    // se muestran los datos generales de la caja
     $('#TituloCaja').html("Caja No "+NumCaja);
+    $('#alistador').html(alistador);
+    $('#tipocaja').html(tipocaja);
+    $('#cierre').html(cierre);
     
     // destruye la datatable 2(tabla del modal)
     var dt = $.fn.dataTable.tables()[1];

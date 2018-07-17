@@ -66,14 +66,17 @@
         <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
         <h4 class="center" id="TituloCaja"></h4>
         
-        <table>
-            <td>Alistador: <span id="alistador"></span></td>
-            <td>Fecha cierre: <span id="cierre"></span></td>
+        <table class="centered green-text">
+            <thead>
+                <th>Alistador: <span id="alistador"></span></th>
+                <th>Tipo Caja: <span id="tipocaja"></span></th>
+                <th>Fecha cierre: <span id="cierre"></span></th>
+            </thead>
         </table>
 
     </div>
 
-    <table class="tablas " id="TablaM"  >
+    <table class="tablas centered " id="TablaM"  >
             
                 <thead>
 
