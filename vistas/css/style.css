@@ -47,14 +47,14 @@ p,text{
 
 .modal {
   display: none;
-  min-height: 100%;
+  min-height: 60%;
   left: 0;
   position: fixed;
   top: 0;
-  min-width: 100%;
+  min-width: 70%;
 }
 .modal.open {
- display: block;
+display: block;
 }
 
 .modal__footer {
@@ -62,8 +62,27 @@ p,text{
 }
 .modal__header,
 .modal__footer {
-    height: 100px;
+  height: 100%;
 }
 
+@media(max-width:1000px){
+  .modal {
+    display: none;
+    min-height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    min-width: 100%;
+  }
+  .modal.open {
+  display: block;
+  }
 
-
+  .modal__footer {
+    bottom: 0;
+  }
+  .modal__header,
+  .modal__footer {
+      height: 100px;
+  }
+}

@@ -17,23 +17,18 @@
         
     </div>
 
-    
+    <div class="divider green darken-4"></div>
 
 
-    <div class="divider green darken-4"></div>  
-
-
-    <div class="row hide" id="TablaCajas">
-
+<div class="row hide " id="Cajas">
 <!-- ============================================================================================================================
                                                     Tabla que lista todas las cajas  
 ============================================================================================================================ -->
-        
         <h5 class="header center ">Cajas</h5>
 
         <div class="col s12 m12 l12 ">
 
-            <table class="tablas centered "  >
+            <table class="tablas centered " id="TablaC" >
 
                     <thead>
                     
@@ -44,7 +39,7 @@
                         <th>Tipo de caja</th>
                         <th>Abierta</th>
                         <th>Cerrada</th>
-                        <th>Editar</th>
+                        <th>Ver</th>
                         
                     </tr>
 
@@ -52,7 +47,7 @@
 
                     <tbody id="tablacajas"></tbody>
                     
-                </table>  
+            </table>  
                     
         </div>
         
@@ -61,38 +56,27 @@
 <!-- ============================================================================================================================
                                                     MODAL EDITAR CAJA 
 ============================================================================================================================ -->
-<div id="EdicarCaja" class="modal">
+<div id="EditarCaja" class="modal">
 
 <div class="modal-content grey lighten-3">
 
-    <div class="modal-footer">
+    <div class="modal-header">
+        
 
         <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
+        <h4 class="center" id="TituloCaja"></h4>
+        
+        <table class="centered green-text">
+            <thead>
+                <th>Alistador: <span id="alistador"></span></th>
+                <th>Tipo Caja: <span id="tipocaja"></span></th>
+                <th>Fecha cierre: <span id="cierre"></span></th>
+            </thead>
+        </table>
 
     </div>
 
-    <h4 class="center">Editar caja</h4>
-
-    <div class="row container">
-
-            <div class="input-field col s9 m10 l10 hide  input_barras">
-
-                <input  id="codbarras" type="text" class="validate">
-                <label for="codbarras" >Codigo de barras</label>
-
-            </div>  
-            
-            <div class="input-field col s3 m2 l2 hide input_barras">
-
-                <button id="agregar" title="Agregar Item" class="btn waves-effect waves-light green darken-3 col s12" >
-                    <i class="fas fa-plus"></i>
-                </button>
-                
-            </div> 
-
-    </div>
-
-    <table class="tablas "  >
+    <table class="tablas centered " id="TablaM"  >
             
                 <thead>
 
@@ -110,21 +94,18 @@
 
                 </thead>
 
-                <tbody id="tablaeditable"></tbody>
+                <tbody id="tablamodal"></tbody>
 
     </table> 
-    
-    <div>
-
-        <button id="Guardar" title="Guardar" class="btn waves-effect green darken-4 col s12 m12 l8" >
-            <i class="fas fa-save"></i>
-        </button>
-
-    </div>
 
 </div>
 
 
+    <button id="Documento" title="GenerarDocumento" class="btn left waves-effect green darken-4 col s12 m12 l8" >
+        <i class="fas fa-file-alt"></i>
+    </button>
+
+</div>
 
 </div>
 
