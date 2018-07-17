@@ -5,8 +5,8 @@ $(document).ready(function(){
 ============================================================================================================================*/
     // INICIA DATATABLE
     table=iniciar_tabla();
-    
-
+    // INICIAR TABS
+    $('.tabs').tabs({ 'swipeable': true });
     // pone items en el input select
     $.ajax({
         url:"ajax/alistar.requisicion.ajax.php",
@@ -49,6 +49,7 @@ $(document).ready(function(){
             $( "#TablaM" ).removeClass( "hide" );
             $( ".input_barras" ).removeClass( "hide" ); 
             table=iniciar_tabla();
+            
         });
 
         // setInterval(function(){

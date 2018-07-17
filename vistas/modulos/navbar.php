@@ -12,7 +12,6 @@
             </a>
         </div>
 
-        <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
     </nav>
 </div>
 

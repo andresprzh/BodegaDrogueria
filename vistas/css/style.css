@@ -39,12 +39,6 @@ p,text{
   border: 2px solid rgba(15, 102, 15, 0.37);
 }
 
-.border {
-  border-top: 2px solid rgba(15, 102, 15);
-  border-right: 2px solid rgba(15, 102, 15);
-  padding: 0%;
-}
-
 .modal {
   display: none;
   min-height: 60%;
@@ -65,7 +59,14 @@ display: block;
   height: 100%;
 }
 
+#TablaM,#TablaE{
+  height: 50vh;
+}
+
 @media(max-width:1000px){
+  #TablaM,#TablaE{
+    height: 100vh;
+  }
   .modal {
     display: none;
     min-height: 100%;
@@ -86,3 +87,12 @@ display: block;
       height: 100px;
   }
 }
+
+.tabs .indicator  { 
+  background-color: rgb(0, 71, 0) !important; 
+}
+
+.tabs .tab a.active {
+  background-color: rgba(0, 136, 0, 0.089) !important; 
+}
+
