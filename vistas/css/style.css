@@ -60,7 +60,7 @@ display: block;
 }
 
 #TablaM,#TablaE{
-  height: 50vh;
+  height: 70vh;
 }
 
 @media(max-width:1000px){

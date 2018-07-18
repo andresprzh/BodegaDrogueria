@@ -86,12 +86,10 @@ $(document).ready(function(){
             //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
             table.destroy();
             //espera a que las 2 funciones terminen para reiniciar las tablas
-            $.when(MostrarItems(),BuscarCodBar()).done(function(){
-                
-                // reinicia tabla y muestra la tabla editable
-                table=iniciar_tabla();
-                $( "#tabsI2" ).removeClass( "disabled" );
-                $('.tabs').tabs('select','TablaE');  
+            $.when(BuscarCodBar()).done(function(){
+                $.when(BuscarCodBar()).done(function(){
+                    table=iniciar_tabla();
+                });
 
             });
         }
@@ -105,12 +103,10 @@ $(document).ready(function(){
         //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
         table.destroy();
         //espera a que las 2 funciones terminen para reiniciar las tablas
-        $.when(MostrarItems(),BuscarCodBar()).done(function(){
-            
-            table=iniciar_tabla();
-            $( "#tabsI2" ).removeClass( "disabled" );
-            $('.tabs').tabs('select','TablaE');
-
+        $.when(BuscarCodBar()).done(function(){
+            $.when(BuscarCodBar()).done(function(){
+                table=iniciar_tabla();
+            });
         });
 
     });
@@ -217,6 +213,7 @@ function BuscarCodBar(){
 
         },
       success: function (res) {
+        // console.log(res);
         AgregarItem(res);
       }
       
@@ -229,32 +226,34 @@ function BuscarCodBar(){
 //FUNCION QUE AGREGA ITEM A LA TABLA EDITABLE
 function AgregarItem(res){
     //busca el estado de del resultado
+    
     switch (res['estado']) {
+
      //si encontro el codigo de barras muestar el contenido de la busqueda
      case 'encontrado':
+     
+        var items=res['contenido'];
        
-       var item=res['contenido'];
+        $('#tablaeditable').append($("<tr><td class='barras'>"+
+                            items['codigo']+"</td><td>"+
+                            items['referencia']+"</td><td>"+
+                            items['descripcion']+"</td><td>"+
+                            items['disponibilidad']+"</td><td>"+
+                            items['pedidos']+"</td><td> <input type= 'number' class='alistados' value="+
+                            items['alistados']+"></input></td><td>"+
+                            items['ubicacion']+"</td></tr>"));                  
+        
 
-       $('#tablaeditable').append($("<tr><td class='barras'>"+
-                           item['codigo']+"</td><td>"+
-                           item['referencia']+"</td><td>"+
-                           item['descripcion']+"</td><td>"+
-                           item['disponibilidad']+"</td><td>"+
-                           item['pedidos']+"</td><td> <input type= 'number' class='alistados' value="+
-                           item['alistados']+"></input></td><td>"+
-                           item['ubicacion']+"</td></tr>"));                  
-        // muestra la tabla y los input de cerrar caja
+        $( "#TablaE" ).removeClass( "hide" );
+        // $('.tabs').tabs('select','TablaE');
                 
-       break;
+        break;
        
-
      //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
      default:
         swal(res['contenido'], {
             icon: "warning",
         })
-    //    $('#error').show();
-    //    $("#error").html(res['contenido']);
        break;
    }
  }
@@ -271,42 +270,71 @@ function MostrarItems(){
 
     return $.ajax({
 
-        url:"ajax/alistar.items.ajax.php",
+        url:"ajax/alistar.itemsreq.ajax.php",
         method:"POST",
         data: {"Req":Req},
         dataType: "JSON",
-        success: function (res) {
-
-            var item=res['contenido'];
-            
-            //refresca la tabla, para volver a cargar los datos
-           
+        success: function (res) {          
+                        
+            //refresca las tablas, para volver a cargar los datos
             $('#tablavista').html("");
+            $('#tablaeditable').html("");
             table.clear();
             
             //si no encuentra el item muestra en pantalla que no se encontro
-            if (res['estado']=="error"){
+            if (res["items"]['estado']=="error"){
                 
             }
+
             //en caso de contrar el item mostrarlo en la tabla
             else{
+                // $('#Rerror').hide(); 
+                var items=res["items"]['contenido'];
                 
-                // $('#Rerror').hide();
-                
-                var item=res['contenido'];
-                
-                for (var i in item) {
+                for (var i in items) {
                     $('#tablavista').append($("<tr><td>"+
-                                        item[i]['codigo']+"</td><td>"+
-                                        item[i]['referencia']+"</td><td>"+
-                                        item[i]['descripcion']+"</td><td>"+
-                                        item[i]['disponibilidad']+"</td><td>"+
-                                        item[i]['pedidos']+"</td><td>"+
-                                        item[i]['alistados']+"</td><td>"+
-                                        item[i]['ubicacion']+"</td></tr>"));  
+                                        items[i]['codigo']+"</td><td>"+
+                                        items[i]['referencia']+"</td><td>"+
+                                        items[i]['descripcion']+"</td><td>"+
+                                        items[i]['disponibilidad']+"</td><td>"+
+                                        items[i]['pedidos']+"</td><td>"+
+                                        items[i]['alistados']+"</td><td>"+
+                                        items[i]['ubicacion']+"</td></tr>"));  
                     
                 }                  
                 
+            }
+            
+
+            
+            // si la caja ya esta creada muestra los items en la tabal de alistar
+            if (res["caja"]['estadocaja']=='yacreada') {
+
+                switch (res["caja"]['estado']) {
+
+                    //si encontro el codigo de barras muestar el contenido de la busqueda
+                    case 'encontrado':
+                        var items=res["caja"]['contenido'];
+
+                        console.log( items[0]);
+                        
+                        for (var i in items) {                
+                                    $('#tablaeditable').append($("<tr><td class='barras'>"+
+                                                    items[i]['codigo']+"</td><td>"+
+                                                    items[i]['referencia']+"</td><td>"+
+                                                    items[i]['descripcion']+"</td><td>"+
+                                                    items[i]['disponibilidad']+"</td><td>"+
+                                                    items[i]['pedidos']+"</td><td> <input type= 'number' class='alistados' value="+
+                                                    items[i]['alistados']+"></input></td><td>"+
+                                                    items[i]['ubicacion']+"</td></tr>"));             
+                        }
+                        $( "#TablaE" ).removeClass( "hide" );
+                        //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
+                    default:
+                     
+                    break;
+                }
+
             }
 
         }

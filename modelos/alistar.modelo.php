@@ -59,6 +59,25 @@ class ModeloAlistar extends Conexion{
 
     }
 
+    public function mslMostrarItemsCaja($NumCaja){
+        $No_req=$this->req[0];$alistador=$this->req[1];
+        
+
+        $stmt= $this->link->prepare("CALL buscarcod('%%',:No_req,:alistador,:NumCaja);");
+
+        
+        $stmt->bindParam(":No_req",$No_req,PDO::PARAM_STR);
+        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
+        $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $stmt;
+
+        // cierra la conexion
+        $stmt=null;
+    }
+
     //crea una caja nueva correspoendiente a la requisicion  
     public function mdlCrearCaja(){
 

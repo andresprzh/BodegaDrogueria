@@ -77,43 +77,6 @@ class ControladorCajas extends ControladorAlistar {
         }
 
     }
-    
-    public function ctrBuscarItemCaja($NumCaja){
-        
-        $busqueda=$this->modelo->mslMostrarItemsCaja($NumCaja);
-
-        if ($busqueda->rowCount() > 0) {
-
-            $itembus["estado"]=["encontrado"];
-
-            $cont=0;
-
-            while($row = $busqueda->fetch()){
-              
-                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                    "referencia"=>$row["id_referencia"],
-                                    "descripcion"=>$row["descripcion"],
-                                    "disponibilidad"=>$row["disp"],
-                                    "pedidos"=>$row["pedido"],
-                                    "alistados"=>$row["alistado"],
-                                    'ubicacion'=>$row["ubicacion"]
-                                    ];
-                
-                $cont++;
-
-            }
-            
-            return $itembus;
-
-        //si no encuentra resultados devuelve "error"
-        }else{
-
-            return ['estado'=>"error",
-                    'contenido'=>"Caja sin Items!"];
-
-        }
-
-    }
 
     public function ctrDocumento(){
         # code...

@@ -50,7 +50,7 @@
         
             <ul class="tabs ">
                 <li class="tab col s6" id="tabsI1"><a class="black-text" href="#TablaM">Items</a></li>
-                <li class="tab col s6 disabled" id="tabsI2"><a class="black-text" href="#TablaE">Alistar</a></li>
+                <li class="tab col s6 " id="tabsI2"><a class="black-text" href="#TablaE">Alistar</a></li>
             </ul>
 
     </div>
@@ -89,7 +89,7 @@
     <!-- ==============================================================
                 TABLA EDITABLE    
     ============================================================== -->
-    <div class="col s12 " id="TablaE" >
+    <div class="col s12 hide" id="TablaE" >
 
         <h4 class="header center green-text text-darken-3"  ><b>Alistar</b></h4>
 
@@ -118,7 +118,7 @@
         <!-- ==================================
                 INPUT PARA CERRAR CAJA  
         ================================== -->
-        <div class="row hide " id="input_cerrar">
+        <div class="row  " id="input_cerrar">
     
             <div class="divider green darken-4"></div> 
                     
@@ -128,7 +128,7 @@
 
                         <div class="input-field col s8 m7 l4 " >
 
-                            <select   name='caja' style="display:none;" class='carcaja' id='caja'>
+                            <select   name='caja'  class='carcaja' id='caja'>
                                 
                                 <option selected value='CRT'>Caja carton</option>
                                 <option value='CPL'>Caja plastica</option>

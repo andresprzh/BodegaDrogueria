@@ -118,9 +118,11 @@ class ControladorAlistar {
          //si tiene cajas sin cerrar no crea una nueva
          if ($row['numcaja']) {
             // libera conexion para hace otra sentencia
-            // $busqueda->closeCursor();
-
-             return "Caja ya creada" ;
+            $busqueda->closeCursor();
+            //busca los items en la caja
+            $resultado=$this->ctrBuscarItemCaja($row['numcaja']);
+            $resultado["estadocaja"]="yacreada";
+            return $resultado ;
 
          // si no tiene cajas sin cerrar crea otra caja
          }else{
@@ -133,17 +135,54 @@ class ControladorAlistar {
 
             //crea una caja nueva
             if ($this->modelo->mdlCrearCaja()) {
-
-                return "Caja creada";
+                $resultado["estadocaja"]="creada";
+                return $resultado;
 
             }else {
-
-                return "Error";
+                $resultado["estadocaja"]="error";
+                return $resultado;
 
             }
             
 
          }
+
+    }
+
+    public function ctrBuscarItemCaja($NumCaja){
+        
+        $busqueda=$this->modelo->mslMostrarItemsCaja($NumCaja);
+
+        if ($busqueda->rowCount() > 0) {
+
+            $itembus["estado"]="encontrado";
+
+            $cont=0;
+
+            while($row = $busqueda->fetch()){
+              
+                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                    "referencia"=>$row["id_referencia"],
+                                    "descripcion"=>$row["descripcion"],
+                                    "disponibilidad"=>$row["disp"],
+                                    "pedidos"=>$row["pedido"],
+                                    "alistados"=>$row["alistado"],
+                                    'ubicacion'=>$row["ubicacion"]
+                                    ];
+                
+                $cont++;
+
+            }
+            
+            return $itembus;
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"Caja sin Items!"];
+
+        }
 
     }
 
