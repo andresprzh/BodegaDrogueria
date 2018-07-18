@@ -117,6 +117,8 @@ class ControladorAlistar {
 
          //si tiene cajas sin cerrar no crea una nueva
          if ($row['numcaja']) {
+            // libera conexion para hace otra sentencia
+            // $busqueda->closeCursor();
 
              return "Caja ya creada" ;
 

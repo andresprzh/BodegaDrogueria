@@ -45,22 +45,16 @@ $(document).ready(function(){
         table.destroy();
         //espera a que la funcion termine para reiniciar las tablas
         $.when(MostrarItems()).done(function(){
-            //muestra la tabla y al reinicia
-            $( "#TablaM" ).removeClass( "hide" );
+            //muestra la tabla y la reinicia
+            $( "#contenido" ).removeClass( "hide" );
+            
             $( ".input_barras" ).removeClass( "hide" ); 
+            $('.tabs').tabs({ 'swipeable': true });//reinicia el tabs
+            
             table=iniciar_tabla();
             
         });
 
-        // setInterval(function(){
-        //     //muestra los items en la tabla
-        // table.destroy();
-        //     //espera a que la funcion termine para reiniciar las tablas
-        //     $.when(MostrarItems()).done(function(){
-        //         table=iniciar_tabla();
-        //     });
-        // }, 3000);  
-            
     });
 
 
@@ -93,7 +87,12 @@ $(document).ready(function(){
             table.destroy();
             //espera a que las 2 funciones terminen para reiniciar las tablas
             $.when(MostrarItems(),BuscarCodBar()).done(function(){
+                
+                // reinicia tabla y muestra la tabla editable
                 table=iniciar_tabla();
+                $( "#tabsI2" ).removeClass( "disabled" );
+                $('.tabs').tabs('select','TablaE');  
+
             });
         }
 
@@ -109,6 +108,9 @@ $(document).ready(function(){
         $.when(MostrarItems(),BuscarCodBar()).done(function(){
             
             table=iniciar_tabla();
+            $( "#tabsI2" ).removeClass( "disabled" );
+            $('.tabs').tabs('select','TablaE');
+
         });
 
     });
@@ -242,8 +244,7 @@ function AgregarItem(res){
                            item['alistados']+"></input></td><td>"+
                            item['ubicacion']+"</td></tr>"));                  
         // muestra la tabla y los input de cerrar caja
-        $( "#TablaE" ).removeClass( "hide" );
-        $( "#input_cerrar" ).removeClass( "hide" );
+                
        break;
        
 

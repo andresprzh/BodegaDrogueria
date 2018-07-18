@@ -21,7 +21,7 @@ class ControladorRequerir{
         $valor=$this->Cabecera[0];
 
 
-        //si no encuentra el numeor de la requisicion no la sube a la base de datos
+        //si no encuentra el numero de la requisicion no la sube a la base de datos
         if ($valor===null) {
             echo ('<script>
                 swal({

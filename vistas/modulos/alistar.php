@@ -44,20 +44,20 @@
 ============================================================================================================================
 ============================================================================================================================-->
 
-<div class="row "  >
+<div class="row hide" id="contenido"  >
     
-    <div class="col s12 ">
+    <div class="col s12" id="tabsmenu">
         
             <ul class="tabs ">
-                <li class="tab col s6"><a class="black-text" href="#TablaM">Items</a></li>
-                <li class="tab col s6"><a class="black-text" href="#TablaE">Alistar</a></li>
+                <li class="tab col s6" id="tabsI1"><a class="black-text" href="#TablaM">Items</a></li>
+                <li class="tab col s6 disabled" id="tabsI2"><a class="black-text" href="#TablaE">Alistar</a></li>
             </ul>
 
     </div>
     <!-- ==============================================================
                             TABLA VISTA O MUESTRA    
     ============================================================== -->
-    <div class="col s12" id="TablaM" >
+    <div class="col s12 " id="TablaM" >
 
         <h4 class="header center " >Items</h4>     
 

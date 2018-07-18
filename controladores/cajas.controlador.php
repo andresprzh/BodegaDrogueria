@@ -109,7 +109,7 @@ class ControladorCajas extends ControladorAlistar {
         }else{
 
             return ['estado'=>"error",
-                    'contenido'=>"Item no encontrado en la base de datos!"];
+                    'contenido'=>"Caja sin Items!"];
 
         }
 
