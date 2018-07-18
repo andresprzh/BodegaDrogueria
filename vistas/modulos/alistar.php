@@ -49,8 +49,8 @@
     <div class="col s12" id="tabsmenu">
         
             <ul class="tabs ">
-                <li class="tab col s6" id="tabsI1"><a class="black-text" href="#TablaM">Items</a></li>
-                <li class="tab col s6 " id="tabsI2"><a class="black-text" href="#TablaE">Alistar</a></li>
+                <li class="tab col s6" id="tabsI1"><a class="black-text" href="#TablaM"><i class="fas fa-clipboard-list"></i> Items</a></li>
+                <li class="tab col s6 " id="tabsI2"><a class="black-text" href="#TablaE"><i class="fas fa-box-open"></i> Caja</a></li>
             </ul>
 
     </div>
@@ -91,7 +91,7 @@
     ============================================================== -->
     <div class="col s12 hide" id="TablaE" >
 
-        <h4 class="header center green-text text-darken-3"  ><b>Alistar</b></h4>
+        <h4 class="header center green-text text-darken-3"  ><b>Caja</b></h4>
 
         <table class="tablas centered"  >
         

@@ -40,11 +40,10 @@ $(document).ready(function(){
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
        
-        
-        //muestra los items en la tabla
+        //destruye datatabel para reiniciarla
         table.destroy();
         //espera a que la funcion termine para reiniciar las tablas
-        $.when(MostrarItems()).done(function(){
+        $.when(MostrarItems(),MostrarCaja()).done(function(){
             //muestra la tabla y la reinicia
             $( "#contenido" ).removeClass( "hide" );
             
@@ -52,7 +51,6 @@ $(document).ready(function(){
             $('.tabs').tabs({ 'swipeable': true });//reinicia el tabs
             
             table=iniciar_tabla();
-            
         });
 
     });
@@ -87,7 +85,7 @@ $(document).ready(function(){
             table.destroy();
             //espera a que las 2 funciones terminen para reiniciar las tablas
             $.when(BuscarCodBar()).done(function(){
-                $.when(BuscarCodBar()).done(function(){
+                $.when(MostrarItems()).done(function(){
                     table=iniciar_tabla();
                 });
 
@@ -104,7 +102,7 @@ $(document).ready(function(){
         table.destroy();
         //espera a que las 2 funciones terminen para reiniciar las tablas
         $.when(BuscarCodBar()).done(function(){
-            $.when(BuscarCodBar()).done(function(){
+            $.when(MostrarItems()).done(function(){
                 table=iniciar_tabla();
             });
         });
@@ -201,7 +199,7 @@ function BuscarCodBar(){
     //id usuario es obtenida de las variables de sesion
     var Req=[requeridos,id_usuario];
     
-    //ajax para ejecutar un script php mandando los datos
+    // ajax para ejecutar un script php mandando los datos
     return $.ajax({
       url: 'ajax/alistar.items.ajax.php',//url de la funcion
       type: 'post',//metodo post para mandar datos
@@ -226,12 +224,9 @@ function BuscarCodBar(){
 //FUNCION QUE AGREGA ITEM A LA TABLA EDITABLE
 function AgregarItem(res){
     //busca el estado de del resultado
-    
-    switch (res['estado']) {
-
      //si encontro el codigo de barras muestar el contenido de la busqueda
-     case 'encontrado':
-     
+    if (res['estado']=='encontrado') {
+
         var items=res['contenido'];
        
         $('#tablaeditable').append($("<tr><td class='barras'>"+
@@ -243,18 +238,15 @@ function AgregarItem(res){
                             items['alistados']+"></input></td><td>"+
                             items['ubicacion']+"</td></tr>"));                  
         
-
         $( "#TablaE" ).removeClass( "hide" );
-        // $('.tabs').tabs('select','TablaE');
-                
-        break;
+        var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">'+items['descripcion']+'</span></p>';
+        M.toast({html: toastHTML});
        
-     //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
-     default:
+    //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
+   }else{
         swal(res['contenido'], {
             icon: "warning",
         })
-       break;
    }
  }
 
@@ -270,7 +262,7 @@ function MostrarItems(){
 
     return $.ajax({
 
-        url:"ajax/alistar.itemsreq.ajax.php",
+        url:"ajax/alistar.items.ajax.php",
         method:"POST",
         data: {"Req":Req},
         dataType: "JSON",
@@ -278,18 +270,11 @@ function MostrarItems(){
                         
             //refresca las tablas, para volver a cargar los datos
             $('#tablavista').html("");
-            $('#tablaeditable').html("");
             table.clear();
-            
-            //si no encuentra el item muestra en pantalla que no se encontro
-            if (res["items"]['estado']=="error"){
-                
-            }
-
-            //en caso de contrar el item mostrarlo en la tabla
-            else{
+            //si ecnuentra el item mostrarlo en la tabla
+            if (res['estado']!="error"){
                 // $('#Rerror').hide(); 
-                var items=res["items"]['contenido'];
+                var items=res['contenido'];
                 
                 for (var i in items) {
                     $('#tablavista').append($("<tr><td>"+
@@ -301,22 +286,44 @@ function MostrarItems(){
                                         items[i]['alistados']+"</td><td>"+
                                         items[i]['ubicacion']+"</td></tr>"));  
                     
-                }                  
+                } 
                 
             }
-            
 
+        }
+
+    }); 
+
+} 
+
+
+// FUNCION QUE CREA O MUESTRA UNA CAJA
+function MostrarCaja() {
+
+    var item;
+    //consigue el numero de requerido
+    var requeridos=$(".requeridos").val();
+    //id usuario es obtenida de las variables de sesion
+    var Req=[requeridos,id_usuario];
+    
+    return $.ajax({
+
+        url:"ajax/alistar.cajas.ajax.php",
+        method:"POST",
+        data: {"Req":Req},
+        dataType: "JSON",
+        success: function (res) {          
             
             // si la caja ya esta creada muestra los items en la tabal de alistar
-            if (res["caja"]['estadocaja']=='yacreada') {
-
-                switch (res["caja"]['estado']) {
+            if (res['estadocaja']=='yacreada') {
 
                     //si encontro el codigo de barras muestar el contenido de la busqueda
-                    case 'encontrado':
-                        var items=res["caja"]['contenido'];
+                    if (res['estado']=='encontrado') {
+                        var items=res['contenido'];
 
-                        console.log( items[0]);
+                        //refresca las tablas, para volver a cargar los datos
+                        $('#tablaeditable').html("");
+                        table.clear();
                         
                         for (var i in items) {                
                                     $('#tablaeditable').append($("<tr><td class='barras'>"+
@@ -329,20 +336,16 @@ function MostrarItems(){
                                                     items[i]['ubicacion']+"</td></tr>"));             
                         }
                         $( "#TablaE" ).removeClass( "hide" );
-                        //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
-                    default:
-                     
-                    break;
-                }
+                        
+                        
+                    }
 
             }
 
         }
 
-  }); 
-
+    }); 
 } 
-
 
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla(){
