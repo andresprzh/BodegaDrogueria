@@ -1,5 +1,5 @@
 <h3 class="header center ">Alistar</h3>
-    <!-- ============================================================================================================================
+<!-- ============================================================================================================================
                                                     FORMAULARIO    
 ============================================================================================================================ -->
 <div class="container fixed" style="padding-left:15px;" >
@@ -49,7 +49,7 @@
     <div class="col s12" id="tabsmenu">
         
             <ul class="tabs ">
-                <li class="tab col s6" id="tabsI1"><a class="black-text" href="#TablaM"><i class="fas fa-clipboard-list"></i> Items</a></li>
+                <li class="tab col s6" id="tabsI1"><a class="black-text" href="#TablaV"><i class="fas fa-clipboard-list"></i> Items</a></li>
                 <li class="tab col s6 " id="tabsI2"><a class="black-text" href="#TablaE"><i class="fas fa-box-open"></i> Caja</a></li>
             </ul>
 
@@ -57,7 +57,7 @@
     <!-- ==============================================================
                             TABLA VISTA O MUESTRA    
     ============================================================== -->
-    <div class="col s12 " id="TablaM" >
+    <div class="col s12 " id="TablaV" >
 
         <h4 class="header center " >Items</h4>     
 

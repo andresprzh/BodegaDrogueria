@@ -9,9 +9,6 @@ $(document).ready(function(){
     // INICIA DATATABLE
     table=iniciar_tabla('.tablas');
      
-    
-    
-
     // pone items en el input select
     $.ajax({
         url:"ajax/alistar.requisicion.ajax.php",
@@ -59,15 +56,6 @@ $(document).ready(function(){
             table=iniciar_tabla("#TablaC");
 
         });
-
-        // setInterval(function(){
-        //     //muestra los items en la tabla
-        // table.destroy();
-        //     //espera a que la funcion termine para reiniciar las tablas
-        //     $.when(MostrarItems()).done(function(){
-        //         table=iniciar_tabla();
-        //     });
-        // }, 3000);  
             
     });
 
@@ -158,16 +146,14 @@ function MostrarItemsCaja(e) {
     
 
     //obtienen los datos de la caja para pasarlo al modal
-    var NumCaja=$(".NumCaja");
-    NumCaja=$(NumCaja[e]).html();
-    var alistador=$(".alistadores");
-    alistador=$(alistador[e]).html();
-    var tipocaja=$(".tipocajas");
-    tipocaja=$(tipocaja[e]).html();
-    var cierre=$(".cierres");
-    cierre=$(cierre[e]).html();
-   
+    var datos=table.row(e).data();
+    
+    var NumCaja=datos[0];
+    var alistador=datos[1];
+    var tipocaja=datos[2];
+    var cierre=datos[4];
 
+    console.log( datos[0] );
     // se muestran los datos generales de la caja
     $('#TituloCaja').html("Caja No "+NumCaja);
     $('#alistador').html(alistador);
@@ -205,12 +191,7 @@ function MostrarItems(NumCaja){
         success: function (res) {
             
             var item=res['contenido'];
-            
-            
-           
-            
-            
-            
+ 
             //si no encuentra el item muestra en pantalla que no se encontro
             if (res['estado']=="error"){
                 

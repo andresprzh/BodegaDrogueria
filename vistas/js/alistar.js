@@ -78,9 +78,9 @@ $(document).ready(function(){
     // EVENTO INPUT  CODIGO DE BARRAS
     $("#codbarras").keypress(function (e) {
     
-    //si se presiona enter busca el item y lo pone en la pagina
-    if (e.which == 13  ) {
-            
+        //si se presiona enter busca el item y lo pone en la pagina
+        if (e.which == 13  ) {
+                
             //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
             table.destroy();
             //espera a que las 2 funciones terminen para reiniciar las tablas
@@ -129,23 +129,27 @@ $(document).ready(function(){
 
             //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
             if (cerrar) {
+                var dt = $.fn.dataTable.tables()[1];
+                var datos=$(dt).DataTable().data().toArray();
+                
+                console.log(datos.length);
+                var Items=new Array();
+                for (var i in datos) {
 
-                var alistados = $(".alistados");//arreglo cantidad de alistados de todos los items cargados
-                var barras = $(".barras");//arreglo codigo de barra de todos lo items cargados.
+                        Items[i]={
+                            "codigo":datos[i][0],
+                            "alistados": $(datos[i][5]).val()
+                        }                
+                    
+                }
+
+                console.log(Items);
+
                 //guarda en un vector todos los datos de la caja
                 var TipoCaja=$("#caja").val();
                 var Items=new Array();
                 
-                for(var i = 0; i < alistados.length; i++){
-
-                    //guarda en una matriiz los datos de los items(# alistados y codigode barras)        
-                    
-                    Items[i]={
-                        "codigo":$(barras[i]).html(),
-                        "alistados": $(alistados[i]).val()
-                    }    
-                    
-                }
+                
                  
                 $.ajax({
                     url: 'ajax/alistar.empacar.ajax.php',//url de la funcion
@@ -351,7 +355,7 @@ function MostrarCaja() {
 function iniciar_tabla(){
     
     
-     var tabla= $(".tablas").DataTable({
+     var tabla= $("table.tablas").DataTable({
                             
         responsive:true,
         

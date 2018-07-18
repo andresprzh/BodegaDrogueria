@@ -59,12 +59,12 @@ display: block;
   height: 100%;
 }
 
-#TablaM,#TablaE{
-  height: 70vh;
+#TablaV, #TablaE{
+  height: 50vh;
 }
 
 @media(max-width:1000px){
-  #TablaM,#TablaE{
+  #TablaV,#TablaE{
     height: 100vh;
   }
   .modal {
@@ -87,6 +87,7 @@ display: block;
       height: 100px;
   }
 }
+
 
 .tabs .indicator  { 
   background-color: rgb(0, 71, 0) !important; 

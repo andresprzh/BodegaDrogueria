@@ -40,24 +40,4 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
-    public function mslMostrarItemsCaja($NumCaja)
-    {
-        $No_Req=$this->Req[0];$alistador=$this->Req[1];
-        
-
-        $stmt= $this->link->prepare("CALL buscarcod('%%',:No_Req,:alistador,:NumCaja);");
-
-        
-        $stmt->bindParam(":No_Req",$No_Req,PDO::PARAM_STR);
-        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
-        $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return $stmt;
-
-        // cierra la conexion
-        $stmt=null;
-    }
-
 }
