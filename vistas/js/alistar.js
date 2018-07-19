@@ -109,9 +109,19 @@ $(document).ready(function(){
 
     });
 
+    // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABL
+    $('#tablaeditable').on( 'change', 'td', function () {
+        
+        //se obtiene el valor de la variable y se le asigna a datatable para que quede guardado
+        celda=table.cell(this);
+        var nuevovalor = $(this).find("input").val();
+        celda.data("<input  type= 'number' min='0' class='alistados'  value='"+nuevovalor+"'></input>");
+        
+    } );
 
     // EVENTO SI SE PRESIONA EL BOTON CERRAR
-    $("#cerrar").click(function (e) {  
+    $("#cerrar").on('click',function (e) {  
+        
         
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
@@ -129,10 +139,13 @@ $(document).ready(function(){
 
             //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
             if (cerrar) {
+                
                 var dt = $.fn.dataTable.tables()[1];
+                
+                
                 var datos=$(dt).DataTable().data().toArray();
                 
-                console.log(datos.length);
+                // console.log();
                 var Items=new Array();
                 for (var i in datos) {
 
@@ -145,10 +158,8 @@ $(document).ready(function(){
 
                 console.log(Items);
 
-                //guarda en un vector todos los datos de la caja
+                //guarda el tipo de caja en una variable
                 var TipoCaja=$("#caja").val();
-                var Items=new Array();
-                
                 
                  
                 $.ajax({
@@ -176,7 +187,7 @@ $(document).ready(function(){
                               });
 
                         }
-                        // location.reload(true);
+                        
                     }
                 }); 
             }
@@ -238,7 +249,7 @@ function AgregarItem(res){
                             items['referencia']+"</td><td>"+
                             items['descripcion']+"</td><td>"+
                             items['disponibilidad']+"</td><td>"+
-                            items['pedidos']+"</td><td> <input type= 'number' class='alistados' value="+
+                            items['pedidos']+"</td><td> <input type= 'number' min='0'; class='alistados' value="+
                             items['alistados']+"></input></td><td>"+
                             items['ubicacion']+"</td></tr>"));                  
         
@@ -253,6 +264,8 @@ function AgregarItem(res){
         })
    }
  }
+
+ 
 
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
@@ -335,7 +348,7 @@ function MostrarCaja() {
                                                     items[i]['referencia']+"</td><td>"+
                                                     items[i]['descripcion']+"</td><td>"+
                                                     items[i]['disponibilidad']+"</td><td>"+
-                                                    items[i]['pedidos']+"</td><td> <input type= 'number' class='alistados' value="+
+                                                    items[i]['pedidos']+"</td><td > <input type= 'number' min='0' class='alistados' value="+
                                                     items[i]['alistados']+"></input></td><td>"+
                                                     items[i]['ubicacion']+"</td></tr>"));             
                         }
@@ -350,6 +363,8 @@ function MostrarCaja() {
 
     }); 
 } 
+
+
 
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla(){
