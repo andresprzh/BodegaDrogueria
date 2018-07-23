@@ -78,8 +78,37 @@ class ControladorCajas extends ControladorAlistar {
 
     }
 
-    public function ctrDocumento(){
-        # code...
+    public function ctrDocumento($NumCaja,$Mensaje){
+
+        $busqueda=$this->ctrBuscarItemCaja($NumCaja);
+
+        if ($busqueda["estado"]=="encontrado") {
+            $string='';
+            foreach($busqueda["contenido"] as $row){
+    
+               
+                $localicacion=str_replace('-','',$row["origen"].$row["destino"].'I');
+                $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+                $codigo=str_pad($row["codigo"],13+15," ",STR_PAD_RIGHT);
+                $num=$row["alistados"]*1000;
+                $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
+                $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+                $Mensaje="algo";
+                
+                    
+                $string.=($localicacion.$codigo.$alistado.$Mensaje."\n");
+                
+                
+            }
+            
+            return $string;
+            
+        }else{
+            return "error";
+        }
+
+        
+
     }
 
     public function ctrBuscarIE(){

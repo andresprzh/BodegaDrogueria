@@ -122,10 +122,11 @@ BEGIN
 	DECLARE numcaja INT(10);
 	set numcaja=numerocaja(alistador);
 	
-	select pedido.alistamiento,cod_barras.ID_CODBAR,id_items, id_referencia, descripcion, disp, pedido, alistado,caja.No_caja,usuario.nombre,ubicacion
+	select pedido.alistamiento,cod_barras.ID_CODBAR,id_items, id_referencia, descripcion, disp, pedido, alistado,caja.No_caja,usuario.nombre,ubicacion,requisicion.Lo_Origen,requisicion.Lo_Destino
 	from cod_barras
 	inner join items on items.ID_CODBAR=cod_barras.ID_CODBAR
 	inner join pedido on item=ID_ITEM	
+	inner join requisicion on requisicion.No_Req=pedido.No_Req
 	left join caja on caja.No_caja=pedido.No_caja
 	left join usuario on id_usuario=persona
 	where cod_barras.ID_CODBAR like codigo 

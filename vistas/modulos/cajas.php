@@ -62,7 +62,7 @@
         
 
         <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-        <h4 class="center" id="TituloCaja"></h4>
+        <h4 class="center" >Caja No <span id="NumeroCaja"></span></h4>
         
         <table class="centered green-text">
             <thead>

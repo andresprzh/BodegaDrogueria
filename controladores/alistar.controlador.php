@@ -167,7 +167,9 @@ class ControladorAlistar {
                                     "disponibilidad"=>$row["disp"],
                                     "pedidos"=>$row["pedido"],
                                     "alistados"=>$row["alistado"],
-                                    'ubicacion'=>$row["ubicacion"]
+                                    'ubicacion'=>$row["ubicacion"],
+                                    'origen'=>$row["Lo_Origen"],
+                                    'destino'=>$row["Lo_Destino"]
                                     ];
                 
                 $cont++;

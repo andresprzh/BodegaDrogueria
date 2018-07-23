@@ -60,24 +60,46 @@ $(document).ready(function(){
     });
 
     $("#Documento").click(function (e) {
-       
-        swal({
-            title: "¿Generar Documento?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-          })
-          .then((documento) => {
-            swal({
-                title: "!Documento Generado Exitosamente¡",
-                icon: "success",
-                buttons: true,
-                dangerMode: true,
-              });
+        //consigue el numero de requerido
+        var requeridos=$(".requeridos").val();
+        //id usuario es obtenida de las variables de sesion
+        var Req=[requeridos,id_usuario];
+        var NumCaja=$('#NumeroCaja').html();
 
-              $('.modal').modal('close');
+        $.ajax({
+                
+            url:"ajax/cajas.documento.ajax.php",
+            method:"POST",
+            data: {"Req":Req,"NumCaja":NumCaja,"Mensaje":"PRUEBA DE CARGA PLA"},
+            
+            success: function (res) {
 
-          });
+                // si hay un error al buscar los archivos no genera el documento
+                if (res=="error") {
+                    swal({
+                        title: "!Error al generar el documento¡",
+                        icon: "error",
+                        buttons: true,
+                        dangerMode: true,
+                      });
+
+                // si no hay error genera le documento y lo manda a decargar
+                }else{
+                
+                    var element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res));
+                    element.setAttribute('download', "texto.P01");
+
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+
+                    element.click();
+
+                    document.body.removeChild(element);
+
+                }                     
+            }
+        });
 
     });
 
@@ -153,9 +175,9 @@ function MostrarItemsCaja(e) {
     var tipocaja=datos[2];
     var cierre=datos[4];
 
-    console.log( datos[0] );
+    
     // se muestran los datos generales de la caja
-    $('#TituloCaja').html("Caja No "+NumCaja);
+    $('#NumeroCaja').html(NumCaja);
     $('#alistador').html(alistador);
     $('#tipocaja').html(tipocaja);
     $('#cierre').html(cierre);
