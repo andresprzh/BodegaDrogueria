@@ -19,6 +19,7 @@ $(document).ready(function(){
         dataType: "json",
         success: function (res) {
             
+            
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -139,22 +140,36 @@ function MostrarCajas(){
                 
                 var caja=res['contenido'];
                 
-                for (var i in caja) {
-                    
+
+                // si solo hay 1 resultado no hace el ciclo for
+                if (caja[0] === undefined) {
                     $('#tablacajas').append($("<tr>"+
-                                        "<td class='NumCaja'>"+caja[i]['no_caja']+"</td>"+
-                                        "<td class='alistadores'>"+caja[i]['alistador']+"</td>"+
-                                        "<td class='tipocajas'>"+caja[i]['tipocaja']+"</td>"+
-                                        "<td>"+caja[i]['abrir']+"</td>"+
-                                        "<td class='cierres'>"+caja[i]['cerrar']+"</td><td>"+
-                                        "<button  onclick='MostrarItemsCaja("+i+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
+                                        "<td class='NumCaja'>"+caja['no_caja']+"</td>"+
+                                        "<td class='alistadores'>"+caja['alistador']+"</td>"+
+                                        "<td class='tipocajas'>"+caja['tipocaja']+"</td>"+
+                                        "<td>"+caja['abrir']+"</td>"+
+                                        "<td class='cierres'>"+caja['cerrar']+"</td><td>"+
+                                        "<button  onclick='MostrarItemsCaja("+0+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
                                             "<i class='fas fa-file-alt'></i>"+
                                         "</button></td>"+
                                         "</tr>"));  
+                }else {
+                    for (var i in caja) {
+                        
+                        $('#tablacajas').append($("<tr>"+
+                                            "<td class='NumCaja'>"+caja[i]['no_caja']+"</td>"+
+                                            "<td class='alistadores'>"+caja[i]['alistador']+"</td>"+
+                                            "<td class='tipocajas'>"+caja[i]['tipocaja']+"</td>"+
+                                            "<td>"+caja[i]['abrir']+"</td>"+
+                                            "<td class='cierres'>"+caja[i]['cerrar']+"</td><td>"+
+                                            "<button  onclick='MostrarItemsCaja("+i+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
+                                                "<i class='fas fa-file-alt'></i>"+
+                                            "</button></td>"+
+                                            "</tr>"));  
 
-                    $( "#TablaCajas" ).removeClass( "hide" );
-
-                }                  
+                    }   
+                }
+                $( "#TablaCajas" ).removeClass( "hide" );                  
                 
             }
 

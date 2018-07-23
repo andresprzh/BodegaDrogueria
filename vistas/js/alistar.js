@@ -156,7 +156,7 @@ $(document).ready(function(){
                     
                 }
 
-                console.log(Items);
+                
 
                 //guarda el tipo de caja en una variable
                 var TipoCaja=$("#caja").val();
@@ -167,7 +167,7 @@ $(document).ready(function(){
                     method: 'post',//metodo post para mandar datos
                     data: { 'Req':Req,"TipoCaja":TipoCaja,"Items":Items},//datos que se enviaran          
                     success: function (res) {
-                    console.log(res);
+                    
 
                         if (res) {
 
@@ -254,8 +254,10 @@ function AgregarItem(res){
                             items['ubicacion']+"</td></tr>"));                  
         
         $( "#TablaE" ).removeClass( "hide" );
+
+        // se muestra un mensaje con el item agregado
         var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">'+items['descripcion']+'</span></p>';
-        M.toast({html: toastHTML});
+        M.toast({html: toastHTML, classes:"light-green darken-4 rounded"});
        
     //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
    }else{

@@ -19,6 +19,7 @@
 
 
 <div class="row hide " id="Cajas">
+
 <!-- ============================================================================================================================
                                                 Tabla que lista todas las cajas  
 ============================================================================================================================ -->
@@ -54,56 +55,55 @@
 <!-- ============================================================================================================================
                                                     MODAL EDITAR CAJA 
 ============================================================================================================================ -->
-<div id="EditarCaja" class="modal">
+<div id="EditarCaja" class="modal grey lighten-3">
 
-<div class="modal-content grey lighten-3">
+    <div class="modal-content grey lighten-3">
 
-    <div class="modal-header">
+        <div class="modal-header">
+            
+
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
+            <h4 class="center" >Caja No <span id="NumeroCaja"></span></h4>
+            
+            <table class="centered">
+                <thead>
+                    <th>Alistador: <span id="alistador"></span></th>
+                    <th>Tipo Caja: <span id="tipocaja"></span></th>
+                    <th>Fecha cierre: <span id="cierre"></span></th>
+                </thead>
+            </table>
+
+        </div>
+
+        <table class="tablas centered " id="TablaM"  >
+                
+                    <thead>
+
+                    <tr  class="white-text green darken-3" >
+
+                        <th>Codigo de barras</th>
+                        <th>Referencia</th>
+                        <th>Descripción</th>
+                        <th>Disponibilidad</th>
+                        <th>Pedidos</th>
+                        <th>Alistados</th>
+                        <th>Ubicacion</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="tablamodal"></tbody>
+
+        </table> 
         
-
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-        <h4 class="center" >Caja No <span id="NumeroCaja"></span></h4>
-        
-        <table class="centered green-text">
-            <thead>
-                <th>Alistador: <span id="alistador"></span></th>
-                <th>Tipo Caja: <span id="tipocaja"></span></th>
-                <th>Fecha cierre: <span id="cierre"></span></th>
-            </thead>
-        </table>
+        <div class="modal-footer grey lighten-3">
+            <button id="Documento" title="GenerarDocumento" class="btn left waves-effect green darken-4 col s12 m12 l8" >
+                <i class="fas fa-file-alt"></i>
+            </button>
+        </div>
 
     </div>
-
-    <table class="tablas centered " id="TablaM"  >
-            
-                <thead>
-
-                <tr  class="white-text green darken-3" >
-
-                    <th>Codigo de barras</th>
-                    <th>Referencia</th>
-                    <th>Descripción</th>
-                    <th>Disponibilidad</th>
-                    <th>Pedidos</th>
-                    <th>Alistados</th>
-                    <th>Ubicacion</th>
-
-                </tr>
-
-                </thead>
-
-                <tbody id="tablamodal"></tbody>
-
-    </table> 
-
-</div>
-
-
-    <button id="Documento" title="GenerarDocumento" class="btn left waves-effect green darken-4 col s12 m12 l8" >
-        <i class="fas fa-file-alt"></i>
-    </button>
-
-</div>
 
 </div>
 

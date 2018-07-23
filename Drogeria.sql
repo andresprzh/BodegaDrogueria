@@ -167,7 +167,7 @@ DROP PROCEDURE IF EXISTS buscarcaja;
 DELIMITER $$
 CREATE PROCEDURE buscarcaja(IN numcaja CHAR(10),IN req CHAR(10))
 BEGIN
-	select caja.No_caja, usuario.nombre,tipo_caja,abrir,cerrar 
+	select caja.No_caja, usuario.nombre,tipo_caja,abrir,cerrar
 	from caja 
 	inner join pedido on pedido.No_caja=caja.No_caja
 	inner join usuario on usuario.id_usuario=Persona
