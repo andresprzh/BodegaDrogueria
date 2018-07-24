@@ -156,11 +156,14 @@ class ControladorRequerir{
                 $items[1]=$req;//se obtiene el numero de requisicion
                 $items[2]=1;//se manda la caja como un 1(caja no asignada)
                 //se cambian las comas del dato por espacios en blanco
-                $items[3]=str_replace(',','',substr($linea,71,5));//cantidad items disponibles
-                $items[4]=substr($linea,86,5);//cantidad items pedidos
-                $items[5]=intval(str_replace('_','',substr($linea,95,8)));//cantidad items alistados
-                $items[6]=0;//estado alistamiento del item(predeterminado 0 no alistado)
-                $items[7]=substr($linea,109,6);//ubiacion item
+                $items[3]=substr($linea,109,6);//ubiacion item
+                $items[4]=str_replace(',','',substr($linea,71,5));//cantidad items disponibles
+                $items[5]=substr($linea,86,5);//cantidad items pedidos
+                $items[6]=intval(str_replace('_','',substr($linea,95,8)));//cantidad items alistados
+                $items[7]=0;//cantidad de items recibidad
+                $items[8]=0;//estado alistamiento del item(predeterminado 0 no alistado)
+                $items[9]=0;//estado item recibido (predeterminado 0 no recibido)
+                
                 
                 //se busca el id de los item usando la referencia en el documento subido
                 $modelo=new ModeloRequierir();
@@ -173,8 +176,13 @@ class ControladorRequerir{
 		        //se reemplaza la referencia del item por su id
                 $items[0]=$id_item["ID_ITEM"];
                 
-                //pone los datos dle item enun String
-                $StringItem.='("'.$items[0].'","'.$items[1].'","'.$items[2].'","'.$items[3].'","'.$items[4].'","'.$items[5].'","'.$items[6].'","'.$items[7].'"),';
+                //pone los datos del item en un String
+                $StringItem.='(';
+                for ($i=0; $i <count($items) ; $i++) { 
+                    $StringItem.='"'.$items[$i].'",';
+                }
+                $StringItem=substr($StringItem, 0, -1).'),';
+                
              
             //busca el numero de requerido solo si no se ha encontrado
             }elseif(!isset($req)){

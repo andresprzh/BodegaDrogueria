@@ -61,7 +61,8 @@
                 //comprueba si hay algun error con el archivo
                 if (isset($_FILES["archivo"]["tmp_name"])) {
                     
-                    if ( 0 < $_FILES['archivo']['error'] ) {
+                    if ( 0 != $_FILES['archivo']['error'] ) {
+                        
                         echo '<script>
                         swal({
                             title: "¡Error al subir el acrhivo¡",

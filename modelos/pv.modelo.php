@@ -21,7 +21,7 @@ class ModeloPV extends Conexion{
                                                         FUNCIONES   
     ============================================================================================================================*/
 
-    public function mslMostrarCaja($NumCaja)
+    public function mdlMostrarCaja($NumCaja)
     {
         $No_Req=$this->Req[0];$alistador=$this->Req[1];
         
@@ -38,6 +38,15 @@ class ModeloPV extends Conexion{
 
         // cierra la conexion
         $stmt=null;
+    }
+
+    public function mdlMostrarItemPV($Cod_bar)
+    {
+        $tabla="items";
+        $item='ID_CODBAR';
+        
+        return $this->buscaritem($tabla,$item,$Cod_bar);
+        
     }
 
 }

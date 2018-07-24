@@ -5,8 +5,7 @@ $(document).ready(function(){
     ============================================================================================================================*/
         // INICIA DATATABLE
         table=iniciar_tabla();
-        // INICIAR TABS
-        $('.tabs').tabs({ 'swipeable': true });
+        
         // pone items en el input select
         $.ajax({
             url:"ajax/alistar.requisicion.ajax.php",
@@ -161,53 +160,22 @@ $(document).ready(function(){
           type: 'post',//metodo post para mandar datos
           data: {"codigo":codigo,"Req":Req},//datos que se enviaran
           dataType: 'json',
-          error: function (xhr, status) {
-    
-            alert(status);
-    
-            },
           success: function (res) {
-            // console.log(res);
-            AgregarItem(res);
+            
+            if (res["estado"]=='encontrado') {
+                item=res['contenido'];
+                
+                $('#tablavista').append($("<tr><td class='barras'>"+
+                item['codigo']+"</td><td>"+
+                item['referencia']+"</td><td>"+
+                item['descripcion']+"</td><td>"+
+                1+"</td></tr>"));          
+            }
+                        
           }
           
         }); 
-    
-    
-    }
-    
-    
-    //FUNCION QUE AGREGA ITEM A LA TABLA EDITABLE
-    function AgregarItem(res){
-        //busca el estado de del resultado
-         //si encontro el codigo de barras muestar el contenido de la busqueda
-        if (res['estado']=='encontrado') {
-    
-            var items=res['contenido'];
-           
-            $('#tablaeditable').append($("<tr><td class='barras'>"+
-                                items['codigo']+"</td><td>"+
-                                items['referencia']+"</td><td>"+
-                                items['descripcion']+"</td><td>"+
-                                items['disponibilidad']+"</td><td>"+
-                                items['pedidos']+"</td><td> <input type= 'number' min='0'; class='alistados' value="+
-                                items['alistados']+"></input></td><td>"+
-                                items['ubicacion']+"</td></tr>"));                  
-            
-            $( "#TablaE" ).removeClass( "hide" );
-    
-            // se muestra un mensaje con el item agregado
-            var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">'+items['descripcion']+'</span></p>';
-            M.toast({html: toastHTML, classes:"light-green darken-4 rounded"});
-           
-        //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
-       }else{
-            swal(res['contenido'], {
-                icon: "warning",
-            })
-       }
-     }
-       
+    }     
     
     // FUNCION QUE INICIA DATATABLE
     function iniciar_tabla(){

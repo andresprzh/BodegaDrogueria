@@ -65,10 +65,7 @@
         <th>Codigo de barras</th>
         <th>Referencia</th>
         <th>Descripción</th>
-        <th>Disponibilidad</th>
-        <th>Pedidos</th>
-        <th>Alistados</th>
-        <th>Ubicacion</th>
+        <th>Cantidad</th>
         
     </tr>
 

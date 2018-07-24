@@ -84,7 +84,7 @@ class ModeloAlistar extends Conexion{
         //obtiene el codigo del alistador
         $alistador=$this->req[1];
         // se agregan los datos a la tabla       
-        $stmt= $this->link->prepare('INSERT INTO caja(Persona) VALUES(:alistador)');
+        $stmt= $this->link->prepare('INSERT INTO caja(Alistador) VALUES(:alistador)');
         
         $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
         

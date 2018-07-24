@@ -286,7 +286,7 @@ function MostrarItems(){
         data: {"Req":Req},
         dataType: "JSON",
         success: function (res) {          
-                        
+            console.log(res)    ;
             //refresca las tablas, para volver a cargar los datos
             $('#tablavista').html("");
             table.clear();
@@ -332,7 +332,7 @@ function MostrarCaja() {
         data: {"Req":Req},
         dataType: "JSON",
         success: function (res) {          
-            
+            console.log(res);
             // si la caja ya esta creada muestra los items en la tabal de alistar
             if (res['estadocaja']=='yacreada') {
 

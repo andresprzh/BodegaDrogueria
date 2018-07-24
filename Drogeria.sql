@@ -64,11 +64,13 @@ create table pedido(
 Item char(6) NOT NULL,
 No_Req char(10) NOT NULL,
 No_caja int(10) ,
+ubicacion varchar(6) NOT NULL,
 disp  int(5) NOT NULL,
 pedido int(5) NOT NULL,
 alistado int(5),
+recibidos int(5),
 alistamiento int(1) NOT NULL,
-ubicacion varchar(6) NOT NULL,
+estado_recibido int(1),
 
 
 
@@ -104,7 +106,7 @@ begin
 	DECLARE numcaja INT(10);
 	SELECT no_caja INTO numcaja
 	FROM caja
-	WHERE persona=pers
+	WHERE Alistador=pers
 	AND cerrar is null
 	ORDER BY abrir
 	DESC LIMIT 1;
@@ -128,7 +130,7 @@ BEGIN
 	inner join pedido on item=ID_ITEM	
 	inner join requisicion on requisicion.No_Req=pedido.No_Req
 	left join caja on caja.No_caja=pedido.No_caja
-	left join usuario on id_usuario=persona
+	left join usuario on id_usuario=Alistador
 	where cod_barras.ID_CODBAR like codigo 
 	and pedido.no_req=no_req
 	and pedido.No_caja like numerocaja;
@@ -170,7 +172,7 @@ BEGIN
 	select caja.No_caja, usuario.nombre,tipo_caja,abrir,cerrar
 	from caja 
 	inner join pedido on pedido.No_caja=caja.No_caja
-	inner join usuario on usuario.id_usuario=Persona
+	inner join usuario on usuario.id_usuario=Alistador
 	where caja.No_caja like numcaja 
 	and pedido.No_Req=req
 	and caja.No_caja <> 1
@@ -186,7 +188,7 @@ BEGIN
 	select *
 	from caja 
 	inner join pedido on pedido.No_caja=caja.No_caja
-	inner join usuario on usuario.id_usuario=Persona
+	inner join usuario on usuario.id_usuario=Alistador
 	where caja.No_caja = numcaja 
 	and caja.No_caja <> 1;
 
