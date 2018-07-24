@@ -1,6 +1,6 @@
 <?php
 
-class ModeloCaja extends Conexion{
+class ModeloPV extends Conexion{
     /* ============================================================================================================================
                                                         ATRIBUTOS  
     ============================================================================================================================*/
@@ -21,7 +21,7 @@ class ModeloCaja extends Conexion{
                                                         FUNCIONES   
     ============================================================================================================================*/
 
-    public function mdlMostrarCaja($NumCaja)
+    public function mslMostrarCaja($NumCaja)
     {
         $No_Req=$this->Req[0];$alistador=$this->Req[1];
         

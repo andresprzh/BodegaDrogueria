@@ -23,7 +23,7 @@ class ControladorCajas extends ControladorAlistar {
     ============================================================================================================================*/
     public function ctrBuscarCaja($NumCaja){
 
-        $busqueda=$this->modelo->mslMostrarCaja($NumCaja);
+        $busqueda=$this->modelo->mdlMostrarCaja($NumCaja);
 
         if ($busqueda->rowCount() > 0) {
 
@@ -46,7 +46,7 @@ class ControladorCajas extends ControladorAlistar {
 
             }else {
 
-                $cajabus["estado"]=["encontrado"];
+                $cajabus["estado"]="encontrado";
 
                 $cont=0;
 

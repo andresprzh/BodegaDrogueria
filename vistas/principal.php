@@ -76,7 +76,8 @@
         "requerir",
         "alistar",
         "cajas",
-        "salir"
+        "salir",
+        "pv"
         ];
 
     echo "<main>";
