@@ -19,7 +19,7 @@
             <select   list="cajas" name="cajas" class="cajas" id="cajas">
                 <option value="" disabled selected>Seleccionar</option>
             </select>
-            <label  style="font-size:12px;">Número requisicion</label>
+            <label  style="font-size:12px;">Número Caja</label>
 
         </div>
         

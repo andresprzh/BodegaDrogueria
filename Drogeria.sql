@@ -33,13 +33,14 @@ REFERENCES perfiles(id_perfil)
 /*tabla de la requisicion a bodega*/
 create table requisicion(
 No_Req char(10) NOT NULL,
-fecha date NOT NULL,
-hora char(8),
+creada datetime NOT NULL,
 Lo_Origen char(6),
 Lo_Destino char(6),
 Tip_Inventario int(2),
 Solicitante varchar(40) COLLATE ucs2_spanish_ci,
-estado boolean,
+enviado datetime,
+recibido datetime,
+
 
 PRIMARY KEY(No_req)
 );
@@ -47,15 +48,21 @@ PRIMARY KEY(No_req)
 /*tabla caja*/
 CREATE TABLE caja(
 No_caja int(10) NOT NULL auto_increment,
-Persona int(10),
+Alistador int(10),
+encargado_punto int(10),
 tipo_caja char(3) ,
 abrir datetime ,
 cerrar datetime ON UPDATE CURRENT_TIMESTAMP,
 
+
 PRIMARY KEY(No_caja),
 
-CONSTRAINT caja_usuario
-FOREIGN KEY(persona) 
+CONSTRAINT caja_alistador_usuario
+FOREIGN KEY(Alistador) 
+REFERENCES usuario(id_usuario),
+
+CONSTRAINT caja_encargado_usuario
+FOREIGN KEY(encargado_punto) 
 REFERENCES usuario(id_usuario)
 );
 
@@ -63,14 +70,12 @@ REFERENCES usuario(id_usuario)
 create table pedido(
 Item char(6) NOT NULL,
 No_Req char(10) NOT NULL,
-No_caja int(10) ,
+No_caja int(10) default 1,
 ubicacion varchar(6) NOT NULL,
 disp  int(5) NOT NULL,
 pedido int(5) NOT NULL,
-alistado int(5),
-recibidos int(5),
-alistamiento int(1) NOT NULL,
-estado_recibido int(1),
+alistado int(5) default 0,
+estado int(1) NOT NULL default 0,
 
 
 
@@ -89,6 +94,29 @@ FOREIGN KEY(No_caja)
 REFERENCES caja(No_caja)
 );
 
+
+create table recibido(
+Item char(6) NOT NULL,
+No_Req char(10) NOT NULL,
+No_caja int(10) default 1,
+recibidos int(5) default 0,
+estado int(1) NOT NULL default 0,
+
+
+PRIMARY KEY(ITEM,No_req,No_caja),
+
+CONSTRAINT recibido_item
+FOREIGN KEY(Item) 
+REFERENCES ITEMS(ID_ITEM),
+
+CONSTRAINT recibido_requisicion
+FOREIGN KEY(No_Req) 
+REFERENCES requisicion(No_Req),
+
+CONSTRAINT recibido_caja
+FOREIGN KEY(No_caja) 
+REFERENCES caja(No_caja)
+);
 
 
  
@@ -124,7 +152,7 @@ BEGIN
 	DECLARE numcaja INT(10);
 	set numcaja=numerocaja(alistador);
 	
-	select pedido.alistamiento,cod_barras.ID_CODBAR,id_items, id_referencia, descripcion, disp, pedido, alistado,caja.No_caja,usuario.nombre,ubicacion,requisicion.Lo_Origen,requisicion.Lo_Destino
+	select pedido.estado,cod_barras.ID_CODBAR,id_items, id_referencia, descripcion, disp, pedido, alistado,caja.No_caja,usuario.nombre,ubicacion,requisicion.Lo_Origen,requisicion.Lo_Destino
 	from cod_barras
 	inner join items on items.ID_CODBAR=cod_barras.ID_CODBAR
 	inner join pedido on item=ID_ITEM	
@@ -137,11 +165,31 @@ BEGIN
 
 	
 	UPDATE pedido
-	SET alistamiento=1,no_caja=numcaja
+	SET estado=1,no_caja=numcaja
 	WHERE item=(select ID_Items from cod_barras where ID_CODBAR=codigo)
 	AND pedido.No_req=no_req
-	AND alistamiento=0 ;
+	AND estado=0 ;
 	
+end $$
+
+DROP PROCEDURE IF EXISTS itemrecibido;
+DELIMITER $$
+CREATE PROCEDURE itemrecibido(IN codigo char(15), IN no_req char(10),IN alistador INT(10),IN numerocaja CHAR(10))
+BEGIN
+
+
+	select cod_barras.ID_CODBAR,id_referencia, descripcion,No_caja,alistado,recibidos,estado_recibido
+	from pedido
+	right join items on items.ID_ITEM=pedido.Item
+	inner join cod_barras on cod_barras.ID_CODBAR=items.ID_CODBAR
+	where cod_barras.ID_CODBAR = codigo;
+	
+
+	update pedido
+	set estado_recibido=2
+	where Item =(select ID_Items from cod_barras where ID_CODBAR=codigo)
+	and (numcaja=1 
+	or numcaja=null) ;
 end $$
 
 
@@ -154,7 +202,7 @@ DECLARE numcaja INT(10);
 set numcaja=numerocaja(pers);
 
 UPDATE pedido
-SET alistado=alistar,alistamiento=2
+SET alistado=alistar,estado=2
 WHERE item=(select ID_Items from cod_barras where ID_CODBAR=codigo)
 AND No_req=req;
 
@@ -223,22 +271,22 @@ END;
 $$
 
 
--- item que modifica el estado de la requisicion 
-DROP TRIGGER IF EXISTS cam_estado;
+-- item que modifica el estado de enviado de la requisicion 
+DROP TRIGGER IF EXISTS req_enviado;
 DELIMITER $$
-CREATE TRIGGER cam_estado 
+CREATE TRIGGER req_enviado 
 AFTER UPDATE ON pedido
 FOR EACH ROW 
 BEGIN
 	declare numalistados tinyint;
-	select count(alistamiento) into numalistados
+	select count(estado) into numalistados
 	from pedido
-	where alistamiento<>2
+	where estado<>2
 	AND No_req=new.No_req;
 	
 	IF numalistados=0 THEN
 		UPDATE requisicion
-		SET estado=1
+		SET enviado=now()
 		WHERE requisicion.No_Req=new.No_Req;
 	END IF;
 END;
@@ -249,5 +297,6 @@ $$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
 drop table pedido;
+drop table recibido;
 drop table requisicion;
 DROP TABLE caja;

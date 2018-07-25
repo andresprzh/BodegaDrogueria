@@ -13,7 +13,7 @@ $controlador=new ControladorPV($Req);
 
 $cont=0;
 // regresa el resultado de la buqueda como un objeto JSON
-$respuesta=$controlador->ctrBuscarCaja("%%");
+$respuesta=$controlador->ctrBuscarCajaPV("%%");
 if ($respuesta['estado']=='encontrado') {
     
     foreach ($respuesta['contenido'] as $row) {

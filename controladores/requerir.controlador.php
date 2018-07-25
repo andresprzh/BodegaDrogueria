@@ -79,15 +79,15 @@ class ControladorRequerir{
                 $pos=strpos($linea, 'FECHA :');
                 
 		        if($pos){
-			    $fecha=substr($linea,$pos+8,10);	
+                    $fecha=str_replace('/','-',substr($linea,$pos+8,10));	
                 }
                 
-                //busca la hora
+                //busca la hora y minuto
                 $pos=strpos($linea, 'HORA  :');
                 if($pos){
-                    $hora=substr($linea,$pos+8,8);	
+                    $tiempo=substr($linea,$pos+8,8);	
                 }
-
+                
                 //busca la localizacion deorigen
                 $pos=strpos($linea, 'Local. Origen  :');
                 if($pos){
@@ -119,11 +119,26 @@ class ControladorRequerir{
                 }
 
                 // si ya tiene todos los datos de cabecera los ingresa a la base de datos
-                if(isset($fecha) && isset($hora) && isset($lo) && isset($ld) &&isset($tipInv) && isset($req) && isset($sol)){
-
+                if(isset($tiempo) && isset($lo) && isset($ld) &&isset($tipInv) && isset($req) && isset($sol)){
+                    // se obtiene solo hora
+                    $hora=substr($tiempo,0,2);
+                    // CONVIERTE LA HORA A FORMATO DE 24 HORAS
+                    // si es pm se suma 12 a la hora
+                    if (!strcasecmp(substr($tiempo,-2),'pm')) {
+                        if ($hora!=12) {
+                            $hora+=12;
+                        }
+                    }elseif ($hora==12) {
+                        $hora=0;
+                    }
+                    // guarda el tiempo en formato 24 horas
+                    $tiempo=substr($hora.substr($tiempo,2),0,-3).':00';
+                    // pone fecha y hora en 1 solo string
+                    $fecha.=' '.$tiempo;
+                    
                     // almacena los datos de cabecera en un vector
-                    $cabecera=[$req,$fecha,$hora,$lo,$ld,$tipInv,$sol,0];
-
+                    $cabecera=[$req,$fecha,$lo,$ld,$tipInv,$sol];
+                    
                     //asigna los dtaos de cabecera al parametro de la clase
                     $this->Cabecera=$cabecera;
                     
@@ -151,19 +166,14 @@ class ControladorRequerir{
             // es un item si la linea no tiene | de primer caracter, no tiene una sucecion de -, no tiene : y si no es salto de linea(ascii=10)
             if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10){
                 
-                //obtienen los datosd e cada item por linea
+                //obtienen los datos de cada item por linea
                 $items[0]=substr($linea,1,11); //numero referencia item
-                $items[1]=$req;//se obtiene el numero de requisicion
-                $items[2]=1;//se manda la caja como un 1(caja no asignada)
+                $items[1]=$this->Cabecera[0];//se obtiene el numero de requisicion
                 //se cambian las comas del dato por espacios en blanco
-                $items[3]=substr($linea,109,6);//ubiacion item
-                $items[4]=str_replace(',','',substr($linea,71,5));//cantidad items disponibles
-                $items[5]=substr($linea,86,5);//cantidad items pedidos
-                $items[6]=intval(str_replace('_','',substr($linea,95,8)));//cantidad items alistados
-                $items[7]=0;//cantidad de items recibidad
-                $items[8]=0;//estado alistamiento del item(predeterminado 0 no alistado)
-                $items[9]=0;//estado item recibido (predeterminado 0 no recibido)
-                
+                $items[2]=substr($linea,109,6);//ubiacion item
+                $items[3]=str_replace(',','',substr($linea,71,5));//cantidad items disponibles
+                $items[4]=substr($linea,86,5);//cantidad items pedidos
+                $items[5]=intval(str_replace('_','',substr($linea,95,8)));//cantidad items alistados
                 
                 //se busca el id de los item usando la referencia en el documento subido
                 $modelo=new ModeloRequierir();
@@ -184,18 +194,13 @@ class ControladorRequerir{
                 $StringItem=substr($StringItem, 0, -1).'),';
                 
              
-            //busca el numero de requerido solo si no se ha encontrado
-            }elseif(!isset($req)){
-
-                //busca el numero de requerido
-                $pos=strpos($linea, 'Nro Req:');
-                if($pos){
-                    $req=substr($linea,$pos+9,10);	
-                }
+            //busca el numero de requisicion solo si no se ha encontrado
             }
+            
         }
         
         $StringItem = substr($StringItem, 0, -1).';';
+
 
         //asigna al parametro de Items todos lo  items encontrados
         

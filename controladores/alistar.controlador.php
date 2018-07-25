@@ -32,7 +32,7 @@ class ControladorAlistar {
                 $row = $busqueda->fetch();
 
                 //guarda los resultados en un arreglo
-                $itembus=["estado"=>$row['alistamiento'],
+                $itembus=["estado"=>$row['estado'],
                            "contenido"=> ["codigo"=>$row["ID_CODBAR"],
                                            "referencia"=>$row["id_referencia"],
                                            "descripcion"=>$row["descripcion"],
@@ -55,7 +55,7 @@ class ControladorAlistar {
                     // 1 si el item ya esta siendo alistado pro alguien
                     case 1:
                         $itembus["estado"]='error1';
-                        $itembus["contenido"]='Item en alistamiento por '.$itembus['contenido']['alistador'];
+                        $itembus["contenido"]='Item en estado por '.$itembus['contenido']['alistador'];
                         break;
 
                     // 2 si el item ya fue alistado en la caja
@@ -76,7 +76,7 @@ class ControladorAlistar {
                 while($row = $busqueda->fetch()){
 
                     //solo muestra los items que no estan alistados
-                    if($row['alistamiento']==0){
+                    if($row['estado']==0){
                         
                         $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
                                            "referencia"=>$row["id_referencia"],
