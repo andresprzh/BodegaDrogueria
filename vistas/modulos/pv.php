@@ -14,10 +14,10 @@
             <label  style="font-size:12px;">Número requisicion</label>
 
         </div>
-        <div class="input-field col s6 " >
+        <div class="input-field col s6 hide SelectCaja" >
 
             <select   list="cajas" name="cajas" class="cajas" id="cajas">
-                <option value="" disabled selected>Seleccionar</option>
+                
             </select>
             <label  style="font-size:12px;">Número Caja</label>
 
@@ -56,7 +56,7 @@
 
 <h4 class="header center " >Items</h4>     
 
-<table class="tablas centered "  >
+<table class="tablas centered "  id="tabla">
 
     <thead>
     

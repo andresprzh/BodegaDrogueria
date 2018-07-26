@@ -38,7 +38,10 @@ $(document).ready(function(){
     
         //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
         $(".requeridos").change(function (e) {
-           
+            // muestra la entrada se seleccion de cajas
+            $( ".SelectCaja" ).removeClass( "hide" ); 
+            // oculta el input donde se ingresa el codigo de barras
+            $( ".input_barras" ).addClass( "hide" );
             //consigue el numero de requerido
             var requeridos=$(".requeridos").val();
             //id usuario es obtenida de las variables de sesion
@@ -53,10 +56,10 @@ $(document).ready(function(){
                 success: function (res) {
                     
                     if (res!==false) {
-                        // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
+                        // SE MUESTRAN LAS CAJAS EN EL MENU DE SELECCION
                         for (var i in res) {
             
-                            $("#cajas").append($('<option value="'+res[i]+'">'+res[i]+'</option>'));
+                            $("#cajas").append($('<option value="'+res[i]+'">Caja '+res[i]+'</option>'));
                             
                         }
                     }
@@ -101,17 +104,7 @@ $(document).ready(function(){
             //si se presiona enter busca el item y lo pone en la pagina
             if (e.which == 13  ) {
                     
-                //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
-                table.destroy();
-                //espera a que las 2 funciones terminen para reiniciar las tablas
-                
-                $.when(BuscarCodBar()).done(function(){
-                    
-                        table=iniciar_tabla();
-                        
-                    
-    
-                });
+                BuscarCodBar()
             }
     
         });
@@ -120,18 +113,20 @@ $(document).ready(function(){
         // EVENTO SI SE PRESIONA EL BOTON DE AGREGAR CODIGO DE BARRAS(+)
         $("#agregar").click(function (e) {
             
-            //muestra el item buscado en la tabla editable y vuelve a cargar los items en la caja
-            table.destroy();
-            //espera a que las 2 funciones terminen para reiniciar las tablas
-            
-            $.when(BuscarCodBar()).done(function(){
-                
-                    table=iniciar_tabla();
-                    
-                
-            });
+            // busca el codigo y lo agrega a la tabla 
+            BuscarCodBar();
     
         });
+
+         // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
+        $('#tablavista').on( 'change', 'td', function () {
+            
+            //se obtiene el valor de la variable y se le asigna a datatable para que quede guardado
+            celda=table.cell(this);
+            var nuevovalor = $(this).find(".recibidos").html();
+            celda.data("<td class='recibidos'>"+nuevovalor+"</td>");
+            
+        } );
     
         
     
@@ -161,15 +156,20 @@ $(document).ready(function(){
           data: {"codigo":codigo,"Req":Req},//datos que se enviaran
           dataType: 'json',
           success: function (res) {
-            
+                var tabla = $('table.tablas').DataTable();
+                var datos=tabla.data().toArray();
+                console.log(datos);
             if (res["estado"]=='encontrado') {
-                item=res['contenido'];
-                
-                $('#tablavista').append($("<tr><td class='barras'>"+
-                item['codigo']+"</td><td>"+
-                item['referencia']+"</td><td>"+
-                item['descripcion']+"</td><td>"+
-                1+"</td></tr>"));          
+                var item=res['contenido'];
+                var barras=document.getElementsByClassName('barras');
+                // agrega datos en la tabla
+                tabla.row.add( [
+                    item['codigo'],
+                    item['referencia'],
+                    item['descripcion'],
+                    1
+                ] ).draw( false );         
+                   
             }
                         
           }
