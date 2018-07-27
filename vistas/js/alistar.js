@@ -286,7 +286,7 @@ function MostrarItems(){
         data: {"Req":Req},
         dataType: "JSON",
         success: function (res) {          
-            console.log(res);
+            
             //refresca las tablas, para volver a cargar los datos
             $('#tablavista').html("");
             table.clear();

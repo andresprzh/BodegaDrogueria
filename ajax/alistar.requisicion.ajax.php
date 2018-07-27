@@ -6,7 +6,9 @@ require "../modelos/conexion.php";
 require "../modelos/requerir.modelo.php";
 
 
-
+/* ============================================================================================================================
+                                                MUESTRA LAS REQUISICIONES
+============================================================================================================================*/
 $modelo=new ModeloRequierir();
 $item='enviado';
 
@@ -19,7 +21,7 @@ $cont=0;//contador para almacenar los datos en un vector
 if ($res->rowCount()) {
     while($row = $res->fetch()) {
         //almacena la busqueda en un vector
-        $req[$cont]=$row["No_Req"];
+        $req[$cont]=$row["no_req"];
         //aumenta el contador
         $cont++;
     }

@@ -7,7 +7,9 @@ require "../modelos/conexion.php";
 
 require "../modelos/alistar.modelo.php";
 
-
+/* ============================================================================================================================
+                                                MUESTRA LOS ITEMS DELA REQUISICION 
+============================================================================================================================*/
 
 // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
 $req=$_POST["Req"];

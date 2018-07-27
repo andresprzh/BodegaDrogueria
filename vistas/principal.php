@@ -43,6 +43,7 @@
 <!-- DataTables -->
 <script type="text/javascript" src="vistas/lib/DataTables/datatables.min.js"></script>
 
+
 <!-- SweetAlert 2 -->
 <script src="vistas/plugins/sweetalert2/sweetalert.min.js"></script>
 

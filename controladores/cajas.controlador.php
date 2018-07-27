@@ -32,14 +32,15 @@ class ControladorCajas extends ControladorAlistar {
                 $row = $busqueda->fetch();
 
                 //guarda los resultados en un arreglo
-                $cajabus=["estado"=>"Encontrado",
-                           "contenido"=> ["no_caja"=>$row["No_caja"],
+                $cajabus=["estado"=>"encontrado",
+                           "contenido"=> ["no_caja"=>$row["no_caja"],
                                            "alistador"=>$row["nombre"],
                                            "tipocaja"=>$row["tipo_caja"],
                                            "abrir"=>$row["abrir"],
                                            "cerrar"=>$row["cerrar"],
                                          ]
                          ];
+
                 
                 //retorna el item a la funcion
                 return $cajabus;
@@ -53,12 +54,13 @@ class ControladorCajas extends ControladorAlistar {
                 while($row = $busqueda->fetch()){
 
                     //Muestra todas las cajas
-                    $cajabus["contenido"][$cont]=["no_caja"=>$row["No_caja"],
+                    $cajabus["contenido"][$cont]=["no_caja"=>$row["no_caja"],
                                                     "alistador"=>$row["nombre"],
                                                     "tipocaja"=>$row["tipo_caja"],
                                                     "abrir"=>$row["abrir"],
                                                     "cerrar"=>$row["cerrar"],
                                                 ];
+
                     
                     $cont++;
 

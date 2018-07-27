@@ -12,7 +12,9 @@ require "../modelos/alistar.modelo.php";
 
 
 
-
+/* ============================================================================================================================
+                                                MUESTRA EL ITEM BUSCADO
+============================================================================================================================*/
 // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
 $Req=$_POST["Req"];
 $controlador=new ControladorPV($Req);

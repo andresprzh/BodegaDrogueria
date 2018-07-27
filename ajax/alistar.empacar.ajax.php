@@ -6,7 +6,9 @@ require "../modelos/conexion.php";
 
 require "../modelos/alistar.modelo.php";
 
-
+/* ============================================================================================================================
+                                                CIERRA LA CAJA
+============================================================================================================================*/
 // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
 $req=$_POST["Req"];
 $TipoCaja=$_POST['TipoCaja'];

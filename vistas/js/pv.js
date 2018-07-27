@@ -119,14 +119,38 @@ $(document).ready(function(){
         });
 
          // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
-        $('#tablavista').on( 'change', 'td', function () {
+        // $('table.tablas').on( 'DOMSubtreeModified', 'td', function () {
             
-            //se obtiene el valor de la variable y se le asigna a datatable para que quede guardado
-            celda=table.cell(this);
-            var nuevovalor = $(this).find(".recibidos").html();
-            celda.data("<td class='recibidos'>"+nuevovalor+"</td>");
+        //     //se obtiene el valor de la variable y se le asigna a datatable para que quede guardado
+        //     // celda=table.cell(this);
+        //     // var nuevovalor = $(this).find("span").html();
+        //     // var id=$(this).find("span").attr('id');
+        //     // if (id!=null && nuevovalor!="") {
+
+        //     //     console.log(nuevovalor);
+        //     //     celda.data('<span id="'+id+'">'+nuevovalor+'</span>');  
+        //     //     // celda.data('<span >'+nuevovalor+'</span>');  
+                 
+        //     // }
+
+        //     // console.log(id);
+        //     // console.log(nuevovalor);
             
-        } );
+            
+        // } );
+        // $('#tablavista').on( 'click', 'tr', function () {
+            
+            
+        //     var tabla = $('table.tablas').DataTable();
+        //     var algo=tabla.row(this).cell().data();
+        //     var algo2=tabla.row(2).cell(':last').data();
+            
+        //     tabla.row('#'+algo).cell(':last').data(algo2+1);
+            
+        //     console.log(this);
+        //     console.log(algo);
+        //     console.log(algo2);
+        // } );
     
         
     
@@ -156,20 +180,41 @@ $(document).ready(function(){
           data: {"codigo":codigo,"Req":Req},//datos que se enviaran
           dataType: 'json',
           success: function (res) {
+
                 var tabla = $('table.tablas').DataTable();
-                var datos=tabla.data().toArray();
-                console.log(datos);
+                var datos=tabla.data().toArray()
+                var codbarras=datos.map(function(value,index) { return value[0]; });
+                var recibidos=datos.map(function(value,index) { return value[3]; });
+                
+                
+                
+                
+                
             if (res["estado"]=='encontrado') {
-                var item=res['contenido'];
-                var barras=document.getElementsByClassName('barras');
-                // agrega datos en la tabla
-                tabla.row.add( [
-                    item['codigo'],
-                    item['referencia'],
-                    item['descripcion'],
-                    1
-                ] ).draw( false );         
-                   
+                var cantr=1;
+                
+                //busca si el item ya esta n la tabla
+                var pos = codbarras.indexOf(codigo);
+                
+                //si encuentra el item en la tabla acumula el item en la columna de recibido
+                if (pos>=0) {
+                    
+                    b+= parseInt(tabla.cell(pos,3).data());
+
+                    tabla.cell(pos,3).data(cantr).draw();
+                // si o encuentra el item en la tabla lo agrega a esta    
+                }else{
+                
+                    var item=res['contenido'];
+                    var barras=document.getElementsByClassName('barras');
+                    // agrega datos en la tabla
+                    tabla.row.add( [
+                        item['codigo'],
+                        item['referencia'],
+                        item['descripcion'],
+                        cantr
+                    ] ).draw(false);
+                }
             }
                         
           }

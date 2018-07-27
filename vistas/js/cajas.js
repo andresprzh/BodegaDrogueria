@@ -41,8 +41,6 @@ $(document).ready(function(){
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
        
-               
-       
         //muestra la tabla y la reinicia
         $( "#Cajas" ).removeClass( "hide" );
         //refresca la tabla, para volver a cargar los datos
@@ -140,9 +138,21 @@ function MostrarCajas(){
                 
                 var caja=res['contenido'];
                 
-
+                
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
+
+                    // reemplaza varoles nul por ---
+                    if (caja['tipocaja']===null) {
+                        caja['tipocaja']='---'
+                    }
+                    if (caja['abrir']===null) {
+                        caja['abrir']='---'
+                    }
+                    if (caja['cerrar']===null) {
+                        caja['cerrar']='---'
+                    }
+
                     $('#tablacajas').append($("<tr>"+
                                         "<td class='NumCaja'>"+caja['no_caja']+"</td>"+
                                         "<td class='alistadores'>"+caja['alistador']+"</td>"+
@@ -156,6 +166,17 @@ function MostrarCajas(){
                 }else {
                     for (var i in caja) {
                         
+                        // reemplaza varoles nul por ---
+                        if (caja[i]['tipocaja']===null) {
+                            caja[i]['tipocaja']='---'
+                        }
+                        if (caja[i]['abrir']===null) {
+                            caja[i]['abrir']='---'
+                        }
+                        if (caja[i]['cerrar']===null) {
+                            caja[i]['cerrar']='---'
+                        }
+
                         $('#tablacajas').append($("<tr>"+
                                             "<td class='NumCaja'>"+caja[i]['no_caja']+"</td>"+
                                             "<td class='alistadores'>"+caja[i]['alistador']+"</td>"+
