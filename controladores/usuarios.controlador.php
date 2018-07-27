@@ -19,14 +19,16 @@ class ControladorUsuarios {
                 $valor=$_POST["usuario"];
                 //obtiene la contrseña ingresada
                 $contraseña=$_POST["contraseña"];
-
+                
                 //Busca los datos del usuario, si existe 
                 $modelo=new ModeloUsuarios();
+                
                 // $respuesta=ModeloUsuarios::MdlMostrarUsuarios($tabla,$item,$valor);
                 $respuesta=$modelo->mdlMostrarUsuarios($item,$valor);
                 $respuesta=$respuesta->fetch();
-
+                
                 //si encuentra el usuario inicia sesion
+
                 if($respuesta["usuario"]==$valor &&
                 password_verify($contraseña, $respuesta["password"])){
 

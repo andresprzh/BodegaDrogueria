@@ -29,7 +29,7 @@ class ModeloRequierir extends Conexion{
 
     public function mdlMostrarItem($item,$valor){
         
-        $tabla='items';
+        $tabla='ITEMS';
 
         //busca los items
         return $this->buscaritem($tabla,$item,$valor);

@@ -45,7 +45,8 @@ class ModeloAlistar extends Conexion{
     public function mdlMostrarNumCaja(){   
         
         $alistador=$this->req[1];
-        $stmt= $this->link->prepare("SELECT numerocaja(:alistador) as numcaja");
+        
+        $stmt= $this->link->prepare("SELECT numerocaja(:alistador) AS numcaja");
 
         $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
 

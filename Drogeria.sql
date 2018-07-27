@@ -20,7 +20,7 @@ CREATE TABLE usuario(
 	nombre VARCHAR(40) COLLATE ucs2_spanish_ci,
 	cedula INT(10),
 	usuario CHAR(20),
-	PASSWORD VARCHAR(60) NOT NULL,
+	pasword VARCHAR(60) NOT NULL,
 	perfil INT(1),
 
 	PRIMARY KEY(id_usuario),
@@ -78,11 +78,11 @@ CREATE TABLE pedido(
 
 
 
-	PRIMARY KEY(ITEM,No_req),
+	PRIMARY KEY(Item,No_req),
 
-	CONSTRAINT pedido_item
+	CONSTRAINT pedido_Item
 	FOREIGN KEY(Item) 
-	REFERENCES `ITEMS`(`ID_ITEM`),
+	REFERENCES `ITEMS`(`ID_Item`),
 
 	CONSTRAINT pedido_requisicion
 	FOREIGN KEY(No_Req) 
@@ -102,11 +102,11 @@ CREATE TABLE recibido(
 	estado INT(1) NOT NULL default 0,
 
 
-	PRIMARY KEY(ITEM,No_req,No_caja),
+	PRIMARY KEY(Item,No_req,No_caja),
 
-	CONSTRAINT recibido_item
+	CONSTRAINT recibido_Item
 	FOREIGN KEY(Item) 
-	REFERENCES ITEMS(ID_ITEM),
+	REFERENCES ITEMS(ID_Item),
 
 	CONSTRAINT recibido_requisicion
 	FOREIGN KEY(No_Req) 
@@ -124,11 +124,24 @@ INSERT INTO caja(No_caja) VALUES(1);
 
 INSERT INTO perfiles(des_perfil) VALUES("Administrador"),("Jefe"),("Alistador"),("PVenta");
 
--- funcion que busca la ultima caja abierta por el alistador pers
+/* ELIMINA PROCEDIMIENTOS SI EXISTE */
 DROP FUNCTION IF EXISTS numerocaja;
+DROP PROCEDURE IF EXISTS buscarcod;
+DROP PROCEDURE IF EXISTS BuscarRecibido;
+DROP PROCEDURE IF EXISTS empacar;
+DROP PROCEDURE IF EXISTS buscarcaja;
+DROP PROCEDURE IF EXISTS buscarITEMScaja;
+DROP PROCEDURE IF EXISTS buscarIE;
+
+/* ELIMINA TRIGGER SI EXISTEN */
+DROP TRIGGER IF EXISTS ins_abrir;
+DROP TRIGGER IF EXISTS RecibidoEstado;
+DROP TRIGGER IF EXISTS req_enviado;
+
+-- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
 	CREATE  FUNCTION numerocaja(pers INT(10) )
-		RETURNS INT
+	RETURNS INT
 	BEGIN  
 		DECLARE numcaja INT(10);
 		SELECT no_caja INTO numcaja
@@ -137,14 +150,13 @@ DELIMITER $$
 		AND cerrar IS NULL
 		ORDER BY abrir
 		DESC LIMIT 1;
-		
+
 		RETURN numcaja;
 	END 
 $$
 
--- procedimiento que busca un item con el codigo de barras en la la lista de rquerido especificada
--- el procedimiento tambien cambia el estado del item a 1 que significa que esta siendo alistado
-DROP PROCEDURE IF EXISTS buscarcod;
+-- procedimiento que busca un Item con el codigo de barras en la la lista de rquerido especificada
+-- el procedimiento tambien cambia el estado del Item a 1 que significa que esta siendo alistado
 DELIMITER $$
 	CREATE PROCEDURE buscarcod(IN codigo CHAR(15), IN no_req CHAR(10),IN alistador INT(10),IN numerocaja CHAR(10))
 	BEGIN
@@ -152,43 +164,42 @@ DELIMITER $$
 		DECLARE numcaja INT(10);
 		SET numcaja=numerocaja(alistador);
 		
-		SELECT pedido.estado,cod_barras.ID_CODBAR,id_items, id_referencia, descripcion, disp, pedido, alistado,caja.No_caja,usuario.nombre,ubicacion,requisicion.Lo_Origen,requisicion.Lo_Destino
-		FROM cod_barras
-		INNER JOIN items ON items.ID_CODBAR=cod_barras.ID_CODBAR
-		INNER JOIN pedido ON item=ID_ITEM	
+		SELECT pedido.estado,COD_BARRAS.ID_CODBAR,ID_ITEMS, ID_REFERENCIA, descripcion, disp, pedido, alistado,caja.No_caja,usuario.nombre,ubicacion,requisicion.Lo_Origen,requisicion.Lo_Destino
+		FROM COD_BARRAS
+		INNER JOIN ITEMS ON ITEMS.ID_CODBAR=COD_BARRAS.ID_CODBAR
+		INNER JOIN pedido ON Item=ID_Item	
 		INNER JOIN requisicion ON requisicion.No_Req=pedido.No_Req
 		LEFT JOIN caja ON caja.No_caja=pedido.No_caja
 		LEFT JOIN usuario ON id_usuario=Alistador
-		WHERE cod_barras.ID_CODBAR LIKE codigo 
+		WHERE COD_BARRAS.ID_CODBAR LIKE codigo 
 		AND pedido.no_req=no_req
 		AND pedido.No_caja LIKE numerocaja;
 
 		
 		UPDATE pedido
 		SET estado=1,no_caja=numcaja
-		WHERE item=(SELECT ID_Items FROM cod_barras WHERE ID_CODBAR=codigo)
+		WHERE Item=(SELECT ID_ITEMS FROM COD_BARRAS WHERE ID_CODBAR=codigo)
 		AND pedido.No_req=no_req
 		AND estado=0 ;
 		
 	END 
 $$
 
-DROP PROCEDURE IF EXISTS BuscarRecibido;
+
 DELIMITER $$
 	CREATE PROCEDURE BuscarRecibido(IN codigo CHAR(15))
 	BEGIN
 
-		SELECT items.ID_CODBAR,id_referencia, descripcion,No_caja,alistado
+		SELECT ITEMS.ID_CODBAR,id_referencia, descripcion,No_caja,alistado
 		FROM pedido
-		RIGHT JOIN items ON items.ID_ITEM=pedido.Item
-		WHERE cod_barras.ID_CODBAR = codigo;
+		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+		WHERE COD_BARRAS.ID_CODBAR = codigo;
 
 	END 
 $$
 
 
--- procedimiento que empaca los items(asigna  la fecha a la caja y el numero de caja al item)
-DROP PROCEDURE IF EXISTS empacar;
+-- procedimiento que empaca los ITEMS(asigna  la fecha a la caja y el numero de caja al Item)
 DELIMITER $$
 	CREATE PROCEDURE empacar(IN codigo CHAR(15), IN alistar INT(5),IN pers INT(10),IN caj CHAR(3),IN req CHAR(10))
 	BEGIN
@@ -198,7 +209,7 @@ DELIMITER $$
 
 		UPDATE pedido
 		SET alistado=alistar,estado=2
-		WHERE item=(SELECT ID_Items FROM cod_barras WHERE ID_CODBAR=codigo)
+		WHERE Item=(SELECT ID_ITEMS FROM COD_BARRAS WHERE ID_CODBAR=codigo)
 		AND No_req=req;
 
 		UPDATE caja
@@ -209,7 +220,6 @@ DELIMITER $$
 $$
 
 -- procedimiento que busca las cajas por el numero de caja y la requisicion
-DROP PROCEDURE IF EXISTS buscarcaja;
 DELIMITER $$
 	CREATE PROCEDURE buscarcaja(IN numcaja CHAR(10),IN req CHAR(10))
 	BEGIN
@@ -225,10 +235,9 @@ DELIMITER $$
 $$
 
 
--- procedimiento que busca items de 1 caja
-DROP PROCEDURE IF EXISTS buscaritemscaja;
+-- procedimiento que busca ITEMS de 1 caja
 DELIMITER $$
-	CREATE PROCEDURE buscaritemscaja(IN numcaja CHAR(10))
+	CREATE PROCEDURE buscarITEMScaja(IN numcaja CHAR(10))
 	BEGIN
 
 		SELECT *
@@ -242,25 +251,23 @@ DELIMITER $$
 $$
 
 
--- prcedimiento que busca cualquier item con el parametro buscar que no este en los requeridos
-DROP PROCEDURE IF EXISTS buscarIE;
+-- prcedimiento que busca cualquier Item con el parametro buscar que no este en los requeridos
 DELIMITER $$
 	CREATE PROCEDURE buscarIE(IN buscar CHAR(40))
 	BEGIN
-		SELECT cod_barras.ID_CODBAR, items.id_referencia,items.descripcion
-		FROM cod_barras 
-		INNER JOIN items ON items.ID_CODBAR=cod_barras.ID_CODBAR
-		LEFT JOIN pedido ON pedido.Item=items.ID_ITEM
-		WHERE (cod_barras.ID_CODBAR =buscar
-		OR items.ID_REFERENCIA=buscar
-		OR items.DESCRIPCION LIKE concat('%',buscar,'%'))
+		SELECT COD_BARRAS.ID_CODBAR, ITEMS.id_referencia,ITEMS.descripcion
+		FROM COD_BARRAS 
+		INNER JOIN ITEMS ON ITEMS.ID_CODBAR=COD_BARRAS.ID_CODBAR
+		LEFT JOIN pedido ON pedido.Item=ITEMS.ID_Item
+		WHERE (COD_BARRAS.ID_CODBAR =buscar
+		OR ITEMS.ID_REFERENCIA=buscar
+		OR ITEMS.DESCRIPCION LIKE concat('%',buscar,'%'))
 		AND pedido.Item IS NULL;
 	END 
 $$
 
 
 -- triger que asigna fecha de inicio cada ves que se crea una caja
-DROP TRIGGER IF EXISTS ins_abrir;
 DELIMITER $$
 	CREATE TRIGGER ins_abrir 
 	BEFORE INSERT ON caja
@@ -270,8 +277,7 @@ DELIMITER $$
 	END 
 $$
 
--- trigger que modifica el estado del item recibido  
-DROP TRIGGER IF EXISTS RecibidoEstado;
+-- trigger que modifica el estado del Item recibido  
 DELIMITER $$
 
 	CREATE TRIGGER RecibidoEstado 
@@ -283,8 +289,8 @@ DELIMITER $$
 		DECLARE numalistado INT(5);
 		SELECT No_caja,alistado INTO caja, numalistado
 		FROM pedido
-		RIGHT JOIN items ON items.ID_ITEM=pedido.Item
-		WHERE items.ID_ITEM = new.item;
+		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+		WHERE ITEMS.ID_Item = new.Item;
 	
 		IF caja IS NULL THEN
 			SET new.estado=2;
@@ -303,7 +309,6 @@ DELIMITER $$
 $$
 
 -- trigger que modifica el estado de enviado de la requisicion 
-DROP TRIGGER IF EXISTS req_enviado;
 DELIMITER $$
 
 	CREATE TRIGGER req_enviado 

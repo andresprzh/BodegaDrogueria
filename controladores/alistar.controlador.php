@@ -24,6 +24,7 @@ class ControladorAlistar {
     public function ctrBuscarItems($Cod_barras){
         
         $busqueda=$this->modelo->mdlMostrarItems($Cod_barras);
+        
 
         if ($busqueda->rowCount() > 0) {
 
@@ -34,7 +35,7 @@ class ControladorAlistar {
                 //guarda los resultados en un arreglo
                 $itembus=["estado"=>$row['estado'],
                            "contenido"=> ["codigo"=>$row["ID_CODBAR"],
-                                           "referencia"=>$row["id_referencia"],
+                                           "referencia"=>$row["ID_REFERENCIA"],
                                            "descripcion"=>$row["descripcion"],
                                            "disponibilidad"=>$row["disp"],
                                            "pedidos"=>$row["pedido"],
@@ -79,7 +80,7 @@ class ControladorAlistar {
                     if($row['estado']==0){
                         
                         $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                           "referencia"=>$row["id_referencia"],
+                                           "referencia"=>$row["ID_REFERENCIA"],
                                            "descripcion"=>$row["descripcion"],
                                            "disponibilidad"=>$row["disp"],
                                            "pedidos"=>$row["pedido"],
@@ -162,7 +163,7 @@ class ControladorAlistar {
             while($row = $busqueda->fetch()){
               
                 $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                    "referencia"=>$row["id_referencia"],
+                                    "referencia"=>$row["ID_REFERENCIA"],
                                     "descripcion"=>$row["descripcion"],
                                     "disponibilidad"=>$row["disp"],
                                     "pedidos"=>$row["pedido"],

@@ -9,7 +9,7 @@ require "../modelos/requerir.modelo.php";
 
 $modelo=new ModeloRequierir();
 $item='enviado';
-$valor='asdkajdk';
+
 $res=$modelo->mdlMostrarReq($item);
 
 

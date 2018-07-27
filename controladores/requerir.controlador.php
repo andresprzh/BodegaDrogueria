@@ -225,6 +225,7 @@ class ControladorRequerir{
                     <p class="green-text text-darken-5">Requisicion '.$this->Cabecera[0].' subida Exitosamente</p> 
                 </div>';
         }else {
+            
             echo '<script>
                             swal({
                                 title: "¡Error al subir el archivo¡",
