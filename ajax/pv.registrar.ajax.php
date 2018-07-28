@@ -1,6 +1,5 @@
 <?php
 
-
 include "../controladores/pv.controlador.php";
 
 
@@ -10,14 +9,14 @@ require "../modelos/pv.modelo.php";
 require "../modelos/cajas.modelo.php";
 require "../modelos/alistar.modelo.php";
 /* ============================================================================================================================
-                                                MUESTRA EL ITEM BUSCADO
+                                                REGISTRA LOS ITEMS DE LA CAJA Y HACE EL INFORME
 ============================================================================================================================*/
-// obtienen los datos dela requisicion (numero requisicion y codigo alistador)
-$Req=$_POST["Req"];
+$Req=$_POST['Req'];
+$Items=$_POST['Items'];
+$NumCaja=$_POST['Caja'];
+
 $controlador=new ControladorPV($Req);
-$codigo=$_POST["codigo"];
 
+$resultado=$controlador->ctrRegistrarItems($Items,$NumCaja);
 
-$busqueda=$controlador->ctrBuscarItemPV($codigo);
-
-print json_encode($busqueda);
+print json_encode($resultado);

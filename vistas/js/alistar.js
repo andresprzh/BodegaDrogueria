@@ -132,13 +132,12 @@ $(document).ready(function(){
         swal({
             title: "¿Cerrar caja?",
             icon: "warning",
-            buttons: true,
-            dangerMode: true,
+            buttons: ['Cancelar','Cerrar']
           })
-          .then((cerrar) => {
+          .then((Cerrar) => {
 
             //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
-            if (cerrar) {
+            if (Cerrar) {
                 
                 var dt = $.fn.dataTable.tables()[1];
                 

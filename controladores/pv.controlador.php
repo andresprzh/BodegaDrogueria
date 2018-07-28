@@ -108,5 +108,36 @@ class ControladorPV extends ControladorCajas{
         }
         return $cajabus;
     }
+
+    public function ctrRegistrarItems($Items,$NumCaja)
+    {   
+        // $datos='';
+        // foreach ($Items as $row) {
+        //     $datos.='("'.$row['codbarras'].'","'.$NumCaja.'","'.$row['recibidos'].'"),';
+        // }
+        // $datos=substr($datos, 0, -1).'),';
+        $i=0;
+
+        // busca el id del item usando el codigo de barras de cada item
+        foreach ($Items as $row) {
+
+            $busqueda=$this->modelo->mdlMostrarItemPV($row['codbarras']);
+            $IDitem = $busqueda->fetch();
+            $Items[$i]['item']=$IDitem['ID_ITEM'];
+            $i++;
+        }
+        // libera conexion para hace otra sentencia
+        $busqueda->closeCursor();
+        
+        // agrega los datos en la datbla de recibidos
+        $resultado=$this->modelo->mdlRegistrarItems($Items,$NumCaja);
+
+        return ($resultado);
+    }
+
+    private function ctrDocumentoR()
+    {
+        # code...
+    }
     
 }

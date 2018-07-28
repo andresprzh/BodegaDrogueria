@@ -118,42 +118,58 @@ $(document).ready(function(){
     
         });
 
-         // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
-        // $('table.tablas').on( 'DOMSubtreeModified', 'td', function () {
-            
-        //     //se obtiene el valor de la variable y se le asigna a datatable para que quede guardado
-        //     // celda=table.cell(this);
-        //     // var nuevovalor = $(this).find("span").html();
-        //     // var id=$(this).find("span").attr('id');
-        //     // if (id!=null && nuevovalor!="") {
+        // EVENTO SI SE PRESIONA EL BOTON DE GENERAR
+        $('#Registrar').click(function (e) { 
 
-        //     //     console.log(nuevovalor);
-        //     //     celda.data('<span id="'+id+'">'+nuevovalor+'</span>');  
-        //     //     // celda.data('<span >'+nuevovalor+'</span>');  
-                 
-        //     // }
+            swal({
+                title: "¿Registrar items?",
+                icon: "warning",
+                buttons: ['Cancelar','Resgitrar']
+                
+            })
+            .then((Registrar) => {
+    
+                //si se le da click en Resgitrar procede a generar e reporte
+                if (Registrar) {
+                    
+                    //consigue el codigo de barras
+                    var Caja= $('#cajas').val();
+                    
+                    //consigue el numero de requerido
+                    var requeridos=$(".requeridos").val();
+                    //id usuario es obtenida de las variables de sesion
+                    var Req=[requeridos,id_usuario];
 
-        //     // console.log(id);
-        //     // console.log(nuevovalor);
-            
-            
-        // } );
-        // $('#tablavista').on( 'click', 'tr', function () {
-            
-            
-        //     var tabla = $('table.tablas').DataTable();
-        //     var algo=tabla.row(this).cell().data();
-        //     var algo2=tabla.row(2).cell(':last').data();
-            
-        //     tabla.row('#'+algo).cell(':last').data(algo2+1);
-            
-        //     console.log(this);
-        //     console.log(algo);
-        //     console.log(algo2);
-        // } );
-    
-        
-    
+                    // console.log(Req);
+                    var tabla = $('table.tablas').DataTable();
+                    // se obtienen todos los datos de la tabla en una matriz
+                    var datos=tabla.data().toArray();   
+                    
+                    // se guerda en un arreglo los datos de codigo de Baras y la cantidad recibido                    
+                    var Items=new Array();
+                    for (var i in datos) {
+                        Items[i]={
+                            "codbarras":datos[i][0],
+                            "recibidos": datos[i][3]
+                        }                
+                    }
+                    // console.log(Items);
+
+                    $.ajax({
+                        
+                        url: "ajax/pv.registrar.ajax.php",
+                        type: 'post',//metodo post para mandar datos
+                        data: {"Caja":Caja,"Req":Req,"Items":Items},//datos que se enviaran
+                        dataType: "JSON",
+                        success: function (res) {
+                            console.log(res);  
+                        }
+                    });
+                    
+                }
+            });
+        });
+
     });
     
     
@@ -167,7 +183,7 @@ $(document).ready(function(){
     function BuscarCodBar(){
         
         //consigue el codigo de barras
-        codigo= $('#codbarras').val();
+        var codigo= $('#codbarras').val();
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
@@ -184,11 +200,6 @@ $(document).ready(function(){
                 var tabla = $('table.tablas').DataTable();
                 var datos=tabla.data().toArray()
                 var codbarras=datos.map(function(value,index) { return value[0]; });
-                var recibidos=datos.map(function(value,index) { return value[3]; });
-                
-                
-                
-                
                 
             if (res["estado"]=='encontrado') {
                 var cantr=1;
@@ -199,7 +210,8 @@ $(document).ready(function(){
                 //si encuentra el item en la tabla acumula el item en la columna de recibido
                 if (pos>=0) {
                     
-                    b+= parseInt(tabla.cell(pos,3).data());
+                    // se acumula la cantidad recibida
+                    cantr+=datos[pos][3];
 
                     tabla.cell(pos,3).data(cantr).draw();
                 // si o encuentra el item en la tabla lo agrega a esta    

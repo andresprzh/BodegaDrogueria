@@ -52,28 +52,36 @@
 ============================================================================================================================
 ============================================================================================================================-->
 
-<div class="col s12 " id="TablaV" >
+<div class="col s12 " style="padding: 20px;"id="TablaV" >
 
-<h4 class="header center " >Items</h4>     
+    <h4 class="header center " >Items</h4>     
 
-<table class="tablas centered "  id="tabla">
+    <table class="tablas centered "  id="tabla">
 
-    <thead>
-    
-    <tr class="white-text green darken-3 ">
-
-        <th>Codigo de barras</th>
-        <th>Referencia</th>
-        <th>Descripción</th>
-        <th>Cantidad</th>
+        <thead>
         
-    </tr>
+        <tr class="white-text green darken-3 ">
 
-    </thead>
+            <th>Codigo de barras</th>
+            <th>Referencia</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            
+        </tr>
 
-    <tbody id="tablavista"></tbody>
-    
-</table>  
+        </thead>
+
+        <tbody id="tablavista"></tbody>
+        
+    </table> 
+
+    <div class="input-field col s4 m2 l2">
+
+        <button id="Registrar" class="btn waves-effect red darken-4 col s12 m12 l8" >
+            Registrar
+        </button>
+        
+    </div>   
         
 </div>
 <!-- ============================================================================================================================

@@ -308,7 +308,39 @@ DELIMITER $$
 	
 $$
 
+-- trigger que modifica el estado del Item recibido  
+DELIMITER $$
+
+	CREATE TRIGGER EstadoRecibidoU 
+	BEFORE UPDATE ON recibido
+	FOR EACH ROW 
+	BEGIN
+	
+		DECLARE caja INT(10);
+		DECLARE numalistado INT(5);
+		SELECT no_caja,alistado INTO caja, numalistado
+		FROM pedido
+		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+		WHERE ITEMS.ID_Item = new.Item;
+	
+		IF caja IS NULL THEN
+			SET new.estado=2;
+		ELSEIF caja<>new.no_caja THEN
+			SET new.estado=3;
+		ELSEIF new.recibidos<numalistado THEN
+			SET new.estado=0;
+		ELSEIF new.recibidos>numalistado THEN
+			SET new.estado=1;
+		ELSE 
+			SET new.estado=4;
+		END IF;
+		
+	END 
+	
+$$
+
 -- trigger que modifica el estado de enviado de la requisicion 
+-- y agrega los items en recibido con estado 2
 DELIMITER $$
 
 	CREATE TRIGGER ReqEnviado 
@@ -321,6 +353,11 @@ DELIMITER $$
 		WHERE estado<>2
 		AND no_req=new.no_req;
 		
+        IF new.estado=2 then
+			INSERT INTO recibido(Item,No_Req,no_caja,recibidos) 
+			VALUES(new.item,new.no_req,new.no_caja,0);
+        END IF;
+        
 		IF numalistados=0 THEN
 			UPDATE requisicion
 			SET enviado=NOW()
