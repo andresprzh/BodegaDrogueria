@@ -22,8 +22,7 @@ class ModeloPV extends Conexion{
     ============================================================================================================================*/
 
 
-    public function mdlMostrarItemPV($Cod_bar)
-    {
+    public function mdlMostrarItemPV($Cod_bar){
         $tabla="ITEMS";
         $item='ID_CODBAR';
         
@@ -31,8 +30,7 @@ class ModeloPV extends Conexion{
         
     }
 
-    public function mdlRegistrarItems($Items,$numcaja)
-    {   
+    public function mdlRegistrarItems($Items,$numcaja){   
         // guarda datos de la requisicion
         $no_req=$this->Req[0];$persona=$this->Req[1];
         $datos="";
@@ -57,6 +55,22 @@ class ModeloPV extends Conexion{
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
         
         
+        $res= $stmt->execute();
+        
+        return ($res);  
+    }
+
+    //modifica registro en tabla para agregar la fecha en la que fue recibido
+    public function mdlModCaja($NumCaja){
+        // $this->link->closeCursor();
+        $persona=$this->Req[1];
+        
+        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,recibido=NOW() WHERE no_caja=:caja;" );
+        
+        $stmt->bindParam(":persona",$persona,PDO::PARAM_INT);
+        $stmt->bindParam(":caja",$NumCaja,PDO::PARAM_INT);
+        
+
         $res= $stmt->execute();
         
         return ($res);  

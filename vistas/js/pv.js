@@ -153,16 +153,27 @@ $(document).ready(function(){
                             "recibidos": datos[i][3]
                         }                
                     }
-                    // console.log(Items);
+                    
 
-                    $.ajax({
-                        
+                    $.ajax({   
                         url: "ajax/pv.registrar.ajax.php",
                         type: 'post',//metodo post para mandar datos
                         data: {"Caja":Caja,"Req":Req,"Items":Items},//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
-                            console.log(res);  
+                            
+                            if (res==true) {
+                                swal({
+                                    title: "¡Items registrados!",
+                                    icon: "success",
+                                }); 
+                            }else{
+                                swal({
+                                    title: "¡Error!",
+                                    icon: "error",
+                                }); 
+                            }
+
                         }
                     });
                     

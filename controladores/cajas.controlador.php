@@ -38,6 +38,7 @@ class ControladorCajas extends ControladorAlistar {
                                            "tipocaja"=>$row["tipo_caja"],
                                            "abrir"=>$row["abrir"],
                                            "cerrar"=>$row["cerrar"],
+                                           "recibido"=>$row["recibido"],
                                          ]
                          ];
 
@@ -59,6 +60,7 @@ class ControladorCajas extends ControladorAlistar {
                                                     "tipocaja"=>$row["tipo_caja"],
                                                     "abrir"=>$row["abrir"],
                                                     "cerrar"=>$row["cerrar"],
+                                                    "recibido"=>$row["recibido"],
                                                 ];
 
                     

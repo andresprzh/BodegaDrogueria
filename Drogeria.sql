@@ -52,6 +52,7 @@ CREATE TABLE caja(
 	tipo_caja CHAR(3) ,
 	abrir DATETIME ,
 	cerrar DATETIME ON UPDATE CURRENT_TIMESTAMP,
+    recibido DATETIME,
 
 
 	PRIMARY KEY(no_caja),
@@ -223,7 +224,7 @@ $$
 DELIMITER $$
 	CREATE PROCEDURE BuscarCaja(IN numcaja CHAR(10),IN req CHAR(10))
 	BEGIN
-		SELECT caja.no_caja, usuario.nombre,tipo_caja,abrir,cerrar
+		SELECT caja.no_caja, usuario.nombre,tipo_caja,abrir,cerrar,recibido
 		FROM caja 
 		INNER JOIN pedido ON pedido.no_caja=caja.no_caja
 		INNER JOIN usuario ON usuario.id_usuario=Alistador
@@ -282,37 +283,6 @@ DELIMITER $$
 
 	CREATE TRIGGER EstadoRecibido 
 	BEFORE INSERT ON recibido
-	FOR EACH ROW 
-	BEGIN
-	
-		DECLARE caja INT(10);
-		DECLARE numalistado INT(5);
-		SELECT no_caja,alistado INTO caja, numalistado
-		FROM pedido
-		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-		WHERE ITEMS.ID_Item = new.Item;
-	
-		IF caja IS NULL THEN
-			SET new.estado=2;
-		ELSEIF caja<>new.no_caja THEN
-			SET new.estado=3;
-		ELSEIF new.recibidos<numalistado THEN
-			SET new.estado=0;
-		ELSEIF new.recibidos>numalistado THEN
-			SET new.estado=1;
-		ELSE 
-			SET new.estado=4;
-		END IF;
-		
-	END 
-	
-$$
-
--- trigger que modifica el estado del Item recibido  
-DELIMITER $$
-
-	CREATE TRIGGER EstadoRecibidoU 
-	BEFORE UPDATE ON recibido
 	FOR EACH ROW 
 	BEGIN
 	
