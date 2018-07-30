@@ -40,7 +40,7 @@ class ControladorAlistar {
                                            "disponibilidad"=>$row["disp"],
                                            "pedidos"=>$row["pedido"],
                                            "alistados"=>$row["alistado"],
-                                           "caja"=>$row["No_caja"],
+                                           "caja"=>$row["no_caja"],
                                            "alistador"=>$row["nombre"],
                                            "ubicacion"=>$row["ubicacion"]
                                          ]
@@ -161,7 +161,13 @@ class ControladorAlistar {
             $cont=0;
 
             while($row = $busqueda->fetch()){
-              
+                
+                if ($row['no_req']!=$this->Req[0]) {
+                    $itembus=['estado'=>"error2",
+                    'contenido'=>"Caja sin cerrar en la requisicion ".$row['no_req']];
+                    return $itembus;
+                    break;
+                }
                 $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
                                     "referencia"=>$row["ID_REFERENCIA"],
                                     "descripcion"=>$row["descripcion"],
@@ -169,10 +175,9 @@ class ControladorAlistar {
                                     "pedidos"=>$row["pedido"],
                                     "alistados"=>$row["alistado"],
                                     'ubicacion'=>$row["ubicacion"],
-                                    'origen'=>$row["Lo_Origen"],
-                                    'destino'=>$row["Lo_Destino"]
+                                    'origen'=>$row["lo_origen"],
+                                    'destino'=>$row["lo_destino"]
                                     ];
-                
                 $cont++;
 
             }

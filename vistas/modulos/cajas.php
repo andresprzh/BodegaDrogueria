@@ -60,7 +60,6 @@
     <div class="modal-content grey lighten-3">
 
         <div class="modal-header">
-            
 
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
             <h4 class="center" >Caja No <span id="NumeroCaja"></span></h4>
@@ -88,6 +87,7 @@
                         <th>Pedidos</th>
                         <th>Alistados</th>
                         <th>Ubicacion</th>
+                        <th>Texto</th>
 
                     </tr>
 

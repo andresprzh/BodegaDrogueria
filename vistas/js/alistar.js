@@ -23,7 +23,7 @@ $(document).ready(function(){
                 $("#requeridos").append($('<option value="'+res[i]+'">'+res[i]+'</option>'));
                 
             }
-
+            
             // INICIA MENU DE SELECCION
             $('select').formSelect();
             
@@ -166,7 +166,7 @@ $(document).ready(function(){
                     method: 'post',//metodo post para mandar datos
                     data: { 'Req':Req,"TipoCaja":TipoCaja,"Items":Items},//datos que se enviaran          
                     success: function (res) {
-                    
+
 
                         if (res) {
 
@@ -219,11 +219,6 @@ function BuscarCodBar(){
       type: 'post',//metodo post para mandar datos
       data: {"codigo":codigo,"Req":Req},//datos que se enviaran
       dataType: 'json',
-      error: function (xhr, status) {
-
-        alert(status);
-
-        },
       success: function (res) {
         // console.log(res);
         AgregarItem(res);
@@ -331,8 +326,12 @@ function MostrarCaja() {
         data: {"Req":Req},
         dataType: "JSON",
         success: function (res) {          
-            
-            // si la caja ya esta creada muestra los items en la tabal de alistar
+            console.log(res);
+
+            //refresca las tablas, para volver a cargar los datos
+            $('#tablaeditable').html("");
+            table.clear();
+            // si la caja ya esta creada muestra los items en la tabla de alistar
             if (res['estadocaja']=='yacreada') {
 
                     //si encontro el codigo de barras muestar el contenido de la busqueda
@@ -353,9 +352,18 @@ function MostrarCaja() {
                                                     items[i]['alistados']+"></input></td><td>"+
                                                     items[i]['ubicacion']+"</td></tr>"));             
                         }
+                        // muestra la tabla
                         $( "#TablaE" ).removeClass( "hide" );
-                        
-                        
+                    // si hay una caja sin cerrar en otra requisicion muestra mensaje adventencia y recarga la pagina          
+                    }else if (res['estado']=='error2') {
+                        swal({
+                            title: "!No se puede generar caja¡",
+                            text:res['contenido'],
+                            icon: "warning",
+                          })
+                          .then((ok) => {
+                            location.reload();
+                          }); 
                     }
 
             }

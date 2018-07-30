@@ -44,7 +44,7 @@ class ModeloAlistar extends Conexion{
     //muestra el numero de la caja correspondiente a la requisicion
     public function mdlMostrarNumCaja(){   
         
-        $alistador=$this->req[1];
+       $alistador=$this->req[1];
         
         $stmt= $this->link->prepare("SELECT numerocaja(:alistador) AS numcaja");
 
@@ -64,10 +64,10 @@ class ModeloAlistar extends Conexion{
         $No_req=$this->req[0];$alistador=$this->req[1];
         
 
-        $stmt= $this->link->prepare("CALL buscarcod('%%',:No_req,:alistador,:NumCaja);");
+        $stmt= $this->link->prepare("CALL buscarcod('%%','%%',:alistador,:NumCaja);");
 
         
-        $stmt->bindParam(":No_req",$No_req,PDO::PARAM_STR);
+        // $stmt->bindParam(":No_req",$No_req,PDO::PARAM_STR);
         $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
         $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
 
@@ -85,7 +85,7 @@ class ModeloAlistar extends Conexion{
         //obtiene el codigo del alistador
         $alistador=$this->req[1];
         // se agregan los datos a la tabla       
-        $stmt= $this->link->prepare('INSERT INTO caja(Alistador) VALUES(:alistador)');
+        $stmt= $this->link->prepare('INSERT INTO caja(alistador) VALUES(:alistador)');
         
         $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
         

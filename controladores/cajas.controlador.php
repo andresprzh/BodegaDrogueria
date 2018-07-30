@@ -81,7 +81,7 @@ class ControladorCajas extends ControladorAlistar {
         }
 
     }
-
+    // crea documento de texto
     public function ctrDocumento($NumCaja,$Mensaje){
 
         $busqueda=$this->ctrBuscarItemCaja($NumCaja);

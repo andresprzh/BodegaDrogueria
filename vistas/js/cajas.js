@@ -58,6 +58,7 @@ $(document).ready(function(){
             
     });
 
+    // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
     $("#Documento").click(function (e) {
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
@@ -200,6 +201,7 @@ function MostrarCajas(){
 
 } 
 
+//FUNCION SI SE DA CLICK EN BOTON DOCUMENTO(MUESTRA ITEMS DE 1 CAJA ESPECIFICA)
 function MostrarItemsCaja(e) {
     
 
@@ -269,7 +271,8 @@ function MostrarItems(NumCaja){
                                         item[i]['disponibilidad']+"</td><td>"+
                                         item[i]['pedidos']+"</td><td>"+
                                         item[i]['alistados']+"</td><td>"+
-                                        item[i]['ubicacion']+"</td></tr>"));  
+                                        item[i]['ubicacion']+"</td><td>"+
+                                       '<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></td></tr>'));  
                     
                 }                  
                 
