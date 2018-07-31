@@ -57,6 +57,8 @@ class ModeloPV extends Conexion{
         
         $res= $stmt->execute();
         
+        // libera conexion para hace otra sentencia
+        $stmt->closeCursor();
         return ($res);  
     }
 
@@ -73,6 +75,31 @@ class ModeloPV extends Conexion{
 
         $res= $stmt->execute();
         
+        // libera conexion para hace otra sentencia
+        $stmt->closeCursor();
         return ($res);  
+    }
+
+    public function mdlMostrarReq(){
+
+        $tabla='requisicion';
+        $item='no_req';
+        $valor=$this->Req[0];
+        
+        return $this->buscaritem($tabla,$item,$valor);
+
+        
+    }    
+
+    public function mdlMostrarItemsRec($numcaja)
+    {
+        $sql="SELECT lo_origen,lo_destino,ID_CODBAR,recibidos FROM recibido INNER JOIN requisicion on requisicion.no_req=recibido.no_req INNER JOIN ITEMS on ITEMS.ID_ITEM=recibido.item WHERE no_caja=:no_caja";
+
+        $stmt= $this->link->prepare($sql );
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ($stmt);  
     }
 }

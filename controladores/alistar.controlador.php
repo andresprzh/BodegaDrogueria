@@ -134,7 +134,7 @@ class ControladorAlistar {
             $busqueda->closeCursor();
 
             
-            // $res=$this->modelo->mdlCrearCaja();
+            
 
             //crea una caja nueva
             if ($this->modelo->mdlCrearCaja()) {

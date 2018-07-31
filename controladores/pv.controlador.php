@@ -97,15 +97,17 @@ class ControladorPV extends ControladorCajas{
                     }
 
                 }
-
-                return $cajabus;
+                
 
             }
         }else {
             $cajabus=$busqueda;
         }
+
+       
         return $cajabus;
     }
+
 
     public function ctrRegistrarItems($Items,$NumCaja){   
         $i=0;
@@ -124,19 +126,67 @@ class ControladorPV extends ControladorCajas{
         $resultado=$this->modelo->mdlRegistrarItems($Items,$NumCaja);
 
         // libera conexion para hace otra sentencia
-        // $resultado->closeCursor();
-        //si registra los tems modifica la tabla de pedido para que la caja aperesca como recibida
+        
+        //si registra los items modifica la tabla de pedido para que la caja aperezca como recibida
         if ($resultado) {
             $resultado=$this->modelo->mdlModCaja($NumCaja);
+            if($resultado){
+                $resultado=$this->ctrDocumentoR($NumCaja);
+            }
         }
         
         return ($resultado);
         
     }
 
+    public function ctrBuscarReq(){
+        
+        $busqueda=$this->modelo->mdlMostrarReq();
+
+        if ($busqueda->rowCount() > 0) {
+
+            $row = $busqueda->fetch();
+            $requisicion=["estado"=>"encontrado",
+            "contenido"=> ["no_req"=>$row["no_req"],
+                            "creada"=>$row["creada"],
+                            "origen"=>$row["lo_origen"],
+                            "destino"=>$row["lo_destino"],
+                          ]
+            ];
+
+        }else {
+            $requisicion['estado']='error';
+            $requisicion['contenido']='Requisicion no encontrada';
+        }
+        // libera conexion para hace otra sentencia
+        $busqueda->closeCursor();
+        return $requisicion;
+    }
+
     // crea archivo plano de la caja recibida
-    private function ctrDocumentoR(){
-        # code...
+    private function ctrDocumentoR($NumCaja){
+        $busqueda=$this->modelo->mdlMostrarItemsRec($NumCaja);
+
+        
+        if ($busqueda->rowCount()>0) {
+            $recibidos=$busqueda->fetch();
+            $i=0;
+            foreach ($recibidos as $row) {
+                $localicacion=str_replace('-','',$row["lo_origen"].$row["lo_destino"].'I');
+                $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+                $codigo=str_pad($row["ID_CODBAR"],13+15," ",STR_PAD_RIGHT);
+                $num=$row["recibidos"]*1000;
+                $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
+                $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+                $Mensaje='---';
+                
+                $string.=($localicacion.$codigo.$alistado.$Mensaje."\n");
+            }
+        }else {
+            $string='error';
+        }
+
+        return $string;
     }
     
     

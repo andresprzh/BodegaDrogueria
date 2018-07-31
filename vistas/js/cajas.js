@@ -65,7 +65,7 @@ $(document).ready(function(){
         
         var mensaje = $(this).find("input").val();
         var fila = table.row(this)
-
+        
         // si la tabla es responsive
         if(fila.data() == undefined) {
 
@@ -73,11 +73,11 @@ $(document).ready(function(){
             if (fila.hasClass('child')) {
                 fila = fila.prev();
             }
-            tabla.row(fila).cell(fila,7).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'"></input></td></tr>').draw()
+            tabla.row(fila).cell(fila,7).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'">').draw()
 
         } else {
             
-            table.cell(this).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'"></input></td></tr>').draw()
+            table.cell(this).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'">').draw()
         }
         
         // celda.data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></input></td></tr>');
@@ -105,7 +105,7 @@ $(document).ready(function(){
             }                
         }
         
-       console.log(Items['origen'])
+       
         $.ajax({
                 
             url:"ajax/cajas.documento.ajax.php",

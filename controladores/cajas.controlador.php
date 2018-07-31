@@ -67,51 +67,26 @@ class ControladorCajas extends ControladorAlistar {
                     $cont++;
 
                 }
-
-                return $cajabus;
+                
 
             }
 
         //si no encuentra resultados devuelve "error"
         }else{
 
-            return ['estado'=>"error",
+            $cajabus= ['estado'=>"error",
                     'contenido'=>"Caja no encontrado en la base de datos!"];
 
         }
+        // libera conexion para hace otra sentencia
+        $busqueda->closeCursor();
+        return $cajabus;
 
     }
     // crea documento de texto
     public function ctrDocumento($Items){
 
-        // $busqueda=$this->ctrBuscarItemCaja($NumCaja);
-
-        // if ($busqueda["estado"]=="encontrado") {
-        //     $string='';
-        //     foreach($busqueda["contenido"] as $row){
-    
-               
-        //         $localicacion=str_replace('-','',$row["origen"].$row["destino"].'I');
-        //         $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-        //         $codigo=str_pad($row["codigo"],13+15," ",STR_PAD_RIGHT);
-        //         $num=$row["alistados"]*1000;
-        //         $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
-        //         $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
-        //         $Mensaje="algo";
-                
-                    
-        //         $string.=($localicacion.$codigo.$alistado.$Mensaje."\n");
-                
-                
-        //     }
-            
-        //     return $string;
-            
-        // }else{
-        //     return "error";
-        // }
-
-        foreach($Items as $row){
+       foreach($Items as $row){
 
             $localicacion=str_replace('-','',$row["origen"].$row["destino"].'I');
             $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);

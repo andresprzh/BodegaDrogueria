@@ -19,9 +19,11 @@ $respuesta=$controlador->ctrBuscarCajaPV("%%");
 if ($respuesta['estado']=='encontrado') {
     
     foreach ($respuesta['contenido'] as $row) {
-        $res[$cont]=$row["no_caja"];
+        $res['cajas'][$cont]=$row["no_caja"];
         $cont++;
     }   
+
+    $res['requisicion']=$controlador->ctrBuscarReq();
     
 }else{
     $res=false;

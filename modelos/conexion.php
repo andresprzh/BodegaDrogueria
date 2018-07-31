@@ -27,7 +27,7 @@ class Conexion{
         if ($item!=null) {
           
             $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = :$item");
-            // $stmt= Conexion::conectar() -> prepare("SELECT * FROM $tabla WHERE $item = :$item");
+            
             
             //para evitar sql injection
             $stmt->bindParam(":".$item,$valor,PDO::PARAM_STR);

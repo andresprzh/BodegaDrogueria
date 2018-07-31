@@ -42,6 +42,7 @@ $(document).ready(function(){
             $( ".SelectCaja" ).removeClass( "hide" ); 
             // oculta el input donde se ingresa el codigo de barras
             $( ".input_barras" ).addClass( "hide" );
+            $( "#Registrar" ).addClass( "hide" );
             //consigue el numero de requerido
             var requeridos=$(".requeridos").val();
             //id usuario es obtenida de las variables de sesion
@@ -57,11 +58,19 @@ $(document).ready(function(){
                     
                     if (res!==false) {
                         // SE MUESTRAN LAS CAJAS EN EL MENU DE SELECCION
-                        for (var i in res) {
+                        var cajas= res['cajas'];
+                        for (var i in cajas) {
             
-                            $("#cajas").append($('<option value="'+res[i]+'">Caja '+res[i]+'</option>'));
+                            $("#cajas").append($('<option value="'+cajas[i]+'">Caja '+cajas[i]+'</option>'));
                             
                         }
+
+                        var requisicion=res['requisicion']['contenido'];
+                        // se muestra el origen y destino de la requisicion
+                        $( "#infreq" ).removeClass( "hide" );
+                        $('#origen').html(requisicion['origen']);
+                        $('#destino').html(requisicion['destino']);
+                        
                     }
                     
         
@@ -77,6 +86,7 @@ $(document).ready(function(){
         // EVENTO AL CAMBIAR LA ENTRADA DE CAJAS
         $("#cajas").change(function (e) { 
             $( ".input_barras" ).removeClass( "hide" ); 
+            $( "#Registrar" ).addClass( "hide" );
         });
     
         // EVENTO INPUT  CODIGO DE BARRAS
@@ -108,6 +118,37 @@ $(document).ready(function(){
             }
     
         });
+
+
+        // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
+        $('#tablavista').on( 'change', 'td', function () {
+
+            // guarda el valor dle input en datatable
+            var tabla=$('#tabla').DataTable();
+            
+            
+            var cantr = $(this).find("input").val();
+            var fila = tabla.row(this);
+
+            // si la tabla es responsive
+            if(fila.data() == undefined) {
+    
+                var fila = $(this).parents('tr');
+                if (fila.hasClass('child')) {
+                    fila = fila.prev();
+                }
+                
+                tabla.row(fila).cell(fila,3).data('<input type="number" class="validate" value="'+cantr+'">').draw()
+    
+            } else {
+                
+                tabla.cell(this).data('<input type="number" class="validate" value="'+cantr+'">').draw()
+            }
+            
+            // celda.data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></input></td></tr>');
+            
+            
+        } );
     
         
         // EVENTO SI SE PRESIONA EL BOTON DE AGREGAR CODIGO DE BARRAS(+)
@@ -150,7 +191,7 @@ $(document).ready(function(){
                     for (var i in datos) {
                         Items[i]={
                             "codbarras":datos[i][0],
-                            "recibidos": datos[i][3]
+                            "recibidos": $(datos[i][3]).val()
                         }                
                     }
                     
@@ -161,7 +202,7 @@ $(document).ready(function(){
                         data: {"Caja":Caja,"Req":Req,"Items":Items},//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
-                            
+                            console.log(res);
                             if (res==true) {
                                 swal({
                                     title: "¡Items registrados!",
@@ -222,22 +263,24 @@ $(document).ready(function(){
                 if (pos>=0) {
                     
                     // se acumula la cantidad recibida
-                    cantr+=datos[pos][3];
-
-                    tabla.cell(pos,3).data(cantr).draw();
-                // si o encuentra el item en la tabla lo agrega a esta    
+                    cantr+=parseInt($(datos[pos][3]).val());
+                    
+                    tabla.cell(pos,3).data('<input type="number" class="validate" value="'+cantr+'">').draw();
+                // si no encuentra el item en la tabla lo agrega a esta    
                 }else{
                 
                     var item=res['contenido'];
-                    var barras=document.getElementsByClassName('barras');
+                    
                     // agrega datos en la tabla
                     tabla.row.add( [
                         item['codigo'],
                         item['referencia'],
                         item['descripcion'],
-                        cantr
+                        // cantr
+                        '<input type="number" class="validate" value="'+cantr+'">'
                     ] ).draw(false);
                 }
+                $( "#Registrar" ).removeClass( "hide" ); 
             }
                         
           }
