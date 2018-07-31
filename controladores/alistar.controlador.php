@@ -42,7 +42,9 @@ class ControladorAlistar {
                                            "alistados"=>$row["alistado"],
                                            "caja"=>$row["no_caja"],
                                            "alistador"=>$row["nombre"],
-                                           "ubicacion"=>$row["ubicacion"]
+                                           "ubicacion"=>$row["ubicacion"],
+                                           "origen"=>$row["lo_origen"],
+                                           "destino"=>$row["lo_destino"]
                                          ]
                          ];
                 // en el arreglo se guarda el estaod de la consulta         
@@ -181,6 +183,8 @@ class ControladorAlistar {
                 $cont++;
 
             }
+
+            
             
             return $itembus;
 

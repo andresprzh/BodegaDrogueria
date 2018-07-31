@@ -66,9 +66,15 @@
             
             <table class="centered">
                 <thead>
-                    <th>Alistador: <span id="alistador"></span></th>
-                    <th>Tipo Caja: <span id="tipocaja"></span></th>
-                    <th>Fecha cierre: <span id="cierre"></span></th>
+                    <tr>
+                        <th>Alistador: <span id="alistador"></span></th>
+                        <th>Tipo Caja: <span id="tipocaja"></span></th>
+                        <th>Fecha cierre: <span id="cierre"></span></th>
+                    </tr>
+                    <tr>
+                        <th>Origen: <span id="origen"></span></th>
+                        <th>destino: <span id="destino"></span></th>
+                    </tr>
                 </thead>
             </table>
 

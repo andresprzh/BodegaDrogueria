@@ -10,11 +10,12 @@ require "../modelos/alistar.modelo.php";
 // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
 $Req=$_POST["Req"];
 $NumCaja=$_POST['NumCaja'];
-$Mensaje=$_POST['Mensaje'];
+// $Mensaje=$_POST['Mensaje'];
+$Items=$_POST['Items'];
 
 //crea objeto controlador 
 $controlador=new ControladorCajas($Req);
 
-$resultado=$controlador->ctrDocumento($NumCaja,$Mensaje);
+$resultado=$controlador->ctrDocumento($Items);
 
-print $resultado;
+print json_encode($resultado);

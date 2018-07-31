@@ -109,16 +109,38 @@ $(document).ready(function(){
 
     });
 
-    // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABL
+    // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
     $('#tablaeditable').on( 'change', 'td', function () {
         
+        var dt = $.fn.dataTable.tables()[1];
+        var tabla=$(dt).DataTable();
+
         //se obtiene el valor de la variable y se le asigna a datatable para que quede guardado
         celda=table.cell(this);
+        // var nuevovalor = $(this).find("input").val();
+        // celda.data("<input  type= 'number' min='0' class='alistados'  value='"+nuevovalor+"'></input>");
+
         var nuevovalor = $(this).find("input").val();
-        celda.data("<input  type= 'number' min='0' class='alistados'  value='"+nuevovalor+"'></input>");
+        var fila = table.row(this)
+
+        // si la tabla es responsive
+        if(fila.data() == undefined) {
+
+            var fila = $(this).parents('tr');
+            if (fila.hasClass('child')) {
+                fila = fila.prev();
+            }
+            tabla.row(fila).cell(fila,5).data("<input  type= 'number' min='0' class='alistados'  value='"+nuevovalor+"'></input>");
+
+        } else {
+            
+            tabla.cell(this).data("<input  type= 'number' min='0' class='alistados'  value='"+nuevovalor+"'></input>");
+        }
         
     } );
 
+
+    
     // EVENTO SI SE PRESIONA EL BOTON CERRAR
     $("#cerrar").on('click',function (e) {  
         
@@ -154,7 +176,7 @@ $(document).ready(function(){
                         }                
                     
                 }
-
+                console.log(Items);
                 
 
                 //guarda el tipo de caja en una variable

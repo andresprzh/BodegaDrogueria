@@ -165,7 +165,9 @@ DELIMITER $$
 		DECLARE numcaja INT(10);
 		SET numcaja=NumeroCaja(alistador);
 		
-		SELECT pedido.estado,COD_BARRAS.ID_CODBAR,ID_ITEMS,pedido.no_req, ID_REFERENCIA, descripcion, disp, pedido, alistado,caja.no_caja,usuario.nombre,ubicacion,requisicion.lo_origen,requisicion.lo_destino
+		SELECT pedido.estado,COD_BARRAS.ID_CODBAR,ID_ITEMS,pedido.no_req, ID_REFERENCIA, 
+        descripcion, disp, pedido, alistado,caja.no_caja,usuario.nombre,ubicacion,
+        requisicion.lo_origen,requisicion.lo_destino
 		FROM COD_BARRAS
 		INNER JOIN ITEMS ON ITEMS.ID_CODBAR=COD_BARRAS.ID_CODBAR
 		INNER JOIN pedido ON Item=ID_Item	

@@ -58,22 +58,67 @@ $(document).ready(function(){
             
     });
 
+    // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
+    $('#tablamodal').on( 'change', 'td', function () {
+        var tabla=$('#TablaM').DataTable();
+        
+        
+        var mensaje = $(this).find("input").val();
+        var fila = table.row(this)
+
+        // si la tabla es responsive
+        if(fila.data() == undefined) {
+
+            var fila = $(this).parents('tr');
+            if (fila.hasClass('child')) {
+                fila = fila.prev();
+            }
+            tabla.row(fila).cell(fila,7).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'"></input></td></tr>').draw()
+
+        } else {
+            
+            table.cell(this).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'"></input></td></tr>').draw()
+        }
+        
+        // celda.data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></input></td></tr>');
+        
+        
+    } );
+
     // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
     $("#Documento").click(function (e) {
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
         var Req=[requeridos,id_usuario];
-        var NumCaja=$('#NumeroCaja').html();
-
+        
+        var datos=$('#TablaM').DataTable().data().toArray();
+        
+        var Items=new Array();
+        for (var i in datos) {
+            Items[i]={
+                "codigo":datos[i][0],
+                "alistados": datos[i][5],
+                "mensajes": $(datos[i][7]).val(),
+                'origen' : $('#origen').html(),
+                'destino' : $('#destino').html()
+            }                
+        }
+        
+       console.log(Items['origen'])
         $.ajax({
                 
             url:"ajax/cajas.documento.ajax.php",
             method:"POST",
-            data: {"Req":Req,"NumCaja":NumCaja,"Mensaje":"PRUEBA DE CARGA PLA"},
-            
+            data: {"Req":Req,"Items":Items},
+            dataType: 'JSON',
             success: function (res) {
+                var NumCaja=$('#NumeroCaja').html();
+                // obtiene los 3 ultimos caracteres de la requisicion
+                var no_res=Req[0].substr(Req[0].length - 3);
 
+                // crea el nombre del documento a partir de la requisicion y la caja
+                var nomdoc='RQ'+no_res+'C'+NumCaja+'.TR1';
                 // si hay un error al buscar los archivos no genera el documento
                 if (res=="error") {
                     swal({
@@ -88,7 +133,7 @@ $(document).ready(function(){
                 
                     var element = document.createElement('a');
                     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res));
-                    element.setAttribute('download', "texto.P01");
+                    element.setAttribute('download', nomdoc);
 
                     element.style.display = 'none';
                     document.body.appendChild(element);
@@ -249,7 +294,12 @@ function MostrarItems(NumCaja){
         data: {"Req":Req, "NumCaja":NumCaja},
         dataType: "JSON",
         success: function (res) {
+            origen=res['contenido'][0]['origen'];
+            destino=res['contenido'][0]['destino'];
             
+            $('#origen').html(origen);
+            $('#destino').html(destino);
+
             var item=res['contenido'];
  
             //si no encuentra el item muestra en pantalla que no se encontro
@@ -272,7 +322,7 @@ function MostrarItems(NumCaja){
                                         item[i]['pedidos']+"</td><td>"+
                                         item[i]['alistados']+"</td><td>"+
                                         item[i]['ubicacion']+"</td><td>"+
-                                       '<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></td></tr>'));  
+                                       '<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></input></td></tr>'));  
                     
                 }                  
                 
