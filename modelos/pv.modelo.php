@@ -93,7 +93,7 @@ class ModeloPV extends Conexion{
 
     public function mdlMostrarItemsRec($numcaja)
     {
-        $sql="SELECT lo_origen,lo_destino,ID_CODBAR,recibidos FROM recibido INNER JOIN requisicion on requisicion.no_req=recibido.no_req INNER JOIN ITEMS on ITEMS.ID_ITEM=recibido.item WHERE no_caja=:no_caja";
+        $sql="SELECT lo_origen,lo_destino,ID_CODBAR,recibidos,recibido.estado FROM recibido INNER JOIN requisicion on requisicion.no_req=recibido.no_req INNER JOIN ITEMS on ITEMS.ID_ITEM=recibido.item WHERE no_caja=:no_caja";
 
         $stmt= $this->link->prepare($sql );
 

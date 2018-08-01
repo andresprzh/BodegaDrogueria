@@ -123,19 +123,19 @@ class ControladorPV extends ControladorCajas{
         $busqueda->closeCursor();
 
         // agrega los datos en la datbla de recibidos
-        $resultado=$this->modelo->mdlRegistrarItems($Items,$NumCaja);
+        $resultado['estado']=$this->modelo->mdlRegistrarItems($Items,$NumCaja);
 
         // libera conexion para hace otra sentencia
         
         //si registra los items modifica la tabla de pedido para que la caja aperezca como recibida
         if ($resultado) {
-            $resultado=$this->modelo->mdlModCaja($NumCaja);
-            if($resultado){
-                $resultado=$this->ctrDocumentoR($NumCaja);
+            $resultado['estado']=$this->modelo->mdlModCaja($NumCaja);
+            if($resultado['estado']){
+                $resultado['contenido']=$this->ctrDocumentoR($NumCaja);
             }
         }
         
-        return ($resultado);
+        return $resultado;
         
     }
 
@@ -169,7 +169,7 @@ class ControladorPV extends ControladorCajas{
 
         
         if ($busqueda->rowCount()>0) {
-            $recibidos=$busqueda->fetch();
+            $recibidos=$busqueda->fetchAll();
             $i=0;
             foreach ($recibidos as $row) {
                 $localicacion=str_replace('-','',$row["lo_origen"].$row["lo_destino"].'I');
@@ -178,9 +178,36 @@ class ControladorPV extends ControladorCajas{
                 $num=$row["recibidos"]*1000;
                 $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
-                $Mensaje='---';
                 
-                $string.=($localicacion.$codigo.$alistado.$Mensaje."\n");
+
+                switch ($row['estado']) {
+                    case 0:
+                        
+                        if ($row['recibidos'==0]) {
+                            $mensaje='Item no Recibido';
+                        }else {
+                            $mensaje='Menos items';
+                        }
+                        break;
+
+                    case 1:
+                        $mensaje='Mas items';
+                        break;
+
+                    case 2:
+                        $mensaje='Caja diferente';
+                        break;
+
+                    case 3:
+                        $mensaje='Req diferente';
+                        break;
+                    
+                    default:
+                        $mensaje='Ok';
+                        break;
+                }
+                
+                $string.=($localicacion.$codigo.$alistado.$mensaje."\n");
             }
         }else {
             $string='error';

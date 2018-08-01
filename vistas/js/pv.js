@@ -202,12 +202,31 @@ $(document).ready(function(){
                         data: {"Caja":Caja,"Req":Req,"Items":Items},//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
-                            console.log(res);
-                            if (res==true) {
+                            
+                            if (res['estado']==true) {
                                 swal({
                                     title: "¡Items registrados!",
                                     icon: "success",
-                                }); 
+                                }).then((OK) => {
+                                    var NumCaja=$('#cajas').val();
+                                    // obtiene los 3 ultimos caracteres de la requisicion
+                                    var no_req=Req[0].substr(Req[0].length - 3);
+
+                                    // crea el nombre del documento a partir de la requisicion y la caja
+                                    var nomdoc='RQ'+no_req+'C'+NumCaja+'.TR1';
+
+                                    var element = document.createElement('a');
+                                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));
+                                    element.setAttribute('download', nomdoc);
+
+                                    element.style.display = 'none';
+                                    document.body.appendChild(element);
+
+                                    element.click();
+
+                                    document.body.removeChild(element);
+   
+                                });
                             }else{
                                 swal({
                                     title: "¡Error!",
