@@ -92,6 +92,7 @@ $(document).ready(function(){
         //id usuario es obtenida de las variables de sesion
         var Req=[requeridos,id_usuario];
         
+        var NumCaja=$('#NumeroCaja').html();
         var datos=$('#TablaM').DataTable().data().toArray();
         
         var Items=new Array();
@@ -110,9 +111,10 @@ $(document).ready(function(){
                 
             url:"ajax/cajas.documento.ajax.php",
             method:"POST",
-            data: {"Req":Req,"Items":Items},
+            data: {"Req":Req,"Items":Items,"NumCaja":NumCaja},
             dataType: 'JSON',
             success: function (res) {
+                console.log(res);
                 var NumCaja=$('#NumeroCaja').html();
                 // obtiene los 3 ultimos caracteres de la requisicion
                 var no_res=Req[0].substr(Req[0].length - 3);
@@ -120,7 +122,7 @@ $(document).ready(function(){
                 // crea el nombre del documento a partir de la requisicion y la caja
                 var nomdoc='RQ'+no_res+'C'+NumCaja+'.TR1';
                 // si hay un error al buscar los archivos no genera el documento
-                if (res=="error") {
+                if (!res) {
                     swal({
                         title: "!Error al generar el documento¡",
                         icon: "error",

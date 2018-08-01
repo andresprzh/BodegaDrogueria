@@ -19,6 +19,13 @@ $respuesta=$controlador->ctrBuscarCajaPV("%%");
 if ($respuesta['estado']=='encontrado') {
     
     foreach ($respuesta['contenido'] as $row) {
+        // print json_encode(isset($row[0]));
+        // si solo es un resultado
+        
+        if (!is_array($row)) {
+            $res['cajas']=$row;
+            break;
+        }
         $res['cajas'][$cont]=$row["no_caja"];
         $cont++;
     }   
@@ -30,5 +37,7 @@ if ($respuesta['estado']=='encontrado') {
 }
 // muestra el vector     como dato JSON
 print json_encode($res);
+
+// print json_encode($respuesta);
 
 

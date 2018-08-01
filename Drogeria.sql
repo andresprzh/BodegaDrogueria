@@ -46,13 +46,15 @@ CREATE TABLE requisicion(
 
 /*tabla caja*/
 CREATE TABLE caja(
-	no_caja INT(10) NOT NULL auto_increment,
+	no_caja INT(10) NOT NULL AUTO_INCREMENT,
 	alistador INT(10),
 	encargado_punto INT(10),
 	tipo_caja CHAR(3) ,
+	estado INT(1) DEFAULT '0' ,
 	abrir DATETIME ,
 	cerrar DATETIME ON UPDATE CURRENT_TIMESTAMP,
-    recibido DATETIME,
+	enviado DATETIME ,
+   recibido DATETIME,
 
 
 	PRIMARY KEY(no_caja),
@@ -224,7 +226,7 @@ $$
 
 -- procedimiento que busca las cajas por el numero de caja y la requisicion
 DELIMITER $$
-	CREATE PROCEDURE BuscarCaja(IN numcaja CHAR(10),IN req CHAR(10))
+	CREATE PROCEDURE BuscarCaja(IN numcaja CHAR(10),IN req CHAR(10), IN est INT(1))
 	BEGIN
 		SELECT caja.no_caja, usuario.nombre,tipo_caja,abrir,cerrar,recibido
 		FROM caja 
@@ -233,6 +235,7 @@ DELIMITER $$
 		WHERE caja.no_caja LIKE numcaja 
 		AND pedido.no_req=req
 		AND caja.no_caja <> 1
+		AND caja.estado=est
 		GROUP BY caja.no_caja ;
 	END 
 $$

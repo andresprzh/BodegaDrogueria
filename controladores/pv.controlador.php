@@ -46,65 +46,63 @@ class ControladorPV extends ControladorCajas{
     }
     // busca cajas visibles para el punto de venta
     public function ctrBuscarCajaPV($NumCaja){
-        $busqueda=$this->ctrBuscarCaja($NumCaja);
+        $busqueda=$this->modelo->mdlMostrarCajaPV($NumCaja);
+        
+        if ($busqueda->rowCount() > 0) {
 
-        $cajabus['estado']=$busqueda['estado'];
+            if($busqueda->rowCount() == 1){
 
-        if ($busqueda['estado']=='encontrado') {
+                $row = $busqueda->fetch();
 
-            // en caso de que solo sea 1 resultado
-            if(count($busqueda["contenido"]) == 1){              
+                //guarda los resultados en un arreglo
+                $cajabus=["estado"=>"encontrado",
+                           "contenido"=> ["no_caja"=>$row["no_caja"],
+                                           "alistador"=>$row["nombre"],
+                                           "tipocaja"=>$row["tipo_caja"],
+                                           "abrir"=>$row["abrir"],
+                                           "cerrar"=>$row["cerrar"],
+                                           "recibido"=>$row["recibido"],
+                                         ]
+                         ];
 
-                // solo tiene en cuenta cajas que ya han sido cerradas
-                if ($busqueda['contenido']["cerrar"]!=null && $busqueda['contenido']["recibido"]==null) {
-                    //guarda los resultados en un arreglo
-                    $cajabus=["estado"=>"encontrado",
-                    "contenido"=> ["no_caja"=>$busqueda['contenido']["no_caja"],
-                                    "alistador"=>$busqueda['contenido']["alistador"],
-                                    "tipocaja"=>$busqueda['contenido']["tipocaja"],
-                                    "abrir"=>$busqueda['contenido']["abrir"],
-                                    "cerrar"=>$busqueda['contenido']["cerrar"],
-                                ]
-                    ];
                 
                 //retorna el item a la funcion
                 return $cajabus;
 
-                } 
-                
-            // si son 2 o mas resultados    
             }else {
+
+                $cajabus["estado"]="encontrado";
 
                 $cont=0;
 
-                foreach($busqueda['contenido'] as $row){
-                    // solo tiene en cuenta cajas que ya han sido cerradas
-                    if ($row["cerrar"]!=null && $row["recibido"]==null) {
-                        
-                        $cajabus["contenido"][$cont]=["no_caja"=>$row["no_caja"],
-                                                        "alistador"=>$row["alistador"],
-                                                        "tipocaja"=>$row["tipocaja"],
-                                                        "abrir"=>$row["abrir"],
-                                                        "cerrar"=>$row["cerrar"],
-                                                    ];
-                        
-                        $cont++;
-                    }
+                while($row = $busqueda->fetch()){
 
-                    // si hay al menos un resultado en la busqueda
-                    if (count($cajabus['contenido'])>0) {
-                        $cajabus["estado"]="encontrado";
-                    }
+                    //Muestra todas las cajas
+                    $cajabus["contenido"][$cont]=["no_caja"=>$row["no_caja"],
+                                                    "alistador"=>$row["nombre"],
+                                                    "tipocaja"=>$row["tipo_caja"],
+                                                    "abrir"=>$row["abrir"],
+                                                    "cerrar"=>$row["cerrar"],
+                                                    "recibido"=>$row["recibido"],
+                                                ];
+
+                    
+                    $cont++;
 
                 }
                 
 
             }
-        }else {
-            $cajabus=$busqueda;
-        }
 
-       
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            $cajabus= ['estado'=>"error",
+                    'contenido'=>"Caja no encontrado en la base de datos!"];
+
+        }
+        // libera conexion para hace otra sentencia
+        $busqueda->closeCursor();
         return $cajabus;
     }
 
@@ -127,7 +125,7 @@ class ControladorPV extends ControladorCajas{
 
         // libera conexion para hace otra sentencia
         
-        //si registra los items modifica la tabla de pedido para que la caja aperezca como recibida
+        //si registra los items, modifica la tabla de pedido para que la caja aperezca como recibida
         if ($resultado) {
             $resultado['estado']=$this->modelo->mdlModCaja($NumCaja);
             if($resultado['estado']){
@@ -171,8 +169,13 @@ class ControladorPV extends ControladorCajas{
         if ($busqueda->rowCount()>0) {
             $recibidos=$busqueda->fetchAll();
             $i=0;
+            $string='';
             foreach ($recibidos as $row) {
-                $localicacion=str_replace('-','',$row["lo_origen"].$row["lo_destino"].'I');
+
+                $origen=str_replace('BD','',$row["lo_origen"]);
+                $destino=str_replace('VE','',$row["lo_destino"]);
+                $origen=$origen.substr($destino,1,-1);
+                $localicacion=str_replace('-','',$origen.$row["lo_destino"].'I');
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
                 $codigo=str_pad($row["ID_CODBAR"],13+15," ",STR_PAD_RIGHT);
                 $num=$row["recibidos"]*1000;

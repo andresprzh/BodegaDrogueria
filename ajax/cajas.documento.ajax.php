@@ -16,6 +16,7 @@ $Items=$_POST['Items'];
 //crea objeto controlador 
 $controlador=new ControladorCajas($Req);
 
-$resultado=$controlador->ctrDocumento($Items);
+$resultado=$controlador->ctrDocumento($Items,$NumCaja);
+
 
 print json_encode($resultado);

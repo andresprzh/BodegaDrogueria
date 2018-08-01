@@ -84,23 +84,30 @@ class ControladorCajas extends ControladorAlistar {
 
     }
     // crea documento de texto
-    public function ctrDocumento($Items){
-
-       foreach($Items as $row){
-
-            $localicacion=str_replace('-','',$row["origen"].$row["destino"].'I');
-            $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-            $codigo=str_pad($row["codigo"],13+15," ",STR_PAD_RIGHT);
-            $num=$row["alistados"]*1000;
-            $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
-            $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
-            $Mensaje=$row['mensajes'];
-            
-            $string.=($localicacion.$codigo.$alistado.$Mensaje."\n");
+    public function ctrDocumento($Items,$NumCaja){
         
+        $res=$this->modelo->mdlModificarCaja($NumCaja);
+        if ($res) {          
+            $documento='';
+            foreach($Items as $row){
+                $origen=str_replace('BD','',$row["origen"]);
+                $destino=str_replace('VE','',$row["destino"]);
+                $destino=$origen.substr($destino,1,-1);
+                $localicacion=str_replace('-','',$row["origen"].$destino.'I');
+                $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+                $codigo=str_pad($row["codigo"],13+15," ",STR_PAD_RIGHT);
+                $num=$row["alistados"]*1000;
+                $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
+                $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+                $Mensaje=$row['mensajes'];
+                
+                $documento.=($localicacion.$codigo.$alistado.$Mensaje."\n");
+
+            }
+            $res=$documento;
         }
 
-        return $string;
+        return $res;
 
     }
 

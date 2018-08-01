@@ -38,6 +38,8 @@ $(document).ready(function(){
     
         //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
         $(".requeridos").change(function (e) {
+            // oculta los datos de la requisicion
+            $( "#infreq" ).addClass( "hide" );
             // muestra la entrada se seleccion de cajas
             $( ".SelectCaja" ).removeClass( "hide" ); 
             // oculta el input donde se ingresa el codigo de barras
@@ -47,6 +49,7 @@ $(document).ready(function(){
             var requeridos=$(".requeridos").val();
             //id usuario es obtenida de las variables de sesion
             var Req=[requeridos,id_usuario];
+            
             $('#cajas').html('<option value="" disabled selected>Seleccionar</option>');
             
             $.ajax({
@@ -58,11 +61,16 @@ $(document).ready(function(){
                     
                     if (res!==false) {
                         // SE MUESTRAN LAS CAJAS EN EL MENU DE SELECCION
+                        
                         var cajas= res['cajas'];
-                        for (var i in cajas) {
-            
-                            $("#cajas").append($('<option value="'+cajas[i]+'">Caja '+cajas[i]+'</option>'));
-                            
+                        // si el resultado es un array
+                        
+                        if (cajas.constructor === Array) {
+                            for (var i in cajas) {
+                                $("#cajas").append($('<option value="'+cajas[i]+'">Caja '+cajas[i]+'</option>'));
+                            }   
+                        }else{
+                            $("#cajas").append($('<option value="'+cajas+'">Caja '+cajas+'</option>'));
                         }
 
                         var requisicion=res['requisicion']['contenido'];

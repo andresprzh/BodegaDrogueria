@@ -67,7 +67,7 @@ class ModeloPV extends Conexion{
         // $this->link->closeCursor();
         $persona=$this->Req[1];
         
-        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,recibido=NOW() WHERE no_caja=:caja;" );
+        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=2,recibido=NOW() WHERE no_caja=:caja;" );
         
         $stmt->bindParam(":persona",$persona,PDO::PARAM_INT);
         $stmt->bindParam(":caja",$NumCaja,PDO::PARAM_INT);
@@ -101,5 +101,24 @@ class ModeloPV extends Conexion{
         $stmt->execute();
 
         return ($stmt);  
+    }
+
+    public function mdlMostrarCajaPV($NumCaja)
+    {
+        $No_Req=$this->Req[0];$alistador=$this->Req[1];
+        
+
+        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:No_Req,1);");
+
+        $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
+        $stmt->bindParam(":No_Req",$No_Req,PDO::PARAM_STR);
+
+        $stmt->execute();
+
+
+        return $stmt;
+
+        // cierra la conexion
+        $stmt=null;
     }
 }
