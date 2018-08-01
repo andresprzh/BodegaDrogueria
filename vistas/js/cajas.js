@@ -7,7 +7,7 @@ $(document).ready(function(){
     $('.modal').modal();
     
     // INICIA DATATABLE
-    table=iniciar_tabla('.tablas');
+    table=iniciar_tabla('#TablaC');
      
     // pone items en el input select
     $.ajax({
@@ -44,15 +44,15 @@ $(document).ready(function(){
         //muestra la tabla y la reinicia
         $( "#Cajas" ).removeClass( "hide" );
         //refresca la tabla, para volver a cargar los datos
+        var dt = $.fn.dataTable.tables();
         $('#tablacajas').html("");
-        table.clear();
-        table.destroy();
-
-
+        $(dt).DataTable().clear();
+        $(dt).DataTable().destroy();
+        
         //espera a que la funcion termine para reiniciar las tablas
         $.when(MostrarCajas()).done(function(){
             
-            table=iniciar_tabla("#TablaC");
+            table=iniciar_tabla('#TablaC');
 
         });
             
@@ -270,6 +270,7 @@ function MostrarItemsCaja(e) {
     $('#tablamodal').html("");
     $(dt).DataTable().clear();
     $(dt).DataTable().destroy();
+        
     
     //espera a que la funcion termine para reiniciar las tablas
     $.when(MostrarItems(NumCaja)).done(function(){
@@ -294,6 +295,12 @@ function MostrarItems(NumCaja){
         data: {"Req":Req, "NumCaja":NumCaja},
         dataType: "JSON",
         success: function (res) {
+
+            var dt = $.fn.dataTable.tables()[1];
+            $('#tablamodal').html("");
+            $(dt).DataTable().clear();
+            $(dt).DataTable().destroy();
+
             origen=res['contenido'][0]['origen'];
             destino=res['contenido'][0]['destino'];
             
