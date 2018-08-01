@@ -36,7 +36,7 @@ class ControladorRequerir{
             $no_req=$no_req->fetch();
             
             //si la requisicion no existe busca los items y sube el archivo a la base de datos
-            if($no_req["No_Req"]==$valor){
+            if($no_req["no_req"]==$valor){
                 
                 echo '<script>
                         swal({
