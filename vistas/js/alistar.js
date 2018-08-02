@@ -73,6 +73,7 @@ $(document).ready(function(){
            e.preventDefault();
        }		
     });
+   
     
 
     // EVENTO INPUT  CODIGO DE BARRAS
@@ -139,7 +140,24 @@ $(document).ready(function(){
         
     } );
 
-
+    // EVENTO CUANDO SE ESCRIBE EN EL INPUT DE LA TABLA EDITABLE(EVITA QUE SE DIGITEN NUMEROS)
+    $('#tablaeditable').on( 'keydown', 'input', function (e) {
+        
+        // permite: spacio, eliminar , tab, escape, enter y  .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+            // permite: Ctrl+letra, Command+letra
+            ((e.keyCode >=0 ) && (e.ctrlKey === true || e.metaKey === true)) || 
+            // permite: home, fin, izquierda, derecha, abajo, arriba
+            (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // no hace nada si cumple la condicion
+                return;
+        }
+        // solo acepta numeros
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            //previene mandar los datos al input
+            e.preventDefault();
+        }
+    } );
     
     // EVENTO SI SE PRESIONA EL BOTON CERRAR
     $("#cerrar").on('click',function (e) {  
@@ -265,9 +283,12 @@ function AgregarItem(res){
                             items['referencia']+"</td><td>"+
                             items['descripcion']+"</td><td>"+
                             items['disponibilidad']+"</td><td>"+
-                            items['pedidos']+"</td><td> <input type= 'number' min='0'; class='alistados' value="+
-                            items['alistados']+"></input></td><td>"+
-                            items['ubicacion']+"</td></tr>"));                  
+                            items['pedidos']+"</td><td>"+
+                            "<input type= 'number' min='1' class='alistados' value='1'></td><td>"+
+                            items['ubicacion']+"</td><td>"+
+                            "<button id='eliminaritem' title='Eliminar Item' class='btn-floating waves-effect waves-light red darken-3 ' >"+
+                                "<i class='fas fa-times'></i>"+
+                            "</button></tr>"));                  
         
         $( "#TablaE" ).removeClass( "hide" );
 
@@ -282,8 +303,6 @@ function AgregarItem(res){
         })
    }
  }
-
- 
 
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
@@ -348,7 +367,7 @@ function MostrarCaja() {
         data: {"Req":Req},
         dataType: "JSON",
         success: function (res) {          
-            console.log(res);
+            
 
             //refresca las tablas, para volver a cargar los datos
             $('#tablaeditable').html("");
@@ -370,9 +389,12 @@ function MostrarCaja() {
                                                     items[i]['referencia']+"</td><td>"+
                                                     items[i]['descripcion']+"</td><td>"+
                                                     items[i]['disponibilidad']+"</td><td>"+
-                                                    items[i]['pedidos']+"</td><td > <input type= 'number' min='0' class='alistados' value="+
-                                                    items[i]['alistados']+"></input></td><td>"+
-                                                    items[i]['ubicacion']+"</td></tr>"));             
+                                                    items[i]['pedidos']+"</td><td>"+
+                                                    "<input type= 'number' min='1' class='alistados' value='1'></td><td>"+
+                                                    items[i]['ubicacion']+"</td><td>"+
+                                                    "<button id='eliminaritem' title='Eliminar Item' class='btn-floating waves-effect waves-light red darken-3 ' >"+
+                                                        "<i class='fas fa-times'></i>"+
+                                                    "</button></tr>")); 
                         }
                         // muestra la tabla
                         $( "#TablaE" ).removeClass( "hide" );

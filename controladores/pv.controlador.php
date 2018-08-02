@@ -186,7 +186,7 @@ class ControladorPV extends ControladorCajas{
                 switch ($row['estado']) {
                     case 0:
                         
-                        if ($row['recibidos'==0]) {
+                        if ($row['recibidos']==0) {
                             $mensaje='Item no Recibido';
                         }else {
                             $mensaje='Menos items';

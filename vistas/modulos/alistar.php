@@ -106,6 +106,7 @@
                 <th>Pedidos</th>
                 <th>Alistados</th>
                 <th>Ubicacion</th>
+                <th class='black-text'>Eliminar</th>
 
             </tr>
 
@@ -144,7 +145,7 @@
 
                         <div class="input-field col s4 m2 l2">
 
-                            <button id="cerrar" class="btn waves-effect red darken-4 col s12 m12 l8" >
+                            <button id="cerrar" class="btn waves-effect tea darken-4 col s12 m12 l8" >
                                 Cerrar
                             </button>
                             

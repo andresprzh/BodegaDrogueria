@@ -226,7 +226,7 @@ $$
 
 -- procedimiento que busca las cajas por el numero de caja y la requisicion
 DELIMITER $$
-	CREATE PROCEDURE BuscarCaja(IN numcaja CHAR(10),IN req CHAR(10), IN est INT(1))
+	CREATE PROCEDURE BuscarCaja(IN numcaja CHAR(10),IN req CHAR(10), IN est CHAR(2))
 	BEGIN
 		SELECT caja.no_caja, usuario.nombre,tipo_caja,abrir,cerrar,recibido
 		FROM caja 
@@ -235,10 +235,12 @@ DELIMITER $$
 		WHERE caja.no_caja LIKE numcaja 
 		AND pedido.no_req=req
 		AND caja.no_caja <> 1
-		AND caja.estado=est
+		AND caja.estado like est 
 		GROUP BY caja.no_caja ;
 	END 
 $$
+
+
 
 
 -- procedimiento que busca ITEMS de 1 caja
