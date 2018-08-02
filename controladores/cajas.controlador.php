@@ -11,19 +11,19 @@ class ControladorCajas extends ControladorAlistar {
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($Req) {
+    function __construct($req) {
 
-        parent::__construct($Req);
-        $this->modelo=new ModeloCaja($Req);
+        parent::__construct($req);
+        $this->modelo=new ModeloCaja($req);
 
     }
 
     /* ============================================================================================================================
                                                         FUNCIONES   
     ============================================================================================================================*/
-    public function ctrBuscarCaja($NumCaja){
+    public function ctrBuscarCaja($numcaja){
 
-        $busqueda=$this->modelo->mdlMostrarCaja($NumCaja);
+        $busqueda=$this->modelo->mdlMostrarCaja($numcaja);
 
         if ($busqueda->rowCount() > 0) {
 
@@ -84,12 +84,12 @@ class ControladorCajas extends ControladorAlistar {
 
     }
     // crea documento de texto
-    public function ctrDocumento($Items,$NumCaja){
+    public function ctrDocumento($items,$numcaja){
         
-        $res=$this->modelo->mdlModificarCaja($NumCaja);
+        $res=$this->modelo->mdlModificarCaja($numcaja);
         if ($res) {          
             $documento='';
-            foreach($Items as $row){
+            foreach($items as $row){
                 $origen=str_replace('BD','',$row["origen"]);
                 $destino=str_replace('VE','',$row["destino"]);
                 $destino=$origen.substr($destino,1,-1);

@@ -76,12 +76,13 @@
             <th>Referencia</th>
             <th>Descripción</th>
             <th>Cantidad</th>
+            <th data-priority="2" class='black-text'>Eliminar</th>
             
         </tr>
 
         </thead>
 
-        <tbody id="tablavista"></tbody>
+        <tbody id="tablaeditable"></tbody>
         
     </table> 
 

@@ -4,16 +4,16 @@ class ControladorAlistar {
     /* ============================================================================================================================
                                                         ATRIBUTOS   
     ============================================================================================================================*/
-    protected $Req;
+    protected $req;
     private $modelo;
 
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($Req) {
+    function __construct($req) {
         
-        $this->Req=$Req;
-        $this->modelo=new ModeloAlistar($Req);
+        $this->req=$req;
+        $this->modelo=new ModeloAlistar($req);
 
     }
 
@@ -21,9 +21,9 @@ class ControladorAlistar {
                                                         FUNCIONES   
     ============================================================================================================================*/
 
-    public function ctrBuscarItems($Cod_barras){
+    public function ctrBuscarItems($cod_barras){
         
-        $busqueda=$this->modelo->mdlMostrarItems($Cod_barras);
+        $busqueda=$this->modelo->mdlMostrarItems($cod_barras);
         
 
         if ($busqueda->rowCount() > 0) {
@@ -58,7 +58,7 @@ class ControladorAlistar {
                     // 1 si el item ya esta siendo alistado pro alguien
                     case 1:
                         $itembus["estado"]='error1';
-                        $itembus["contenido"]='Item en estado por '.$itembus['contenido']['alistador'];
+                        $itembus["contenido"]='Item en alistamiento por '.$itembus['contenido']['alistador'];
                         break;
 
                     // 2 si el item ya fue alistado en la caja
@@ -152,9 +152,9 @@ class ControladorAlistar {
 
     }
 
-    public function ctrBuscarItemCaja($NumCaja){
+    public function ctrBuscarItemCaja($numcaja){
         
-        $busqueda=$this->modelo->mslMostrarItemsCaja($NumCaja);
+        $busqueda=$this->modelo->mslMostrarItemsCaja($numcaja);
 
         if ($busqueda->rowCount() > 0) {
 
@@ -164,7 +164,7 @@ class ControladorAlistar {
 
             while($row = $busqueda->fetch()){
                 
-                if ($row['no_req']!=$this->Req[0]) {
+                if ($row['no_req']!=$this->req[0]) {
                     $itembus=['estado'=>"error2",
                     'contenido'=>"Caja sin cerrar en la requisicion ".$row['no_req']];
                     return $itembus;
@@ -198,16 +198,22 @@ class ControladorAlistar {
 
     }
 
-    public function ctrCerrarCaja($TipoCaja,$Items,$Req){
+    public function ctrCerrarCaja($tipocaja,$items,$req){
 
-        for ($i=0; $i <count($Items) ; $i++) { 
+        for ($i=0; $i <count($items) ; $i++) { 
 
-            $Cod_barras=$Items[$i]["codigo"];
-            $alistados=$Items[$i]["alistados"];
-            $resultado=$this->modelo->mdlAlistarItem($Items[$i],$TipoCaja);
+            $cod_barras=$items[$i]["codigo"];
+            $alistados=$items[$i]["alistados"];
+            $resultado=$this->modelo->mdlAlistarItem($items[$i],$tipocaja);
 
         }
 
         return $resultado;
+    }
+
+    public function ctrEliminarItemCaja($cod_barras){
+
+        return $this->modelo->mdlEliminarItemCaja($cod_barras);
+
     }
 }

@@ -16,7 +16,7 @@ $(document).ready(function(){
             dataType: "json",
             success: function (res) {
                 
-                // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
+                // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
                 for (var i in res) {
     
                     $("#requeridos").append($('<option value="'+res[i]+'">'+res[i]+'</option>'));
@@ -36,7 +36,7 @@ $(document).ready(function(){
                                                         EVENTOS   
     ============================================================================================================================*/
     
-        //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
+        //EVENTO AL CAMBIAR ENTRADA reqUERIDOS
         $(".requeridos").change(function (e) {
             // oculta los datos de la requisicion
             $( "#infreq" ).addClass( "hide" );
@@ -48,14 +48,14 @@ $(document).ready(function(){
             //consigue el numero de requerido
             var requeridos=$(".requeridos").val();
             //id usuario es obtenida de las variables de sesion
-            var Req=[requeridos,id_usuario];
+            var req=[requeridos,id_usuario];
             
             $('#cajas').html('<option value="" disabled selected>Seleccionar</option>');
             
             $.ajax({
                 url: 'ajax/pv.cajas.ajax.php',//url de la funcion
                 type: 'post',//metodo post para mandar datos
-                data: {"Req":Req},//datos que se enviaran
+                data: {"req":req},//datos que se enviaran
                 dataType: "JSON",
                 success: function (res) {
                     
@@ -129,7 +129,7 @@ $(document).ready(function(){
 
 
         // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
-        $('#tablavista').on( 'change', 'td', function () {
+        $('#tablaeditable').on( 'change', 'td', function () {
 
             // guarda el valor dle input en datatable
             var tabla=$('#tabla').DataTable();
@@ -153,7 +153,7 @@ $(document).ready(function(){
                 tabla.cell(this).data('<input type="number" class="validate" value="'+cantr+'">').draw()
             }
             
-            // celda.data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></input></td></tr>');
+            
             
             
         } );
@@ -167,6 +167,36 @@ $(document).ready(function(){
     
         });
 
+        // EVENTO SI SE PRESIONA 1 BOTON EN LA TABLA EDITABLE(ELIMINAR ITEM)
+        $('#tablaeditable').on('click', 'button', function (e) {
+            
+
+            var dt = $.fn.dataTable.tables();
+            var tabla = $(dt).DataTable();
+            
+
+            celda = table.cell(this);
+
+            var fila = table.row(this)
+            
+            // si la tabla es responsive
+            if (fila.data() == undefined) {
+
+                fila = $(this).parents('tr');
+                if (fila.hasClass('child')) {
+                    fila = fila.prev();
+                }
+            } else {
+                fila=this;
+            }
+
+            
+            tabla.row(fila).remove().draw('false');
+            
+
+            
+        });
+
         // EVENTO SI SE PRESIONA EL BOTON DE GENERAR
         $('#Registrar').click(function (e) { 
 
@@ -176,28 +206,28 @@ $(document).ready(function(){
                 buttons: ['Cancelar','Resgitrar']
                 
             })
-            .then((Registrar) => {
+            .then((registrar) => {
     
                 //si se le da click en Resgitrar procede a generar e reporte
-                if (Registrar) {
+                if (registrar) {
                     
                     //consigue el codigo de barras
-                    var Caja= $('#cajas').val();
+                    var caja= $('#cajas').val();
                     
                     //consigue el numero de requerido
                     var requeridos=$(".requeridos").val();
                     //id usuario es obtenida de las variables de sesion
-                    var Req=[requeridos,id_usuario];
+                    var req=[requeridos,id_usuario];
 
-                    // console.log(Req);
+                    // console.log(req);
                     var tabla = $('table.tablas').DataTable();
                     // se obtienen todos los datos de la tabla en una matriz
                     var datos=tabla.data().toArray();   
                     
                     // se guerda en un arreglo los datos de codigo de Baras y la cantidad recibido                    
-                    var Items=new Array();
+                    var items=new Array();
                     for (var i in datos) {
-                        Items[i]={
+                        items[i]={
                             "codbarras":datos[i][0],
                             "recibidos": $(datos[i][3]).val()
                         }                
@@ -207,32 +237,35 @@ $(document).ready(function(){
                     $.ajax({   
                         url: "ajax/pv.registrar.ajax.php",
                         type: 'post',//metodo post para mandar datos
-                        data: {"Caja":Caja,"Req":Req,"Items":Items},//datos que se enviaran
+                        data: {"caja":caja,"req":req,"items":items},//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
                             
-                            if (res['estado']==true) {
+                            
+                            if (res['estado']==true && res['contenido']) {
                                 swal({
                                     title: "¡Items registrados!",
                                     icon: "success",
                                 }).then((OK) => {
-                                    var NumCaja=$('#cajas').val();
-                                    // obtiene los 3 ultimos caracteres de la requisicion
-                                    var no_req=Req[0].substr(Req[0].length - 3);
+                                    
+                                        var numcaja=$('#cajas').val();
+                                        // obtiene los 3 ultimos caracteres de la requisicion
+                                        var no_req=req[0].substr(req[0].length - 3);
 
-                                    // crea el nombre del documento a partir de la requisicion y la caja
-                                    var nomdoc='RQ'+no_req+'C'+NumCaja+'.TR1';
+                                        // crea el nombre del documento a partir de la requisicion y la caja
+                                        var nomdoc='RQ'+no_req+'C'+numcaja+'.TR1';
 
-                                    var element = document.createElement('a');
-                                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));
-                                    element.setAttribute('download', nomdoc);
+                                        var element = document.createElement('a');
+                                        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));
+                                        element.setAttribute('download', nomdoc);
 
-                                    element.style.display = 'none';
-                                    document.body.appendChild(element);
+                                        element.style.display = 'none';
+                                        document.body.appendChild(element);
 
-                                    element.click();
+                                        element.click();
 
-                                    document.body.removeChild(element);
+                                        document.body.removeChild(element);
+   
    
                                 });
                             }else{
@@ -266,13 +299,13 @@ $(document).ready(function(){
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
-        var Req=[requeridos,id_usuario];
+        var req=[requeridos,id_usuario];
         
         // ajax para ejecutar un script php mandando los datos
         return $.ajax({
           url: 'ajax/pv.items.ajax.php',//url de la funcion
           type: 'post',//metodo post para mandar datos
-          data: {"codigo":codigo,"Req":Req},//datos que se enviaran
+          data: {"codigo":codigo,"req":req},//datos que se enviaran
           dataType: 'json',
           success: function (res) {
 
@@ -304,7 +337,10 @@ $(document).ready(function(){
                         item['referencia'],
                         item['descripcion'],
                         // cantr
-                        '<input type="number" class="validate" value="'+cantr+'">'
+                        '<input type="number" class="validate" value="'+cantr+'">',
+                        "<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' >" +
+                            "<i class='fas fa-times'></i>" +
+                        "</button>"
                     ] ).draw(false);
                 }
                 $( "#Registrar" ).removeClass( "hide" ); 

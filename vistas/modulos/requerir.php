@@ -28,9 +28,9 @@
 <!-- ============================================================================================================================
                                                     ICONO DE CARGA  
 ============================================================================================================================ -->
-        <div class="row  " style="padding-top:15vh;">
+        <div class="row hide" id="carga"  style="padding-top:15vh;">
 
-            <div class="col offset-s4 offset-l6 offset-m5 hide">
+            <div class="col offset-s4 offset-l6 offset-m5 " >
 
                 <div class="preloader-wrapper big active ">
                     <div class="spinner-layer spinner-green-only">
@@ -57,53 +57,59 @@
                                                       SUBIR ARCHIVO
     ============================================================================================================================ -->
             <?php
-                
+            
+            
                 //comprueba si hay algun error con el archivo
-                if (isset($_FILES["archivo"]["tmp_name"])) {
-                    
-                    if ( 0 != $_FILES['archivo']['error'] ) {
-                        
-                        echo '<script>
+            if (isset($_FILES["archivo"]["tmp_name"])) {
+                
+                if (0 != $_FILES['archivo']['error']) {
+
+                    echo '<script>
                         swal({
                             title: "¡Error al subir el acrhivo¡",
                             icon: "error"
                         });
                         </script>';
-                    }
+                }
                     //abre el archivo si no hay errores
-                    else {
-                        
-                        
+                else {
 
 
-                        $tipos_permitidos = array ( 'text/plain' );//tipos permitidos de archivos
-                        $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-                        $tipo = finfo_file( $fileInfo, $_FILES['archivo']['tmp_name'] );//tipo de archivo subido
+
+
+                    $tipos_permitidos = array('text/plain');//tipos permitidos de archivos
+                    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $tipo = finfo_file($fileInfo, $_FILES['archivo']['tmp_name']);//tipo de archivo subido
                         // SI EL ARCHIVO NO ES DE TIPO TEXTO NO LO ABRE
-                        if ( !in_array($tipo, $tipos_permitidos) ) {
-
-                            echo ( '<script>
+                    if (!in_array($tipo, $tipos_permitidos)) {
+                        
+                        echo ('<script>
                                 swal({
                                     title: "¡Tipo de archivo no valido¡",
                                     icon: "error"
                                 });
-                                </script> ' );
+                                </script> ');
 
-                        }else {
-
-                            $archivo=file($_FILES['archivo']['tmp_name']); 
+                    } else {
+                        
+                        $archivo = file($_FILES['archivo']['tmp_name']); 
                             //se crea objeto requerir, que busca y manda los items a la base de datos
-                            $Requerir=new ControladorRequerir($archivo);
-                            
-                        }
-                        
-                        finfo_close( $fileInfo );
-                        
-                        
+                        $Requerir = new ControladorRequerir($archivo);
+                        if (isset($Requerir)) {
+                            echo ('<script> 
+                            $("#carga").addClass("hide");
+                        </script>');   
+                            }
                     }
-                    
+
+                    finfo_close($fileInfo);
+
                 }
                 
+            
+            }
+            
+
             ?>
             
         </div>

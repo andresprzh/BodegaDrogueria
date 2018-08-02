@@ -5,14 +5,14 @@ class ModeloPV extends Conexion{
                                                         ATRIBUTOS  
     ============================================================================================================================*/
     
-    private $Req;
+    private $req;
 
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($Req) {
+    function __construct($req) {
 
-        $this->Req=$Req;
+        $this->req=$req;
         parent::__construct();
 
     }
@@ -21,37 +21,38 @@ class ModeloPV extends Conexion{
                                                         FUNCIONES   
     ============================================================================================================================*/
 
-
-    public function mdlMostrarItemPV($Cod_bar){
+    // busca y muestra un item
+    public function mdlMostrarItemPV($cod_bar){
         $tabla="ITEMS";
         $item='ID_CODBAR';
         
-        return $this->buscaritem($tabla,$item,$Cod_bar);
+        return $this->buscaritem($tabla,$item,$cod_bar);
         
     }
 
-    public function mdlRegistrarItems($Items,$numcaja){   
+    // registra el item en la abla de recibidos
+    public function mdlRegistrarItems($items,$numcaja){   
         // guarda datos de la requisicion
-        $no_req=$this->Req[0];$persona=$this->Req[1];
+        $no_req=$this->req[0];$persona=$this->req[1];
         $datos="";
-        for($i=0;$i<count($Items);$i++) {
-            $datos.="(:Item$i,:No_Req,:no_caja,:recibidos$i),";
+        for($i=0;$i<count($items);$i++) {
+            $datos.="(:item$i,:no_req,:no_caja,:recibidos$i),";
         }
 
         $datos=substr($datos, 0, -1).';';
 
-        $sql='REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) VALUES'. $datos;
+        $sql='REPLACE INTO recibido(item,no_req,no_caja,recibidos) VALUES'. $datos;
 
         $stmt= $this->link->prepare($sql);
 
         $i=0;
-        foreach ($Items as $row) {
-            $stmt->bindParam(":Item$i",$row['item'],PDO::PARAM_STR);
+        foreach ($items as $row) {
+            $stmt->bindParam(":item$i",$row['item'],PDO::PARAM_STR);
             $stmt->bindParam(":recibidos$i",$row['recibidos'],PDO::PARAM_INT);
             $i++;
         }
 
-        $stmt->bindParam(":No_Req",$no_req,PDO::PARAM_STR);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
         
         
@@ -65,7 +66,7 @@ class ModeloPV extends Conexion{
     //modifica registro en tabla para agregar la fecha en la que fue recibido
     public function mdlModCaja($NumCaja){
         // $this->link->closeCursor();
-        $persona=$this->Req[1];
+        $persona=$this->req[1];
         
         $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=2,recibido=NOW() WHERE no_caja=:caja;" );
         
@@ -80,19 +81,20 @@ class ModeloPV extends Conexion{
         return ($res);  
     }
 
+    // muestra una requisicion
     public function mdlMostrarReq(){
 
         $tabla='requisicion';
         $item='no_req';
-        $valor=$this->Req[0];
+        $valor=$this->req[0];
         
         return $this->buscaritem($tabla,$item,$valor);
 
         
     }    
 
-    public function mdlMostrarItemsRec($numcaja)
-    {
+    // muestra los items recibidos
+    public function mdlMostrarItemsRec($numcaja){
         $sql="SELECT lo_origen,lo_destino,ID_CODBAR,recibidos,recibido.estado FROM recibido INNER JOIN requisicion on requisicion.no_req=recibido.no_req INNER JOIN ITEMS on ITEMS.ID_ITEM=recibido.item WHERE no_caja=:no_caja";
 
         $stmt= $this->link->prepare($sql );
@@ -103,15 +105,15 @@ class ModeloPV extends Conexion{
         return ($stmt);  
     }
 
-    public function mdlMostrarCajaPV($NumCaja)
-    {
-        $No_Req=$this->Req[0];$alistador=$this->Req[1];
+    // muestra las cajas enviadas
+    public function mdlMostrarCajaPV($NumCaja){
+        $no_req=$this->req[0];$alistador=$this->req[1];
         
 
-        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:No_Req,1);");
+        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:no_req,1);");
 
         $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
-        $stmt->bindParam(":No_Req",$No_Req,PDO::PARAM_STR);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $stmt->execute();
 

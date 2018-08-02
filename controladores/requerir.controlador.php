@@ -2,15 +2,15 @@
 
 class ControladorRequerir{
 
-    private $Doc_Req;
-    private $Cabecera;
-    private $Items;
+    private $doc_req;
+    private $cabecera;
+    private $items;
     public $Estado;
 
-   function __construct($Doc_Req) {
+   function __construct($doc_req) {
 
-        //se asigna el documento a la variable Doc_Req
-        $this->Doc_Req=$Doc_Req;
+        //se asigna el documento a la variable doc_req
+        $this->doc_req=$doc_req;
         
         //busca los datos de cabecera y los guarda en el parametro Cabecera
         $this->ctrSetCabecera();
@@ -18,7 +18,7 @@ class ControladorRequerir{
         //busca si ya existe la requisicion en la base de datos
         $modelo=new ModeloRequierir();
         $item='No_Req';
-        $valor=$this->Cabecera[0];
+        $valor=$this->cabecera[0];
 
 
         //si no encuentra el numero de la requisicion no la sube a la base de datos
@@ -46,8 +46,10 @@ class ControladorRequerir{
                     </script>';       
                 
                 echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                    <p class="red-text text-darken-2">Error: Requisicion '.$this->Cabecera[0].' ya subida</p> 
+                    <p class="red-text text-darken-2">Error: Requisicion '.$this->cabecera[0].' ya subida</p> 
                 </div>';
+
+                
                 
             }
             else{
@@ -68,7 +70,7 @@ class ControladorRequerir{
     // funcion que asigna la cabecera
     private function ctrSetCabecera(){
 
-        foreach($this->Doc_Req as $linea){
+        foreach($this->doc_req as $linea){
             
             $linea=($linea.'<br>');
 
@@ -140,7 +142,7 @@ class ControladorRequerir{
                     $cabecera=[$req,$fecha,$lo,$ld,$tipInv,$sol];
                     
                     //asigna los dtaos de cabecera al parametro de la clase
-                    $this->Cabecera=$cabecera;
+                    $this->cabecera=$cabecera;
                     
                     // si ya encontro todos los datos decabecera se sale del ciclo
                     break;
@@ -156,9 +158,9 @@ class ControladorRequerir{
      //funcion que asigna los items
      private function ctrSetItems(){
 
-        $StringItem='';
+        $stringItem='';
 
-        foreach($this->Doc_Req as $linea){
+        foreach($this->doc_req as $linea){
 
             $linea=($linea.'<br>');
 
@@ -168,7 +170,7 @@ class ControladorRequerir{
                 
                 //obtienen los datos de cada item por linea
                 $items[0]=substr($linea,1,11); //numero referencia item
-                $items[1]=$this->Cabecera[0];//se obtiene el numero de requisicion
+                $items[1]=$this->cabecera[0];//se obtiene el numero de requisicion
                 //se cambian las comas del dato por espacios en blanco
                 $items[2]=substr($linea,109,6);//ubiacion item
                 $items[3]=str_replace(',','',substr($linea,71,5));//cantidad items disponibles
@@ -187,11 +189,11 @@ class ControladorRequerir{
                 $items[0]=$id_item["ID_ITEM"];
                 
                 //pone los datos del item en un String
-                $StringItem.='(';
+                $stringItem.='(';
                 for ($i=0; $i <count($items) ; $i++) { 
-                    $StringItem.='"'.$items[$i].'",';
+                    $stringItem.='"'.$items[$i].'",';
                 }
-                $StringItem=substr($StringItem, 0, -1).'),';
+                $stringItem=substr($stringItem, 0, -1).'),';
                 
              
             //busca el numero de requisicion solo si no se ha encontrado
@@ -199,19 +201,19 @@ class ControladorRequerir{
             
         }
         
-        $StringItem = substr($StringItem, 0, -1).';';
+        $stringItem = substr($stringItem, 0, -1).';';
 
 
         //asigna al parametro de Items todos lo  items encontrados
         
-        $this->Items=$StringItem; 
+        $this->items=$stringItem; 
     }
 
     // funcion que sube los items
     private function ctrSubirReq(){
         $modelo=new ModeloRequierir();
 
-        $resultado=$modelo->mdlSubirReq($this->Cabecera,$this->Items);
+        $resultado=$modelo->mdlSubirReq($this->cabecera,$this->items);
         
         if ($resultado==true) {
             echo '<script>
@@ -222,7 +224,7 @@ class ControladorRequerir{
                     </script>';
 
             echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                    <p class="green-text text-darken-5">Requisicion '.$this->Cabecera[0].' subida Exitosamente</p> 
+                    <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
                 </div>';
         }else {
             

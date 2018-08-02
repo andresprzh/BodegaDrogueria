@@ -1,24 +1,22 @@
 <?php
 
-include "../controladores/cajas.controlador.php";
 
+include "../controladores/alistar.controlador.php";
 
 require "../modelos/conexion.php";
-require "../modelos/cajas.modelo.php";
+
 require "../modelos/alistar.modelo.php";
 
 /* ============================================================================================================================
-                                                CREA DOCUMENTO PLANO DE LA CAJA
+                                                ELIMINA 1 ITEM DE LA CAJA
 ============================================================================================================================*/
-// obtienen los datos dela requisicion (numero requisicion y codigo alistador)
+$cod_barras=$_POST['codigo'];
+
 $req=$_POST["req"];
-$numcaja=$_POST['numcaja'];
-$items=$_POST['items'];
 
 //crea objeto controlador 
-$controlador=new ControladorCajas($req);
+$controlador=new ControladorAlistar($req);
 
-$resultado=$controlador->ctrDocumento($items,$numcaja);
-
+$resultado=$controlador->ctrEliminarItemCaja($cod_barras);
 
 print json_encode($resultado);

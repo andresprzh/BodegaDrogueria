@@ -10,25 +10,25 @@ require "../modelos/alistar.modelo.php";
                                                 MUESTRA LAS CAJAS O LOS ITEMS DE LA CAJA
 ============================================================================================================================*/
 // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
-$Req=$_POST["Req"];
+$req=$_POST["req"];
 
 //crea objeto controlador 
-$controlador=new ControladorCajas($Req);
+$controlador=new ControladorCajas($req);
 
 
 // si se pasa el numeor de la caja se busca dicha caja 
-if (isset($_POST['NumCaja'])) {
+if (isset($_POST['numcaja'])) {
 
-    $NumCaja=$_POST['NumCaja'];
+    $numcaja=$_POST['numcaja'];
     // regresa el resultado de la buqueda como un objeto JSON
-    $respuesta=$controlador->ctrBuscarItemCaja($NumCaja);
+    $respuesta=$controlador->ctrBuscarItemCaja($numcaja);
     
 // si no se paso el numero de la caja busca todas las cajas de la requisicion  seleccionada
 }else{
 
-    $NumCaja='%%';
+    $numcaja='%%';
     // regresa el resultado de la buqueda como un objeto JSON
-    $respuesta=$controlador->ctrBuscarCaja($NumCaja);
+    $respuesta=$controlador->ctrBuscarCaja($numcaja);
     
 }
 

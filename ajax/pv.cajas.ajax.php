@@ -10,8 +10,8 @@ require "../modelos/alistar.modelo.php";
                                                 MUESTRA LAS CAJAS QUE LLEGARON AL PUNTO DE VENTA
 ============================================================================================================================*/
 // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
-$Req=$_POST["Req"];
-$controlador=new ControladorPV($Req);
+$req=$_POST["req"];
+$controlador=new ControladorPV($req);
 
 $cont=0;
 // regresa el resultado de la buqueda como un objeto JSON

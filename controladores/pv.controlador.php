@@ -12,10 +12,10 @@ class ControladorPV extends ControladorCajas{
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($Req) {
+    function __construct($req) {
         
-        parent::__construct($Req);
-        $this->modelo=new ModeloPV($Req);
+        parent::__construct($req);
+        $this->modelo=new ModeloPV($req);
 
     }
 
@@ -24,8 +24,8 @@ class ControladorPV extends ControladorCajas{
     ============================================================================================================================*/
 
     // busca el item en la requisicion
-    public function ctrBuscarItemPV($Cod_Bar){
-        $busqueda=$this->modelo->mdlMostrarItemPV($Cod_Bar);
+    public function ctrBuscarItemPV($cod_bar){
+        $busqueda=$this->modelo->mdlMostrarItemPV($cod_bar);
 
         if ($busqueda->rowCount() > 0) {
 
@@ -44,9 +44,11 @@ class ControladorPV extends ControladorCajas{
 
         return $item;
     }
+
+
     // busca cajas visibles para el punto de venta
-    public function ctrBuscarCajaPV($NumCaja){
-        $busqueda=$this->modelo->mdlMostrarCajaPV($NumCaja);
+    public function ctrBuscarCajaPV($numcaja){
+        $busqueda=$this->modelo->mdlMostrarCajaPV($numcaja);
         
         if ($busqueda->rowCount() > 0) {
 
@@ -106,30 +108,29 @@ class ControladorPV extends ControladorCajas{
         return $cajabus;
     }
 
-
-    public function ctrRegistrarItems($Items,$NumCaja){   
+    // modifca los valores de los items en la tabla y luego genera el documento
+    public function ctrRegistrarItems($items,$numcaja){   
         $i=0;
         // busca el id del item usando el codigo de barras de cada item
-        foreach ($Items as $row) {
+        foreach ($items as $row) {
 
             $busqueda=$this->modelo->mdlMostrarItemPV($row['codbarras']);
-            $IDitem = $busqueda->fetch();
-            $Items[$i]['item']=$IDitem['ID_ITEM'];
+            $iditem = $busqueda->fetch();
+            $items[$i]['item']=$iditem['ID_ITEM'];
             $i++;
         }
         // libera conexion para hace otra sentencia
         $busqueda->closeCursor();
 
         // agrega los datos en la datbla de recibidos
-        $resultado['estado']=$this->modelo->mdlRegistrarItems($Items,$NumCaja);
+        $resultado['estado']=$this->modelo->mdlRegistrarItems($items,$numcaja);
 
-        // libera conexion para hace otra sentencia
         
         //si registra los items, modifica la tabla de pedido para que la caja aperezca como recibida
-        if ($resultado) {
-            $resultado['estado']=$this->modelo->mdlModCaja($NumCaja);
-            if($resultado['estado']){
-                $resultado['contenido']=$this->ctrDocumentoR($NumCaja);
+        if ($resultado==true) {
+            $resultado['estado']=$this->modelo->mdlModCaja($numcaja);
+            if($resultado['estado']==true){
+                $resultado['contenido']=$this->ctrDocumentoR($numcaja);
             }
         }
         
@@ -137,6 +138,7 @@ class ControladorPV extends ControladorCajas{
         
     }
 
+    // busca la srequisiciones
     public function ctrBuscarReq(){
         
         $busqueda=$this->modelo->mdlMostrarReq();
@@ -154,7 +156,7 @@ class ControladorPV extends ControladorCajas{
 
         }else {
             $requisicion['estado']='error';
-            $requisicion['contenido']='Requisicion no encontrada';
+            $requisicion['contenido']='requisicion no encontrada';
         }
         // libera conexion para hace otra sentencia
         $busqueda->closeCursor();
@@ -162,8 +164,8 @@ class ControladorPV extends ControladorCajas{
     }
 
     // crea archivo plano de la caja recibida
-    private function ctrDocumentoR($NumCaja){
-        $busqueda=$this->modelo->mdlMostrarItemsRec($NumCaja);
+    private function ctrDocumentoR($numcaja){
+        $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
 
         
         if ($busqueda->rowCount()>0) {
@@ -213,7 +215,7 @@ class ControladorPV extends ControladorCajas{
                 $string.=($localicacion.$codigo.$alistado.$mensaje."\n");
             }
         }else {
-            $string='error';
+            $string=false;
         }
 
         return $string;

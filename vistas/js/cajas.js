@@ -79,9 +79,7 @@ $(document).ready(function(){
             
             table.cell(this).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'">').draw()
         }
-        
-        // celda.data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></input></td></tr>');
-        
+                
         
     } );
 
@@ -90,14 +88,14 @@ $(document).ready(function(){
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
-        var Req=[requeridos,id_usuario];
+        var req=[requeridos,id_usuario];
         
-        var NumCaja=$('#NumeroCaja').html();
+        var numcaja=$('#NumeroCaja').html();
         var datos=$('#TablaM').DataTable().data().toArray();
         
-        var Items=new Array();
+        var items=new Array();
         for (var i in datos) {
-            Items[i]={
+            items[i]={
                 "codigo":datos[i][0],
                 "alistados": datos[i][5],
                 "mensajes": $(datos[i][7]).val(),
@@ -111,16 +109,16 @@ $(document).ready(function(){
                 
             url:"ajax/cajas.documento.ajax.php",
             method:"POST",
-            data: {"Req":Req,"Items":Items,"NumCaja":NumCaja},
+            data: {"req":req,"items":items,"numcaja":numcaja},
             dataType: 'JSON',
             success: function (res) {
                 console.log(res);
-                var NumCaja=$('#NumeroCaja').html();
+                var numcaja=$('#NumeroCaja').html();
                 // obtiene los 3 ultimos caracteres de la requisicion
-                var no_res=Req[0].substr(Req[0].length - 3);
+                var no_res=req[0].substr(req[0].length - 3);
 
                 // crea el nombre del documento a partir de la requisicion y la caja
-                var nomdoc='RQ'+no_res+'C'+NumCaja+'.TR1';
+                var nomdoc='RQ'+no_res+'C'+numcaja+'.TR1';
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({
@@ -159,17 +157,16 @@ $(document).ready(function(){
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
 function MostrarCajas(){
         
-    var item;
     //consigue el numero de requerido
     var requeridos=$(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
-    var Req=[requeridos,id_usuario];
+    var req=[requeridos,id_usuario];
 
     return $.ajax({
 
         url:"ajax/cajas.cajas.ajax.php",
         method:"POST",
-        data: {"Req":Req},
+        data: {"req":req},
         dataType: "JSON",
         success: function (res) {
             
@@ -202,7 +199,7 @@ function MostrarCajas(){
                     }
 
                     $('#tablacajas').append($("<tr>"+
-                                        "<td class='NumCaja'>"+caja['no_caja']+"</td>"+
+                                        "<td class='numcaja'>"+caja['no_caja']+"</td>"+
                                         "<td class='alistadores'>"+caja['alistador']+"</td>"+
                                         "<td class='tipocajas'>"+caja['tipocaja']+"</td>"+
                                         "<td>"+caja['abrir']+"</td>"+
@@ -226,7 +223,7 @@ function MostrarCajas(){
                         }
 
                         $('#tablacajas').append($("<tr>"+
-                                            "<td class='NumCaja'>"+caja[i]['no_caja']+"</td>"+
+                                            "<td class='numcaja'>"+caja[i]['no_caja']+"</td>"+
                                             "<td class='alistadores'>"+caja[i]['alistador']+"</td>"+
                                             "<td class='tipocajas'>"+caja[i]['tipocaja']+"</td>"+
                                             "<td>"+caja[i]['abrir']+"</td>"+
@@ -255,14 +252,14 @@ function MostrarItemsCaja(e) {
     //obtienen los datos de la caja para pasarlo al modal
     var datos=table.row(e).data();
     
-    var NumCaja=datos[0];
+    var numcaja=datos[0];
     var alistador=datos[1];
     var tipocaja=datos[2];
     var cierre=datos[4];
 
     
     // se muestran los datos generales de la caja
-    $('#NumeroCaja').html(NumCaja);
+    $('#NumeroCaja').html(numcaja);
     $('#alistador').html(alistador);
     $('#tipocaja').html(tipocaja);
     $('#cierre').html(cierre);
@@ -275,26 +272,25 @@ function MostrarItemsCaja(e) {
         
     
     //espera a que la funcion termine para reiniciar las tablas
-    $.when(MostrarItems(NumCaja)).done(function(){
+    $.when(MostrarItems(numcaja)).done(function(){
         //Reinicia Tabla
         table[1]=iniciar_tabla("#TablaM");
     });
 }
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function MostrarItems(NumCaja){
+function MostrarItems(numcaja){
 
-    var item;
     //consigue el numero de requerido
     var requeridos=$(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
-    var Req=[requeridos,id_usuario];
+    var req=[requeridos,id_usuario];
 
     return $.ajax({
 
         url:"ajax/cajas.cajas.ajax.php",
         method:"POST",
-        data: {"Req":Req, "NumCaja":NumCaja},
+        data: {"req":req, "numcaja":numcaja},
         dataType: "JSON",
         success: function (res) {
 

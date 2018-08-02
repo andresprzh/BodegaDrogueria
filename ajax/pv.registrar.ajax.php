@@ -11,12 +11,12 @@ require "../modelos/alistar.modelo.php";
 /* ============================================================================================================================
                                                 REGISTRA LOS ITEMS DE LA CAJA Y HACE EL INFORME
 ============================================================================================================================*/
-$Req=$_POST['Req'];
-$Items=$_POST['Items'];
-$NumCaja=$_POST['Caja'];
+$req=$_POST['req'];
+$items=$_POST['items'];
+$numcaja=$_POST['caja'];
 
-$controlador=new ControladorPV($Req);
+$controlador=new ControladorPV($req);
 
-$resultado=$controlador->ctrRegistrarItems($Items,$NumCaja);
+$resultado=$controlador->ctrRegistrarItems($items,$numcaja);
 
 print json_encode($resultado);

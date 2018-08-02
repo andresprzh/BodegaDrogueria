@@ -19,66 +19,32 @@ class ModeloAlistar extends Conexion{
     /* ============================================================================================================================
                                                         FUNCIONES   
     ============================================================================================================================*/
-    
-    //busca items de la tabla pedido usando el codigo de barras
-    public function mdlMostrarItems($Cod_barras){
-        
+    //funcion que asigna los la cantidad alistada a cada item en la caja
+    public function mdlAlistarItem($items,$tipocaja){
+
+        // obtiene numero de rquisicion y el nombre del alistador
         $no_req=$this->req[0];$alistador=$this->req[1];
-        $stmt= $this->link->prepare("CALL buscarcod(:Cod_barras,:no_req,:alistador,'%%');");
-
-        $stmt->bindParam(":Cod_barras",$Cod_barras,PDO::PARAM_STR);
+        $cod_barras=$items["codigo"];
+        $alistados=$items["alistados"];
+        
+        $stmt= $this->link->prepare('CALL empacar(:cod_barras,:alistados,:alistador,:tipocaja,:no_req)');
+        
+        $stmt->bindParam(":cod_barras",$cod_barras,PDO::PARAM_STR);
+        $stmt->bindParam(":alistados",$alistados,PDO::PARAM_INT);
+        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
+        $stmt->bindParam(":tipocaja",$tipocaja,PDO::PARAM_STR);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
-        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
-
-        $stmt->execute();
-
-        $res=$stmt;
-
-        return $stmt;
-
-        // cierra la conexion
-        $stmt=null;
-
-    }
-
-    //muestra el numero de la caja correspondiente a la requisicion
-    public function mdlMostrarNumCaja(){   
-        
-       $alistador=$this->req[1];
-        
-        $stmt= $this->link->prepare("SELECT numerocaja(:alistador) AS numcaja");
-
-        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
 
         $res=$stmt->execute();
-
-        
-        return $stmt;
-
-        // cierra la conexion
-        $stmt=null;
-
-    }
-
-    public function mslMostrarItemsCaja($NumCaja){
-        $No_req=$this->req[0];$alistador=$this->req[1];
-        
-
-        $stmt= $this->link->prepare("CALL buscarcod('%%','%%',:alistador,:NumCaja);");
-
-        
-        // $stmt->bindParam(":No_req",$No_req,PDO::PARAM_STR);
-        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
-        $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return $stmt;
+        // $stmt->closeCursor();
+        // retorna el resultado de la sentencia
+        return $res;
 
         // cierra la conexion
         $stmt=null;
+        
     }
-
+    
     //crea una caja nueva correspoendiente a la requisicion  
     public function mdlCrearCaja(){
 
@@ -98,31 +64,79 @@ class ModeloAlistar extends Conexion{
         $stmt=null;
     }
 
-    //funcion que asigna los la cantidad alistada a cada item en la caja
-    public function mdlAlistarItem($Items,$TipoCaja){
-
-        // obtiene numero de rquisicion y el nombre del alistador
+    // saca el item de una caja cambiando la caja a 1 su estado a 0 y la cantidad alistada a 0
+    public function mdlEliminarItemCaja($cod_barras){
         $no_req=$this->req[0];$alistador=$this->req[1];
-        $Cod_barras=$Items["codigo"];
-        $alistados=$Items["alistados"];
-        // $sql='CALL empacar("'.$Cod_barras.'",'.$alistados.','.$alistador.',"'.$TipoCaja.'","'.$no_req.'")';
-        $stmt= $this->link->prepare('CALL empacar(:Cod_barras,:alistados,:alistador,:TipoCaja,:no_req)');
-        // $stmt= $this->link->prepare($sql);
+        
+        $sql="UPDATE pedido SET no_caja=1,estado=0,alistado=0 WHERE item=(SELECT ID_ITEM FROM ITEMS WHERE ID_CODBAR=:cod_barras);";
 
-        $stmt->bindParam(":Cod_barras",$Cod_barras,PDO::PARAM_STR);
-        $stmt->bindParam(":alistados",$alistados,PDO::PARAM_INT);
-        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
-        $stmt->bindParam(":TipoCaja",$TipoCaja,PDO::PARAM_STR);
-        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+        $stmt= $this->link->prepare($sql);
+
+        $stmt->bindParam(":cod_barras",$cod_barras,PDO::PARAM_STR);
 
         $res=$stmt->execute();
-        // $stmt->closeCursor();
-        // retorna el resultado de la sentencia
+        
         return $res;
 
         // cierra la conexion
         $stmt=null;
-        
     }
+
+    //busca items de la tabla pedido usando el codigo de barras
+    public function mdlMostrarItems($cod_barras){
+        
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        $stmt= $this->link->prepare("CALL buscarcod(:cod_barras,:no_req,:alistador,'%%');");
+
+        $stmt->bindParam(":cod_barras",$cod_barras,PDO::PARAM_STR);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $res=$stmt;
+
+        return $stmt;
+
+        // cierra la conexion
+        $stmt=null;
+
+    }
+
+    public function mslMostrarItemsCaja($numcaja){
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        
+
+        $stmt= $this->link->prepare("CALL buscarcod('%%','%%',:alistador,:numcaja);");
+
+        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
+        $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $stmt;
+
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    //muestra el numero de la caja correspondiente a la requisicion
+    public function mdlMostrarNumCaja(){   
+        
+        $alistador=$this->req[1];
+         
+         $stmt= $this->link->prepare("SELECT numerocaja(:alistador) AS numcaja");
+ 
+         $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
+ 
+         $res=$stmt->execute();
+ 
+         
+         return $stmt;
+ 
+         // cierra la conexion
+         $stmt=null;
+ 
+     }
 
 }

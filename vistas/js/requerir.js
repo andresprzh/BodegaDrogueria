@@ -4,5 +4,9 @@ $(document).ready(function(){
     $("#archivo").change(function(e){
         $("#subir").submit();
     });
+     
+    $("#urlarchivo").change(function (e) { 
+        $("#carga").removeClass("hide");
+    });
     
 });

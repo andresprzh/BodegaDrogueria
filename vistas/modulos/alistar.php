@@ -61,7 +61,7 @@
 
         <h4 class="header center " >Items</h4>     
 
-        <table class="tablas centered "  >
+        <table class="tablas centered responsive"  >
 
             <thead>
             
@@ -93,7 +93,7 @@
 
         <h4 class="header center green-text text-darken-3"  ><b>Caja</b></h4>
 
-        <table class="tablas centered"  >
+        <table class="tablas centered responsive"  >
         
             <thead>
 
@@ -106,7 +106,7 @@
                 <th>Pedidos</th>
                 <th>Alistados</th>
                 <th>Ubicacion</th>
-                <th class='black-text'>Eliminar</th>
+                <th data-priority="2" class='black-text'>Eliminar</th>
 
             </tr>
 

@@ -11,7 +11,7 @@ require "../modelos/alistar.modelo.php";
                                                 CREA Y/O MUESTRA LOS ITEMS DE LA CAJA
 ============================================================================================================================*/
 // obtienen los datos de la requisicion (numero requisicion y codigo alistador)
-$req=$_POST["Req"];
+$req=$_POST["req"];
 //crea objeto controlador 
 $controlador=new ControladorAlistar($req);
 

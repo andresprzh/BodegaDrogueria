@@ -5,14 +5,14 @@ class ModeloCaja extends Conexion{
                                                         ATRIBUTOS  
     ============================================================================================================================*/
     
-    private $Req;
+    private $req;
 
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($Req) {
+    function __construct($req) {
 
-        $this->Req=$Req;
+        $this->req=$req;
         parent::__construct();
 
     }
@@ -22,24 +22,24 @@ class ModeloCaja extends Conexion{
     ============================================================================================================================*/
 
     // muestra cajas que no se han recibido
-    public function mdlMostrarCaja($NumCaja)
+    public function mdlMostrarCaja($numcaja)
     {
-        $No_Req=$this->Req[0];$alistador=$this->Req[1];
+        $no_req=$this->req[0];$alistador=$this->req[1];
 
         $sql = 'SELECT caja.no_caja, usuario.nombre,tipo_caja,abrir,cerrar,recibido
 		FROM caja 
 		INNER JOIN pedido ON pedido.no_caja=caja.no_caja
 		INNER JOIN usuario ON usuario.id_usuario=Alistador
-		WHERE caja.no_caja LIKE :NumCaja 
-		AND pedido.no_req=:No_Req
+		WHERE caja.no_caja LIKE :numcaja 
+		AND pedido.no_req=:no_req
 		AND caja.no_caja <> 1
 		AND caja.estado <> 2 
         GROUP BY caja.no_caja;';
         
         $stmt= $this->link->prepare($sql);
 
-        $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
-        $stmt->bindParam(":No_Req",$No_Req,PDO::PARAM_STR);
+        $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_STR);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $stmt->execute();
 
@@ -51,13 +51,13 @@ class ModeloCaja extends Conexion{
     }
 
     // modifica caja asignando fecha en la que se envio y cambiando su estado 
-    public function mdlModificarCaja($NumCaja)
+    public function mdlModificarCaja($numcaja)
     {
-        $No_Req=$this->Req[0];$alistador=$this->Req[1];
+        $no_req=$this->req[0];$alistador=$this->req[1];
 
         $stmt= $this->link->prepare("UPDATE caja SET enviado=NOW(),estado=1 WHERE no_caja=:no_caja");
 
-        $stmt->bindParam(":no_caja",$NumCaja,PDO::PARAM_STR);
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
 
         return $stmt->execute();
         // cierra la conexion
