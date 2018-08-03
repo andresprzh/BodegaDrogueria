@@ -45,6 +45,7 @@
                 echo '<li><a href="alistar" ><i class="fas fa-clipboard-list"></i>Alistar</a></li>';
                 echo '<li><a href="cajas" ><i class="fas fa-boxes"></i>Cajas</a></li>';
                 echo '<li><a href="pv" ><i class="fas fa-clipboard-check"></i>Pventa</a></li>';
+                echo '<li><a href="usuarios" ><i class="fas fa-users"></i>Usuario</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==2) {
                 echo '<li><a href="requerir" ><i class="fas fa-upload"></i>Subir archivo requisicion</a></li>';

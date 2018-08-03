@@ -78,7 +78,8 @@
         "alistar",
         "cajas",
         "salir",
-        "pv"
+        "pv",
+        "usuarios"
         ];
 
     echo "<main>";

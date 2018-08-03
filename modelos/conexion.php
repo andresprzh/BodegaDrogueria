@@ -11,8 +11,6 @@ class Conexion{
           "root",
           "");
 
-
-        // $link=new mysqli('localhost','root','','drogueria');
         
         //permite usar caracteres latinos
         $link->exec("set names utf8");
@@ -50,7 +48,7 @@ class Conexion{
             $stmt->execute();
   
             // return $stmt->fetchAll();
-            return  $stmt->fetch();
+            return  $stmt;
           }
   
           // cierra conexion base de datos

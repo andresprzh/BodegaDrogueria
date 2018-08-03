@@ -1,12 +1,18 @@
 <?php
 class ControladorUsuarios {
 
-    
+    private $modelo;
+
+    function __construct($req) {
+
+        $this->modelo=new ModeloUsuarios();
+
+    }
    
     /*==================================================
                     INGREOS DE USUARIO
     ================================================*/
-    static public function ctrIngresoUsuario(){
+    public function ctrIngresoUsuario(){
         if (isset($_POST["usuario"])) {
             if (preg_match('/^[a-zA-Z0-9]+$/',$_POST["usuario"]) &&
             (preg_match('/^[a-zA-Z0-9]+$/',$_POST["contraseña"]))) {
@@ -20,11 +26,8 @@ class ControladorUsuarios {
                 //obtiene la contrseña ingresada
                 $contraseña=$_POST["contraseña"];
                 
-                //Busca los datos del usuario, si existe 
-                $modelo=new ModeloUsuarios();
-                
-                // $respuesta=ModeloUsuarios::MdlMostrarUsuarios($tabla,$item,$valor);
-                $respuesta=$modelo->mdlMostrarUsuarios($item,$valor);
+                                
+                $respuesta=$this->modelo->mdlMostrarUsuarios($item,$valor);
                 $respuesta=$respuesta->fetch();
                 
                 //si encuentra el usuario inicia sesion
@@ -52,5 +55,67 @@ class ControladorUsuarios {
                 
             }
         }
+    }
+
+    public function ctrBuscarUsuarios()
+    {
+        
+        $busqueda=$this->modelo->mdlMostrarUsuarios();
+
+        if ($busqueda->rowCount() > 0) {
+
+            if($busqueda->rowCount() == 1){
+
+                $row = $busqueda->fetch();
+
+                //guarda los resultados en un arreglo
+                $usuarios=["estado"=>'encontrado',
+                           "contenido"=> ["id"=>$row["id_usuario"],
+                                            "usuario"=>$row["usuario"],
+                                           "nombre"=>$row["nombre"],
+                                           "cedula"=>$row["cedula"],
+                                           "perfil"=>$row["perfil"]
+                                         ]
+                         ];
+               
+                //retorna el item a la funcion
+                return $usuarios;
+
+            }else {
+
+                $usuarios["estado"]="encontrado";
+
+                $cont=0;
+
+                while($row = $busqueda->fetch()){
+
+                    //solo muestra los items que no estan alistados
+                    if($row['estado']==0){
+                        
+                        $usuarios["contenido"][$cont]=["id"=>$row["id_usuario"],
+                                                    "usuario"=>$row["usuario"],
+                                                    "nombre"=>$row["nombre"],
+                                                    "cedula"=>$row["cedula"],
+                                                    "perfil"=>$row["perfil"]
+                                                    ];
+                        
+                        $cont++;
+
+                    }
+
+                }
+
+                return $usuarios;
+
+            }
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"Item no encontrado en la base de datos!"];
+
+        }
+        
     }
 }
