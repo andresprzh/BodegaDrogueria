@@ -164,9 +164,10 @@ class ControladorAlistar {
 
             while($row = $busqueda->fetch()){
                 
+                // si hay cajas sin cerrar en otra requisicion
                 if ($row['no_req']!=$this->req[0]) {
                     $itembus=['estado'=>"error2",
-                    'contenido'=>"Caja sin cerrar en la requisicion ".$row['no_req']];
+                    'contenido'=>$row['no_req']];
                     return $itembus;
                     break;
                 }

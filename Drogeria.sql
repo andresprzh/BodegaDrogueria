@@ -175,7 +175,7 @@ DELIMITER $$
 		INNER JOIN pedido ON Item=ID_Item	
 		INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
 		LEFT JOIN caja ON caja.no_caja=pedido.no_caja
-		LEFT JOIN usuario ON id_usuario=alistador
+		LEFT JOIN usuario ON id_usuario=caja.alistador
 		WHERE COD_BARRAS.ID_CODBAR LIKE codigo 
 		AND pedido.no_req LIKE no_req
 		AND pedido.no_caja LIKE numerocaja;

@@ -331,7 +331,7 @@ function AgregarItem(res) {
             items['pedidos'] + "</td><td>" +
             "<input type= 'number' min='1' class='alistados eliminaritem' value='1'></td><td>" +
             items['ubicacion'] + "</td><td>" +
-            "<button  title='Eliminar Item' class='btn-floating waves-effect waves-light red darken-3 ' >" +
+            "<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' >" +
             "<i class='fas fa-times'></i>" +
             "</button></tr>"));
 
@@ -446,7 +446,7 @@ function MostrarCaja() {
                 } else if (res['estado'] == 'error2') {
                     swal({
                         title: "!No se puede generar caja¡",
-                        text: res['contenido'],
+                        text: "Caja sin cerrar en la requisicion "+res['contenido'],
                         icon: "warning",
                     })
                         .then((ok) => {
