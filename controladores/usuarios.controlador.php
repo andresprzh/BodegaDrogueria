@@ -32,7 +32,7 @@ class ControladorUsuarios {
                 
                 //si encuentra el usuario inicia sesion
 
-                if($respuesta["usuario"]==$valor &&
+                if(strcasecmp($respuesta["usuario"],$valor)==0 &&
                 password_verify($contraseña, $respuesta["password"])){
 
                     $_SESSION["iniciarSesion"]="ok";
@@ -57,8 +57,7 @@ class ControladorUsuarios {
         }
     }
 
-    public function ctrBuscarUsuarios()
-    {
+    public function ctrBuscarUsuarios(){
         
         $busqueda=$this->modelo->mdlMostrarUsuarios();
 
@@ -78,7 +77,7 @@ class ControladorUsuarios {
                                          ]
                          ];
                
-                //retorna el item a la funcion
+                //retorna el usuario a la funcion
                 return $usuarios;
 
             }else {
@@ -88,9 +87,6 @@ class ControladorUsuarios {
                 $cont=0;
 
                 while($row = $busqueda->fetch()){
-
-                    //solo muestra los items que no estan alistados
-                    if($row['estado']==0){
                         
                         $usuarios["contenido"][$cont]=["id"=>$row["id_usuario"],
                                                     "usuario"=>$row["usuario"],
@@ -100,8 +96,6 @@ class ControladorUsuarios {
                                                     ];
                         
                         $cont++;
-
-                    }
 
                 }
 
@@ -113,9 +107,74 @@ class ControladorUsuarios {
         }else{
 
             return ['estado'=>"error",
-                    'contenido'=>"Item no encontrado en la base de datos!"];
+                    'contenido'=>"Usuario no encontrado en la base de datos!"];
 
         }
         
+    }
+
+    public function ctrBuscarPerfiles(){
+        $busqueda=$this->modelo->mdlMostrarPerfiles();
+
+        if ($busqueda->rowCount() > 0) {
+
+            if($busqueda->rowCount() == 1){
+
+                $row = $busqueda->fetch();
+
+                //guarda los resultados en un arreglo
+                $perfiles=["estado"=>'encontrado',
+                           "contenido"=> ["id"=>$row["id_perfil"],
+                                        "perfil"=>$row["des_perfil"]
+                                         ]
+                         ];
+               
+                //retorna el item a la funcion
+                return $perfiles;
+
+            }else {
+
+                $perfiles["estado"]="encontrado";
+
+                $cont=0;
+
+                while($row = $busqueda->fetch()){
+
+                    //solo muestra los items que no estan alistados
+                    
+                        
+                        $perfiles["contenido"][$cont]=["id"=>$row["id_perfil"],
+                                                    "perfil"=>$row["des_perfil"],
+                                                    ];
+                        
+                        $cont++;
+
+                    
+
+                }
+
+                return $perfiles;
+
+            }
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"no encontrado!"];
+
+        }
+    }
+
+    public function ctrCrearUsuario($datosusario){
+        
+        return $this->modelo->mdlRegistrarUsuario($datosusario);
+
+    }
+
+    public function ctrModificarUsuario($datosusario){
+        
+        return $this->modelo->mdlCambiarUsuario($datosusario);
+
     }
 }

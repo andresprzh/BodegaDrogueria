@@ -23,28 +23,52 @@ class ModeloUsuarios extends Conexion {
       
     }
 
+    /*==========================================
+          REGISTRAR USUARIO
+    ========================================*/
+    public function mdlRegistrarUsuario($datos){
+      $tabla='usuario';
+      $stmt= $this->link->prepare("INSERT INTO $tabla(nombre,cedula,usuario,password,perfil) VALUES(:nombre,:cedula,:usuario,:password,:perfil);");
+      
+      $stmt->bindParam(":nombre",$datos["nombre"],PDO::PARAM_STR);
+      $stmt->bindParam(":cedula",$datos["cedula"],PDO::PARAM_STR);
+      $stmt->bindParam(":usuario",$datos["usuario"],PDO::PARAM_STR);
+      $stmt->bindParam(":password",$datos["password"],PDO::PARAM_STR);
+      $stmt->bindParam(":perfil",$datos["perfil"],PDO::PARAM_STR);
+      
 
+      $res=$stmt->execute();
+       
+      return $res;
 
+      $stmt=null;
+    }
 
-      /*==========================================
-            REGISTRAR USUARIO
-      ========================================*/
-      static public function mdlIngresarUsuario($tabla,$datos){
-        $stmt= Conexion::conectar() -> prepare("INSERT INTO $tabla(nombre,usuario,password,perfil,foto) VALUES(:nombre,:usuario,:password,:perfil,:ruta);");
+    public function mdlMostrarPerfiles($item,$valor){
+      $tabla='perfiles';
+      
+      //busca los itemas
+      return $this->buscaritem($tabla,$item,$valor);
+    }  
+
+    public function mdlCambiarUsuario($datos){
+      $tabla='usuario';
+      $stmt= $this->link->prepare("UPDATE $tabla SET nombre=:nombre, cedula=:cedula,usuario=:usuario,password=:password,perfil=:perfil WHERE id_usuario=:id_usuario;");
+      
+      $stmt->bindParam(":id_usuario",$datos["id"],PDO::PARAM_INT);
+      $stmt->bindParam(":nombre",$datos["nombre"],PDO::PARAM_STR);
+      $stmt->bindParam(":cedula",$datos["cedula"],PDO::PARAM_STR);
+      $stmt->bindParam(":usuario",$datos["usuario"],PDO::PARAM_STR);
+      $stmt->bindParam(":password",$datos["password"],PDO::PARAM_STR);
+      $stmt->bindParam(":perfil",$datos["perfil"],PDO::PARAM_INT);
+      
+
+      $res=$stmt->execute();
         
-        $stmt->bindParam(":nombre",$datos["nombre"],PDO::PARAM_STR);
-        $stmt->bindParam(":usuario",$datos["usuario"],PDO::PARAM_STR);
-        $stmt->bindParam(":password",$datos["password"],PDO::PARAM_STR);
-        $stmt->bindParam(":perfil",$datos["perfil"],PDO::PARAM_STR);
-        $stmt->bindParam(":ruta",$datos["ruta"],PDO::PARAM_STR);
+      return $res;
+      
+      $stmt=null;
+    }  
+  
 
-        if ($stmt->execute()) {
-          return "ok";
-        }else {
-          return "error";
-        }
-        
-        $stmt=null;
-      }
-    
 }

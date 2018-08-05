@@ -125,7 +125,7 @@ CREATE TABLE recibido(
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
 
-INSERT INTO perfiles(des_perfil) VALUES("Administrador"),("Jefe"),("Alistador"),("PVenta");
+INSERT INTO perfiles(des_perfil) VALUES("Administrador"),("Jefe"),("Alistador"),("PVenta"),("Inactivo");
 
 /* ELIMINA PROCEDIMIENTOS SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
