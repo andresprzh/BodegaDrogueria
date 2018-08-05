@@ -31,12 +31,38 @@ Al ingresar a la pagina principal se pedirá al usuario iniciar sesión, en dich
 
 <img src="estaticos/imagenes/login2.png" alt="drawing" width="400px"/>
 
-los tipos de usuario o perfiles son los siguientes:
-
-* Administrador: puede ver e interactuar en todo el aplicativo web y es el único perfil que permite modificar usuarios
-* Jefe Bodega: puede subir la requisición y generar los documentos de salida de las cajas
-* Alistador :puede alistar los items usando el aplicativo alistar
-* Encargado punto de venta: puede registrar los items recibidos usando el aplicativo PV
+### Tipós de usuario:
+<ul>
+  <li>
+    Administrador:Pueden ver 
+      <ul>
+        <li>Subir archivo de requisicion</li>
+        <li>Alistar</li>
+        <li>Caja</li>
+        <li>Pventa (Punto de venta)</li>
+        <li>Usuarios</li>
+      </ul>
+  </li>
+  <li>
+    Jefe: Pueden ver
+      <ul>
+        <li>Subir archivo de requisicion</li>
+        <li>Caja</li>
+      </ul>
+  </li>
+  <li>
+    Alistador: Pueden ver
+      <ul>
+        <li>alistar</li>
+      </ul>
+  </li>
+  <li>
+    Encargado punto de venta: Pueden ver
+      <ul>
+        <li>Pventa (Punto de venta)</li>
+      </ul>
+  </li>
+</ul>
 
 ******
 

@@ -77,28 +77,56 @@
         "requerir",
         "alistar",
         "cajas",
-        "salir",
         "pv",
-        "usuarios"
+        "usuarios",
+        "salir"
         ];
+    $jefe=[
+      "inicio",
+      "requerir",
+      "cajas",
+      "salir"
+    ];
+    $alistador=[
+      "inicio",
+      "alistar",
+      "salir"
+    ];
+    $pv=[
+      "inicio",
+      "pv",
+      "salir"
+    ];
 
     echo "<main>";
 
     if (isset($_GET["ruta"])) {
-
-        if(in_array($_GET["ruta"],$pages)){
-
-         
-          /* =================================================================================================================================
+      
+      /* =================================================================================================================================
                              CONTENIDO
-           =================================================================================================================================*/
-          include "modulos/".$_GET["ruta"].".php";
+        =================================================================================================================================*/
+        
+      if ($_SESSION["usuario"]["perfil"]==1 && in_array($_GET["ruta"],$pages)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
 
-        }else{
+      }elseif ($_SESSION["usuario"]["perfil"]==2 && in_array($_GET["ruta"],$jefe)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
+        
+      }elseif ($_SESSION["usuario"]["perfil"]==3 && in_array($_GET["ruta"],$alistador)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
 
-        //   include "modulos/404.php";
+      }elseif ($_SESSION["usuario"]["perfil"]==4 && in_array($_GET["ruta"],$pv)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
 
-        }
+      }else{
+
+        include "modulos/404.php";
+
+      }
 
     }else{
 

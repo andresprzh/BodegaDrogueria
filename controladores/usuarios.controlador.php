@@ -33,7 +33,8 @@ class ControladorUsuarios {
                 //si encuentra el usuario inicia sesion
 
                 if(strcasecmp($respuesta["usuario"],$valor)==0 &&
-                password_verify($contraseña, $respuesta["password"])){
+                password_verify($contraseña, $respuesta["password"]) && 
+                $respuesta["perfil"]!=5){
 
                     $_SESSION["iniciarSesion"]="ok";
                     $_SESSION["usuario"]=["id" => $respuesta["id_usuario"],
