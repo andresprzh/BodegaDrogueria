@@ -93,7 +93,7 @@ class ControladorCajas extends ControladorAlistar {
                 $origen=str_replace('BD','',$row["origen"]);
                 $destino=str_replace('VE','',$row["destino"]);
                 $destino=$origen.substr($destino,1,-1);
-                $localicacion=str_replace('-','',$row["origen"].$destino.'I');
+                $localicacion=str_replace('-','',$row["origen"].$destino.'C');
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
                 $codigo=str_pad($row["codigo"],13+15," ",STR_PAD_RIGHT);
                 $num=$row["alistados"]*1000;

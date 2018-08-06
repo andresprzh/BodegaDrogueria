@@ -253,7 +253,7 @@ $(document).ready(function(){
                                         var no_req=req[0].substr(req[0].length - 3);
 
                                         // crea el nombre del documento a partir de la requisicion y la caja
-                                        var nomdoc='RQ'+no_req+'C'+numcaja+'.TR1';
+                                        var nomdoc='DE'+no_req+'C'+numcaja+'.TR1';
 
                                         var element = document.createElement('a');
                                         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));

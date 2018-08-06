@@ -118,7 +118,7 @@ $(document).ready(function(){
                 var no_res=req[0].substr(req[0].length - 3);
 
                 // crea el nombre del documento a partir de la requisicion y la caja
-                var nomdoc='RQ'+no_res+'C'+numcaja+'.TR1';
+                var nomdoc='DS'+no_res+'C'+numcaja+'.TR1';
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({

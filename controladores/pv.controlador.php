@@ -177,7 +177,7 @@ class ControladorPV extends ControladorCajas{
                 $origen=str_replace('BD','',$row["lo_origen"]);
                 $destino=str_replace('VE','',$row["lo_destino"]);
                 $origen=$origen.substr($destino,1,-1);
-                $localicacion=str_replace('-','',$origen.$row["lo_destino"].'I');
+                $localicacion=str_replace('-','',$origen.$row["lo_destino"].'C');
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
                 $codigo=str_pad($row["ID_CODBAR"],13+15," ",STR_PAD_RIGHT);
                 $num=$row["recibidos"]*1000;
