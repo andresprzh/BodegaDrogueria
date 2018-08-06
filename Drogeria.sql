@@ -127,6 +127,8 @@ INSERT INTO caja(no_caja) VALUES(1);
 
 INSERT INTO perfiles(des_perfil) VALUES("Administrador"),("Jefe"),("Alistador"),("PVenta"),("Inactivo");
 
+INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Admin","1111111111","admin","",1);
+
 /* ELIMINA PROCEDIMIENTOS SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP PROCEDURE IF EXISTS BuscarCod;

@@ -219,7 +219,7 @@ $(document).ready(function(){
                     //id usuario es obtenida de las variables de sesion
                     var req=[requeridos,id_usuario];
 
-                    // console.log(req);
+                    
                     var tabla = $('table.tablas').DataTable();
                     // se obtienen todos los datos de la tabla en una matriz
                     var datos=tabla.data().toArray();   

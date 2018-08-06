@@ -15,7 +15,7 @@ class ModeloUsuarios extends Conexion {
     /*==========================================
             MOSTRAR USUARIOS
       ========================================*/
-    public function mdlMostrarUsuarios($item,$valor){
+    public function mdlMostrarUsuarios($item=null,$valor=null){
       $tabla='usuario';
       
       //busca los itemas
@@ -44,7 +44,7 @@ class ModeloUsuarios extends Conexion {
       $stmt=null;
     }
 
-    public function mdlMostrarPerfiles($item,$valor){
+    public function mdlMostrarPerfiles($item=null,$valor=null){
       $tabla='perfiles';
       
       //busca los itemas

@@ -193,7 +193,7 @@ $(document).ready(function () {
             data: { "codigo": codigo,"req":req},
             dataType: "JSON",
             success: function (res) {
-                console.log(res);
+                
                 if (res!=false) {
                     
                     tabla.row(fila).remove().draw('false');
@@ -230,7 +230,7 @@ $(document).ready(function () {
 
                     var datos = $(dt).DataTable().data().toArray();
 
-                    // console.log();
+                    
                     var items = new Array();
                     for (var i in datos) {
 
@@ -240,9 +240,7 @@ $(document).ready(function () {
                         }
 
                     }
-                    console.log(items);
-
-
+                    
                     //guarda el tipo de caja en una variable
                     var tipocaja = $("#caja").val();
 
@@ -305,8 +303,9 @@ function BuscarCodBar() {
         data: { "codigo": codigo, "req": req },//datos que se enviaran
         dataType: 'json',
         success: function (res) {
-            // console.log(res);
+            
             AgregarItem(res);
+            
         }
 
     });

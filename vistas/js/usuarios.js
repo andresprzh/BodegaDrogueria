@@ -8,9 +8,10 @@ $(document).ready(function () {
 
     //inicia modal
     $('.modal').modal();
-
+    
      // CARGA DATO AL MENU DE SELECCION DE PERFILES
     $.when(CargarPerfiles()).done(function () {
+        
         // espera a que termine de cargar los perfiles
         // INICIA TABLA USUARIOS
         CargarUsuarios();
@@ -72,7 +73,7 @@ $(document).ready(function () {
             $('#nombre').val(datos[2]);
             $('#cedula').val(datos[3]);
             $('#usuario').val(datos[1]);
-            // console.log(datos[4]);
+            
             $('#perfil').val(perfil);            
             // INICIA MENU DE SELECCION
             $('select').formSelect();
@@ -88,7 +89,7 @@ $(document).ready(function () {
     $('.modal').on('submit', 'form', function (event) {
         var buttonid = $(this).find("button:focus").attr('id');
         
-        // console.log(btn.attr('id'));
+        
         event.preventDefault();
         swal({
             title: "¿Agragar Usuario?",
@@ -226,6 +227,7 @@ function iniciar_tabla() {
 }
 
 function CargarPerfiles() {
+    
     return $.ajax({
         type: "POST",
         url: "ajax/usuaios.perfiles.ajax.php",
@@ -250,6 +252,7 @@ function CargarPerfiles() {
 }
 
 function CargarUsuarios() {
+    
     return $.ajax({
         type: "POST",
         url: "ajax/usuarios.usuarios.ajax.php",
@@ -261,23 +264,46 @@ function CargarUsuarios() {
                 var usuarios=res['contenido'];
                 var perfil;//guarda el perfil del usuario
                 var tabla = $('table.tablas').DataTable();
-                for (var i in usuarios) {
+
+                var perfiles = $("#perfil>option").map(function() { return $(this).html(); });
+
+                // si el resultado es n array
+                if (usuarios.constructor===Array) {
+                    for (var i in usuarios) {
+                    
+                        // obtiene el perfil del usuario dle menu de seleccion cargado anteriormente
+                        perfil="<span class='perfiles' name='"+usuarios[i]['perfil']+"'>"+perfiles[usuarios[i]['perfil']]+"</span>";
+                        
+                        tabla.row.add( [
+                            usuarios[i]['id'],
+                            usuarios[i]['usuario'],
+                            usuarios[i]['nombre'],
+                            usuarios[i]['cedula'],
+                            perfil,
+                            "<button  title='Editar Usuario' data-target='editarusuario' class='editar modal-trigger btn-small waves-effect waves-light tea darken-1 ' >" +
+                                "<i class='fas fa-user-edit'></i>" +
+                            "</button>"
+                        ] ).draw(false);
+                    } 
+                // si solo hay 1 dato en usuarios
+                }else{
                     
                     // obtiene el perfil del usuario dle menu de seleccion cargado anteriormente
-                    var perfiles = $("#perfil>option").map(function() { return $(this).html(); });
-                    perfil="<span class='perfiles' name='"+usuarios[i]['perfil']+"'>"+perfiles[usuarios[i]['perfil']]+"</span>";
+                    perfil="<span class='perfiles' name='"+usuarios['perfil']+"'>"+perfiles[usuarios['perfil']]+"</span>";
                     
                     tabla.row.add( [
-                        usuarios[i]['id'],
-                        usuarios[i]['usuario'],
-                        usuarios[i]['nombre'],
-                        usuarios[i]['cedula'],
+                        usuarios['id'],
+                        usuarios['usuario'],
+                        usuarios['nombre'],
+                        usuarios['cedula'],
                         perfil,
                         "<button  title='Editar Usuario' data-target='editarusuario' class='editar modal-trigger btn-small waves-effect waves-light tea darken-1 ' >" +
                             "<i class='fas fa-user-edit'></i>" +
                         "</button>"
                     ] ).draw(false);
-                }   
+
+                }
+                  
             }
         }
     });

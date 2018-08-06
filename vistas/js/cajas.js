@@ -112,7 +112,7 @@ $(document).ready(function(){
             data: {"req":req,"items":items,"numcaja":numcaja},
             dataType: 'JSON',
             success: function (res) {
-                console.log(res);
+                
                 var numcaja=$('#NumeroCaja').html();
                 // obtiene los 3 ultimos caracteres de la requisicion
                 var no_res=req[0].substr(req[0].length - 3);

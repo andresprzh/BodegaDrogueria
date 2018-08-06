@@ -3,7 +3,7 @@ class ControladorUsuarios {
 
     private $modelo;
 
-    function __construct($req) {
+    function __construct() {
 
         $this->modelo=new ModeloUsuarios();
 
