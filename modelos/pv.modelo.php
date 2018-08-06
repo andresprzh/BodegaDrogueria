@@ -24,10 +24,16 @@ class ModeloPV extends Conexion{
     // busca y muestra un item
     public function mdlMostrarItemPV($cod_bar){
         $tabla="ITEMS";
-        $item='ID_CODBAR';
+        // $item='ID_CODBAR';
         
-        return $this->buscaritem($tabla,$item,$cod_bar);
+        // return $this->buscaritem($tabla,$item,$cod_bar);
+        $stmt= $this->link->prepare("SELECT * FROM ITEMS  WHERE ID_CODBAR=:cod_bar OR ID_ITEM=:cod_bar OR ID_REFERENCIA=:cod_bar OR LOWER(DESCRIPCION) = :cod_bar;" );
         
+        $stmt->bindParam(":cod_bar",$cod_bar,PDO::PARAM_STR);
+
+        $stmt->execute();
+        
+        return $stmt;
     }
 
     // registra el item en la abla de recibidos
@@ -95,7 +101,7 @@ class ModeloPV extends Conexion{
 
     // muestra los items recibidos
     public function mdlMostrarItemsRec($numcaja){
-        $sql="SELECT lo_origen,lo_destino,ID_CODBAR,recibidos,recibido.estado FROM recibido INNER JOIN requisicion on requisicion.no_req=recibido.no_req INNER JOIN ITEMS on ITEMS.ID_ITEM=recibido.item WHERE no_caja=:no_caja";
+        $sql="SELECT lo_origen,lo_destino,ID_CODBAR,ID_ITEM,recibidos,recibido.estado FROM recibido INNER JOIN requisicion on requisicion.no_req=recibido.no_req INNER JOIN ITEMS on ITEMS.ID_ITEM=recibido.item WHERE no_caja=:no_caja";
 
         $stmt= $this->link->prepare($sql );
 

@@ -87,21 +87,22 @@ class ControladorCajas extends ControladorAlistar {
     public function ctrDocumento($items,$numcaja){
         
         $res=$this->modelo->mdlModificarCaja($numcaja);
+        // $items=$this->ctrBuscarItemCaja($numcaja);
         if ($res) {          
             $documento='';
             foreach($items as $row){
                 $origen=str_replace('BD','',$row["origen"]);
                 $destino=str_replace('VE','',$row["destino"]);
                 $destino=$origen.substr($destino,1,-1);
-                $localicacion=str_replace('-','',$row["origen"].$destino.'C');
+                $localicacion=str_replace('-','',$row["origen"].$destino.'I');
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $codigo=str_pad($row["codigo"],13+15," ",STR_PAD_RIGHT);
+                $item=str_pad($row["id"],6+15," ",STR_PAD_RIGHT);
                 $num=$row["alistados"]*1000;
                 $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
                 $Mensaje=$row['mensajes'];
                 
-                $documento.=($localicacion.$codigo.$alistado.$Mensaje."\n");
+                $documento.=($localicacion.$item.$alistado.$Mensaje."\n");
 
             }
             $res=$documento;

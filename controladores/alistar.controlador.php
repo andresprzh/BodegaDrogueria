@@ -35,6 +35,7 @@ class ControladorAlistar {
                 //guarda los resultados en un arreglo
                 $itembus=["estado"=>$row['estado'],
                            "contenido"=> ["codigo"=>$row["ID_CODBAR"],
+                                           "iditem"=>$row["item"],  
                                            "referencia"=>$row["ID_REFERENCIA"],
                                            "descripcion"=>$row["descripcion"],
                                            "disponibilidad"=>$row["disp"],
@@ -82,6 +83,7 @@ class ControladorAlistar {
                     if($row['estado']==0){
                         
                         $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                           "iditem"=>$row["item"],  
                                            "referencia"=>$row["ID_REFERENCIA"],
                                            "descripcion"=>$row["descripcion"],
                                            "disponibilidad"=>$row["disp"],
@@ -172,6 +174,7 @@ class ControladorAlistar {
                     break;
                 }
                 $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                    "iditem"=>$row["item"],    
                                     "referencia"=>$row["ID_REFERENCIA"],
                                     "descripcion"=>$row["descripcion"],
                                     "disponibilidad"=>$row["disp"],

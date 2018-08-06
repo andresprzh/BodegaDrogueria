@@ -73,7 +73,7 @@ $(document).ready(function(){
             if (fila.hasClass('child')) {
                 fila = fila.prev();
             }
-            tabla.row(fila).cell(fila,7).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'">').draw()
+            tabla.row(fila).cell(fila,8).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="'+mensaje+'">').draw()
 
         } else {
             
@@ -94,11 +94,12 @@ $(document).ready(function(){
         var datos=$('#TablaM').DataTable().data().toArray();
         
         var items=new Array();
+
         for (var i in datos) {
             items[i]={
-                "codigo":datos[i][0],
-                "alistados": datos[i][5],
-                "mensajes": $(datos[i][7]).val(),
+                "id":datos[i][1],
+                "alistados": datos[i][6],
+                "mensajes": $(datos[i][8]).val(),
                 'origen' : $('#origen').html(),
                 'destino' : $('#destino').html()
             }                
@@ -321,6 +322,7 @@ function MostrarItems(numcaja){
                 for (var i in item) {
                     $('#tablamodal').append($("<tr><td>"+
                                         item[i]['codigo']+"</td><td>"+
+                                        item[i]['iditem']+"</td><td>"+
                                         item[i]['referencia']+"</td><td>"+
                                         item[i]['descripcion']+"</td><td>"+
                                         item[i]['disponibilidad']+"</td><td>"+

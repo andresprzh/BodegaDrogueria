@@ -32,6 +32,7 @@ class ControladorPV extends ControladorCajas{
             $row = $busqueda->fetch();
             $item=["estado"=>"encontrado",
             "contenido"=> ["codigo"=>$row["ID_CODBAR"],
+                            "iditem"=>$row["ID_ITEM"],
                             "referencia"=>$row["ID_REFERENCIA"],
                             "descripcion"=>$row["DESCRIPCION"],
                           ]
@@ -110,18 +111,8 @@ class ControladorPV extends ControladorCajas{
 
     // modifca los valores de los items en la tabla y luego genera el documento
     public function ctrRegistrarItems($items,$numcaja){   
-        $i=0;
-        // busca el id del item usando el codigo de barras de cada item
-        foreach ($items as $row) {
-
-            $busqueda=$this->modelo->mdlMostrarItemPV($row['codbarras']);
-            $iditem = $busqueda->fetch();
-            $items[$i]['item']=$iditem['ID_ITEM'];
-            $i++;
-        }
-        // libera conexion para hace otra sentencia
-        $busqueda->closeCursor();
-
+        
+        
         // agrega los datos en la datbla de recibidos
         $resultado['estado']=$this->modelo->mdlRegistrarItems($items,$numcaja);
 
@@ -179,7 +170,7 @@ class ControladorPV extends ControladorCajas{
                 $origen=$origen.substr($destino,1,-1);
                 $localicacion=str_replace('-','',$origen.$row["lo_destino"].'C');
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $codigo=str_pad($row["ID_CODBAR"],13+15," ",STR_PAD_RIGHT);
+                $item=str_pad($row["ID_ITEM"],13+15," ",STR_PAD_RIGHT);
                 $num=$row["recibidos"]*1000;
                 $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
@@ -212,7 +203,7 @@ class ControladorPV extends ControladorCajas{
                         break;
                 }
                 
-                $string.=($localicacion.$codigo.$alistado.$mensaje."\n");
+                $string.=($localicacion.$item.$alistado.$mensaje."\n");
             }
         }else {
             $string=false;

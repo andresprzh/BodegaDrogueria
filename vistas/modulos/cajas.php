@@ -87,6 +87,7 @@
                     <tr  class="white-text green darken-3" >
 
                         <th>Codigo de barras</th>
+                        <th>ID item</th>
                         <th>Referencia</th>
                         <th>Descripción</th>
                         <th>Disponibilidad</th>

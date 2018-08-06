@@ -59,7 +59,9 @@ class ModeloCaja extends Conexion{
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
 
-        return $stmt->execute();
+        $res=$stmt->execute();
+        $stmt->closeCursor();
+        return $res;
         // cierra la conexion
         $stmt=null;
 

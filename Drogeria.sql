@@ -127,7 +127,7 @@ INSERT INTO caja(no_caja) VALUES(1);
 
 INSERT INTO perfiles(des_perfil) VALUES("Administrador"),("Jefe"),("Alistador"),("PVenta"),("Inactivo");
 
-INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Admin","1111111111","admin","",1);
+INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Admin","1111111111","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
 /* ELIMINA PROCEDIMIENTOS SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
@@ -163,29 +163,34 @@ $$
 -- procedimiento que busca un Item con el codigo de barras en la la lista de rquerido especificada
 -- el procedimiento tambien cambia el estado del Item a 1 que significa que esta siendo alistado
 DELIMITER $$
-	CREATE PROCEDURE BuscarCod(IN codigo CHAR(15), IN no_req CHAR(10),IN alistador INT(10),IN numerocaja CHAR(10))
+	CREATE PROCEDURE BuscarCod(IN codigo CHAR(40), IN no_req CHAR(10),IN alistador INT(10),IN numerocaja CHAR(10))
 	BEGIN
 
 		DECLARE numcaja INT(10);
 		SET numcaja=NumeroCaja(alistador);
 		
-		SELECT pedido.estado,COD_BARRAS.ID_CODBAR,ID_ITEMS,pedido.no_req, ID_REFERENCIA, 
+		SELECT pedido.item,ID_CODBAR,ID_REFERENCIA,pedido.estado,pedido.no_req, ID_REFERENCIA, 
         descripcion, disp, pedido, alistado,caja.no_caja,usuario.nombre,ubicacion,
         requisicion.lo_origen,requisicion.lo_destino
-		FROM COD_BARRAS
-		INNER JOIN ITEMS ON ITEMS.ID_CODBAR=COD_BARRAS.ID_CODBAR
-		INNER JOIN pedido ON Item=ID_Item	
+		FROM ITEMS
+		INNER JOIN pedido ON Item=ID_ITEM	
 		INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
 		LEFT JOIN caja ON caja.no_caja=pedido.no_caja
 		LEFT JOIN usuario ON id_usuario=caja.alistador
-		WHERE COD_BARRAS.ID_CODBAR LIKE codigo 
+		WHERE (ID_CODBAR LIKE codigo
+		OR ID_ITEM LIKE codigo
+		OR ID_REFERENCIA LIKE codigo
+		OR LOWER(DESCRIPCION)  LIKE codigo ) 
 		AND pedido.no_req LIKE no_req
 		AND pedido.no_caja LIKE numerocaja;
 
 		
 		UPDATE pedido
 		SET estado=1,no_caja=numcaja
-		WHERE Item=(SELECT ID_ITEMS FROM COD_BARRAS WHERE ID_CODBAR=codigo)
+		WHERE (Item=(SELECT ID_ITEM FROM ITEMS WHERE (ID_CODBAR = codigo
+		OR ID_ITEM = codigo
+		OR ID_REFERENCIA = codigo
+		OR LOWER(DESCRIPCION)  LIKE codigo )))
 		AND pedido.no_req=no_req
 		AND estado=0 ;
 		

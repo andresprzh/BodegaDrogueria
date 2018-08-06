@@ -37,7 +37,7 @@ $(document).ready(function () {
                                                     EVENTOS   
 ============================================================================================================================*/
 
-    //EVENTO AL CAMBIAR ENTRADA reqUERIDOS
+    //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
 
         //destruye datatabel para reiniciarla
@@ -57,22 +57,22 @@ $(document).ready(function () {
 
 
     // EVENTO INPUT  CODIGO DE BARRAS
-    $("#codbarras").keydown(function (e) {
-        // permite: spacio, eliminar , tab, escape, enter y  .
-        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-            // permite: Ctrl+letra, Command+letra
-            ((e.keyCode >= 0) && (e.ctrlKey === true || e.metaKey === true)) ||
-            // permite: home, fin, izquierda, derecha, abajo, arriba
-            (e.keyCode >= 35 && e.keyCode <= 40)) {
-            // no hace nada si cumple la condicion
-            return;
-        }
-        // solo acepta numeros
-        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-            //previene mandar los datos al input
-            e.preventDefault();
-        }
-    });
+    // $("#codbarras").keydown(function (e) {
+    //     // permite: spacio, eliminar , tab, escape, enter y  .
+    //     if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+    //         // permite: Ctrl+letra, Command+letra
+    //         ((e.keyCode >= 0) && (e.ctrlKey === true || e.metaKey === true)) ||
+    //         // permite: home, fin, izquierda, derecha, abajo, arriba
+    //         (e.keyCode >= 35 && e.keyCode <= 40)) {
+    //         // no hace nada si cumple la condicion
+    //         return;
+    //     }
+    //     // solo acepta numeros
+    //     if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+    //         //previene mandar los datos al input
+    //         e.preventDefault();
+    //     }
+    // });
 
 
 
@@ -129,7 +129,7 @@ $(document).ready(function () {
             if (fila.hasClass('child')) {
                 fila = fila.prev();
             }
-            tabla.row(fila).cell(fila, 5).data("<input  type= 'number' min='0' class='alistados'  value='" + nuevovalor + "'></input>");
+            tabla.row(fila).cell(fila, 6).data("<input  type= 'number' min='0' class='alistados'  value='" + nuevovalor + "'></input>");
 
         } else {
 
@@ -138,7 +138,7 @@ $(document).ready(function () {
 
     });
 
-    // EVENTO CUANDO SE ESCRIBE EN EL INPUT DE LA TABLA EDITABLE(EVITA QUE SE DIGITEN NUMEROS)
+    // EVENTO CUANDO SE ESCRIBE EN EL INPUT DE LA TABLA EDITABLE(EVITA QUE SE DIGITEN LETRAS)
     $('#tablaeditable').on('keydown', 'input', function (e) {
 
         // permite: spacio, eliminar , tab, escape, enter y  .
@@ -236,7 +236,7 @@ $(document).ready(function () {
 
                         items[i] = {
                             "codigo": datos[i][0],
-                            "alistados": $(datos[i][5]).val()
+                            "alistados": $(datos[i][6]).val()
                         }
 
                     }
@@ -324,6 +324,7 @@ function AgregarItem(res) {
 
         $('#tablaeditable').append($("<tr><td class='barras'>" +
             items['codigo'] + "</td><td>" +
+            items['iditem'] + "</td><td>" +
             items['referencia'] + "</td><td>" +
             items['descripcion'] + "</td><td>" +
             items['disponibilidad'] + "</td><td>" +
@@ -376,6 +377,7 @@ function MostrarItems() {
                 for (var i in items) {
                     $('#tablavista').append($("<tr><td>" +
                         items[i]['codigo'] + "</td><td>" +
+                        items[i]['iditem'] + "</td><td>" +
                         items[i]['referencia'] + "</td><td>" +
                         items[i]['descripcion'] + "</td><td>" +
                         items[i]['disponibilidad'] + "</td><td>" +
@@ -429,6 +431,7 @@ function MostrarCaja() {
                     for (var i in items) {
                         $('#tablaeditable').append($("<tr><td class='barras'>" +
                             items[i]['codigo'] + "</td><td>" +
+                            items[i]['iditem'] + "</td><td>" +
                             items[i]['referencia'] + "</td><td>" +
                             items[i]['descripcion'] + "</td><td>" +
                             items[i]['disponibilidad'] + "</td><td>" +

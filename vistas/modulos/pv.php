@@ -30,7 +30,7 @@
         <div class="input-field col s12 m10 l11 hide  input_barras">
 
             <input  id="codbarras" type="text" class="validate">
-            <label for="codbarras" >Codigo de barras</label>
+            <label for="codbarras" >Item</label>
 
         </div>  
         
@@ -73,6 +73,7 @@
         <tr class="white-text green darken-3 ">
 
             <th>Codigo de barras</th>
+            <th>ID item</th>
             <th>Referencia</th>
             <th>Descripción</th>
             <th>Cantidad</th>

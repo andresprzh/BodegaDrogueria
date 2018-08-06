@@ -95,26 +95,7 @@ $(document).ready(function(){
         $("#cajas").change(function (e) { 
             $( ".input_barras" ).removeClass( "hide" ); 
             $( "#Registrar" ).addClass( "hide" );
-        });
-    
-        // EVENTO INPUT  CODIGO DE BARRAS
-         $("#codbarras").keydown(function (e) {
-            // permite: spacio, eliminar , tab, escape, enter y  .
-           if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-                // permite: Ctrl+letra, Command+letra
-               ((e.keyCode >=0 ) && (e.ctrlKey === true || e.metaKey === true)) || 
-                // permite: home, fin, izquierda, derecha, abajo, arriba
-               (e.keyCode >= 35 && e.keyCode <= 40)) {
-                    // no hace nada si cumple la condicion
-                    return;
-           }
-           // solo acepta numeros
-           if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-               //previene mandar los datos al input
-               e.preventDefault();
-           }		
-        });
-        
+        });      
     
         // EVENTO INPUT  CODIGO DE BARRAS
         $("#codbarras").keypress(function (e) {
@@ -146,7 +127,7 @@ $(document).ready(function(){
                     fila = fila.prev();
                 }
                 
-                tabla.row(fila).cell(fila,3).data('<input type="number" class="validate" value="'+cantr+'">').draw()
+                tabla.row(fila).cell(fila,4).data('<input type="number" class="validate" value="'+cantr+'">').draw()
     
             } else {
                 
@@ -229,7 +210,8 @@ $(document).ready(function(){
                     for (var i in datos) {
                         items[i]={
                             "codbarras":datos[i][0],
-                            "recibidos": $(datos[i][3]).val()
+                            "item":datos[i][1],
+                            "recibidos": $(datos[i][4]).val()
                         }                
                     }
                     
@@ -308,24 +290,33 @@ $(document).ready(function(){
           data: {"codigo":codigo,"req":req},//datos que se enviaran
           dataType: 'json',
           success: function (res) {
-
+                
                 var tabla = $('table.tablas').DataTable();
                 var datos=tabla.data().toArray()
-                var codbarras=datos.map(function(value,index) { return value[0]; });
+                var items=new Array;
+                items[0]=datos.map(function(value,index) { return value[0]; });
+                items[1]=datos.map(function(value,index) { return value[1]; });
+                items[2]=datos.map(function(value,index) { return value[2]; });
+                items[3]=datos.map(function(value,index) { return value[3]; });
                 
             if (res["estado"]=='encontrado') {
                 var cantr=1;
                 
                 //busca si el item ya esta n la tabla
-                var pos = codbarras.indexOf(codigo);
                 
+                for (let index = 0; index < 4; index++) {
+                    var pos = items[index].indexOf(codigo);
+                    if (pos>=0) {
+                        break;
+                    }
+                }
                 //si encuentra el item en la tabla acumula el item en la columna de recibido
                 if (pos>=0) {
                     
                     // se acumula la cantidad recibida
-                    cantr+=parseInt($(datos[pos][3]).val());
+                    cantr+=parseInt($(datos[pos][4]).val());
                     
-                    tabla.cell(pos,3).data('<input type="number" class="validate" value="'+cantr+'">').draw();
+                    tabla.cell(pos,4).data('<input type="number" class="validate" value="'+cantr+'">').draw();
                 // si no encuentra el item en la tabla lo agrega a esta    
                 }else{
                 
@@ -334,6 +325,7 @@ $(document).ready(function(){
                     // agrega datos en la tabla
                     tabla.row.add( [
                         item['codigo'],
+                        item['iditem'],
                         item['referencia'],
                         item['descripcion'],
                         // cantr
