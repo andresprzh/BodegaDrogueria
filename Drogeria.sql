@@ -52,7 +52,7 @@ CREATE TABLE caja(
 	tipo_caja CHAR(3) ,
 	estado INT(1) DEFAULT '0' ,
 	abrir DATETIME ,
-	cerrar DATETIME ON UPDATE CURRENT_TIMESTAMP,
+	cerrar DATETIME,
 	enviado DATETIME ,
    recibido DATETIME,
 
@@ -140,6 +140,7 @@ DROP PROCEDURE IF EXISTS BuscarIE;
 
 /* ELIMINA TRIGGER SI EXISTEN */
 DROP TRIGGER IF EXISTS InicioAbrir;
+DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS ReqEnviado;
 
@@ -290,6 +291,17 @@ DELIMITER $$
 	BEGIN
 		SET new.abrir=now() ;
 	END 
+$$
+
+DELIMITER $$
+
+	CREATE TRIGGER CerrarCaja
+	BEFORE UPDATE ON caja
+	FOR EACH ROW 
+	BEGIN
+		SET new.cerrar=now() ;
+	END 
+
 $$
 
 -- trigger que modifica el estado del Item recibido  
