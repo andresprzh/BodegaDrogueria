@@ -77,10 +77,11 @@
 
 
 
-                    $tipos_permitidos = array('text/plain');//tipos permitidos de archivos
+                    $tipos_permitidos = array('text/plain','text/x-Algol68');//tipos permitidos de archivos
                     $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
                     $tipo = finfo_file($fileInfo, $_FILES['archivo']['tmp_name']);//tipo de archivo subido
                         // SI EL ARCHIVO NO ES DE TIPO TEXTO NO LO ABRE
+                        
                     if (!in_array($tipo, $tipos_permitidos)) {
                         
                         echo ('<script>

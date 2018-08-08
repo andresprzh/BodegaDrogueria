@@ -8,7 +8,7 @@
             </ul>
 
             <a id="logo-container" href="inicio" class="brand-logo center">
-                <span>Empacar</span>
+                <span>Bodega</span>
             </a>
         </div>
 

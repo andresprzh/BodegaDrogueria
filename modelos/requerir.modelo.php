@@ -37,7 +37,7 @@ class ModeloRequierir extends Conexion{
 
     public function mdlSubirReq($cabecera,$items){
         $tabla="requisicion";
-        // $stmt= $this->link->prepare("INSERT INTO $tabla(no_req,creada,lo_origen,lo_destino,tip_inventario,solicitante) VALUES('$cabecera[0]','$cabecera[1]','$cabecera[2]','$cabecera[3]','$cabecera[4]','$cabecera[5]');");
+        
         $stmt= $this->link->prepare("INSERT INTO $tabla(no_req,creada,lo_origen,lo_destino,tip_inventario,solicitante) VALUES(:no_req,:fecha,:lo_origen,:lo_destino,:tip_inventario,:solicitante)");
         
         $stmt->bindParam(":no_req",$cabecera[0],PDO::PARAM_STR);
@@ -58,7 +58,18 @@ class ModeloRequierir extends Conexion{
         $stmt= $this->link->prepare($sql);
         
         $res= $stmt->execute();
-        
+        $stmt->closeCursor();
+        return $res;
+    }
+
+    public function mdlEliReq($req)
+    {
+        $tabla="requisicion";
+        $stmt= $this->link->prepare("DELETE FROM $tabla WHERE no_req=:no_req");
+        $stmt->bindParam(":no_req",$req,PDO::PARAM_STR);
+
+        $res= $stmt->execute();
+        $stmt->closeCursor();
         return $res;
     }
 }

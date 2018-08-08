@@ -2,7 +2,7 @@
 
 
     
-<h2 class="header center"  >Aplicacion Empacar</h3>
+<h2 class="header center"  >Aplicación Bodega</h3>
     
 
 

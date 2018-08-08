@@ -7,8 +7,7 @@ class ControladorRequerir{
     private $items;
     public $Estado;
 
-   function __construct($doc_req) {
-
+   function __construct($doc_req){
         //se asigna el documento a la variable doc_req
         $this->doc_req=$doc_req;
         
@@ -57,7 +56,7 @@ class ControladorRequerir{
                 //busca los datos de los items y los guarda en items
                 $this->ctrSetItems();
                 
-
+                
                 $this->ctrSubirReq();
                 // echo $this->Items;
             
@@ -166,27 +165,32 @@ class ControladorRequerir{
 
             //busca si la linea tiene datos de los items
             // es un item si la linea no tiene | de primer caracter, no tiene una sucecion de -, no tiene : y si no es salto de linea(ascii=10)
-            if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10){
+            if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10 && $linea[0]==' '){
                 
                 //obtienen los datos de cada item por linea
-                $items[0]=substr($linea,1,11); //numero referencia item
+                $items[0]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
                 $items[1]=$this->cabecera[0];//se obtiene el numero de requisicion
                 //se cambian las comas del dato por espacios en blanco
                 $items[2]=substr($linea,109,6);//ubiacion item
                 $items[3]=str_replace(',','',substr($linea,71,5));//cantidad items disponibles
                 $items[4]=substr($linea,86,5);//cantidad items pedidos
                 $items[5]=intval(str_replace('_','',substr($linea,95,8)));//cantidad items alistados
+               
+                if (!(is_numeric($items[0]) && strlen($items[0])==6)) {
+                    
+                     //se busca el id de los item usando la referencia en el documento subido
+                    $modelo=new ModeloRequierir();
+                    $item='ID_REFERENCIA';
+                    $valor=$items[0];
+                    $id_item=$modelo->mdlMostrarItem($item,$valor);
+                    $id_item=$id_item->fetch();           
+                    //se reemplaza la referencia del item por su id
+                    $items[0]=$id_item["ID_ITEM"];
+                    
+                }
+               
                 
-                //se busca el id de los item usando la referencia en el documento subido
-                $modelo=new ModeloRequierir();
-                $item='ID_REFERENCIA';
-                $valor=$items[0];
-                $id_item=$modelo->mdlMostrarItem($item,$valor);
-                $id_item=$id_item->fetch();           
-                
-                
-		        //se reemplaza la referencia del item por su id
-                $items[0]=$id_item["ID_ITEM"];
+                // echo ($items[0]."  ".$items[1]."  ".$items[2]."  ".$items[3]." ".$items[4]."  ".$items[5]."<br>");
                 
                 //pone los datos del item en un String
                 $stringItem.='(';
@@ -227,7 +231,8 @@ class ControladorRequerir{
                     <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
                 </div>';
         }else {
-            
+            $resultado=$modelo->mdlEliReq($this->cabecera[0]);
+
             echo '<script>
                             swal({
                                 title: "¡Error al subir el archivo¡",
