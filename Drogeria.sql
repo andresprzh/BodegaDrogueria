@@ -2,9 +2,30 @@
 -- drop database if exists drogueria;
 /*se crea la base de datos*/
 
-CREATE DATABASE  IF NOT EXISTS drogueria;
+CREATE DATABASE  IF NOT EXISTS bodegadrogueria;
 /*se usa la base de daos*/
-USE drogueria;
+USE bodegadrogueria;
+
+CREATE TABLE IF NOT EXISTS `ITEMS` (
+  `ID_ITEM` char(6) DEFAULT NULL,
+  `ID_REFERENCIA` char(15) DEFAULT NULL,
+  `ID_CODBAR` char(15) DEFAULT NULL,
+  `DESCRIPCION` char(40) DEFAULT NULL,
+  `DESCRIPCION_2` char(40) DEFAULT NULL,
+  `PESO` decimal(20,4) DEFAULT NULL,
+  `VOLUMEN` decimal(20,4) DEFAULT NULL,
+  `ID_BODEGA_DEFAULT` char(5) DEFAULT NULL,
+  `NOM_TERC` char(60) DEFAULT NULL,
+  `FECHA_INGRESO` char(8) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- Volcando estructura para tabla BD_BIABLE01.COD_BARRAS
+
+CREATE TABLE IF NOT EXISTS `COD_BARRAS` (
+  `ID_ITEMS` char(6) DEFAULT NULL,
+  `ID_CODBAR` char(15) BINARY DEFAULT NULL,
+  `UNIMED_VENTA` char(3) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 -- tabla perfiles de usuarios
 CREATE TABLE  perfiles(
@@ -13,6 +34,13 @@ CREATE TABLE  perfiles(
 
 	PRIMARY KEY(id_perfil)
 );
+
+/*se añaden las llaves para las tablas items y cod_barras*/
+ALTER TABLE `ITEMS` ADD CONSTRAINT ITEMS_PK PRIMARY KEY (`ID_ITEM`);
+ALTER TABLE `COD_BARRAS` ADD CONSTRAINT CODBAR_PK PRIMARY KEY (`ID_CODBAR`);
+ALTER TABLE `COD_BARRAS` ADD CONSTRAINT BAR_ITEM FOREIGN KEY (ID_ITEMS) REFERENCES ITEMS (ID_ITEM) ;
+
+
 
 -- tabla de usuarios
 CREATE TABLE usuario(
@@ -128,6 +156,15 @@ INSERT INTO caja(no_caja) VALUES(1);
 INSERT INTO perfiles(des_perfil) VALUES("Administrador"),("Jefe"),("Alistador"),("PVenta"),("Inactivo");
 
 INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Admin","1111111111","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
+
+/* LOAD DATA LOCAL INFILE 'ITEMS.csv' INTO TABLE bodegadrogueria.ITEMS
+FIELDS TERMINATED BY ',' ENCLOSED BY '' 
+LINES TERMINATED BY '\n' ;
+
+
+LOAD DATA LOCAL INFILE 'COD_BARRAS.csv' INTO TABLE bodegadrogueria.COD_BARRAS
+FIELDS TERMINATED BY ',' ENCLOSED BY '' 
+LINES TERMINATED BY '\n' ; */
 
 /* ELIMINA PROCEDIMIENTOS SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;

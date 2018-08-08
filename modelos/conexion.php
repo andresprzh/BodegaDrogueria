@@ -7,7 +7,7 @@ class Conexion{
         /*==========================================
                      CONECTAR BASE DE DATOS
           ========================================*/
-          $link=new PDO("mysql:host=localhost;dbname=drogueria",
+          $link=new PDO("mysql:host=localhost;dbname=bodegadrogueria",
           "root",
           "");
 
