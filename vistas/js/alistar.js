@@ -57,26 +57,6 @@ $(document).ready(function () {
 
 
     // EVENTO INPUT  CODIGO DE BARRAS
-    // $("#codbarras").keydown(function (e) {
-    //     // permite: spacio, eliminar , tab, escape, enter y  .
-    //     if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-    //         // permite: Ctrl+letra, Command+letra
-    //         ((e.keyCode >= 0) && (e.ctrlKey === true || e.metaKey === true)) ||
-    //         // permite: home, fin, izquierda, derecha, abajo, arriba
-    //         (e.keyCode >= 35 && e.keyCode <= 40)) {
-    //         // no hace nada si cumple la condicion
-    //         return;
-    //     }
-    //     // solo acepta numeros
-    //     if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-    //         //previene mandar los datos al input
-    //         e.preventDefault();
-    //     }
-    // });
-
-
-
-    // EVENTO INPUT  CODIGO DE BARRAS
     $("#codbarras").keypress(function (e) {
 
         //si se presiona enter busca el item y lo pone en la pagina
@@ -365,7 +345,7 @@ function MostrarItems() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-
+            console.log(res);
             //refresca las tablas, para volver a cargar los datos
             $('#tablavista').html("");
             table.clear();
