@@ -151,7 +151,7 @@ $(document).ready(function () {
         celda = table.cell(this);
 
         var fila = table.row(this)
-        //se otiene el valor del codigo de barras de la fila donde esta el boton presionado 
+        //se otiene el valor del id del item donde esta el boton presionado 
         // si la tabla es responsive
         if (fila.data() == undefined) {
 
@@ -163,17 +163,17 @@ $(document).ready(function () {
             fila=this;
         }
 
-        codigo = tabla.row(fila).cell(fila, 0).data();
+        iditem = tabla.row(fila).cell(fila, 1).data();
         // tabla.row(fila).remove().draw('false');
         
 
         $.ajax({
             type: "POST",
             url: "ajax/alistar.eliminar.ajax.php",
-            data: { "codigo": codigo,"req":req},
+            data: { "iditem": iditem,"req":req},
             dataType: "JSON",
             success: function (res) {
-                
+                console.log(res);
                 if (res!=false) {
                     
                     tabla.row(fila).remove().draw('false');
@@ -345,7 +345,7 @@ function MostrarItems() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-            console.log(res);
+            
             //refresca las tablas, para volver a cargar los datos
             $('#tablavista').html("");
             table.clear();
