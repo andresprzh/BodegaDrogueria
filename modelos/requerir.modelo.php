@@ -13,7 +13,7 @@ class ModeloRequierir extends Conexion{
     
         $tabla='requisicion';
         if ($valor==null) {
-            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item IS NULL");
+            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = 0");
         }else {
             $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = :$item");
         }

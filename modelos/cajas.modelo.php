@@ -26,7 +26,7 @@ class ModeloCaja extends Conexion{
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
 
-        $sql = 'SELECT caja.no_caja, usuario.nombre,tipo_caja,abrir,cerrar,recibido
+        $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
 		FROM caja 
 		INNER JOIN pedido ON pedido.no_caja=caja.no_caja
 		INNER JOIN usuario ON usuario.id_usuario=Alistador
@@ -34,7 +34,7 @@ class ModeloCaja extends Conexion{
 		AND pedido.no_req=:no_req
 		AND caja.no_caja <> 1
 		AND caja.estado <> 2 
-        GROUP BY caja.no_caja;';
+        GROUP BY caja.no_caja,caja.estado;';
         
         $stmt= $this->link->prepare($sql);
 

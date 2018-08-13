@@ -86,6 +86,7 @@ CREATE TABLE requisicion(
 	solicitante VARCHAR(40) COLLATE ucs2_spanish_ci,
 	enviado DATETIME,
 	recibido DATETIME,
+	estado INT(1) DEFAULT 0,
 
 	PRIMARY KEY(no_req)
 );
@@ -289,7 +290,7 @@ DELIMITER $$
 		AND no_req=req;
 
 		UPDATE caja
-		SET tipo_caja=caj
+		SET tipo_caja=caj,estado=1
 		WHERE no_caja=numcaja;
 
 	END
@@ -367,6 +368,7 @@ DELIMITER $$
 
 $$
 
+
 -- trigger que modifica el estado del Item recibido  
 DELIMITER $$
 
@@ -413,13 +415,13 @@ DELIMITER $$
 		AND no_req=new.no_req;
 		
         IF new.estado=2 then
-			INSERT INTO recibido(Item,No_Req,no_caja,recibidos) 
+			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
 			VALUES(new.item,new.no_req,new.no_caja,0);
         END IF;
         
 		IF numalistados=0 THEN
 			UPDATE requisicion
-			SET enviado=NOW()
+			SET enviado=NOW(),estado=1
 			WHERE requisicion.no_req=new.no_req;
 		END IF;
 	END 

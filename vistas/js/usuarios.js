@@ -85,14 +85,14 @@ $(document).ready(function () {
         }
     } );
 
-
+    // si se agrga o modifica usuarios
     $('.modal').on('submit', 'form', function (event) {
         var buttonid = $(this).find("button:focus").attr('id');
         
         
         event.preventDefault();
         swal({
-            title: "¿Agragar Usuario?",
+            title: "¿Agregar Usuario?",
             icon: "warning",
             buttons: ['Cancelar', 'Agregar']
         })

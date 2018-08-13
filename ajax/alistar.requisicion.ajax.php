@@ -10,7 +10,7 @@ require "../modelos/requerir.modelo.php";
                                                 MUESTRA LAS REQUISICIONES
 ============================================================================================================================*/
 $modelo=new ModeloRequierir();
-$item='enviado';
+$item='estado';
 
 $res=$modelo->mdlMostrarReq($item);
 
@@ -21,7 +21,8 @@ $cont=0;//contador para almacenar los datos en un vector
 if ($res->rowCount()) {
     while($row = $res->fetch()) {
         //almacena la busqueda en un vector
-        $req[$cont]=$row["no_req"];
+        // $req[$cont]=$row["no_req"];
+        $req[$cont]=$row;
         //aumenta el contador
         $cont++;
     }
