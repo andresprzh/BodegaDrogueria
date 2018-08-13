@@ -36,9 +36,9 @@ class ModeloAlistar extends Conexion{
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $res=$stmt->execute();
-        // $stmt->closeCursor();
+        $stmt->closeCursor();
         // retorna el resultado de la sentencia
-        return $res;
+	return $res;
 
         // cierra la conexion
         $stmt=null;

@@ -20,5 +20,5 @@ $controlador=new ControladorAlistar($req);
 
 $respuesta=$controlador->ctrCerrarCaja($tipocaja,$items,$req);
 
-print ($respuesta);
+print json_encode($respuesta);
 
