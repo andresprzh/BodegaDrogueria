@@ -76,7 +76,7 @@ class ModeloPV extends Conexion{
         // $this->link->closeCursor();
         $persona=$this->req[1];
         
-        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=2,recibido=NOW() WHERE no_caja=:caja;" );
+        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=3,recibido=NOW() WHERE no_caja=:caja;" );
         
         $stmt->bindParam(":persona",$persona,PDO::PARAM_INT);
         $stmt->bindParam(":caja",$NumCaja,PDO::PARAM_INT);
@@ -118,7 +118,7 @@ class ModeloPV extends Conexion{
         $no_req=$this->req[0];$alistador=$this->req[1];
         
 
-        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:no_req,1);");
+        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:no_req,2);");
 
         $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);

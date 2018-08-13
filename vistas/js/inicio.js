@@ -75,7 +75,7 @@ $(document).ready(function () {
                 success: function (res) {
                     var icon;
                     
-                    // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION  
+                    // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION  
                     for (var i in res) {
                         if (res[i]["estado"]!=0) {
                             icon='<i class="fas fa-check-square green-text "></i>';
@@ -88,11 +88,18 @@ $(document).ready(function () {
                             <span class="secondary-content">`+icon+`</span>
                         </div>
                         <div class="collapsible-body ">
-                            <span class="black-text">
-                                Eviado:`+((res[i]["enviado"]==null) ? "---":res[i]["enviado"])+` 
-                                <br />
-                                Recibido: `+((res[i]["recibido"]==null) ? "---":res[i]["recibido"])+`
-                            </span>
+                            <table class="centered black-text">
+                                <thead>
+                                    <tr>
+                                        <th>Bodega origen:`+(res[i]["lo_origen"])+`</th>
+                                        <th>Destino: `+(res[i]["lo_destino"])+`</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Eviado:`+((res[i]["enviado"]==null) ? "---":res[i]["enviado"])+`</th>
+                                        <th>Recibido: `+((res[i]["recibido"]==null) ? "---":res[i]["recibido"])+`</th>
+                                    </tr>
+                                </thead>
+                            </table>
                         </div>
                         </li>`));
                     }

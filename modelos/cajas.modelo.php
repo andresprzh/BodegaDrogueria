@@ -55,7 +55,7 @@ class ModeloCaja extends Conexion{
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
 
-        $stmt= $this->link->prepare("UPDATE caja SET enviado=NOW(),estado=1 WHERE no_caja=:no_caja");
+        $stmt= $this->link->prepare("UPDATE caja SET enviado=NOW(),estado=2 WHERE no_caja=:no_caja");
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
 
