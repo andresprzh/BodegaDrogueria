@@ -4,10 +4,10 @@
  *
  * To rebuild or modify this file with the latest versions of the included
  * software please visit:
- *   https://datatables.net/download/#dt/dt-1.10.18/r-2.2.2
+ *   https://datatables.net/download/#dt/dt-1.10.18/r-2.2.2/rg-1.0.3
  *
  * Included libraries:
- *   DataTables 1.10.18, Responsive 2.2.2
+ *   DataTables 1.10.18, Responsive 2.2.2, RowGroup 1.0.3
  */
 
 /*
@@ -636,6 +636,12 @@ div.dtr-modal div.dtr-modal-background {
   div.dtr-modal div.dtr-modal-display {
     width: 95%;
   }
+}
+
+
+table.dataTable tr.group td {
+  font-weight: bold;
+  background-color: #e0e0e0;
 }
 
 
