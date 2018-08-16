@@ -7,6 +7,7 @@ $(document).ready(function () {
     table = iniciar_tabla();
     // INICIAR TABS
     $('.tabs').tabs({ 'swipeable': true });
+    // $('.tabs').tabs({ 'swipeable': false });
     // pone requisiciones en el input select
     $.ajax({
         url: "ajax/alistar.requisicion.ajax.php",
@@ -49,8 +50,16 @@ $(document).ready(function () {
 
             $(".input_barras").removeClass("hide");
             $('.tabs').tabs({ 'swipeable': true });//reinicia el tabs
+            // $('.tabs').tabs({ 'swipeable': false });
 
             table = iniciar_tabla();
+            var ubicacion=table.columns(7).data().eq(0).sort().unique().toArray();
+            for (let i in ubicacion) {
+
+                $("#ubicacion").append($('<option value="' + ubicacion[i]+ '">' + ubicacion[i]+ '</option>'));
+
+            }
+             
         });
 
     });
@@ -173,7 +182,7 @@ $(document).ready(function () {
             data: { "iditem": iditem,"req":req},
             dataType: "JSON",
             success: function (res) {
-                console.log(res);
+                
                 if (res!=false) {
                     
                     tabla.row(fila).remove().draw('false');
@@ -257,6 +266,15 @@ $(document).ready(function () {
             });
 
     });
+
+
+    $("#ubicacion").change(function (e) { 
+        var ubicacion=$(this).val(); //dato de ubicacion del menu de seleccion 
+        var dt=$.fn.dataTable.tables()[0];
+
+        $(dt).DataTable().columns( 7 ).search(ubicacion ).draw();
+    });
+
 
 });
 
@@ -355,7 +373,7 @@ function MostrarItems() {
                 var items = res['contenido'];
 
                 for (var i in items) {
-                    $('#tablavista').append($("<tr><td>" +
+                    $('#tablavista').append($("<tr ><td>" +
                         items[i]['codigo'] + "</td><td>" +
                         items[i]['iditem'] + "</td><td>" +
                         items[i]['referencia'] + "</td><td>" +
@@ -450,7 +468,7 @@ function iniciar_tabla() {
 
     var tabla = $("table.tablas").DataTable({
 
-        // responsive: true,
+        responsive: true,
         // responsive: {
         //     details: {
         //         display: $.fn.dataTable.Responsive.display.modal( {
@@ -463,7 +481,10 @@ function iniciar_tabla() {
         "bLengthChange": false,
         "bFilter": true,
         "pageLength": 5,
-
+        "columnDefs": [ {
+            "targets": 5,
+            "orderable": false
+        } ],
         "language": {
             "sProcessing": "Procesando...",
             "sZeroRecords": "No se encontraron resultados",
@@ -487,9 +508,12 @@ function iniciar_tabla() {
             }
         },
         order: [[7, 'asc']],
+        
         rowGroup: {
             dataSrc: 7
-        }
+        },
+        scrollY:        300,
+        scrollCollapse: true,
 
     });
 

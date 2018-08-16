@@ -57,11 +57,14 @@
     <!-- ==============================================================
                             TABLA VISTA O MUESTRA    
     ============================================================== -->
+    
     <div class="col s12 " id="TablaV" >
-
+        
         <h4 class="header center " >Items</h4>     
-
-        <table class="tablas centered responsive"  >
+        <select  list="ubicacion" name="ubicacion" class="browser-default" id="ubicacion">
+            <option value=""  selected>Ubicacion</option>
+        </select>
+        <table class="tablas centered "  >
 
             <thead>
             
@@ -74,7 +77,9 @@
                 <th>Disponibilidad</th>
                 <th>Pedidos</th>
                 <th>Alistados</th>
-                <th>Ubicacion</th>
+                <th data-priority="2" class="white-text">
+                Ubicacion
+                </th>
                 
             </tr>
 
@@ -90,11 +95,11 @@
     <!-- ==============================================================
                 TABLA EDITABLE    
     ============================================================== -->
-    <div class="col s12 hide" id="TablaE" >
+    <div class="col s12" id="TablaE" >
 
         <h4 class="header center green-text text-darken-3"  ><b>Caja</b></h4>
 
-        <table class="tablas centered responsive"  >
+        <table class="tablas centered "  >
         
             <thead>
 
@@ -162,9 +167,6 @@
         </div>
             
     </div>
-
-
-
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->

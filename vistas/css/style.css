@@ -60,12 +60,13 @@ display: block;
 }
 
 #TablaV, #TablaE{
-  height: 70vh;
+  height: 100vh;
 }
+
 
 @media(max-width:1000px){
   #TablaV,#TablaE{
-    height: 100vh;
+    height: 150vh;
   }
   .modal {
     display: none;
