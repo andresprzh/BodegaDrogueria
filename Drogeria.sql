@@ -347,7 +347,6 @@ DELIMITER $$
 
 $$
 
-
 -- trigger que modifica el estado del Item recibido  
 DELIMITER $$
 
@@ -361,7 +360,8 @@ DELIMITER $$
 		SELECT no_caja,alistado INTO caja, numalistado
 		FROM pedido
 		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-		WHERE ITEMS.ID_Item = new.Item;
+		WHERE ITEMS.ID_Item = new.Item
+		AND pedido.no_req=new.no_req;
 	
 		IF caja IS NULL THEN
 			SET new.estado=2;
@@ -378,6 +378,7 @@ DELIMITER $$
 	END 
 	
 $$
+
 
 -- trigger que modifica el estado de enviado de la requisicion 
 -- y agrega los items en recibido con estado 2
