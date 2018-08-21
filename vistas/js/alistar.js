@@ -59,6 +59,9 @@ $(document).ready(function () {
                 $("#ubicacion").append($('<option value="' + ubicacion[i]+ '">' + ubicacion[i]+ '</option>'));
 
             }
+            //pone ubicacion en 0
+            $('#ubicacion').val(null);
+            
              
         });
 
@@ -94,6 +97,7 @@ $(document).ready(function () {
         $.when(BuscarCodBar()).done(function () {
             $.when(MostrarItems()).done(function () {
                 table = iniciar_tabla();
+                cambiarUbicacion();
             });
         });
 
@@ -269,10 +273,8 @@ $(document).ready(function () {
 
 
     $("#ubicacion").change(function (e) { 
-        var ubicacion=$(this).val(); //dato de ubicacion del menu de seleccion 
-        var dt=$.fn.dataTable.tables()[0];
 
-        $(dt).DataTable().columns( 7 ).search(ubicacion ).draw();
+        cambiarUbicacion();
     });
 
 
@@ -461,6 +463,12 @@ function MostrarCaja() {
     });
 }
 
+function cambiarUbicacion(){
+    var ubicacion=$('#ubicacion').val(); //dato de ubicacion del menu de seleccion 
+    var dt=$.fn.dataTable.tables()[0];
+
+    $(dt).DataTable().columns( 7 ).search(ubicacion ).draw();
+}
 
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla() {

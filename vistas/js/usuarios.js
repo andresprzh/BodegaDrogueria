@@ -115,7 +115,12 @@ $(document).ready(function () {
                     data: {"datosusuario":datosusuario,"button":buttonid},
                     dataType: "JSON",
                     success: function (res) {
-                        // console.log(res);
+                        $('#iduser').html(""),
+                        $('#nombre').val(""),
+                        $('#cedula').val(""),
+                        $('#usuario').val(""),
+                        $('#password').val(""),
+                        $('#perfil').val("")
                         // tabla
                         var tabla = $('table.tablas').DataTable();
                         var perfiles = $("#perfil>option").map(function() { return $(this).html(); });

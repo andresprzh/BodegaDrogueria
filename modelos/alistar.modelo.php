@@ -38,7 +38,7 @@ class ModeloAlistar extends Conexion{
         $res=$stmt->execute();
         $stmt->closeCursor();
         // retorna el resultado de la sentencia
-	return $res;
+	    return $res;
 
         // cierra la conexion
         $stmt=null;
