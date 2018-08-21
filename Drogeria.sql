@@ -193,7 +193,6 @@ LINES TERMINATED BY '\n' ; */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP PROCEDURE IF EXISTS BuscarCod;
 DROP PROCEDURE IF EXISTS BuscarRecibido;
-DROP PROCEDURE IF EXISTS Empacar;
 DROP PROCEDURE IF EXISTS Buscarcaja;
 DROP PROCEDURE IF EXISTS BuscarItemsCaja;
 DROP PROCEDURE IF EXISTS BuscarIE;
@@ -213,7 +212,7 @@ DELIMITER $$
 		SELECT no_caja INTO numcaja
 		FROM caja
 		WHERE Alistador=pers
-		AND cerrar IS NULL
+		AND estado =0
 		ORDER BY abrir
 		DESC LIMIT 1;
 
@@ -275,26 +274,6 @@ DELIMITER $$
 	END 
 $$
 
-
--- procedimiento que empaca los ITEMS(asigna  la fecha a la caja y el numero de caja al Item)
-DELIMITER $$
-	CREATE PROCEDURE Empacar(IN codigo CHAR(15), IN alistar INT(5),IN pers INT(10),IN caj CHAR(3),IN req CHAR(10))
-	BEGIN
-
-		DECLARE numcaja INT(10);
-		SET numcaja=numerocaja(pers);
-
-		UPDATE pedido
-		SET alistado=alistar,estado=2
-		WHERE Item=(SELECT ID_ITEMS FROM COD_BARRAS WHERE ID_CODBAR=codigo)
-		AND no_req=req;
-
-		UPDATE caja
-		SET tipo_caja=caj,estado=1
-		WHERE no_caja=numcaja;
-
-	END
-$$
 
 -- procedimiento que busca las cajas por el numero de caja y la requisicion
 DELIMITER $$

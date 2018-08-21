@@ -243,8 +243,7 @@ $(document).ready(function () {
                         method: 'post',//metodo post para mandar datos
                         data: { 'req': req, "tipocaja": tipocaja, "items": items },//datos que se enviaran          
                         success: function (res) {
-
-
+  
                             if (res) {
 
                                 swal("¡Caja cerrada exitosamente!", {

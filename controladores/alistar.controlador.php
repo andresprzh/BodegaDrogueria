@@ -203,13 +203,15 @@ class ControladorAlistar {
     }
 
     public function ctrCerrarCaja($tipocaja,$items,$req){
-
+        $busqueda=$this->modelo->mdlMostrarNumCaja();
+        $numcaja=($busqueda->fetch())['numcaja'];
         for ($i=0; $i <count($items) ; $i++) { 
-
             $cod_barras=$items[$i]["codigo"];
             $alistados=$items[$i]["alistados"];
-            $resultado=$this->modelo->mdlAlistarItem($items[$i],$tipocaja);
-
+            $resultado=$this->modelo->mdlAlistarItem($items[$i],$numcaja);
+        }
+        if ($resultado) {
+            $resultado=$this->modelo->mdlCerrarCaja($tipocaja,$numcaja);
         }
 
         return $resultado;
