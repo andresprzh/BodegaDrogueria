@@ -17,34 +17,14 @@
         
     </div>
 
-    <div class="row ">
-
-        <div class="input-field col s12 m10 l11 hide  input_barras">
-
-            <input  id="codbarras" type="text" class="validate">
-            <label for="codbarras" >Item</label>
-
-        </div>  
-        
-        <div class="input-field col s12 m1 l1 hide input_barras">
-
-            <button id="agregar" title="Buscar Item extra" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
-                <i class="fas fa-plus"></i>
-            </button>
-            
-        </div>    
-
-    </div>
-
 </div>
-
 <!--============================================================================================================================
 ============================================================================================================================
                                         TABLAS
 ============================================================================================================================
 ============================================================================================================================-->
 
-<div class="row hide" id="contenido"  >
+<div class="row " id="contenido"  >
     
     <div class="col s12" id="tabsmenu">
         
@@ -64,22 +44,38 @@
         <select  list="ubicacion" name="ubicacion" class="browser-default" id="ubicacion">
             <option value=""  selected>Ubicacion</option>
         </select>
-        <table class="tablas centered "  >
+
+        <!-- INPUT PARA AGREGAR ITEMS -->
+        <div class="row ">      
+            <div class="input-field center col s12 m10 l10 hide  input_barras">
+
+                <input  id="codbarras" type="text" class="validate">
+                <label for="codbarras" class="right">Item</label>
+
+            </div>  
+            <div class="input-field col hide-on-small-only m1 l2 hide input_barras">
+
+                <button id="agregar" title="Buscar Item" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
+                    <i class="fas fa-plus"></i>
+                </button>
+                
+            </div>
+        </div>
+
+        <table class="tablas centered " id="TablaVi" >
 
             <thead>
             
             <tr class="white-text green darken-3 ">
 
-                <th>Codigo de barras</th>
-                <th>ID Item</th>
-                <th>Referencia</th>
                 <th>Descripción</th>
                 <th>Disponibilidad</th>
-                <th>Pedidos</th>
+                <th data-priority="2">Pedidos</th>
+                <th>Codigo de barras</th>
+                <th>ID Item</th>
+                <th>Referencia</th>               
                 <th>Alistados</th>
-                <th data-priority="2" class="white-text">
-                Ubicacion
-                </th>
+                <th>Ubicacion</th>
                 
             </tr>
 
@@ -99,19 +95,19 @@
 
         <h4 class="header center green-text text-darken-3"  ><b>Caja</b></h4>
 
-        <table class="tablas centered "  >
+        <table class="tablas centered " id="TablaEd" >
         
             <thead>
 
             <tr  class="white-text green darken-3" >
 
+                <th>Descripción</th>
+                <th>Alistados</th>
+                <th>Pedidos</th>
                 <th>Codigo de barras</th>
                 <th>ID Item</th>
                 <th>Referencia</th>
-                <th>Descripción</th>
                 <th>Disponibilidad</th>
-                <th>Pedidos</th>
-                <th>Alistados</th>
                 <th>Ubicacion</th>
                 <th data-priority="2" class='black-text'>Eliminar</th>
 
@@ -167,12 +163,38 @@
         </div>
             
     </div>
+
+
+<!-- ============================================================================================================================
+                                                    MODAL EDITAR CAJA 
+============================================================================================================================ -->
+<div id="editaritem" class="modal grey lighten-3 container">
+    <!-- <h4 class="center-align">Cantidad de items a alistar</h4> -->
+    <p class="center-align" id="modalitem">Item</p>
+        <!-- <p class="col s12">codigo barras</p> -->
+    <p class="left">Disponibles: <span id="modaldisponible"></span> </p>
+    <p class="right">Pedidos: <span id="modalpedidos"></span></p>
+    <div class="row">
+        
+        
+        <div class="input-field input_barras col s12">
+
+            <input  id="cantidad" type="number" class="validate">
+            <label for="cantidad" >Cantidad a Alistadr</label>
+
+        </div>  
+    </div>
+</div>  
+
+</div>
+
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
 <!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->
 <script type="text/javascript">
     var id_usuario='<?php echo $_SESSION["usuario"]["id"];?>';
+    var perfil='<?php echo $_SESSION["usuario"]["perfil"];?>';
 </script>
 
 <!-- JS QUE MANEJA LOS EVENTOS DE LA PAGINA -->

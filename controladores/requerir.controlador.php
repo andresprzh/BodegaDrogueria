@@ -230,6 +230,7 @@ class ControladorRequerir{
             echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
                     <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
                 </div>';
+
         }else {
             $resultado=$modelo->mdlEliReq($this->cabecera[0]);
 
