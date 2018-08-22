@@ -1,6 +1,37 @@
 $(document).ready(function () {
     
-    
+    $(".tabla").DataTable({
+                        
+        responsive:true,
+        
+        "bLengthChange": false,
+        "bFilter": true,
+        "pageLength": 5,
+
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando _START_ - _END_ de  _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando 0 - 0 de 0 registros",
+            "sInfoFiltered":   "(filtrado _MAX_ registros)",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        }
+
+    });
    switch (parseInt(usuario["perfil"])) {
 
         // Para Admins
@@ -40,7 +71,7 @@ $(document).ready(function () {
                                         <th>Destino: `+(res[i]["lo_destino"])+`</th>
                                     </tr>
                                     <tr>
-                                        <th>Eviado:`+((res[i]["enviado"]==null) ? "---":res[i]["enviado"])+`</th>
+                                        <th>Fecha de subida:`+((res[i]["enviado"]==null) ? "---":res[i]["enviado"])+`</th>
                                         <th>Recibido: `+((res[i]["recibido"]==null) ? "---":res[i]["recibido"])+`</th>
                                     </tr>
                                 </thead>
@@ -95,7 +126,7 @@ $(document).ready(function () {
                                         <th>Destino: `+(res[i]["lo_destino"])+`</th>
                                     </tr>
                                     <tr>
-                                        <th>Eviado:`+((res[i]["enviado"]==null) ? "---":res[i]["enviado"])+`</th>
+                                        <th>Fecha de subida:`+((res[i]["enviado"]==null) ? "---":res[i]["enviado"])+`</th>
                                         <th>Recibido: `+((res[i]["recibido"]==null) ? "---":res[i]["recibido"])+`</th>
                                     </tr>
                                 </thead>

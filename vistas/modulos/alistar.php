@@ -1,4 +1,3 @@
-<h3 class="header center ">Alistar</h3>
 <!-- ============================================================================================================================
                                                     FORMAULARIO    
 ============================================================================================================================ -->
@@ -29,8 +28,18 @@
     <div class="col s12" id="tabsmenu">
         
             <ul class="tabs ">
-                <li class="tab col s6" id="tabsI1"><a class="black-text" href="#TablaV"><i class="fas fa-clipboard-list"></i> Items</a></li>
-                <li class="tab col s6 " id="tabsI2"><a class="black-text" href="#TablaE"><i class="fas fa-box-open"></i> Caja</a></li>
+                <li class="tab col s6" id="tabsI1">
+                    <a class="black-text"  href="#TablaV">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span style="font-size:100%"> Items por alistar</span>
+                    </a>
+                </li>
+                <li class="tab col s6 " id="tabsI2">
+                    <a class="black-text"  href="#TablaE">
+                        <i class="fas fa-box-open"></i>
+                        <span style="font-size:100%"> Caja en proceso</span>
+                    </a>
+                </li>
             </ul>
 
     </div>
@@ -40,7 +49,6 @@
     
     <div class="col s12 " id="TablaV" >
         
-        <h4 class="header center " >Items</h4>     
         <select  list="ubicacion" name="ubicacion" class="browser-default" id="ubicacion">
             <option value=""  selected>Ubicacion</option>
         </select>
@@ -62,7 +70,7 @@
             </div>
         </div>
 
-        <table class="tablas centered " id="TablaVi" >
+        <table class="tablas centered " id="TablaVi" style="width:100%" >
 
             <thead>
             
@@ -70,7 +78,7 @@
 
                 <th>Descripción</th>
                 <th>Disponibilidad</th>
-                <th data-priority="2">Pedidos</th>
+                <th data-priority="2">Solicitados</th>
                 <th>Codigo de barras</th>
                 <th>ID Item</th>
                 <th>Referencia</th>               
@@ -93,17 +101,16 @@
     ============================================================== -->
     <div class="col s12" id="TablaE" >
 
-        <h4 class="header center green-text text-darken-3"  ><b>Caja</b></h4>
 
-        <table class="tablas centered " id="TablaEd" >
+        <table class="tablas centered " id="TablaEd" style="width:100%">
         
             <thead>
 
             <tr  class="white-text green darken-3" >
 
-                <th>Descripción</th>
+                <th>Item</th>
                 <th>Alistados</th>
-                <th>Pedidos</th>
+                <th>Solicitados</th>
                 <th>Codigo de barras</th>
                 <th>ID Item</th>
                 <th>Referencia</th>
@@ -173,7 +180,7 @@
     <p class="center-align" id="modalitem">Item</p>
         <!-- <p class="col s12">codigo barras</p> -->
     <p class="left">Disponibles: <span id="modaldisponible"></span> </p>
-    <p class="right">Pedidos: <span id="modalpedidos"></span></p>
+    <p class="right">Solicitados: <span id="modalpedidos"></span></p>
     <div class="row">
         
         

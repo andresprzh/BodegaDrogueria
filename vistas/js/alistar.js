@@ -4,9 +4,6 @@ $(document).ready(function () {
                                                     INICIALIZACION   
 ============================================================================================================================*/
     // INICIA DATATABLE
-    var date=new Date();
-    
-    console.log(date)
 
     table = iniciar_tabla();
     
@@ -59,7 +56,7 @@ $(document).ready(function () {
                 
                 
                 var ubicaciones=table.columns(7).data().eq(0).sort().unique().toArray();
-                                
+                
                 for (let i in ubicaciones) {
                     
                     $("#ubicacion").append($('<option value="' + ubicaciones[i]+ '">' + ubicaciones[i]+ '</option>'));
@@ -147,13 +144,12 @@ $(document).ready(function () {
     // EVENTO SI SE PRESIONA 1 BOTON EN LA TABLA EDITABLE(ELIMINAR ITEM)
     $('#tablaeditable').on('click', 'button', function (e) {
         //consigue el numero de requerido
+        
         var requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
-
         
-        var tabla = $("#TablaEd").DataTable();
-        
+        var tabla = $("#TablaEd").DataTable();       
 
         celda = table.cell(this);
 
@@ -169,25 +165,37 @@ $(document).ready(function () {
         } else {
             fila=this;
         }
-
         let iditem = tabla.row(fila).cell(fila, 4).data();
-        
+        const nomitem = tabla.row(fila).cell(fila, 0).data();
 
-        $.ajax({
-            type: "POST",
-            url: "ajax/alistar.eliminar.ajax.php",
-            data: { "iditem": iditem,"req":req},
-            dataType: "JSON",
-            success: function (res) {
-                
-                if (res!=false) {
-                    
-                    tabla.row(fila).remove().draw('false');
-                }else{
-                    var toastHTML = '<p class="truncate">No se pudo eliminar el item</span></p>';
-                    M.toast({ html: toastHTML, classes: "red darken-4" });
-                }
+        swal({
+            title: `¿Quitar item ${nomitem}?`,
+            icon: "warning",
+            buttons: ['Cancelar', 'Quitar']
+        })
+        .then((Quitar) => {   
+
+            if(Quitar) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "ajax/alistar.eliminar.ajax.php",
+                    data: { "iditem": iditem,"req":req},
+                    dataType: "JSON",
+                    success: function (res) {
+                        
+                        if (res!=false) {
+                            
+                            tabla.row(fila).remove().draw('false');
+                        }else{
+                            var toastHTML = '<p class="truncate">No se pudo eliminar el item</span></p>';
+                            M.toast({ html: toastHTML, classes: "red darken-4" });
+                        }
+                    }
+                });
+
             }
+
         });
     });
 
@@ -279,13 +287,12 @@ $(document).ready(function () {
 function BuscarCodBar() {
 
     //consigue el codigo de barras
-    codigo = $('#codbarras').val();
+    let codigo = $('#codbarras').val();
     //consigue el numero de requerido
-    var requeridos = $(".requeridos").val();
+    let requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
-    var req = [requeridos, id_usuario];
-    date=new Date();
-        console.log(date)
+    let req = [requeridos, id_usuario];
+    
     // ajax para ejecutar un script php mandando los datos
     return $.ajax({
         url: 'ajax/alistar.items.ajax.php',//url de la funcion
@@ -293,7 +300,10 @@ function BuscarCodBar() {
         data: { "codigo": codigo, "req": req },//datos que se enviaran
         dataType: 'json',
         success: function (res) {
+            
             AgregarItem(res);
+
+            $('#codbarras').val("");
         }
 
     });
@@ -304,6 +314,7 @@ function BuscarCodBar() {
 
 //FUNCION QUE AGREGA ITEM A LA TABLA EDITABLE
 function AgregarItem(res) {
+
     //busca el estado de del resultado
     //si encontro el codigo de barras muestar el contenido de la busqueda
     if (res['estado'] == 'encontrado') {
@@ -319,6 +330,9 @@ function AgregarItem(res) {
               },
           })
           .then((value) => {
+              if (!value) {
+                  value=1;
+              }
             var tabla = $('#TablaEd').DataTable();
             tabla.row.add( [
                 items['descripcion'],  
@@ -338,7 +352,7 @@ function AgregarItem(res) {
 
             // se muestra un mensaje con el item agregado
             var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">' + items['descripcion'] + '</span></p>';
-            M.toast({ html: toastHTML, classes: "light-green darken-4 rounded" });
+            M.toast({ html: toastHTML, classes: "light-green darken-4 rounded",displayLength: 500 });
         });
         //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
     } else {
@@ -346,6 +360,7 @@ function AgregarItem(res) {
             icon: "warning",
         })
     }
+
 }
 
 
@@ -400,7 +415,6 @@ function MostrarItems() {
 // FUNCION QUE CREA O MUESTRA UNA CAJA
 function MostrarCaja() {
 
-
     //consigue el numero de requerido
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
@@ -414,20 +428,16 @@ function MostrarCaja() {
         dataType: "JSON",
         success: function (res) {
             
-
-            
-            
             // si la caja ya esta creada muestra los items en la tabla de alistar
             if (res['estadocaja'] == 'yacreada') {
                 //si encontro el codigo de barras muestar el contenido de la busqueda
                 if (res['estado'] == 'encontrado') {
                     let tabla = $('#TablaEd').DataTable();
                     //refresca las tablas, para volver a cargar los datos
-                    table.clear();
+                    tabla.clear();
 
                     var items = res['contenido'];
                     
-
                     for (var i in items) {
                         tabla.row.add( [
                             items[i]['descripcion'],  
@@ -478,6 +488,7 @@ function cambiarUbicacion(){
 
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla(tabla) {
+
     if (!tabla) {
         tabla="table.tablas";
     }
@@ -488,8 +499,8 @@ function iniciar_tabla(tabla) {
 
         "bLengthChange": false,
         "bFilter": true,
-        "sDom": '<"top">t<"bottom"ir><"clear">',
-        // "pageLength": 5,    
+        "sDom": '<"top">t<"bottom"irp><"clear">',
+        "pageLength": 5,    
         "columnDefs": [ {
             "targets": 5,
             "orderable": false

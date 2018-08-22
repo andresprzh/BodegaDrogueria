@@ -48,7 +48,8 @@ class ControladorAlistar {
                                            "destino"=>$row["lo_destino"]
                                          ]
                          ];
-                // en el arreglo se guarda el estaod de la consulta         
+                
+                // en el arreglo se guarda el estado de la consulta         
                 switch ($itembus["estado"]) {
 
                     //0 si encontro algun resultaod en la consulta

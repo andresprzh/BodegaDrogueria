@@ -48,6 +48,9 @@ class ControladorRequerir{
                     <p class="red-text text-darken-2">Error: Requisicion '.$this->cabecera[0].' ya subida</p> 
                 </div>';
 
+
+               
+                
                 
                 
             }
@@ -57,13 +60,58 @@ class ControladorRequerir{
                 $this->ctrSetItems();
                 
                 
-                $this->ctrSubirReq();
+                $resultado=$this->ctrSubirReq();
                 // echo $this->Items;
+                
+                if ($resultado) {
+                    
+                    $busqueda=$modelo->mdlMostrarItems($this->cabecera[0]);
+                    // print json_encode($busqueda->rowCount());
+                     
+                    if ($busqueda->rowCount() > 0) {
+                        
+                        echo '<table class="tablas centered responresponsive-tablesive " style="width:100%" >
+    
+                        <thead>
+                        
+                        <tr class="white-text green darken-3 ">
             
+                            <th>Descripción</th>
+                            <th>Codigo de barras</th>
+                            <th>ID Item</th>
+                            <th>Referencia</th> 
+                            <th>Disponibilidad</th>
+                            <th>Solicitados</th>              
+                            <th>Alistados</th>
+                            <th>Ubicacion</th>
+                            
+                        </tr>
+                        </thead>';
+            
+                        echo '<tbody >';
+                        
+                        while($row = $busqueda->fetch()){                          
+    
+                                echo '<tr>
+                                    <td>'.$row["DESCRIPCION"].'</td>
+                                    <td>'.$row["ID_CODBAR"].'</td>
+                                    <td>'.$row["item"].'</td>
+                                    <td>'.$row["ID_REFERENCIA"].'</td>
+                                    <td>'.$row["disp"].'</td>
+                                    <td>'.$row["pedido"].'</td>
+                                    <td>'.$row["alistado"].'</td>
+                                    <th>'.$row["ubicacion"].'</th>
+                                </tr>';
+    
+                            }
+    
+                        
+                        echo '</table> ';
+                    }
+                }
             } 
-        }
-       
-    }
+        }   
+   }
 
 
     // funcion que asigna la cabecera
@@ -158,7 +206,7 @@ class ControladorRequerir{
      private function ctrSetItems(){
 
         $stringItem='';
-
+        $contador=0;
         foreach($this->doc_req as $linea){
 
             $linea=($linea.'<br>');
@@ -191,7 +239,7 @@ class ControladorRequerir{
                
                 
                 // echo ($items[0]."  ".$items[1]."  ".$items[2]."  ".$items[3]." ".$items[4]."  ".$items[5]."<br>");
-                
+
                 //pone los datos del item en un String
                 $stringItem.='(';
                 for ($i=0; $i <count($items) ; $i++) { 
@@ -230,9 +278,11 @@ class ControladorRequerir{
             echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
                     <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
                 </div>';
+            
+            return $resultado;
 
         }else {
-            $resultado=$modelo->mdlEliReq($this->cabecera[0]);
+            $resultadoel=$modelo->mdlEliReq($this->cabecera[0]);
 
             echo '<script>
                             swal({
@@ -243,6 +293,8 @@ class ControladorRequerir{
             echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
                     <p class="red-text text-darken-2">Error al subir la requisición</p> 
                 </div>';
+            
+            return $resultado;
         }
     }
 
