@@ -32,6 +32,10 @@ p,text{
   
   padding-top: 8%;
   
+  background: url("../imagenes/plantilla/back.png");
+  background-size:cover;
+
+  
 }
 
 .login-box{

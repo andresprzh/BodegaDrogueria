@@ -2,7 +2,7 @@
   
   <main class="login " >
     <center>
-      <img class="responsive-img" style="width: 200px;" src="vistas\imagenes\plantilla\logot.png" />       
+      <img class="responsive-img" style="width: 200px;" src="vistas\imagenes\plantilla\logo.svg" />       
 
       <div class=" row">
       
