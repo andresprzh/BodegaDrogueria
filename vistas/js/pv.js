@@ -6,6 +6,8 @@ $(document).ready(function(){
         // INICIA DATATABLE
         table=iniciar_tabla();
         
+        // INICIAR MODAL
+        $('.modal').modal();
         // pone items en el input select
         $.ajax({
             url:"ajax/alistar.requisicion.ajax.php",

@@ -98,7 +98,44 @@
         </button>
         
     </div>   
-        
+    <button data-target="informacion" class="btn modal-trigger">Modal</button>
+</div>
+
+<!-- ============================================================================================================================
+                                                    MODAL REGISTRO DE ITEMS
+============================================================================================================================ -->
+<div id="informacion" class="modal grey lighten-3">
+
+    <div class="modal-content grey lighten-3">
+
+        <div class="modal-header ">
+
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
+            <h4 class="center " >Informacion</span></h4>
+
+        </div>
+
+        <table class="tablas centered " id="TablaM"  >
+                
+                    <thead>
+
+                    <tr  class="white-text green darken-3" >
+
+                        <th>Item</th>
+                        <th>ID item</th>
+                        <th>Codigo de barras</th>
+                        <th>Descripcion</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="tablamodal"></tbody>
+
+        </table> 
+
+    </div>
+
 </div>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
