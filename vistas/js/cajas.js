@@ -7,7 +7,7 @@ $(document).ready(function(){
     $('.modal').modal();
     
     // INICIA DATATABLE
-    table=iniciar_tabla('#TablaC');
+    table=iniciarTabla('#TablaC');
      
     // pone items en el input select
     $.ajax({
@@ -43,16 +43,12 @@ $(document).ready(function(){
        
         //muestra la tabla y la reinicia
         $( "#Cajas" ).removeClass( "hide" );
-        //refresca la tabla, para volver a cargar los datos
-        var dt = $.fn.dataTable.tables();
-        $('#tablacajas').html("");
-        $(dt).DataTable().clear();
-        $(dt).DataTable().destroy();
+        
         
         //espera a que la funcion termine para reiniciar las tablas
-        $.when(MostrarCajas()).done(function(){
+        $.when(mostrarCajas()).done(function(){
             
-            table=iniciar_tabla('#TablaC');
+            table=iniciarTabla('#TablaC');
 
         });
             
@@ -156,8 +152,12 @@ $(document).ready(function(){
 ============================================================================================================================*/
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function MostrarCajas(){
-        
+function mostrarCajas(){
+    //refresca la tabla, para volver a cargar los datos
+    var dt = $.fn.dataTable.tables();
+    $('#tablacajas').html("");
+    $(dt).DataTable().clear();
+    $(dt).DataTable().destroy();
     //consigue el numero de requerido
     var requeridos=$(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
@@ -171,38 +171,38 @@ function MostrarCajas(){
         dataType: "JSON",
         success: function (res) {
             
-            var caja=res['contenido'];          
+            var caja=res["contenido"];          
             
             //si no encuentra la caja muestra en pantalla que no se encontro
-            if (res['estado']=="error"){
-                
+            if (res["estado"]=="error"){
+                $("#refresh").prop("disabled",true);
             }
             //en caso de contrar el item mostrarlo en la tabla
             else{
-                
-                var caja=res['contenido'];
+                $("#refresh").prop("disabled",false);
+                var caja=res["contenido"];
                 
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
                     
                     // reemplaza varoles nul por ---
-                    if (caja['tipocaja']===null) {
-                        caja['tipocaja']='---'
+                    if (caja["tipocaja"]===null) {
+                        caja["tipocaja"]="---"
                     }
-                    if (caja['abrir']===null) {
-                        caja['abrir']='---'
+                    if (caja["abrir"]===null) {
+                        caja["abrir"]="---"
                     }
-                    if (caja['cerrar']===null) {
-                        caja['cerrar']='---'
+                    if (caja["cerrar"]===null) {
+                        caja["cerrar"]="---"
                     }
                     
-                    $('#tablacajas').append($("<tr>"+
+                    $("#tablacajas").append($("<tr>"+
                                         "<td class='numcaja'>"+caja['no_caja']+"</td>"+
                                         "<td class='alistadores'>"+caja['alistador']+"</td>"+
                                         "<td class='tipocajas'>"+caja['tipocaja']+"</td>"+
                                         "<td>"+caja['abrir']+"</td>"+
                                         "<td class='cierres'>"+caja['cerrar']+"</td><td>"+
-                                        "<button  onclick='MostrarItemsCaja("+0+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
+                                        "<button  onclick='mostrarItemsCaja("+0+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
                                             "<i class='fas fa-file-alt'></i>"+
                                         "</button></td>"+
                                         "</tr>"));  
@@ -210,35 +210,37 @@ function MostrarCajas(){
                     for (var i in caja) {
                         
                         // reemplaza varoles nul por ---
-                        if (caja[i]['tipocaja']===null) {
-                            caja[i]['tipocaja']='---'
+                        if (caja[i]["tipocaja"]===null) {
+                            caja[i]["tipocaja"]="---"
                         }
-                        if (caja[i]['abrir']===null) {
-                            caja[i]['abrir']='---'
+                        if (caja[i]["abrir"]===null) {
+                            caja[i]["abrir"]="---"
                         }
-                        if (caja[i]['cerrar']===null) {
-                            caja[i]['cerrar']='---'
+                        if (caja[i]["cerrar"]===null) {
+                            caja[i]["cerrar"]="---"
                         }
-                        if (caja[i]['estado']==0) {
+                        if (caja[i]["estado"]==0) {
                             var color="red";
                         }else{
                             var color="green";
                         }
                        
-                        $('#tablacajas').append($(`<tr>
-                                            <td class='numcaja'>`+caja[i]['no_caja']+`</td>
-                                            <td class='alistadores'>`+caja[i]['alistador']+`</td>
-                                            <td class='tipocajas'>`+caja[i]['tipocaja']+`</td>
-                                            <td>`+caja[i]['abrir']+`</td>
-                                            <td class='cierres'>`+caja[i]['cerrar']+`</td><td>
-                                            <button  onclick='MostrarItemsCaja(`+i+`)'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light `+color+` darken-3'>
-                                                <i class='fas fa-file-alt'></i>
+                        $("#tablacajas").append($(`<tr>
+                                            <td class="numcaja">`+caja[i]["no_caja"]+`</td>
+                                            <td class="alistadores">`+caja[i]["alistador"]+`</td>
+                                            <td class="tipocajas">`+caja[i]["tipocaja"]+`</td>
+                                            <td>`+caja[i]["abrir"]+`</td>
+                                            <td class="cierres">`+caja[i]["cerrar"]+`</td><td>
+                                            <button  onclick="mostrarItemsCaja(`+i+`)"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light `+color+` darken-3">
+                                                <i class="fas fa-file-alt"></i>
                                             </button></td>
                                             </tr>`));  
 
                     }   
                 }
-                $( "#TablaCajas" ).removeClass( "hide" );                  
+                
+                $( "#TablaCajas" ).removeClass( "hide" );    
+
                 
             }
 
@@ -248,8 +250,16 @@ function MostrarCajas(){
 
 } 
 
+function recargarCajas(){
+    //espera a que la funcion termine para reiniciar las tablas
+    $.when(mostrarCajas()).done(function(){
+            
+        table=iniciarTabla('#TablaC');
+
+    });
+}
 //FUNCION SI SE DA CLICK EN BOTON DOCUMENTO(MUESTRA ITEMS DE 1 CAJA ESPECIFICA)
-function MostrarItemsCaja(e) {
+function mostrarItemsCaja(e) {
     
     //obtienen los datos de la caja para pasarlo al modal
     var datos=table.row(e).data();
@@ -260,10 +270,10 @@ function MostrarItemsCaja(e) {
     var cierre=datos[4];
     
     // se muestran los datos generales de la caja
-    $('#NumeroCaja').html(numcaja);
-    $('#alistador').html(alistador);
-    $('#tipocaja').html(tipocaja);
-    $('#cierre').html(cierre);
+    $("#NumeroCaja").html(numcaja);
+    $("#alistador").html(alistador);
+    $("#tipocaja").html(tipocaja);
+    $("#cierre").html(cierre);
 
     // si la caja no está cerrada se desabilita boton de documento
     if (cierre=="---") {
@@ -274,20 +284,20 @@ function MostrarItemsCaja(e) {
     
     // destruye la datatable 2(tabla del modal)
     var dt = $.fn.dataTable.tables()[1];
-    $('#tablamodal').html("");
+    $("#tablamodal").html("");
     $(dt).DataTable().clear();
     $(dt).DataTable().destroy();
         
     
     //espera a que la funcion termine para reiniciar las tablas
-    $.when(MostrarItems(numcaja)).done(function(){
+    $.when(mostrarItems(numcaja)).done(function(){
         //Reinicia Tabla
-        table[1]=iniciar_tabla("#TablaM");
+        table[1]=iniciarTabla("#TablaM");
     });
 }
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function MostrarItems(numcaja){
+function mostrarItems(numcaja){
 
     //consigue el numero de requerido
     var requeridos=$(".requeridos").val();
@@ -303,31 +313,31 @@ function MostrarItems(numcaja){
         success: function (res) {
 
             var dt = $.fn.dataTable.tables()[1];
-            $('#tablamodal').html("");
+            $("#tablamodal").html("");
             $(dt).DataTable().clear();
             $(dt).DataTable().destroy();
 
-            origen=res['contenido'][0]['origen'];
-            destino=res['contenido'][0]['destino'];
+            origen=res["contenido"][0]["origen"];
+            destino=res["contenido"][0]["destino"];
             
-            $('#origen').html(origen);
-            $('#destino').html(destino);
+            $("#origen").html(origen);
+            $("#destino").html(destino);
 
-            var item=res['contenido'];
+            var item=res["contenido"];
  
             //si no encuentra el item muestra en pantalla que no se encontro
-            if (res['estado']=="error"){
+            if (res["estado"]=="error"){
                 
             }
             //en caso de contrar el item mostrarlo en la tabla
             else{
                 
-                // $('#Rerror').hide();
+                // $("#Rerror").hide();
                 
-                var item=res['contenido'];
+                var item=res["contenido"];
                 
                 for (var i in item) {
-                    $('#tablamodal').append($("<tr><td>"+
+                    $("#tablamodal").append($("<tr><td>"+
                                         item[i]['codigo']+"</td><td>"+
                                         item[i]['iditem']+"</td><td>"+
                                         item[i]['referencia']+"</td><td>"+
@@ -349,7 +359,7 @@ function MostrarItems(numcaja){
 } 
 
 // FUNCION QUE INICIA DATATABLE
-function iniciar_tabla(tab){
+function iniciarTabla(tab){
     
     tabla= $(tab).DataTable({
                         
@@ -379,7 +389,7 @@ function iniciar_tabla(tab){
             "oAria": {
                 "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
                 "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-            }
+            },
         }
 
     });
