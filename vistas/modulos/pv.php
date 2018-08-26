@@ -96,9 +96,7 @@
         <button id="documento" title="Generar Documento" class="btn waves-effect green darken-4 col s12 m12 l8 hide " >
             <i class="far fa-file-alt"></i>
         </button>
-        
-    </div>   
-    <button data-target="informacion" class="btn modal-trigger">Modal</button>
+       
 </div>
 
 <!-- ============================================================================================================================
@@ -111,11 +109,11 @@
         <div class="modal-header ">
 
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-            <h4 class="center " >Informacion</span></h4>
+            <h4 class="center " >Información</span></h4>
 
         </div>
 
-        <table class="tablas centered " id="TablaM"  >
+        <table class="highlight striped" id="TablaM"  >
                 
                     <thead>
 
@@ -123,7 +121,6 @@
 
                         <th>Item</th>
                         <th>ID item</th>
-                        <th>Codigo de barras</th>
                         <th>Descripcion</th>
 
                     </tr>
@@ -137,6 +134,25 @@
     </div>
 
 </div>
+
+<style scoped>
+#TablaM tbody {
+  display:block;
+  height:380px;
+  overflow:auto;
+  }
+#TablaM  thead,#TablaM tbody tr {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+  }
+#TablaM  thead {
+  width: calc( 100% - 1em )
+  }
+  #TablaM {
+  width:100%;
+  }
+</style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->

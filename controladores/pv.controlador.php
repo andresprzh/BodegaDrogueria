@@ -39,8 +39,8 @@ class ControladorPV extends ControladorCajas{
             ];
 
         }else {
-            $item['estado']='error';
-            $item['contenido']='Item no encontrado';
+            $item["estado"]="error";
+            $item["contenido"]="Item no encontrado";
         }
 
         return $item;
@@ -100,8 +100,8 @@ class ControladorPV extends ControladorCajas{
         //si no encuentra resultados devuelve "error"
         }else{
 
-            $cajabus= ['estado'=>"error",
-                    'contenido'=>"Caja no encontrado en la base de datos!"];
+            $cajabus= ["estado"=>"error",
+                    "contenido"=>"Caja no encontrado en la base de datos!"];
 
         }
         // libera conexion para hace otra sentencia
@@ -114,14 +114,14 @@ class ControladorPV extends ControladorCajas{
         
         
         // agrega los datos en la datbla de recibidos
-        $resultado['estado']=$this->modelo->mdlRegistrarItems($items,$numcaja);
+        $resultado["estado"]=$this->modelo->mdlRegistrarItems($items,$numcaja);
 
         
         //si registra los items, modifica la tabla de pedido para que la caja aperezca como recibida
         if ($resultado==true) {
-            $resultado['estado']=$this->modelo->mdlModCaja($numcaja);
-            if($resultado['estado']==true){
-                $resultado['contenido']=$this->ctrDocumentoR($numcaja);
+            $resultado["estado"]=$this->modelo->mdlModCaja($numcaja);
+            if($resultado["estado"]==true){
+                $resultado["contenido"]=$this->ctrDocumentoR($numcaja);
             }
         }
         
@@ -158,58 +158,70 @@ class ControladorPV extends ControladorCajas{
     private function ctrDocumentoR($numcaja){
         $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
 
-        
+        $resultado["estado"]="ok";
         if ($busqueda->rowCount()>0) {
             $recibidos=$busqueda->fetchAll();
             $i=0;
-            $string='';
+            $resultado["string"]="";
             foreach ($recibidos as $row) {
 
-                $origen=str_replace('BD','',$row["lo_origen"]);
-                $destino=str_replace('VE','',$row["lo_destino"]);
+                $origen=str_replace("BD","",$row["lo_origen"]);
+                $destino=str_replace("VE","",$row["lo_destino"]);
                 $origen=$origen.substr($destino,1,-1);
-                $localicacion=str_replace('-','',$origen.$row["lo_destino"].'C');
+                $localicacion=str_replace("-","",$origen.$row["lo_destino"]."C");
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $item=str_pad($row["ID_ITEM"],13+15," ",STR_PAD_RIGHT);
+                $item=str_pad($row["item"],13+15," ",STR_PAD_RIGHT);
                 $num=$row["recibidos"]*1000;
-                $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
+                $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
                 
-
-                switch ($row['estado']) {
+                switch ($row["rec_estado"]) {
+                    
                     case 0:
                         
-                        if ($row['recibidos']==0) {
-                            $mensaje='Item no Recibido';
+                        if ($row["recibidos"]==0) {
+                            $mensaje="Item no recibido";
+                            $mensajeitem="item no recibido";
                         }else {
-                            $mensaje='Menos items';
+                            $mensaje="Menos items";
+                            $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
                         }
                         break;
 
                     case 1:
-                        $mensaje='Mas items';
+                        $mensaje="Mas items";
+                        $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];                        
                         break;
 
                     case 2:
-                        $mensaje='Caja diferente';
+                        $mensaje="Req diferente";
+                        $mensajeitem="El item  recibido no estaba en la requisicion";
                         break;
 
                     case 3:
-                        $mensaje='Req diferente';
+                        $mensaje="Caja diferente";
+                        $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
                         break;
                     
                     default:
-                        $mensaje='Ok';
+                        $mensaje="Ok";
                         break;
                 }
+                if ($row["rec_estado"] != 4) {
+                    $resultado["estado"]="error0";
+                    $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
+                    $resultado["item"][$i]["id"]=$row["item"];
+                    $resultado["item"][$i]["mensaje"]=$mensajeitem;
+                    $i++;
+                }
                 
-                $string.=($localicacion.$item.$alistado.$mensaje."\n");
+                $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\n");
             }
         }else {
-            $string=false;
+            $resultado["estado"]="error1";
         }
 
-        return $string;
+        return $resultado;
     }
     
     

@@ -151,7 +151,7 @@ $(document).ready(function(){
         });
 
         // EVENTO SI SE PRESIONA 1 BOTON EN LA TABLA EDITABLE(ELIMINAR ITEM)
-        $('#tablaeditable').on('click', 'button', function (e) {
+        $("#tablaeditable").on("click", "button", function (e) {
             
 
             var dt = $.fn.dataTable.tables();
@@ -165,8 +165,8 @@ $(document).ready(function(){
             // si la tabla es responsive
             if (fila.data() == undefined) {
 
-                fila = $(this).parents('tr');
-                if (fila.hasClass('child')) {
+                fila = $(this).parents("tr");
+                if (fila.hasClass("child")) {
                     fila = fila.prev();
                 }
             } else {
@@ -174,14 +174,14 @@ $(document).ready(function(){
             }
 
             
-            tabla.row(fila).remove().draw('false');
+            tabla.row(fila).remove().draw("false");
             
 
             
         });
 
         // EVENTO SI SE PRESIONA EL BOTON DE GENERAR
-        $('#Registrar').click(function (e) { 
+        $("#Registrar").click(function (e) { 
 
             swal({
                 title: "¿Registrar items?",
@@ -220,41 +220,57 @@ $(document).ready(function(){
 
                     $.ajax({   
                         url: "ajax/pv.registrar.ajax.php",
-                        type: 'post',//metodo post para mandar datos
+                        type: "post",//metodo post para mandar datos
                         data: {"caja":caja,"req":req,"items":items},//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
                             
                             
-                            if (res['estado']==true && res['contenido']) {
-                                swal({
-                                    title: "¡Items registrados!",
-                                    icon: "success",
-                                }).then((OK) => {
-                                    
-                                        var numcaja=$('#cajas').val();
-                                        // obtiene los 3 ultimos caracteres de la requisicion
-                                        var no_req=req[0].substr(req[0].length - 3);
+                            if (res["estado"]==true ) {
+                                if(res["contenido"]["estado"]=="ok"){
+                                    swal({
+                                        title: "¡Items registrados!",
+                                        icon: "success",
+                                    })
+                                }else if(res["contenido"]["estado"]=="error0"){
+                                    $('.modal').modal('open');
+                                    let item=res["contenido"]["item"];
+                                    $("#tablamodal").html("");
+                                    for (var i in item) {
+                                        $("#tablamodal").append($(`<tr><td>
+                                                            ${item[i]["descripcion"]}</td><td>
+                                                            ${item[i]["id"]}</td><td>
+                                                            ${item[i]["mensaje"]}</td>
+                                                            </tr>`));  
+                                    }   
+                                }else{
+                                    swal({
+                                        title: "¡Error!",
+                                        text: "Error",
+                                        icon: "error",
+                                    }); 
+                                }
+                                var numcaja=$("#cajas").val();
+                                // obtiene los 3 ultimos caracteres de la requisicion
+                                var no_req=req[0].substr(req[0].length - 3);
 
-                                        // crea el nombre del documento a partir de la requisicion y la caja
-                                        var nomdoc='DE'+no_req+'C'+numcaja+'.TR1';
+                                // crea el nombre del documento a partir de la requisicion y la caja
+                                var nomdoc="DE"+no_req+"C"+numcaja+".TR1";
 
-                                        var element = document.createElement('a');
-                                        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));
-                                        element.setAttribute('download', nomdoc);
+                                var element = document.createElement("a");
+                                element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["contenido"]));
+                                element.setAttribute("download", nomdoc);
 
-                                        element.style.display = 'none';
-                                        document.body.appendChild(element);
+                                element.style.display = "none";
+                                document.body.appendChild(element);
 
-                                        element.click();
+                                element.click();
 
-                                        document.body.removeChild(element);
-   
-   
-                                });
+                                document.body.removeChild(element);
                             }else{
                                 swal({
                                     title: "¡Error!",
+                                    text: "Error",
                                     icon: "error",
                                 }); 
                             }
@@ -266,6 +282,7 @@ $(document).ready(function(){
             });
         });
 
+        
     });
     
     
@@ -280,6 +297,8 @@ $(document).ready(function(){
         
         //consigue el codigo de barras
         var codigo= $('#codbarras').val();
+        // pone en blanco input 
+        $('#codbarras').val("");
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
