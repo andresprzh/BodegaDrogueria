@@ -98,7 +98,8 @@
         </button>
         
     </div>   
-    <button data-target="informacion" class="btn modal-trigger">Modal</button>
+    <!-- <button data-target="informacion" class="btn modal-trigger" id="modal">Modal</button> -->
+    <button  class="btn blue" id="modal">Modal</button>
 </div>
 
 <!-- ============================================================================================================================
@@ -111,11 +112,11 @@
         <div class="modal-header ">
 
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-            <h4 class="center " >Informacion</span></h4>
+            <h4 class="center " >Información</span></h4>
 
         </div>
 
-        <table class="tablas centered " id="TablaM"  >
+        <table class="highlight " id="TablaM"  >
                 
                     <thead>
 
@@ -123,7 +124,6 @@
 
                         <th>Item</th>
                         <th>ID item</th>
-                        <th>Codigo de barras</th>
                         <th>Descripcion</th>
 
                     </tr>
