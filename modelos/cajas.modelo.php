@@ -33,7 +33,7 @@ class ModeloCaja extends Conexion{
 		WHERE caja.no_caja LIKE :numcaja 
 		AND pedido.no_req=:no_req
 		AND caja.no_caja <> 1
-		AND caja.estado <> 2 
+		AND caja.estado < 3 
         GROUP BY caja.no_caja,caja.estado;';
         
         $stmt= $this->link->prepare($sql);

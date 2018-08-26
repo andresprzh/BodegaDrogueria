@@ -181,7 +181,7 @@ function mostrarCajas(){
             else{
                 $("#refresh").prop("disabled",false);
                 var caja=res["contenido"];
-                
+                let color=["red","green","green","orange"];
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
                     
@@ -196,16 +196,17 @@ function mostrarCajas(){
                         caja["cerrar"]="---"
                     }
                     
-                    $("#tablacajas").append($("<tr>"+
-                                        "<td class='numcaja'>"+caja['no_caja']+"</td>"+
-                                        "<td class='alistadores'>"+caja['alistador']+"</td>"+
-                                        "<td class='tipocajas'>"+caja['tipocaja']+"</td>"+
-                                        "<td>"+caja['abrir']+"</td>"+
-                                        "<td class='cierres'>"+caja['cerrar']+"</td><td>"+
-                                        "<button  onclick='mostrarItemsCaja("+0+")'  title='Revisar'  data-target='EditarCaja' class='btn modal-trigger waves-effect waves-light green darken-3'>"+
-                                            "<i class='fas fa-file-alt'></i>"+
-                                        "</button></td>"+
-                                        "</tr>"));  
+                    
+                    $("#tablacajas").append($(`<tr>
+                                        <td class='numcaja'>${caja["no_caja"]}</td>
+                                        <td class="alistadores">${caja["alistador"]}</td>
+                                        <td class="tipocajas">${caja["tipocaja"]}</td>
+                                        <td>${$caja["abrir"]}</td>
+                                        <td class="cierres">${caja["cerrar"]}</td><td>
+                                        <button  onclick="mostrarItemsCaja(0)"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
+                                            <i class="fas fa-file-alt"></i>
+                                        </button></td>+
+                                        </tr>`));  
                 }else {
                     for (var i in caja) {
                         
@@ -219,19 +220,19 @@ function mostrarCajas(){
                         if (caja[i]["cerrar"]===null) {
                             caja[i]["cerrar"]="---"
                         }
-                        if (caja[i]["estado"]==0) {
-                            var color="red";
-                        }else{
-                            var color="green";
-                        }
+                        // if (caja[i]["estado"]==0) {
+                        //     var color="red";
+                        // }else{
+                        //     var color="green";
+                        // }
                        
                         $("#tablacajas").append($(`<tr>
-                                            <td class="numcaja">`+caja[i]["no_caja"]+`</td>
-                                            <td class="alistadores">`+caja[i]["alistador"]+`</td>
-                                            <td class="tipocajas">`+caja[i]["tipocaja"]+`</td>
-                                            <td>`+caja[i]["abrir"]+`</td>
-                                            <td class="cierres">`+caja[i]["cerrar"]+`</td><td>
-                                            <button  onclick="mostrarItemsCaja(`+i+`)"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light `+color+` darken-3">
+                                            <td class="numcaja">${caja[i]["no_caja"]}</td>
+                                            <td class="alistadores">${caja[i]["alistador"]}</td>
+                                            <td class="tipocajas">${caja[i]["tipocaja"]}</td>
+                                            <td>${caja[i]["abrir"]}</td>
+                                            <td class="cierres">${caja[i]["cerrar"]}</td><td>
+                                            <button  onclick="mostrarItemsCaja(${i})"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
                                                 <i class="fas fa-file-alt"></i>
                                             </button></td>
                                             </tr>`));  
@@ -254,7 +255,7 @@ function recargarCajas(){
     //espera a que la funcion termine para reiniciar las tablas
     $.when(mostrarCajas()).done(function(){
             
-        table=iniciarTabla('#TablaC');
+        table=iniciarTabla("#TablaC");
 
     });
 }
