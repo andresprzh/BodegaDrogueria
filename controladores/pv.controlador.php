@@ -180,8 +180,8 @@ class ControladorPV extends ControladorCajas{
                     case 0:
                         
                         if ($row["recibidos"]==0) {
-                            $mensaje="Item no Recibido";
-                            $mensajeitem="item no resibido";
+                            $mensaje="Item no recibido";
+                            $mensajeitem="item no recibido";
                         }else {
                             $mensaje="Menos items";
                             $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
@@ -221,7 +221,7 @@ class ControladorPV extends ControladorCajas{
             $resultado["estado"]="error1";
         }
 
-        return $string;
+        return $resultado;
     }
     
     

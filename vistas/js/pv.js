@@ -232,36 +232,15 @@ $(document).ready(function(){
                                         title: "¡Items registrados!",
                                         icon: "success",
                                     })
-                                    // .then((OK) => {
-                                        
-                                    //     var numcaja=$("#cajas").val();
-                                    //     // obtiene los 3 ultimos caracteres de la requisicion
-                                    //     var no_req=req[0].substr(req[0].length - 3);
-
-                                    //     // crea el nombre del documento a partir de la requisicion y la caja
-                                    //     var nomdoc="DE"+no_req+"C"+numcaja+".TR1";
-
-                                    //     var element = document.createElement("a");
-                                    //     element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["contenido"]));
-                                    //     element.setAttribute("download", nomdoc);
-
-                                    //     element.style.display = "none";
-                                    //     document.body.appendChild(element);
-
-                                    //     element.click();
-
-                                    //     document.body.removeChild(element);
-    
-                                    // });
                                 }else if(res["contenido"]["estado"]=="error0"){
                                     $('.modal').modal('open');
-                                    let item=res["contenido"];
+                                    let item=res["contenido"]["item"];
                                     $("#tablamodal").html("");
                                     for (var i in item) {
                                         $("#tablamodal").append($(`<tr><td>
                                                             ${item[i]["descripcion"]}</td><td>
                                                             ${item[i]["id"]}</td><td>
-                                                            ${item[i]["mensaje"]}</td><td>+
+                                                            ${item[i]["mensaje"]}</td>
                                                             </tr>`));  
                                     }   
                                 }else{
@@ -303,90 +282,7 @@ $(document).ready(function(){
             });
         });
 
-        $("#modal").click(function (e) { 
-
-            //consigue el codigo de barras
-            var caja= $('#cajas').val();
-                    
-            //consigue el numero de requerido
-            var requeridos=$(".requeridos").val();
-            //id usuario es obtenida de las variables de sesion
-            var req=[requeridos,id_usuario];
-            // $('.modal').modal('open');
-            $.ajax({   
-                url: "pruebas/recibidos2.php",
-                type: "post",//metodo post para mandar datos
-                data: {"caja":caja,"req":req},//datos que se enviaran
-                dataType: "JSON",
-                success: function (res) {
-                    console.log(res);
-                    if(res["estado"]=="ok"){
-                        swal({
-                            title: "¡Items registrados!",
-                            icon: "success",
-                        })
-                        // .then((OK) => {
-                            
-                        //     var numcaja=$("#cajas").val();
-                        //     // obtiene los 3 ultimos caracteres de la requisicion
-                        //     var no_req=req[0].substr(req[0].length - 3);
-
-                        //     // crea el nombre del documento a partir de la requisicion y la caja
-                        //     var nomdoc="DE"+no_req+"C"+numcaja+".TR1";
-
-                        //     var element = document.createElement("a");
-                        //     element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["contenido"]));
-                        //     element.setAttribute("download", nomdoc);
-
-                        //     element.style.display = "none";
-                        //     document.body.appendChild(element);
-
-                        //     element.click();
-
-                        //     document.body.removeChild(element);
-
-                        // });
-                    }else if(res["estado"]=="error0"){
-                        $('.modal').modal('open');
-                        let item=res["item"];
-                        $("#tablamodal").html("");
-                        for (var i in item) {
-                            $("#tablamodal").append($(`<tr><td>
-                                                ${item[i]["descripcion"]}</td><td>
-                                                ${item[i]["id"]}</td><td>
-                                                ${item[i]["mensaje"]}</td>
-                                                </tr>`));  
-                        }   
-                    }else{
-                        swal({
-                            title: "¡Error!",
-                            text: "Error",
-                            icon: "error",
-                        }); 
-                    }
-                    var numcaja=$("#cajas").val();
-                    // obtiene los 3 ultimos caracteres de la requisicion
-                    var no_req=req[0].substr(req[0].length - 3);
-
-                    // crea el nombre del documento a partir de la requisicion y la caja
-                    var nomdoc="DE"+no_req+"C"+numcaja+".TR1";
-
-                    var element = document.createElement("a");
-                    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["string"]));
-                    element.setAttribute("download", nomdoc);
-
-                    element.style.display = "none";
-                    document.body.appendChild(element);
-
-                    element.click();
-
-                    document.body.removeChild(element);
-
-                }
-            });
-            
-        });
-
+        
     });
     
     
@@ -401,6 +297,8 @@ $(document).ready(function(){
         
         //consigue el codigo de barras
         var codigo= $('#codbarras').val();
+        // pone en blanco input 
+        $('#codbarras').val("");
         //consigue el numero de requerido
         var requeridos=$(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
