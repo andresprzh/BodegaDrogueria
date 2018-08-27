@@ -201,7 +201,7 @@ function mostrarCajas(){
                                         <td class='numcaja'>${caja["no_caja"]}</td>
                                         <td class="alistadores">${caja["alistador"]}</td>
                                         <td class="tipocajas">${caja["tipocaja"]}</td>
-                                        <td>${$caja["abrir"]}</td>
+                                        <td>${caja["abrir"]}</td>
                                         <td class="cierres">${caja["cerrar"]}</td><td>
                                         <button  onclick="mostrarItemsCaja(0)"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
                                             <i class="fas fa-file-alt"></i>
