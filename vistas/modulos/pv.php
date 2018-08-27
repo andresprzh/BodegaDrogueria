@@ -109,15 +109,15 @@
         <div class="modal-header ">
 
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-            <h4 class="center " >Información</span></h4>
+            <h4 class="center red-text darken-3 " >Información</span></h4>
 
         </div>
 
-        <table class="highlight striped" id="TablaM"  >
+        <table class="" id="TablaM"  >
                 
                     <thead>
 
-                    <tr  class="white-text green darken-3" >
+                    <tr  class="white-text red darken-3" >
 
                         <th>Item</th>
                         <th>ID item</th>
@@ -139,19 +139,38 @@
 #TablaM tbody {
   display:block;
   height:380px;
-  overflow:auto;
+  overflow-y:auto;
+  
   }
 #TablaM  thead,#TablaM tbody tr {
   display:table;
   width:100%;
   table-layout:fixed;
   }
-#TablaM  thead {
+/* #TablaM  thead {
   width: calc( 100% - 1em )
-  }
+  } */
   #TablaM {
-  width:100%;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
   }
+
+#TablaM td, #TablaM th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#TablaM tr:nth-child(even){background-color: #f2f2f2;}
+
+#TablaM tr:hover {background-color: #ddd;}
+
+#TablaM th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    color: white;
+}
 </style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   

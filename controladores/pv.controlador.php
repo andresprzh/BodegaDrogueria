@@ -200,7 +200,11 @@ class ControladorPV extends ControladorCajas{
 
                     case 3:
                         $mensaje="Caja diferente";
-                        $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
+                        if ($row["cajap"]==1) {
+                            $mensajeitem="El item recibido no está alistado en niguna caja";
+                        }else{
+                            $mensajeitem="El item recibido fue alistado en la caja ".$row["cajap"]." y recibido en la caja ".$row["cajar"];
+                        }
                         break;
                     
                     default:

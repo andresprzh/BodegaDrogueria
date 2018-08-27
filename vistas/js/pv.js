@@ -7,7 +7,9 @@ $(document).ready(function(){
         table=iniciar_tabla();
         
         // INICIAR MODAL
-        $('.modal').modal();
+        $('.modal').modal({
+            onCloseEnd: function() { location.reload(); }
+        });
         // pone items en el input select
         $.ajax({
             url:"ajax/alistar.requisicion.ajax.php",
@@ -231,7 +233,9 @@ $(document).ready(function(){
                                     swal({
                                         title: "¡Items registrados!",
                                         icon: "success",
-                                    })
+                                    }).then((ok)=>{
+                                        location.reload();
+                                    }); 
                                 }else if(res["contenido"]["estado"]=="error0"){
                                     $('.modal').modal('open');
                                     let item=res["contenido"]["item"];
@@ -248,6 +252,9 @@ $(document).ready(function(){
                                         title: "¡Error!",
                                         text: "Error",
                                         icon: "error",
+                                    })
+                                    .then((ok)=>{
+                                        location.reload();
                                     }); 
                                 }
                                 var numcaja=$("#cajas").val();
@@ -281,8 +288,8 @@ $(document).ready(function(){
                 }
             });
         });
-
         
+         
     });
     
     
