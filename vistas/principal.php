@@ -76,8 +76,28 @@
         "requerir",
         "alistar",
         "cajas",
-        "salir"
+        "pv",
+        "usuarios",
+        "salir",
+        "tareas"
         ];
+    $jefe=[
+      "inicio",
+      "requerir",
+      "cajas",
+      "salir",
+      "tareas",
+    ];
+    $alistador=[
+      "inicio",
+      "alistar",
+      "salir"
+    ];
+    $pv=[
+      "inicio",
+      "pv",
+      "salir"
+    ];
 
     echo "<main>";
 
