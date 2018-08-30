@@ -58,9 +58,9 @@ class ControladorUsuarios {
         }
     }
 
-    public function ctrBuscarUsuarios(){
+    public function ctrBuscarUsuarios($item=null,$valor=null){
         
-        $busqueda=$this->modelo->mdlMostrarUsuarios();
+        $busqueda=$this->modelo->mdlMostrarUsuarios($item,$valor);
 
         if ($busqueda->rowCount() > 0) {
 

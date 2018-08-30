@@ -37,7 +37,7 @@ $(document).ready(function () {
         // Para Admins
        case 1:
             $("#contenido-inicio").append($('<h2 class="header center">Admin</h2>'));
-            $("#contenido-inicio").append($(`<ul class="collection with-header collapsible" id="listreq">
+            $("#contenido-inicio").append($(`<ul class="collection with-header collapsible expandable" id="listreq">
                         <li class="collection-header"><h4>Requisiciones</h4></li>
                     </ul>`));
             // pone requisiciones en el input select
@@ -56,12 +56,13 @@ $(document).ready(function () {
                         if (res[i]["estado"]!=0) {
                             icon='<i class="fas fa-check-square green-text "></i>';
                         }else{
-                            icon='<i class="fas fa-times-circle red-text"></i>';
+                            icon='<i class="fas fa-check-square grey-text"></i>';
                         }
                         $("#listreq").append($(`<li class="collection-item avatar white">
                         <div class="collapsible-header">
+                            ${icon}
                             <span style="font-size:150%" class="title green-text " >`+res[i]['no_req']+`</span>
-                            <span class="secondary-content">`+icon+`</span>
+                            <span class="secondary-content"><i class="fas fa-caret-down green-text"></i></span>
                         </div>
                         <div class="collapsible-body ">
                             <table class="centered black-text">

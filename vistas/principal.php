@@ -78,6 +78,7 @@
         "alistar",
         "cajas",
         "pv",
+        "tareas",
         "usuarios",
         "salir"
         ];
