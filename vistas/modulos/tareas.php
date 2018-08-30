@@ -32,9 +32,9 @@
 <!-- ============================================================================================================================
                                                     MODAL TAREAS DE USUARIOS
 ============================================================================================================================ -->
-<div id="informacion" class="modal grey lighten-3">
+<div id="informacion" class="modal ">
 
-    <div class="modal-content grey lighten-3">
+    <div class="modal-content ">
 
         <div class="modal-header ">
         
@@ -60,6 +60,28 @@
                 <option value="" disabled selected>Seleccionar</option>
             </select>
             <label  style="font-size:12px;">Seleccionar requisicion</label>
+
+            <ul class="collection with-header" id="listtareas">
+                <li class="collection-header"><h4>tareas asignadas</h4></li>
+                <li class="collection-item " style="padding:0;">
+                    <button  class="btn green col s12" style="font-style: oblique;">Agregar tarea <i class="fas fa-plus" style="font-style: oblique;"></i></button   >
+                </li>
+                <li class="collection-item">Tarea1 
+                    <span class="green-text">Completada</span>
+                    <span >Fech asignacion: 28/08/2018</span>
+                    <span >Fech terminacion: 30/08/2018</span>
+                </li>
+                <li class="collection-item">tarea2 
+                    <span class="grey-text darken-4">Pendiente</span>
+                    <span >Fech asignacion: 29/08/2018</span>
+                    <span >Fech terminacion: "-/-/-"</span>
+                </li>
+                <li class="collection-item">tarea3
+                    <span class="grey-text darken-4">Pendiente</span>
+                    <span >Fech asignacion: 30/08/2018</span>
+                    <span >Fech terminacion: "-/-/-"</span>
+                </li>
+            </ul>
 
         </div>
 
@@ -105,6 +127,8 @@
     text-align: left;
     color: white;
 }
+
+
 </style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
