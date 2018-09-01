@@ -115,6 +115,7 @@ $(document).ready(function () {
                     data: {"datosusuario":datosusuario,"button":buttonid},
                     dataType: "JSON",
                     success: function (res) {
+                        
                         $('#iduser').html(""),
                         $('#nombre').val(""),
                         $('#cedula').val(""),
@@ -151,7 +152,7 @@ $(document).ready(function () {
                                     title: "Usuario modificado",
                                     icon: "success",
                                 }).then(()=>{
-                                    
+                                    console.log(datosusuario);
                                     // muestra nuevos datos en la tabla
                                     
                                     tabla.row(datosusuario['id']-1).data( [
@@ -239,12 +240,10 @@ function CargarPerfiles() {
         data: "data",
         dataType: "JSON",
         success: function (res) {
-            
             if (res['estado'] == 'encontrado') {
                 var perfiles=res['contenido'];
                                 
                 for (var i in perfiles) {
-                     
                     $("#perfil").append($('<option value="'+perfiles[i]['id']+'">'+perfiles[i]['perfil']+'</option>'));
                 }   
 

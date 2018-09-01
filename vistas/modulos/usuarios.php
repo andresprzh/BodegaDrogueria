@@ -80,7 +80,6 @@
                 <div class="row">
                     <i class="fas fa-users-cog"></i><label class="black-text" for="perfil">Perfil</label>
                     <select   list="perfil" name="perfil" class="perfil" id="perfil">
-                        <option value="" disabled selected>Seleccionar</option>
                     </select>
                     
                 </div>
