@@ -86,6 +86,7 @@
       "inicio",
       "requerir",
       "cajas",
+      "usuarios",
       "salir"
     ];
     $alistador=[

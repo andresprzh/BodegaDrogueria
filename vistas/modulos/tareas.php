@@ -91,46 +91,6 @@
 
 </div>
 <!-- ============================================================================================================================
-                                                    ESTILOS  
-============================================================================================================================ -->
-<style scoped>
-#TablaU tbody {
-  display:block;
-  height:380px;
-  overflow-y:auto;
-  
-  }
-  #TablaU  thead,#TablaU tbody tr {
-  display:table;
-  width:100%;
-  table-layout:fixed;
-  }
-  #TablaU  td:last-child, #TablaU  th:last-child{
-      width:60px;
-  }
-  #TablaU {
-  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-  }
-
-#TablaU td, #TablaU th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-#TablaU tr:nth-child(even){background-color: #f2f2f2;}
-
-#TablaU th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    color: white;
-}
-
-
-</style>
-<!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
 <!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->

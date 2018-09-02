@@ -2,10 +2,10 @@
 
 
 <div class="row">
-    <div class="col s12 " id="TablaU" >
+    <div class="col s12 "  >
 
        
-        <table class="tablas centered responsive table"  >
+        <table class="responsive-table" id="TablaU"  >
 
         <button  title='Añadir usuario'  data-target='editarusuario' id='addusuario' class='modal-trigger btn-small waves-effect waves-light green darken-3 ' >
             <i class='fas fa-user-plus'></i>
@@ -14,7 +14,6 @@
             
             <tr class="white-text green darken-3 ">
 
-                <th>#</th>
                 <th><i class="fas fa-users"></i> Usuario</th>
                 <th><i class="fas fa-pen"></i> Nombre</th>
                 <th><i class="fas fa-id-card"></i> Cedula</th>
@@ -28,7 +27,6 @@
             <tbody id="tablausuarios"></tbody>
             
         </table>  
-                
     </div>
 </div>
 <!-- ============================================================================================================================

@@ -27,7 +27,7 @@ class ControladorUsuarios {
                 $contraseña=$_POST["contraseña"];
                 
                                 
-                $respuesta=$this->modelo->mdlMostrarUsuarios($item,$valor);
+                $respuesta=$this->modelo->mdlMostrarUsuarios(1,$item,$valor);
                 $respuesta=$respuesta->fetch();
                 
                 //si encuentra el usuario inicia sesion
@@ -58,10 +58,10 @@ class ControladorUsuarios {
         }
     }
 
-    public function ctrBuscarUsuarios($item=null,$valor=null){
+    public function ctrBuscarUsuarios($perfil=null,$item=null,$valor=null){
         
-        $busqueda=$this->modelo->mdlMostrarUsuarios($item,$valor);
-
+        $busqueda=$this->modelo->mdlMostrarUsuarios($perfil,$item,$valor);
+        
         if ($busqueda->rowCount() > 0) {
 
             if($busqueda->rowCount() == 1){
@@ -114,8 +114,8 @@ class ControladorUsuarios {
         
     }
 
-    public function ctrBuscarPerfiles(){
-        $busqueda=$this->modelo->mdlMostrarPerfiles();
+    public function ctrBuscarPerfiles($perfil){
+        $busqueda=$this->modelo->mdlMostrarPerfiles($perfil);
 
         if ($busqueda->rowCount() > 0) {
 

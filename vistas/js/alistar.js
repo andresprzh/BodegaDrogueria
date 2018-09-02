@@ -528,9 +528,7 @@ function iniciar_tabla(tabla) {
         
         rowGroup: {
             dataSrc: 7
-        },
-        scrollY:        300,
-        scrollCollapse: true,
+        }
 
     });
 

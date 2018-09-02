@@ -68,8 +68,8 @@ $(document).ready(function () {
     $("#TablaU tbody").on("click","a", function () {
         // se consigue el id del item y el nombre
         let iduser = $(this).closest('tr').attr('id');
-        const nombre =  $('td:eq(0)', $(this).parents('tr')).text();
-        const cedula =  $('td:eq(1)', $(this).parents('tr')).text();
+        const nombre =  $('td:eq(0)', $(this).parents('tr')).text().replace(/(^\s+|\s+$)/g, '');
+        const cedula =  $('td:eq(1)', $(this).parents('tr')).text().replace(/(^\s+|\s+$)/g, '');
        $("#nombre").html(nombre);
        $("#cedula").html(cedula);
        $('.modal').modal('open');

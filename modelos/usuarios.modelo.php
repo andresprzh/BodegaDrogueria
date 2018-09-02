@@ -15,11 +15,23 @@ class ModeloUsuarios extends Conexion {
     /*==========================================
             MOSTRAR USUARIOS
       ========================================*/
-    public function mdlMostrarUsuarios($item=null,$valor=null){
+    public function mdlMostrarUsuarios($perfil=null,$item=null,$valor=null){
       $tabla='usuario';
       
       //busca los itemas
-      return $this->buscaritem($tabla,$item,$valor);
+      if($perfil == 1 or $perfil == null) {
+        return $this->buscaritem($tabla,$item,$valor);
+      }elseif( $perfil == 2){
+        $stmt= $this->link->prepare("SELECT *
+        FROM $tabla
+        WHERE perfil IN (3,5);");
+
+        $stmt->execute();
+        
+        return $stmt;
+      }else {
+        return "Error usuario no tiene permisos";
+      }
       
     }
 
@@ -38,17 +50,34 @@ class ModeloUsuarios extends Conexion {
       
 
       $res=$stmt->execute();
+      if($res){
+        $res=$this->link->lastInsertId();
+      }
        
       return $res;
 
       $stmt=null;
     }
 
-    public function mdlMostrarPerfiles($item=null,$valor=null){
+    public function mdlMostrarPerfiles($perfil=null,$item=null,$valor=null){
       $tabla='perfiles';
       
       //busca los itemas
-      return $this->buscaritem($tabla,$item,$valor);
+      if($perfil == 1 or $perfil == null) {
+        return $this->buscaritem($tabla,$item,$valor);
+      }elseif( $perfil == 2){
+        $stmt= $this->link->prepare("SELECT *
+        FROM $tabla
+        WHERE id_perfil IN (3,5);");
+
+        $stmt->execute();
+        
+        return $stmt;
+      }else {
+        return "Error usuario no tiene permisos";
+      }
+
+      
     }  
 
     public function mdlCambiarUsuario($datos){
@@ -64,7 +93,10 @@ class ModeloUsuarios extends Conexion {
       
 
       $res=$stmt->execute();
-        
+      if($res){
+        $res=$datos["id"];
+      }
+            
       return $res;
       
       $stmt=null;

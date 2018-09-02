@@ -52,7 +52,8 @@
             if ($_SESSION["usuario"]["perfil"]==2) {
                 echo '<li><a href="requerir" ><i class="fas fa-upload"></i>Subir archivo requisicion</a></li>';
                 echo '<li><a href="cajas" ><i class="fas fa-boxes"></i>Cajas</a></li>';
-                echo '<li><a href="tareas" ><i class="fas fa-tasks"></i>Tareas</a></li>';
+                echo '<li><a href="usuarios" ><i class="fas fa-users"></i>Usuario</a></li>';
+                // echo '<li><a href="tareas" ><i class="fas fa-tasks"></i>Tareas</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==3) {
                 echo '<li><a href="alistar" >Alistar</a></li>';
