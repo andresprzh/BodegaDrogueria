@@ -23,21 +23,40 @@ class Conexion{
          // si item es diferente de nullo se busca con una condicion
         
         if ($item!=null) {
-          
-            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = :$item");
-            
-            
-            //para evitar sql injection
-            $stmt->bindParam(":".$item,$valor,PDO::PARAM_STR);
-            //ejecuta el comando sql
-            $stmt->execute();
-            
-            
-            // return $stmt->fetch();
+            if (is_array($item)) {
+                
+                $sql="SELECT * FROM $tabla WHERE";
+                for($i=0;$i<count($item);$i++) {
+                    $sql.=" $item[$i] = :valor$i  OR";
+                }
+                $sql=substr($sql, 0, -2).';';
 
-            return $stmt;
-            
-            
+                $stmt= $this->link->prepare($sql);
+
+                
+                for($i=0;$i<count($valor);$i++) {
+                    $stmt->bindParam(":valor$i",$valor[$i],PDO::PARAM_STR);
+                }
+
+                $stmt->execute();
+                return $stmt;
+
+            }else{
+
+                $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = :$item");
+                
+                
+                //para evitar sql injection
+                $stmt->bindParam(":".$item,$valor,PDO::PARAM_STR);
+                //ejecuta el comando sql
+                $stmt->execute();
+                
+                
+                // return $stmt->fetch();
+
+                return $stmt;
+                
+            }
           // si item es nulo muestra todos los datos de $tabla
           }else {
   

@@ -23,7 +23,6 @@ $(document).ready(function () {
     // si se da click en agregar o editar usuario
     $(document).on('click', '.modal-trigger', function () {
         
-        
         // si se da click en agregar usuario
         if (this.id=='addusuario') {
             
@@ -98,16 +97,14 @@ $(document).ready(function () {
                         dataType: "JSON",
                         success: function (res) {
                             
-                            $('#iduser').html("");
-                            $('#nombre').val("");
-                            $('#cedula').val("");
-                            $('#usuario').val("");
-                            $('#password').val("");
-                            $('#perfil').val("");
-                            
                             // si se modifica o inserta el usuario el ajax regresa el id de dicho usuario
-                            if (res) {
-                                
+                            if (!isNaN(parseFloat(res))) {
+                                $('#iduser').html("");
+                                $('#nombre').val("");
+                                $('#cedula').val("");
+                                $('#usuario').val("");
+                                $('#password').val("");
+                                $('#perfil').val("");
                                 let perfil=$(`#perfil option[value="${datosusuario['perfil']}"]`).text();
 
                                 if (buttonid=="agregar") {
@@ -150,9 +147,14 @@ $(document).ready(function () {
                                 }
                                 // cierra el modal
                                 $('.modal').modal('close'); 
-                            }else{
+                            }else if(res==false){
                                 swal({
                                     title: "No se pudo agregar o modificar el usuario",
+                                    icon: "error",
+                                });
+                            }else{
+                                swal({
+                                    title: res,
                                     icon: "error",
                                 });
                             }

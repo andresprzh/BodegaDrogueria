@@ -168,8 +168,16 @@ class ControladorUsuarios {
     }
 
     public function ctrCrearUsuario($datosusario){
-        
-        return $this->modelo->mdlRegistrarUsuario($datosusario);
+        // busca si el usuario ya existe
+        $item = ['usuario','cedula'];
+        $valor = [$datosusario['usuario'],$datosusario['cedula']];
+        $busqueda = $this->modelo->mdlMostrarUsuarios(1,$item,$valor);
+        $resultado['estado']='encontrado';
+        if ($busqueda->rowCount() > 0) {
+            return "Usuario ya existe";
+        }else{
+            return $this->modelo->mdlRegistrarUsuario($datosusario);
+        }
 
     }
 
