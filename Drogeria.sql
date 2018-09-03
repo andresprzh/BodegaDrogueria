@@ -68,6 +68,8 @@ CREATE TABLE usuario(
 	perfil INT(1),
 
 	PRIMARY KEY(id_usuario),
+	UNIQUE(cedula),
+	UNIQUE(usuario),
 
 	CONSTRAINT usuario_perfil
 	FOREIGN KEY(perfil)

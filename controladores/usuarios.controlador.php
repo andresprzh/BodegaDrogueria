@@ -182,8 +182,16 @@ class ControladorUsuarios {
     }
 
     public function ctrModificarUsuario($datosusario){
-        
-        return $this->modelo->mdlCambiarUsuario($datosusario);
+        // busca si la cedula o usuario estan disponibles
+        $item = ['usuario','cedula'];
+        $valor = [$datosusario['usuario'],$datosusario['cedula']];
+        $busqueda = $this->modelo->mdlMostrarUsuarios(1,$item,$valor);
+        $resultado['estado']='encontrado';
+        if ($busqueda->rowCount() > 1) {
+            return "No pueden existir 2 usuarios con la misma cedula o nombre de usuario";
+        }else{
+            return $this->modelo->mdlCambiarUsuario($datosusario);
+        }
 
     }
 }

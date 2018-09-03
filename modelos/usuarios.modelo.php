@@ -81,8 +81,8 @@ class ModeloUsuarios extends Conexion {
     }  
 
     public function mdlCambiarUsuario($datos){
-      $tabla='usuario';
-      $stmt= $this->link->prepare("UPDATE $tabla SET nombre=:nombre, cedula=:cedula,usuario=:usuario,password=:password,perfil=:perfil WHERE id_usuario=:id_usuario;");
+      $tabla ='usuario';
+      $stmt = $this->link->prepare("UPDATE $tabla SET nombre=:nombre, cedula=:cedula,usuario=:usuario,password=:password,perfil=:perfil WHERE id_usuario=:id_usuario;");
       
       $stmt->bindParam(":id_usuario",$datos["id"],PDO::PARAM_INT);
       $stmt->bindParam(":nombre",$datos["nombre"],PDO::PARAM_STR);
@@ -92,10 +92,13 @@ class ModeloUsuarios extends Conexion {
       $stmt->bindParam(":perfil",$datos["perfil"],PDO::PARAM_INT);
       
 
-      $res=$stmt->execute();
+      $res = $stmt->execute();
       if($res){
-        $res=$datos["id"];
+        $res = $datos["id"];
       }
+        // else{
+        //   $res = $stmt->errorInfo();
+        // }
             
       return $res;
       
