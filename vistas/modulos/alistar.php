@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <table class="tablas centered " id="TablaVi" style="width:100%" >
+        <table class="datatable centered " id="TablaVi" style="width:100%" >
 
             <thead>
             
@@ -82,7 +82,7 @@
                 <th>Codigo de barras</th>
                 <th>ID Item</th>
                 <th>Referencia</th>               
-                <th>Alistados</th>
+                <th data-priority="2">Alistados</th>
                 <th>Ubicacion</th>
                 
             </tr>
@@ -102,7 +102,7 @@
     <div class="col s12" id="TablaE" >
 
 
-        <table class="tablas centered " id="TablaEd" style="width:100%">
+        <table class="datatable centered " id="TablaEd" style="width:100%">
         
             <thead>
 
@@ -195,31 +195,7 @@
 
 </div>
 <style scoped>
-@media(max-width:1080px){
-    
-    table#TablaV 
-    td:nth-child(4), td:nth-child(6),td:nth-child(8),
-    th:nth-child(4), th:nth-child(6),th:nth-child(8){
-        display: none;
-    }
 
-} 
-@media(max-width:770px){
-    
-    table#TablaV 
-    td:nth-child(5),
-    th:nth-child(5){
-        display: none;
-    }
-}
-@media(max-width:450px){
-    
-    table#TablaV 
-    td:nth-child(2),
-    th:nth-child(2){
-        display: none;
-    }
-}
 </style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   

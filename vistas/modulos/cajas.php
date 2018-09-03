@@ -34,7 +34,7 @@
 
     <div class="col s12 m12 l12 ">
 
-        <table class="tablas centered " id="TablaC" >
+        <table class="datatable centered " id="TablaC" >
 
                 <thead>
                 
@@ -71,7 +71,7 @@
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
             <h4 class="center" >Caja No <span id="NumeroCaja"></span></h4>
             
-            <table class="centered">
+            <table class="centered no-border" >
                 <thead>
                     <tr>
                         <th>Alistador: <span id="alistador"></span></th>
@@ -87,7 +87,7 @@
 
         </div>
 
-        <table class="tablas centered " id="TablaM"  >
+        <table class="datatable centered " id="TablaM"  >
                 
                     <thead>
 
@@ -112,11 +112,14 @@
         </table> 
         
         <div class="modal-footer grey lighten-3">
-            <button id="Documento" title="GenerarDocumento" class="btn left waves-effect green darken-4 col s12 m12 l8" >
+            <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s12 m12 l8" >
                 <i class="fas fa-file-alt"></i>
             </button>
+            <button id="eliminar" title="Elimina Caja" class="btn left waves-effect red darken-4 col s12 m12 l8" >
+                <i class="fas fa-trash-alt"></i>
+            </button>
         </div>
-
+        
     </div>
 
 </div>

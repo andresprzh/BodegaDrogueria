@@ -62,7 +62,7 @@ CREATE TABLE  perfiles(
 CREATE TABLE usuario(
 	id_usuario INT(10) NOT NULL AUTO_INCREMENT,
 	nombre VARCHAR(40) COLLATE ucs2_spanish_ci,
-	cedula INT(10),
+	cedula CHAR(10),
 	usuario CHAR(20),
 	password VARCHAR(60) NOT NULL,
 	perfil INT(1),

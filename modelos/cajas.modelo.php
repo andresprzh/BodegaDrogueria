@@ -67,4 +67,34 @@ class ModeloCaja extends Conexion{
 
     }
 
+    public function mdlCancelarCaja($numcaja)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+
+        $stmt= $this->link->prepare("UPDATE caja SET estado=9 WHERE no_caja=:no_caja");
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();
+        return $stmt->errorInfo();
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    public function mdlCancelarItems($numcaja)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+
+        $stmt= $this->link->prepare("UPDATE pedido SET no_caja=1,alistado=0,estado=0 WHERE no_caja=:no_caja");
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();
+        return $stmt->errorInfo();;
+        // cierra la conexion
+        $stmt=null;
+    }
+
 }

@@ -145,6 +145,42 @@ $(document).ready(function(){
 
     });
 
+    $("#eliminar").click(function (e) { 
+        //consigue el numero de requerido
+        let requeridos=$(".requeridos").val();
+        //id usuario es obtenida de las variables de sesion
+        let req=[requeridos,id_usuario];
+        // se consigue el numero de la caja
+        let caja=$("#NumeroCaja").text();;
+        swal({
+            title: `¿Esta seguro de cancelar la caja ${caja}?`,
+            icon: "warning",
+            buttons: ['Cancelar', 'Cancelar']
+        })
+        .then((Cancelar) => {   
+            
+            if(Cancelar) {
+
+                // swal({
+                //     title: `Caja ${caja} cancelada`,
+                //     icon: "success",
+                // })
+
+                $.ajax({
+                    type: "POST",
+                    url: "ajax/cajas.eliminar.ajax.php",
+                    data: {"numcaja":caja,"req":req},
+                    // dataType: "JSON",
+                    success: function (res) {
+                        console.log(res);
+                    }
+                });
+
+            }
+
+        });
+    });
+
 });
 
 /* ============================================================================================================================

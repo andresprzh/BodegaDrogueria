@@ -70,7 +70,7 @@ class ControladorRequerir{
                      
                     if ($busqueda->rowCount() > 0) {
                         
-                        echo '<table class="tablas centered responresponsive-tablesive " style="width:100%" >
+                        echo '<table class="tabla "  >
     
                         <thead>
                         
@@ -100,7 +100,7 @@ class ControladorRequerir{
                                     <td>'.$row["disp"].'</td>
                                     <td>'.$row["pedido"].'</td>
                                     <td>'.$row["alistado"].'</td>
-                                    <th>'.$row["ubicacion"].'</th>
+                                    <th class="black-text">'.$row["ubicacion"].'</th>
                                 </tr>';
     
                             }

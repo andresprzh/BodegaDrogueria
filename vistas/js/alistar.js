@@ -490,12 +490,12 @@ function cambiarUbicacion(){
 function iniciar_tabla(tabla) {
 
     if (!tabla) {
-        tabla="table.tablas";
+        tabla="table.datatable";
     }
 
     var tabla = $(tabla).DataTable({
 
-        
+        responsive:true,
 
         "bLengthChange": false,
         "bFilter": true,
@@ -523,6 +523,8 @@ function iniciar_tabla(tabla) {
                 "sPrevious": "Anterior"
             },
         },
+        scrollY: "400px",
+        scrollCollapse: true,
         paging: false,
         order: [[7, 'asc']],
         

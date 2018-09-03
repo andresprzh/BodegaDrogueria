@@ -88,7 +88,7 @@ class ControladorCajas extends ControladorAlistar {
     // crea documento de texto
     public function ctrDocumento($items,$numcaja){
         
-        $res=$this->modelo->mdlModificarCaja($numcaja);
+        $res = $this->modelo->mdlModificarCaja($numcaja);
         // $items=$this->ctrBuscarItemCaja($numcaja);
         if ($res) {          
             $documento='';
@@ -121,4 +121,16 @@ class ControladorCajas extends ControladorAlistar {
     public function ctrAgregarIE(){
         # code...
     }
+
+    public function ctrCancelar($numcaja){
+        $res = $this->modelo->mdlCancelarItems($numcaja);
+
+        if($res){
+            $res = $this->modelo->mdlCancelarCaja($numcaja);
+        }
+        return $res;
+        
+    }
+
+   
 }

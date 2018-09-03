@@ -80,6 +80,7 @@
         "pv",
         "tareas",
         "usuarios",
+        "Nitem",
         "salir"
         ];
     $jefe=[
@@ -87,8 +88,10 @@
       "requerir",
       "cajas",
       "usuarios",
+      "Nitem",
       "salir"
     ];
+    
     $alistador=[
       "inicio",
       "alistar",
@@ -97,6 +100,13 @@
     $pv=[
       "inicio",
       "pv",
+      "salir"
+    ];
+    $jefed=[
+      "inicio",
+      "requerir",
+      "cajas",
+      "Nitem",
       "salir"
     ];
 
@@ -121,6 +131,10 @@
         include "modulos/".$_GET["ruta"].".php";
 
       }elseif ($_SESSION["usuario"]["perfil"]==4 && in_array($_GET["ruta"],$pv)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
+
+      }elseif ($_SESSION["usuario"]["perfil"]==5 && in_array($_GET["ruta"],$jefed)) {
         
         include "modulos/".$_GET["ruta"].".php";
 

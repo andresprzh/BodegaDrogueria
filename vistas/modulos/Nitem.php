@@ -14,14 +14,6 @@
             <label  style="font-size:12px;">Número requisicion</label>
 
         </div>
-        <div class="input-field col s6 hide SelectCaja" >
-
-            <select   list="cajas" name="cajas" class="cajas" id="cajas">
-                
-            </select>
-            <label  style="font-size:12px;">Número Caja</label>
-
-        </div>
         
     </div>
 

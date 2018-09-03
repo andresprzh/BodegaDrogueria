@@ -8,7 +8,7 @@
                 <i class='fas fa-user-plus'></i>
         </button>
        
-        <table class="" id="TablaU"  >
+        <table class="tabla" id="TablaU"  >
 
             <div class="input-field col s12">
                 <input id="buscar" type="text" class="">
@@ -59,7 +59,7 @@
                 <div class="row">
                     
                     <i class="fas fa-id-card"></i><label class="black-text" for="cedula">cedula</label>
-                    <input id="cedula" required="required" type="number" class="validate">
+                    <input id="cedula" required="required" type="number" class="validate" maxlength="10">
                     
 
                 </div>
