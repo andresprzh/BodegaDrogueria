@@ -78,7 +78,7 @@
 
                 <th>Descripción</th>
                 <th>Disponibilidad</th>
-                <th data-priority="2">Solicitados</th>
+                <th>Solicitados</th>
                 <th>Codigo de barras</th>
                 <th>ID Item</th>
                 <th>Referencia</th>               
@@ -194,7 +194,33 @@
 </div>  
 
 </div>
+<style scoped>
+@media(max-width:1080px){
+    
+    table#TablaV 
+    td:nth-child(4), td:nth-child(6),td:nth-child(8),
+    th:nth-child(4), th:nth-child(6),th:nth-child(8){
+        display: none;
+    }
 
+} 
+@media(max-width:770px){
+    
+    table#TablaV 
+    td:nth-child(5),
+    th:nth-child(5){
+        display: none;
+    }
+}
+@media(max-width:450px){
+    
+    table#TablaV 
+    td:nth-child(2),
+    th:nth-child(2){
+        display: none;
+    }
+}
+</style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->

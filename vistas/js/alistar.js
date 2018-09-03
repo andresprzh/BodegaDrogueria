@@ -495,7 +495,7 @@ function iniciar_tabla(tabla) {
 
     var tabla = $(tabla).DataTable({
 
-        responsive: true,
+        
 
         "bLengthChange": false,
         "bFilter": true,
