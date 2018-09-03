@@ -235,10 +235,10 @@ function CargarUsuarios() {
                         // obtiene el perfil del usuario dle menu de seleccion
                         let perfil=$(`#perfil option[value="${usuarios[i]['perfil']}"]`).text();
                         $("#TablaU tbody").append($(`
-                            <tr id=${usuarios[i]["id"]}><td>
-                                ${usuarios[i]["usuario"]}</td><td>
-                                ${usuarios[i]["nombre"]}</td><td>
-                                ${usuarios[i]["cedula"]}</td><td class='perfiles' name='${usuarios[i]['perfil']}'>
+                            <tr id=${usuarios[i]["id"]}><td >
+                                ${usuarios[i]["usuario"]}</td><td >
+                                ${usuarios[i]["nombre"]}</td><td >
+                                ${usuarios[i]["cedula"]}</td><td  class='perfiles' name='${usuarios[i]['perfil']}'>
                                 ${perfil}</td><td>
                                 <button  title='Editar Usuario' data-target='editarusuario' class='editar modal-trigger btn-floating btn-small waves-effect waves-light tea darken-1 ' > 
                                     <i class='fas fa-user-edit'></i> 

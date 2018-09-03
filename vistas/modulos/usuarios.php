@@ -8,7 +8,7 @@
                 <i class='fas fa-user-plus'></i>
         </button>
        
-        <table class="responsive-table" id="TablaU"  >
+        <table class="" id="TablaU"  >
 
             <div class="input-field col s12">
                 <input id="buscar" type="text" class="">
@@ -102,7 +102,20 @@
     </div>
 
 </div>
-
+<style scoped>
+@media(max-width:630px){
+    
+    table#TablaU td:nth-child(1), td:nth-child(4),th:nth-child(1), th:nth-child(4) {
+        display: none;
+    }
+}
+@media(max-width:380px){
+    
+    table#TablaU td:nth-child(1),td:nth-child(2), td:nth-child(4),th:nth-child(1),th:nth-child(2), th:nth-child(4) {
+        display: none;
+    }
+}
+</style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
