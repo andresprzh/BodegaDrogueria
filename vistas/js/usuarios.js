@@ -66,6 +66,29 @@ $(document).ready(function () {
         }
     } );
 
+    // input para buscar usuario en la tabla
+    $("#buscar").keyup(function (e) { 
+        let input, filter, table, tr, nombres,cedulas;
+
+        filter = this.value.toUpperCase();
+        table = document.getElementById("TablaU");
+        tr = table.getElementsByTagName("tr");
+        for (let i = 0; i < tr.length; i++) {
+            usuarios = tr[i].getElementsByTagName("td")[0];
+            nombres =tr[i].getElementsByTagName("td")[1];
+            cedulas =tr[i].getElementsByTagName("td")[2];
+            perfil =tr[i].getElementsByTagName("td")[3];
+            if (nombres && cedulas) {
+                if ((usuarios.innerHTML.toUpperCase().indexOf(filter) > -1)||(nombres.innerHTML.toUpperCase().indexOf(filter) > -1)||
+                    (cedulas.innerHTML.toUpperCase().indexOf(filter) > -1)||(perfil.innerHTML.toUpperCase().indexOf(filter) > -1)) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }       
+        }
+    });
+
     // si se agrga o modifica usuarios
     $('.modal').on('submit', 'form', function (event) {
         var buttonid = $(this).find("button:focus").attr('id');

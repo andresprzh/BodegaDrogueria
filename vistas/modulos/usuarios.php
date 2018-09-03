@@ -4,12 +4,17 @@
 <div class="row">
     <div class="col s12 "  >
 
+        <button  title='Añadir usuario'  data-target='editarusuario' id='addusuario' class='left modal-trigger btn-small waves-effect waves-light green darken-3 ' >
+                <i class='fas fa-user-plus'></i>
+        </button>
        
         <table class="responsive-table" id="TablaU"  >
 
-        <button  title='Añadir usuario'  data-target='editarusuario' id='addusuario' class='modal-trigger btn-small waves-effect waves-light green darken-3 ' >
-            <i class='fas fa-user-plus'></i>
-        </button>
+            <div class="input-field col s12">
+                <input id="buscar" type="text" class="">
+                <label for="buscar">Buscar</label>
+            </div>
+
             <thead>
             
             <tr class="white-text green darken-3 ">
