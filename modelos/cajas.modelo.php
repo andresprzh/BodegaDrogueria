@@ -93,9 +93,32 @@ class ModeloCaja extends Conexion{
 
         $res=$stmt->execute();
         $stmt->closeCursor();
-        return $stmt->errorInfo();;
+        return $res;;
         // cierra la conexion
         $stmt=null;
     }
 
+    public function mdlMostrarItemCancelados($numcaja)
+    {
+        
+        $sql="SELECT item,recibido.no_req,no_caja,recibido.estado,
+        MIN(ID_CODBAR) AS ID_CODBAR,ID_REFERENCIA,DESCRIPCION,
+        lo_origen,lo_destino
+        FROM recibido
+        INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
+        INNER JOIN ITEMS ON ID_ITEM=ITEM
+        INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
+        WHERE recibido.no_caja = :no_caja
+        GROUP BY item,no_req,no_caja,estado;";
+
+        $stmt= $this->link->prepare($sql);
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $stmt;
+        // cierra la conexion
+        $stmt=null;
+    }
 }

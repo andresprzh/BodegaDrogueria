@@ -132,5 +132,49 @@ class ControladorCajas extends ControladorAlistar {
         
     }
 
+    public function ctrBuscarItemCancelados($numcaja)
+    {
+        $busqueda = $this->modelo->mdlMostrarItemCancelados($numcaja);
+         
+        
+
+        if ($busqueda->rowCount() > 0) {
+
+            $itembus["estado"]="encontrado";
+
+            $cont=0;
+
+            while($row = $busqueda->fetch()){
+                
+                                
+                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                    "iditem"=>$row["item"],    
+                                    "referencia"=>$row["ID_REFERENCIA"],
+                                    "descripcion"=>$row["DESCRIPCION"],
+                                    "disponibilidad"=>"---",
+                                    "pedidos"=>"---",
+                                    "alistados"=>"---",
+                                    'ubicacion'=>"---",
+                                    'origen'=>$row["lo_origen"],
+                                    'destino'=>$row["lo_destino"]
+                                    ];
+                $cont++;
+
+            }
+
+            
+            
+            return $itembus;
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"Items no encontrados!"];
+
+        }
+
+    }
+
    
 }

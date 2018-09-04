@@ -220,7 +220,7 @@ function mostrarCajas(){
         data: {"req":req},
         dataType: "JSON",
         success: function (res) {
-            console.log(res);
+            
             var caja=res["contenido"];          
             
             //si no encuentra la caja muestra en pantalla que no se encontro
@@ -257,7 +257,11 @@ function mostrarCajas(){
                                         <td class="tipocajas">${caja["tipocaja"]}</td>
                                         <td>${caja["abrir"]}</td>
                                         <td class="cierres">${caja["cerrar"]}</td><td>
-                                        <button  onclick="mostrarItemsCaja(0,${caja["estado"]})"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
+                                        <button  
+                                        onclick="mostrarItemsCaja(0,${caja["estado"]})"  
+                                        title="Revisar"  
+                                        data-target="EditarCaja"
+                                        class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
                                             <i class="fas fa-file-alt"></i>
                                         </button></td>+
                                         </tr>`));  
@@ -281,7 +285,11 @@ function mostrarCajas(){
                                             <td class="tipocajas">${caja[i]["tipocaja"]}</td>
                                             <td>${caja[i]["abrir"]}</td>
                                             <td class="cierres">${caja[i]["cerrar"]}</td><td>
-                                            <button  onclick="mostrarItemsCaja(${i},${caja[i]["estado"]})"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
+                                            <button  
+                                            onclick="mostrarItemsCaja(${i},${caja[i]["estado"]})"  
+                                            title="Revisar"  
+                                            data-target="EditarCaja" 
+                                            class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
                                                 <i class="fas fa-file-alt"></i>
                                             </button></td>
                                             </tr>`));  
@@ -313,7 +321,6 @@ function mostrarItemsCaja(e,estado) {
     
     //obtienen los datos de la caja para pasarlo al modal
     var datos=table.row(e).data();
-    console.log(estado);
     var numcaja=datos[0];
     var alistador=datos[1];
     var tipocaja=datos[2];
@@ -325,8 +332,9 @@ function mostrarItemsCaja(e,estado) {
     $("#tipocaja").html(tipocaja);
     $("#cierre").html(cierre);
 
-    // si la caja no está cerrada se desabilita boton de documento
-    if (cierre=="---") {
+    // si la caja no esta cerrada, ya fue recibida en el punto de venta o 
+    // fue cancelada se desabilita la opcion de crear documento
+    if ([0,3,9].includes(estado)) {
         $("#Documento").attr("disabled", "disabled");
     }else{
         $("#Documento").removeAttr("disabled");
@@ -340,28 +348,27 @@ function mostrarItemsCaja(e,estado) {
         
     
     //espera a que la funcion termine para reiniciar las tablas
-    $.when(mostrarItems(numcaja)).done(function(){
+    $.when(mostrarItems(numcaja,estado)).done(function(){
         //Reinicia Tabla
         table[1]=iniciarTabla("#TablaM");
     });
 }
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function mostrarItems(numcaja){
-
+function mostrarItems(numcaja,estado=null){
+    
     //consigue el numero de requerido
     var requeridos=$(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     var req=[requeridos,id_usuario];
 
     return $.ajax({
-
         url:"ajax/cajas.cajas.ajax.php",
         method:"POST",
-        data: {"req":req, "numcaja":numcaja},
+        data: {"req":req, "numcaja":numcaja,"estado":estado},
         dataType: "JSON",
         success: function (res) {
-
+console.log(res);
             var dt = $.fn.dataTable.tables()[1];
             $("#tablamodal").html("");
             $(dt).DataTable().clear();
