@@ -56,11 +56,11 @@ $(document).ready(function(){
 
     // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
     $('#tablamodal').on( 'change', 'td', function () {
+
         var tabla=$('#TablaM').DataTable();
-        
-        
+                
         var mensaje = $(this).find("input").val();
-        var fila = table.row(this)
+        var fila = table.row(this);
         
         // si la tabla es responsive
         if(fila.data() == undefined) {
@@ -161,11 +161,6 @@ $(document).ready(function(){
             
             if(Cancelar) {
 
-                // swal({
-                //     title: `Caja ${caja} cancelada`,
-                //     icon: "success",
-                // })
-
                 $.ajax({
                     type: "POST",
                     url: "ajax/cajas.cancelar.ajax.php",
@@ -231,11 +226,16 @@ function mostrarCajas(){
             else{
                 $("#refresh").prop("disabled",false);
                 var caja=res["contenido"];
-                let color={0:"red",
+                let color = {0:"red",
                            1:"green",
                            2:"green",
                            3:"orange",
                            9:"black"};
+                let logo = {0:"box-open",
+                            1:"box",
+                            2:"box",
+                            3:"check-double",
+                            9:"ban"}
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
                     
@@ -262,7 +262,7 @@ function mostrarCajas(){
                                         title="Revisar"  
                                         data-target="EditarCaja"
                                         class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
-                                            <i class="fas fa-file-alt"></i>
+                                            <i class="fas fa-${logo[caja["estado"]]}"></i>
                                         </button></td>+
                                         </tr>`));  
                 }else {
@@ -290,7 +290,7 @@ function mostrarCajas(){
                                             title="Revisar"  
                                             data-target="EditarCaja" 
                                             class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
-                                                <i class="fas fa-file-alt"></i>
+                                                <i class="fas fa-${logo[caja[i]["estado"]]}"></i>
                                             </button></td>
                                             </tr>`));  
 
@@ -336,6 +336,11 @@ function mostrarItemsCaja(e,estado) {
     // fue cancelada se desabilita la opcion de crear documento
     if ([0,3,9].includes(estado)) {
         $("#Documento").attr("disabled", "disabled");
+        if ([3,9].includes(estado)) {
+            $("#eliminar").attr("disabled", "disabled");
+        }else{
+            $("#eliminar").removeAttr("disabled");
+        }
     }else{
         $("#Documento").removeAttr("disabled");
     }
@@ -368,7 +373,7 @@ function mostrarItems(numcaja,estado=null){
         data: {"req":req, "numcaja":numcaja,"estado":estado},
         dataType: "JSON",
         success: function (res) {
-console.log(res);
+
             var dt = $.fn.dataTable.tables()[1];
             $("#tablamodal").html("");
             $(dt).DataTable().clear();
