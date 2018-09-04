@@ -313,7 +313,7 @@ DELIMITER $$
 $$
 
 
--- prcedimiento que busca cualquier Item con el parametro buscar que no este en los requeridos
+-- procedimiento que busca cualquier Item con el parametro buscar que no este en los requeridos
 DELIMITER $$
 	CREATE PROCEDURE BuscarIE(IN buscar CHAR(40))
 	BEGIN
@@ -397,7 +397,7 @@ DELIMITER $$
 		WHERE estado<>2
 		AND no_req=new.no_req;
 		
-        IF new.estado=2 then
+        IF new.estado=1 OR new.estado=2 THEN
 			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
 			VALUES(new.item,new.no_req,new.no_caja,0);
         END IF;

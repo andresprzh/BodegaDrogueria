@@ -168,11 +168,25 @@ $(document).ready(function(){
 
                 $.ajax({
                     type: "POST",
-                    url: "ajax/cajas.eliminar.ajax.php",
+                    url: "ajax/cajas.cancelar.ajax.php",
                     data: {"numcaja":caja,"req":req},
-                    // dataType: "JSON",
+                    dataType: "JSON",
                     success: function (res) {
                         console.log(res);
+                        if (res) {
+                            swal({
+                                title: `Caja ${caja} cancelada`,
+                                icon: "success",
+                            })
+                            .then(() => {
+                                recargarCajas();
+                            });
+                        }else{
+                            swal({
+                                title: `No se pudo cancelar la caja ${caja} `,
+                                icon: "error",
+                            })
+                        }
                     }
                 });
 
@@ -206,7 +220,7 @@ function mostrarCajas(){
         data: {"req":req},
         dataType: "JSON",
         success: function (res) {
-            
+            console.log(res);
             var caja=res["contenido"];          
             
             //si no encuentra la caja muestra en pantalla que no se encontro
@@ -217,7 +231,11 @@ function mostrarCajas(){
             else{
                 $("#refresh").prop("disabled",false);
                 var caja=res["contenido"];
-                let color=["red","green","green","orange"];
+                let color={0:"red",
+                           1:"green",
+                           2:"green",
+                           3:"orange",
+                           9:"black"};
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
                     
@@ -239,7 +257,7 @@ function mostrarCajas(){
                                         <td class="tipocajas">${caja["tipocaja"]}</td>
                                         <td>${caja["abrir"]}</td>
                                         <td class="cierres">${caja["cerrar"]}</td><td>
-                                        <button  onclick="mostrarItemsCaja(0)"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
+                                        <button  onclick="mostrarItemsCaja(0,${caja["estado"]})"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
                                             <i class="fas fa-file-alt"></i>
                                         </button></td>+
                                         </tr>`));  
@@ -256,19 +274,14 @@ function mostrarCajas(){
                         if (caja[i]["cerrar"]===null) {
                             caja[i]["cerrar"]="---"
                         }
-                        // if (caja[i]["estado"]==0) {
-                        //     var color="red";
-                        // }else{
-                        //     var color="green";
-                        // }
-                       
+                        
                         $("#tablacajas").append($(`<tr>
                                             <td class="numcaja">${caja[i]["no_caja"]}</td>
                                             <td class="alistadores">${caja[i]["alistador"]}</td>
                                             <td class="tipocajas">${caja[i]["tipocaja"]}</td>
                                             <td>${caja[i]["abrir"]}</td>
                                             <td class="cierres">${caja[i]["cerrar"]}</td><td>
-                                            <button  onclick="mostrarItemsCaja(${i})"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
+                                            <button  onclick="mostrarItemsCaja(${i},${caja[i]["estado"]})"  title="Revisar"  data-target="EditarCaja" class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
                                                 <i class="fas fa-file-alt"></i>
                                             </button></td>
                                             </tr>`));  
@@ -296,11 +309,11 @@ function recargarCajas(){
     });
 }
 //FUNCION SI SE DA CLICK EN BOTON DOCUMENTO(MUESTRA ITEMS DE 1 CAJA ESPECIFICA)
-function mostrarItemsCaja(e) {
+function mostrarItemsCaja(e,estado) {
     
     //obtienen los datos de la caja para pasarlo al modal
     var datos=table.row(e).data();
-    
+    console.log(estado);
     var numcaja=datos[0];
     var alistador=datos[1];
     var tipocaja=datos[2];
