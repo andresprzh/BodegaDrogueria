@@ -112,6 +112,63 @@ class ControladorAlistar {
         }
     }
 
+    public function ctrBuscarIE($item)
+    {
+        $busqueda=$this->modelo->mdlMostrarIE($item);
+        
+        // return $busqueda;
+        if ($busqueda->rowCount() > 0) {
+
+            if($busqueda->rowCount() == 1){
+
+                $row = $busqueda->fetch();
+
+                //guarda los resultados en un arreglo
+                $itembus=["estado"=>"encontrado",
+                           "contenido"=> ["codigo"=>$row["ID_CODBAR"],
+                                           "iditem"=>$row["ID_ITEM"],  
+                                           "referencia"=>$row["ID_REFERENCIA"],
+                                           "descripcion"=>$row["DESCRIPCION"],
+                                         ]
+                         ];
+                
+               
+                return $itembus;
+
+            }else {
+
+                $itembus["estado"]=["encontrado"];
+
+                $cont=0;
+
+                while($row = $busqueda->fetch()){
+                        
+                    $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                        "iditem"=>$row["ID_ITEM"],  
+                                        "referencia"=>$row["ID_REFERENCIA"],
+                                        "descripcion"=>$row["DESCRIPCION"],
+                                        ];
+                    $cont++;
+
+                }
+
+                return $itembus;
+
+            }
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"Item no encontrado!"];
+
+        }
+    }
+
+    public function ctrAgregarIE($items){
+        $resultado=$this->modelo->mdlAgregarIE($items);
+        return $resultado;
+    }
     public function ctrCrearCaja(){
         
         $busqueda=$this->modelo->mdlMostrarNumCaja();
@@ -157,7 +214,7 @@ class ControladorAlistar {
 
     public function ctrBuscarItemCaja($numcaja){
         
-        $busqueda=$this->modelo->mslMostrarItemsCaja($numcaja);
+        $busqueda=$this->modelo->mdlMostrarItemsCaja($numcaja);
 
         if ($busqueda->rowCount() > 0) {
 

@@ -114,14 +114,6 @@ class ControladorCajas extends ControladorAlistar {
 
     }
 
-    public function ctrBuscarIE(){
-        # code...
-    }
-
-    public function ctrAgregarIE(){
-        # code...
-    }
-
     public function ctrCancelar($numcaja){
         $res = $this->modelo->mdlCancelarItems($numcaja);
 

@@ -20,7 +20,7 @@ $(document).ready(function () {
         data: '',
         contentType: false,
         processData: false,
-        dataType: "json",
+        dataType: "JSON",
         success: function (res) {
 
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION

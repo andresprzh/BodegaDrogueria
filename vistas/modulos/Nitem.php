@@ -1,10 +1,10 @@
-<h3 class="header center ">Punto de Venta</h3>
+<h3 class="header center ">Agregar items</h3>
 <!-- ============================================================================================================================
                                                     FORMAULARIO    
 ============================================================================================================================ -->
 <div class="container fixed" style="padding-left:15px;" >
-
-    <div class="row">
+    <form class="row " id='formitem'>
+    
 
         <div class="input-field col s6 " >
 
@@ -15,36 +15,25 @@
 
         </div>
         
-    </div>
+    
+        <div class="input-field col s12 m10 l11  hide input_item">
 
-    <div class="row ">
-
-        <div class="input-field col s12 m10 l11 hide  input_barras">
-
-            <input  id="codbarras" type="text" class="validate">
+            <input  id="item" type="text" class="validate"  pattern=".{3,}" minlength="1"  title="minimo 3 caracteres" required>
             <label for="codbarras" >Item</label>
 
         </div>  
         
-        <div class="input-field col s12 m1 l1 hide input_barras">
+        <div class="input-field col s12 m1 l1 hide input_item">
 
-            <button id="agregar" title="Buscar Item extra" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
+            <button type="submit" id="agregar" title="Buscar Item extra"  class="btn-floating waves-effect waves-light green darken-3 " required >
                 <i class="fas fa-plus"></i>
             </button>
             
         </div>    
 
-    </div>
+    </form>
 
-    <div>
-        <table class="centered hide" id="infreq">
-            <thead>
-                <tr>
-                    <th>Origen Requisición: <span id="origen"></span></th>
-                    <th>Destino Requisición: <span id="destino"></span></th>
-            </thead>
-        </table>
-    </div>
+    
 
 </div>
 
@@ -54,12 +43,12 @@
 ============================================================================================================================
 ============================================================================================================================-->
 
-<div class="col s12" style="padding: 20px;"id="TablaV" >
+<div class="col s12 hide" style="padding: 20px;" id="DivTabla">
 
-    <h4 class="header center " >Items</h4>     
+    <h4 class="header center " >Items</h4>   
 
-    <table class="tablas centered "  id="tabla">
-
+    <table class="tabla centered "  id="TablaI">
+        
         <thead>
         
         <tr class="white-text green darken-3 ">
@@ -69,57 +58,62 @@
             <th>Referencia</th>
             <th>Descripción</th>
             <th>Cantidad</th>
-            <th data-priority="2" class='black-text'>Eliminar</th>
+            <th class='black-text'>Eliminar</th>
             
         </tr>
 
         </thead>
 
-        <tbody id="tablaeditable"></tbody>
+        <tbody id="tablaitems"></tbody>
         
     </table> 
 
     <div class="input-field" >
 
-        <button id="Registrar" class="btn waves-effect red darken-4 col s12 m12 l8 hide" >
-            Registrar
+        <button id="agitems" class="btn waves-effect green darken-4 col s12 m12 l8" >
+            Agregar
         </button>
-
-        <button id="documento" title="Generar Documento" class="btn waves-effect green darken-4 col s12 m12 l8 hide " >
-            <i class="far fa-file-alt"></i>
-        </button>
+    </div>
        
 </div>
 
 <!-- ============================================================================================================================
                                                     MODAL REGISTRO DE ITEMS
 ============================================================================================================================ -->
-<div id="informacion" class="modal grey lighten-3">
+<div id="informacion row" class="modal grey lighten-3">
 
     <div class="modal-content grey lighten-3">
 
         <div class="modal-header ">
 
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-            <h4 class="center red-text darken-3 " >Información</span></h4>
+            <h4 class="center green-text darken-3 " >Información</span></h4>
 
         </div>
 
-        <table class="" id="TablaM"  >
+        <table class="tabla" id="TablaM"  >
+            
+            <div class="input-field col s12">
+                <input id="buscar" type="text" class="">
+                <label for="buscar">Buscar</label>
+            </div>
+
+            <thead>
+
+            <tr  class="white-text green darken-3" >
                 
-                    <thead>
+                <th>Codigo de barras</th>
+                <th>Item</th>
+                <th>Referencia</th>
+                <th>Descripción</th>
+                <th>agregar</th>
+                
 
-                    <tr  class="white-text red darken-3" >
+            </tr>
 
-                        <th>Item</th>
-                        <th>ID item</th>
-                        <th>Descripcion</th>
+            </thead>
 
-                    </tr>
-
-                    </thead>
-
-                    <tbody id="tablamodal"></tbody>
+            <tbody id="tablamodal"></tbody>
 
         </table> 
 
@@ -139,4 +133,4 @@
 </script>
 
 <!-- JS QUE MANEJA LOS EVENTOS DE LA PAGINA -->
-<script src="vistas/js/pv.js"></script>
+<script src="vistas/js/nitem.js"></script>

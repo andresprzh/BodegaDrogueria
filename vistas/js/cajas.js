@@ -174,6 +174,7 @@ $(document).ready(function(){
                                 icon: "success",
                             })
                             .then(() => {
+                                $('.modal').modal('close');
                                 recargarCajas();
                             });
                         }else{
@@ -228,7 +229,7 @@ function mostrarCajas(){
                 var caja=res["contenido"];
                 let color = {0:"red",
                            1:"green",
-                           2:"green",
+                           2:"tea",
                            3:"orange",
                            9:"black"};
                 let logo = {0:"box-open",
@@ -331,7 +332,7 @@ function mostrarItemsCaja(e,estado) {
     $("#alistador").html(alistador);
     $("#tipocaja").html(tipocaja);
     $("#cierre").html(cierre);
-
+    
     // si la caja no esta cerrada, ya fue recibida en el punto de venta o 
     // fue cancelada se desabilita la opcion de crear documento
     if ([0,3,9].includes(estado)) {
@@ -339,9 +340,10 @@ function mostrarItemsCaja(e,estado) {
         if ([3,9].includes(estado)) {
             $("#eliminar").attr("disabled", "disabled");
         }else{
-            $("#eliminar").removeAttr("disabled");
+            $("#eliminar").removeAttr("disabled","disabled");
         }
     }else{
+        $("#eliminar").removeAttr("disabled","disabled");
         $("#Documento").removeAttr("disabled");
     }
     
