@@ -222,7 +222,7 @@ $(document).ready(function(){
 
                 $.ajax({   
                     url: "ajax/pv.registrar.ajax.php",
-                    type: "post",//metodo post para mandar datos
+                    type: "POST",//metodo post para mandar datos
                     data: {"caja":caja,"req":req,"items":items},//datos que se enviaran
                     dataType: "JSON",
                     success: function (res) {
@@ -265,7 +265,7 @@ $(document).ready(function(){
                             var nomdoc="DE"+no_req+"C"+numcaja+".TR1";
 
                             var element = document.createElement("a");
-                            element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["contenido"]));
+                            element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["contenido"]["string"]));
                             element.setAttribute("download", nomdoc);
 
                             element.style.display = "none";

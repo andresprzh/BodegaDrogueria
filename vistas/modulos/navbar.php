@@ -66,7 +66,7 @@
                 echo '<li><a href="alistar" >Alistar</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==4) {
-                echo '<li><a href="PV" >Pventa</a></li>';
+                echo '<li><a href="pv" >Pventa</a></li>';
             }
             
 
