@@ -219,7 +219,7 @@ class ControladorPV extends ControladorCajas{
                     $i++;
                 }
                 
-                $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\n");
+                $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\r\n");
             }
         }else {
             $resultado["estado"]="error1";

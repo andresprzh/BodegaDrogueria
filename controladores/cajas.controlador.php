@@ -104,7 +104,7 @@ class ControladorCajas extends ControladorAlistar {
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
                 $Mensaje=$row['mensajes'];
                 
-                $documento.=($localicacion.$item.$alistado.$Mensaje."\n");
+                $documento.=($localicacion.$item.$alistado.$Mensaje."\r\n");
 
             }
             $res=$documento;
