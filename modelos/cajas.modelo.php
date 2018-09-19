@@ -56,7 +56,7 @@ class ModeloCaja extends Conexion{
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
 
-        $stmt= $this->link->prepare("UPDATE caja SET enviado=NOW(),estado=2 WHERE no_caja=:no_caja");
+        $stmt= $this->link->prepare("UPDATE caja SET enviado=NOW(),estado=2 WHERE no_caja=:no_caja AND estado<>3;");
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
 
@@ -138,14 +138,16 @@ class ModeloCaja extends Conexion{
     public function mdlMostrarItemError($numcaja)
     {
         
-        $sql="SELECT item,errores.no_req,no_caja,errores.estado,errores.ubicacion,errores.recibidos,errores.alistado,
+        $sql="SELECT errores.item,errores.no_req,errores.no_caja,errores.estado,errores.ubicacion,errores.recibidos,errores.alistado,
         MIN(ID_CODBAR) AS ID_CODBAR,ID_REFERENCIA,DESCRIPCION
         FROM errores
-        INNER JOIN ITEMS ON ID_ITEM=item
+        INNER JOIN ITEMS ON ID_ITEM=errores.item
         INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
+        INNER JOIN recibido ON recibido.item=errores.item
         WHERE errores.no_caja_recibido = :no_caja
-        AND errores.estado <> 4
-        GROUP BY item,no_req,no_caja,estado;";
+        AND recibido.no_caja = :no_caja
+        AND recibido.estado <> 4
+        GROUP BY errores.item,errores.no_req,errores.no_caja,errores.estado,errores.ubicacion,errores.recibidos,errores.alistado;";
 
         $stmt= $this->link->prepare($sql);
 
@@ -163,26 +165,34 @@ class ModeloCaja extends Conexion{
         $no_req=$this->req[0];$alistador=$this->req[1];
         $iditem=$items["iditem"];
         $alistados=$items["alistados"];
-        $estado=2;
+        $estado=3;//estado de item corregido
         if ($alistados==0) {
             $numcaja=1;
             $estado=0;
         }
-        $stmt= $this->link->prepare("UPDATE pedido
-		SET alistado=:alistados,estado=$estado,no_caja=:no_caja
-		WHERE Item=:iditem
-		AND no_req=:no_req;
+        $stmt= $this->link->prepare("INSERT INTO pedido(item,no_req,no_caja,disp,pedido,alistado,estado) 
+        VALUES(:iditem,:no_req,:no_caja,:alistados,:alistados,:alistados,:estado)
+        ON DUPLICATE KEY UPDATE
+        alistado=:alistados,
+        estado=:estado,
+        no_caja=:no_caja;
         ");
+
+        // $stmt= $this->link->prepare("REPLACE INTO pedido(item,no_req,no_caja,disp,pedido,alistado,estado) 
+        // VALUES(:iditem,:no_req,:no_caja,:alistados,:alistados,:alistados,:estado);
+        // ");
 
         $stmt->bindParam(":iditem",$iditem,PDO::PARAM_STR);
         $stmt->bindParam(":alistados",$alistados,PDO::PARAM_INT);
+        $stmt->bindParam(":estado",$estado,PDO::PARAM_INT);
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $res=$stmt->execute();
         $stmt->closeCursor();
         // retorna el resultado de la sentencia
-	    return $res;
+        return $res;
+        
 
         // cierra la conexion
         $stmt=null;

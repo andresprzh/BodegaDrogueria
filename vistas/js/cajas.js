@@ -140,6 +140,9 @@ $(document).ready(function () {
 
                     document.body.removeChild(element);
 
+                    $('.modal').modal('close');
+                    recargarCajas();
+
                 }
             }
         });
@@ -156,9 +159,9 @@ $(document).ready(function () {
 
         //si se presiona aceptar se continua con el proceso
         swal({
-            title: "¿Cerrar caja?",
+            title: "¿Modificar caja?",
             icon: "warning",
-            buttons: ['Cancelar', 'Cerrar']
+            buttons: ['Cancelar', 'Modificar']
         })
             .then((Cerrar) => {
 
@@ -187,24 +190,25 @@ $(document).ready(function () {
                         url: 'ajax/caja.modificar.ajax.php',//url de la funcion
                         method: 'post',//metodo post para mandar datos
                         data: { 'req': req, "numcaja": numcaja, "items": items },//datos que se enviaran          
-                        // dataType: 'JSON',
+                        dataType: 'JSON',
                         success: function (res) {
                             console.log(res);
-                            return 0;
+                            // return 0;
                             if (res) {
 
-                                swal("¡Caja cerrada exitosamente!", {
+                                swal("¡Caja Modificada exitosamente!", {
                                     icon: "success",
                                 })
                                     .then((event) => {
 
-                                        location.reload(true);
+                                        $('.modal').modal('close');
+                                        recargarCajas();
 
                                     });
 
                             } else {
 
-                                swal("¡Error al cerrar la caja!", {
+                                swal("¡Error al modificar la caja!", {
                                     icon: "error",
                                 });
 
@@ -427,13 +431,12 @@ function mostrarItemsCaja(e, estado) {
 
     // si la caja no esta cerrada, ya fue recibida en el punto de venta o 
     // fue cancelada se desabilita la opcion de crear documento
-    if ([0, 3, 9].includes(estado)) {
+    if ([0, 9].includes(estado)) {
         $("#Documento").attr("disabled", "disabled");
-        if ([3, 9].includes(estado)) {
-            $("#eliminar").attr("disabled", "disabled");
-        } else {
-            $("#eliminar").removeAttr("disabled", "disabled");
-        }
+        $("#eliminar").removeAttr("disabled", "disabled");
+    }else if([3, 9].includes(estado)){
+        $("#Documento").removeAttr("disabled");
+        $("#eliminar").attr("disabled", "disabled");
     } else {
         $("#eliminar").removeAttr("disabled", "disabled");
         $("#Documento").removeAttr("disabled");

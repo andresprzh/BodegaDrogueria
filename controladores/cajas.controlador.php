@@ -211,7 +211,7 @@ class ControladorCajas extends ControladorAlistar {
                         if ($row["no_caja"]==1) {
                             $mensajeitem="El item recibido no está alistado en niguna caja";
                         }else{
-                            $mensajeitem="El item recibido fue alistado en la caja ".$row["cajap"]." y recibido en la caja ".$row["cajar"];
+                            $mensajeitem="El item recibido fue alistado en la caja ".$row["no_caja"]." y recibido en la caja ".$numcaja;
                         }
                         break;
                     
@@ -257,7 +257,6 @@ class ControladorCajas extends ControladorAlistar {
         for ($i=0; $i <count($items) ; $i++) {
             //modifica los items
             $resultado=$this->modelo->mdlModificarItem($items[$i],$numcaja);
-            return $resultado;
         }
         if ($resultado) {
             // verifica el estado de  la caja
@@ -265,10 +264,14 @@ class ControladorCajas extends ControladorAlistar {
             $row = $busqueda->fetch();
             // si todos los items recibidos coinciden con los enviados cambia el estaod de la caja a recibida
             if ($row['cantidad']==0) {
-                $resultado=$this->modelo->mdlCerrarCaja($tipocaja,$numcaja);
+                $resultado=$this->modelo->mdlCerrarCaja($numcaja);
             }
            
         }
+        // // si cambia el estado de la caja crea nuevamente el archivo plano
+        // if ($resultado) {
+        //     $resultado=$this->ctrDocumento($items,$numcaja);
+        // }
         return $resultado;
     }
 

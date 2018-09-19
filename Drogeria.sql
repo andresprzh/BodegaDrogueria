@@ -122,7 +122,7 @@ CREATE TABLE pedido(
 	item CHAR(6) NOT NULL,
 	no_req CHAR(10) NOT NULL,
 	no_caja INT(10) default 1,
-	ubicacion VARCHAR(6) NOT NULL,
+	ubicacion VARCHAR(6) NOT NULL DEFAULT '----',
 	disp  INT(5) NOT NULL,
 	pedido INT(5) NOT NULL,
 	alistado INT(5) default 0,
@@ -240,6 +240,7 @@ DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS AutoIncrementG;
 DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS ReqEnviado;
+DROP TRIGGER IF EXISTS ReqEnviado2;
 
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
@@ -385,6 +386,7 @@ DELIMITER $$
 
 $$
 
+DROP TRIGGER IF EXISTS EstadoRecibido;
 -- trigger que modifica el estado del Item recibido  
 DELIMITER $$
 
@@ -425,15 +427,16 @@ DELIMITER $$
 			SET numalistado=0;
 		END IF;
 		
-
-		REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
-		VALUES(new.item,new.no_req,caja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
+		IF new.estado<>4 THEN
+			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
+			VALUES(new.item,new.no_req,caja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
+		END IF;
 
 	END 
 	
 $$
 
-
+DROP TRIGGER IF EXISTS ReqEnviado;
 -- trigger que modifica el estado de enviado de la requisicion 
 -- y agrega los items en recibido con estado 2
 DELIMITER $$
@@ -446,15 +449,19 @@ DELIMITER $$
 		SELECT count(estado) INTO numalistados
 		FROM pedido
 		WHERE estado<>2
+		AND estado<>3
 		AND no_req=new.no_req;
 		
       IF new.estado=1 OR new.estado=2 THEN
 			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
 			VALUES(new.item,new.no_req,new.no_caja,0);
+		-- si el item fue corregido
+      ELSEIF new.estado=3 THEN 
+      	REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
+			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
       ELSE
       	DELETE FROM recibido
       	WHERE item=new.item
-      	AND no_req=new.no_req
       	AND no_caja=new.no_caja;
 		END IF;
         
@@ -469,7 +476,27 @@ DELIMITER $$
 
 $$
 
+DROP TRIGGER IF EXISTS ReqEnviado2;
+DELIMITER $$
 
+	CREATE TRIGGER ReqEnviado2
+	AFTER INSERT ON pedido
+	FOR EACH ROW 
+	BEGIN
+				
+      IF new.estado=3 THEN
+			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
+			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
+      ELSEIF new.estado=0 THEN
+      	DELETE FROM recibido
+      	WHERE item=new.item
+      	AND no_req=new.no_req
+      	AND no_caja=new.no_caja;
+		END IF;		
+		
+	END 
+
+$$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
