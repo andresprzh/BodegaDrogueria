@@ -72,13 +72,14 @@ class ModeloPV extends Conexion{
     }
 
     //modifica registro en tabla para agregar la fecha en la que fue recibido
-    public function mdlModCaja($NumCaja){
+    public function mdlModCaja($NumCaja,$estado=3){
         // $this->link->closeCursor();
         $persona=$this->req[1];
-        
-        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=3,recibido=NOW() WHERE no_caja=:caja;" );
+
+        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=:estado,recibido=NOW() WHERE no_caja=:caja;" );
         
         $stmt->bindParam(":persona",$persona,PDO::PARAM_INT);
+        $stmt->bindParam(":estado",$estado,PDO::PARAM_INT);
         $stmt->bindParam(":caja",$NumCaja,PDO::PARAM_INT);
         
 

@@ -21,22 +21,11 @@ if (isset($_POST['numcaja'])) {
     $numcaja=$_POST['numcaja'];
     // regresa el resultado de la buqueda como un objeto JSON
     if (isset($_POST['estado'])) {
-        switch ($_POST['estado']) {
-            case 9:
-                $respuesta=$controlador->ctrBuscarItemCancelados($numcaja);
-                break;
-            case 4:
-                $respuesta=$controlador->ctrBuscarItemError($numcaja);
-                break;
-            default:
-                $respuesta=$controlador->ctrBuscarItemCaja($numcaja);
-                break;
+        if ($_POST['estado']==9) {
+            $respuesta=$controlador->ctrBuscarItemCancelados($numcaja);
+        }else{
+            $respuesta=$controlador->ctrBuscarItemCaja($numcaja);
         }
-        // if ($_POST['estado']==9) {
-        //     $respuesta=$controlador->ctrBuscarItemCancelados($numcaja);
-        // }else{
-        //     $respuesta=$controlador->ctrBuscarItemCaja($numcaja);
-        // }
     }
     
     

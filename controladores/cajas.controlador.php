@@ -116,7 +116,10 @@ class ControladorCajas extends ControladorAlistar {
 
     public function ctrCancelar($numcaja){
         $res = $this->modelo->mdlCancelarItems($numcaja);
-
+        
+        if($res){
+            $res = $this->modelo->mdlCancelarRecibidos($numcaja);
+        }
         if($res){
             $res = $this->modelo->mdlCancelarCaja($numcaja);
         }
@@ -144,11 +147,51 @@ class ControladorCajas extends ControladorAlistar {
                                     "referencia"=>$row["ID_REFERENCIA"],
                                     "descripcion"=>$row["DESCRIPCION"],
                                     "disponibilidad"=>"---",
-                                    "pedidos"=>"---",
-                                    "alistados"=>"---",
-                                    'ubicacion'=>"---",
+                                    "pedidos"=>$row["pedido"],
+                                    "alistados"=>$row["alistado"],
+                                    'ubicacion'=>$row["ubicacion"],
                                     'origen'=>$row["lo_origen"],
                                     'destino'=>$row["lo_destino"]
+                                    ];
+                $cont++;
+
+            }
+
+            
+            
+            return $itembus;
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"Items no encontrados!"];
+
+        }
+
+    }
+
+    public function ctrBuscarItemError($numcaja)
+    {
+        $busqueda = $this->modelo->mdlMostrarItemError($numcaja);
+
+        if ($busqueda->rowCount() > 0) {
+
+            $itembus["estado"]="encontrado";
+
+            $cont=0;
+
+            while($row = $busqueda->fetch()){
+                
+                                
+                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                    "iditem"=>$row["item"],    
+                                    "referencia"=>$row["ID_REFERENCIA"],
+                                    "descripcion"=>$row["DESCRIPCION"],
+                                    'ubicacion'=>$row["ubicacion"],
+                                    "recibidos"=>$row["recibidos"],
+                                    "alistados"=>$row["alistado"],
+                                    "estado"=>$row["estado"],
                                     ];
                 $cont++;
 

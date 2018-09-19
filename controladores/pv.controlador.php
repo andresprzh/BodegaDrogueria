@@ -122,6 +122,10 @@ class ControladorPV extends ControladorCajas{
             $resultado["estado"]=$this->modelo->mdlModCaja($numcaja);
             if($resultado["estado"]==true){
                 $resultado["contenido"]=$this->ctrDocumentoR($numcaja);
+                //si hay errores en los items recibido en la caja se cambia el estado de la caja
+                if ($resultado["contenido"]["estado"]=="error0") {
+                    $resultado["estado"]=$this->modelo->mdlModCaja($numcaja,4);
+                }
             }
         }
         

@@ -173,6 +173,40 @@ CREATE TABLE recibido(
 	INDEX (estado)
 );
 
+CREATE TABLE errores(
+	item CHAR(6) NOT NULL,
+	no_req CHAR(10) NOT NULL,
+	no_caja INT(10) default 1,
+	no_caja_recibido INT(10) default 1,
+	recibidos INT(5) default 0,
+	estado INT(1) NOT NULL default 0,
+	ubicacion VARCHAR(6) NOT NULL default '----',
+	pedido INT(5) NOT NULL,
+	alistado INT(5) default 0,
+
+
+	PRIMARY KEY(item,no_req,no_caja_recibido),
+
+	CONSTRAINT errores_Item
+	FOREIGN KEY(item) 
+	REFERENCES ITEMS(ID_ITEM),
+
+	CONSTRAINT errores_requisicion
+	FOREIGN KEY(no_req) 
+	REFERENCES requisicion(no_req),
+
+	CONSTRAINT errores_caja
+	FOREIGN KEY(no_caja) 
+	REFERENCES caja(no_caja),
+	
+	CONSTRAINT errores_cajarecibida
+	FOREIGN KEY(no_caja_recibido) 
+	REFERENCES caja(no_caja),
+	
+	
+	INDEX (estado)
+);
+
 
  
 -- se llena un primer registro a caja que define las cajas no asignadas
@@ -203,6 +237,7 @@ DROP PROCEDURE IF EXISTS BuscarIE;
 /* ELIMINA TRIGGER SI EXISTEN */
 DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
+DROP TRIGGER IF EXISTS AutoIncrementG;
 DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS ReqEnviado;
 
@@ -360,7 +395,12 @@ DELIMITER $$
 	
 		DECLARE caja INT(10);
 		DECLARE numalistado INT(5);
-		SELECT no_caja,alistado INTO caja, numalistado
+		DECLARE ubc VARCHAR(6);
+		DECLARE numpedido INT(5);
+		DECLARE ider INT(5);
+		DECLARE est INT(1);
+		
+		SELECT no_caja,alistado,ubicacion,pedido INTO caja, numalistado,ubc,numpedido
 		FROM pedido
 		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
 		WHERE ITEMS.ID_Item = new.Item
@@ -368,6 +408,7 @@ DELIMITER $$
 	
 		IF caja IS NULL THEN
 			SET new.estado=2;
+			SET caja=1;
 		ELSEIF caja<>new.no_caja THEN
 			SET new.estado=3;
 		ELSEIF new.recibidos<numalistado THEN
@@ -378,6 +419,16 @@ DELIMITER $$
 			SET new.estado=4;
 		END IF;
 		
+		IF ubc IS NULL THEN
+			SET ubc='----';
+			SET numpedido=0;
+			SET numalistado=0;
+		END IF;
+		
+
+		REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
+		VALUES(new.item,new.no_req,caja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
+
 	END 
 	
 $$
@@ -391,22 +442,24 @@ DELIMITER $$
 	AFTER UPDATE ON pedido
 	FOR EACH ROW 
 	BEGIN
-		DECLARE numalistados TINYINT;
+		DECLARE numalistados TINYINT;		
 		SELECT count(estado) INTO numalistados
 		FROM pedido
 		WHERE estado<>2
 		AND no_req=new.no_req;
 		
-        IF new.estado=1 OR new.estado=2 THEN
+      IF new.estado=1 OR new.estado=2 THEN
 			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
 			VALUES(new.item,new.no_req,new.no_caja,0);
-        END IF;
+      END IF;
         
 		IF numalistados=0 THEN
 			UPDATE requisicion
 			SET enviado=NOW(),estado=1
 			WHERE requisicion.no_req=new.no_req;
 		END IF;
+		
+		
 	END 
 
 $$

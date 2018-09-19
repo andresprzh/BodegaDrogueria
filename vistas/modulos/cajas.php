@@ -69,7 +69,7 @@
         <div class="modal-header">
 
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-            <h4 class="center" >Caja No <span id="NumeroCaja"></span></h4>
+            <h4 class="center" >Caja No <span class="NumeroCaja"></span></h4>
             
             <table class="centered no-border" >
                 <thead>
@@ -123,7 +123,95 @@
     </div>
 
 </div>
+<!-- ============================================================================================================================
+                                                    MODAL EDITAR CAJA2 
+============================================================================================================================ -->
+<div id="EditarCaja2" class="modal grey lighten-3">
 
+    <div class="modal-content grey lighten-3">
+
+        <div class="modal-header">
+
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
+            <h4 class="center" >Caja No <span class="NumeroCaja"></span></h4>
+
+        </div>
+        <!-- ============================================================================================================================
+                                                            FORMAULARIO    
+        ============================================================================================================================ -->
+        <div class="container fixed" style="padding-left:15px;" >
+
+            <!-- INPUT PARA AGREGAR ITEMS -->
+            <div class="row ">      
+                <div class="input-field center col s12 m10 l10  input_barras">
+
+                    <input  id="codbarras" type="text" class="validate">
+                    <label for="codbarras" class="right">Item</label>
+
+                </div>  
+                <div class="input-field col hide-on-small-only m1 l2  input_barras">
+
+                    <button id="agregar" title="Buscar Item" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    
+                </div>
+            </div>
+
+        </div>
+        <!--============================================================================================================================
+        ============================================================================================================================
+                                                TABLAS
+        ============================================================================================================================
+        ============================================================================================================================-->
+
+        <div class="row " id="contenido"  >
+            
+            
+            <!-- ==============================================================
+                        TABLA EDITABLE    
+            ============================================================== -->
+            <div class="col s12" id="TablaE" >
+
+
+                <table class="tabla centered " id="TablaEr" style="width:100%">
+                
+                    <thead>
+
+                    <tr  class="white-text green darken-3" >
+
+                        <th>Descripcion</th>
+                        <th>ID Item</th>
+                        <th>Alistados</th>
+                        <th>Recibidos</th>
+                        <th>Problema</th>
+                        <th data-priority="2" class='black-text'>Eliminar</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="tablaerror"></tbody>
+                    <!-- ==================================
+                        INPUT PARA CERRAR CAJA  
+                    ================================== -->
+                    <div class="col s12  " id="input_cerrar">
+                    
+                        <div class="input-field col s4 m3 l3">
+
+                            <button id="cerrar" class="btn waves-effect green darken-4 col s12 m12 l8" >
+                                Modificar
+                            </button>
+                            
+                        </div>  
+
+                    </div>
+                </table> 
+                  
+            </div>
+
+        </div>
+    </div>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
