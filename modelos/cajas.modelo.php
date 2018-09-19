@@ -144,6 +144,7 @@ class ModeloCaja extends Conexion{
         INNER JOIN ITEMS ON ID_ITEM=item
         INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
         WHERE errores.no_caja_recibido = :no_caja
+        AND errores.estado <> 4
         GROUP BY item,no_req,no_caja,estado;";
 
         $stmt= $this->link->prepare($sql);
@@ -153,6 +154,79 @@ class ModeloCaja extends Conexion{
         $stmt->execute();
 
         return $stmt;
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    public function mdlModificarItem($items,$numcaja)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        $iditem=$items["iditem"];
+        $alistados=$items["alistados"];
+        $estado=2;
+        if ($alistados==0) {
+            $numcaja=1;
+            $estado=0;
+        }
+        $stmt= $this->link->prepare("UPDATE pedido
+		SET alistado=:alistados,estado=$estado,no_caja=:no_caja
+		WHERE Item=:iditem
+		AND no_req=:no_req;
+        ");
+
+        $stmt->bindParam(":iditem",$iditem,PDO::PARAM_STR);
+        $stmt->bindParam(":alistados",$alistados,PDO::PARAM_INT);
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();
+        // retorna el resultado de la sentencia
+	    return $res;
+
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    public function mdlCerrarCaja($numcaja){
+
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        
+        $stmt= $this->link->prepare('UPDATE caja
+		SET estado=3
+		WHERE no_caja=:numcaja;
+        ');
+
+        $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_INT);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();  
+        // retorna el resultado de la sentencia
+	    return $res;
+
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    public function mdlVerificarCaja($numcaja)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        
+        $stmt= $this->link->prepare('SELECT COUNT(item) AS cantidad
+        FROM recibido
+        WHERE no_caja=:no_caja
+        AND no_req=:no_req
+        AND estado <>4;
+        ');
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        
+        // retorna el resultado de la sentencia
+	    return $stmt;
+        $stmt->closeCursor();  
         // cierra la conexion
         $stmt=null;
     }

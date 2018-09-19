@@ -451,7 +451,12 @@ DELIMITER $$
       IF new.estado=1 OR new.estado=2 THEN
 			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
 			VALUES(new.item,new.no_req,new.no_caja,0);
-      END IF;
+      ELSE
+      	DELETE FROM recibido
+      	WHERE item=new.item
+      	AND no_req=new.no_req
+      	AND no_caja=new.no_caja;
+		END IF;
         
 		IF numalistados=0 THEN
 			UPDATE requisicion

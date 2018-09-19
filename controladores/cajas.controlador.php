@@ -180,25 +180,62 @@ class ControladorCajas extends ControladorAlistar {
             $itembus["estado"]="encontrado";
 
             $cont=0;
-
+            
             while($row = $busqueda->fetch()){
-                
+
+                switch ($row["estado"]) {
+                    
+                    case 0:
+                        
+                        if ($row["recibidos"]==0) {
+                            $mensaje="Item no recibido";
+                            $mensajeitem="item no recibido";
+                        }else {
+                            $mensaje="Menos items";
+                            $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
+                        }
+                        break;
+
+                    case 1:
+                        $mensaje="Mas items";
+                        $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];                        
+                        break;
+
+                    case 2:
+                        $mensaje="Req diferente";
+                        $mensajeitem="El item  recibido no estaba en la requisicion";
+                        break;
+
+                    case 3:
+                        $mensaje="Caja diferente";
+                        if ($row["no_caja"]==1) {
+                            $mensajeitem="El item recibido no está alistado en niguna caja";
+                        }else{
+                            $mensajeitem="El item recibido fue alistado en la caja ".$row["cajap"]." y recibido en la caja ".$row["cajar"];
+                        }
+                        break;
+                    
+                    default:
+                        $mensaje="Ok";
+                        break;
+                }
                                 
                 $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
                                     "iditem"=>$row["item"],    
+                                    "no_caja"=>$row["no_caja"],
+                                    "no_cajaR"=>$numcaja,
                                     "referencia"=>$row["ID_REFERENCIA"],
                                     "descripcion"=>$row["DESCRIPCION"],
                                     'ubicacion'=>$row["ubicacion"],
                                     "recibidos"=>$row["recibidos"],
                                     "alistados"=>$row["alistado"],
                                     "estado"=>$row["estado"],
+                                    "problema"=>$mensajeitem
                                     ];
                 $cont++;
 
             }
 
-            
-            
             return $itembus;
 
         //si no encuentra resultados devuelve "error"
@@ -209,6 +246,30 @@ class ControladorCajas extends ControladorAlistar {
 
         }
 
+    }
+
+    public function ctrModificarCaja($numcaja,$items)
+    {   
+        // $busqueda=$this->modelo->mdlVerificarCaja($numcaja);
+        // $row = $busqueda->fetch();
+        // return $row['cantidad'];
+
+        for ($i=0; $i <count($items) ; $i++) {
+            //modifica los items
+            $resultado=$this->modelo->mdlModificarItem($items[$i],$numcaja);
+            return $resultado;
+        }
+        if ($resultado) {
+            // verifica el estado de  la caja
+            $busqueda=$this->modelo->mdlVerificarCaja($numcaja);
+            $row = $busqueda->fetch();
+            // si todos los items recibidos coinciden con los enviados cambia el estaod de la caja a recibida
+            if ($row['cantidad']==0) {
+                $resultado=$this->modelo->mdlCerrarCaja($tipocaja,$numcaja);
+            }
+           
+        }
+        return $resultado;
     }
 
    

@@ -146,6 +146,77 @@ $(document).ready(function () {
 
     });
 
+    // EVENTO SI SE PRESIONA EL BOTON CERRAR
+    $("#modificar").on('click', function (e) {
+
+        //consigue el numero de requerido
+        let requeridos = $(".requeridos").val();
+        //id usuario es obtenida de las variables de sesion
+        let req = [requeridos, id_usuario];
+
+        //si se presiona aceptar se continua con el proceso
+        swal({
+            title: "¿Cerrar caja?",
+            icon: "warning",
+            buttons: ['Cancelar', 'Cerrar']
+        })
+            .then((Cerrar) => {
+
+                //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
+                if (Cerrar) {
+
+                    // Busca los datos en la tabla
+                    let table = document.getElementById("tablaerror");
+                    let tr = table.getElementsByTagName("tr");
+                    let items = new Array;
+
+                    for (let i = 0; i < tr.length; i++) {
+
+                        items[i] = {
+                            "iditem": tr[i].id,
+                            "alistados": $(tr[i]).find("input").val(),
+                        };
+                    }
+
+
+                    //guarda el tipo de caja en una variable
+                    var numcaja = $('.NumeroCaja').html();
+
+
+                    $.ajax({
+                        url: 'ajax/caja.modificar.ajax.php',//url de la funcion
+                        method: 'post',//metodo post para mandar datos
+                        data: { 'req': req, "numcaja": numcaja, "items": items },//datos que se enviaran          
+                        // dataType: 'JSON',
+                        success: function (res) {
+                            console.log(res);
+                            return 0;
+                            if (res) {
+
+                                swal("¡Caja cerrada exitosamente!", {
+                                    icon: "success",
+                                })
+                                    .then((event) => {
+
+                                        location.reload(true);
+
+                                    });
+
+                            } else {
+
+                                swal("¡Error al cerrar la caja!", {
+                                    icon: "error",
+                                });
+
+                            }
+
+                        }
+                    });
+                }
+            });
+
+    });
+
     $("#eliminar").click(function (e) {
         //consigue el numero de requerido
         let requeridos = $(".requeridos").val();
@@ -218,6 +289,7 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
+
 
             var caja = res["contenido"];
 
@@ -420,18 +492,19 @@ function mostrarItems(numcaja, estado = null) {
                 // $("#Rerror").hide();
 
                 var item = res["contenido"];
-                console.log(item)
+
                 if (estado == 4) {
                     for (var i in item) {
-                        $("#tablaerror").append($("<tr><td>" +
-                            item[i]['descripcion'] + "</td><td>" +
-                            item[i]['iditem'] + "</td><td>" +
-                            item[i]['alistados'] + "</td><td>" +
-                            item[i]['recibidos'] + "</td><td>" +
-                            item[i]['ubicacion'] + "</td><td>" +
-                            `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
-                                <i class='fas fa-times'></i>" 
-                            </button></td></tr>`));
+
+                        $("#tablaerror").append($(`<tr id='${item[i]['iditem']}'><td> 
+                            ${item[i]['descripcion']}</td><td> 
+                            ${item[i]['no_caja']}</td><td> 
+                            ${item[i]['no_cajaR']}</td><td> 
+                            <input type= 'number' min='1' class='alistados eliminaritem' value='${item[i]['alistados']}'></td><td> 
+                            ${item[i]['recibidos']}</td><td> 
+                            ${item[i]['problema']}</td>
+                            </tr>`
+                        ));
 
                     }
                 } else {
