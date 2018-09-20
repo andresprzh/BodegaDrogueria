@@ -25,7 +25,7 @@ class ControladorAlistar {
         
         $busqueda=$this->modelo->mdlMostrarItems($cod_barras);
         
-
+        
         if ($busqueda->rowCount() > 0) {
 
             if($busqueda->rowCount() == 1){
@@ -47,7 +47,7 @@ class ControladorAlistar {
                                            "origen"=>$row["lo_origen"],
                                            "destino"=>$row["lo_destino"]
                                          ]
-                         ];
+                        ];
                 
                 // en el arreglo se guarda el estado de la consulta         
                 switch ($itembus["estado"]) {
@@ -68,6 +68,10 @@ class ControladorAlistar {
                         $itembus["estado"]='error2';
                         $itembus["contenido"]='Item ya alistado en la caja '.$itembus['contenido']['caja'].' por '.$itembus['contenido']['alistador'];
                         break;
+                    case 3:
+                        $itembus["estado"]='error2';
+                        $itembus["contenido"]='Item ya alistado en la caja '.$itembus['contenido']['caja'].' por '.$itembus['contenido']['alistador'];
+                        break;
                 }
                 //retorna el item a la funcion
                 return $itembus;
@@ -77,7 +81,7 @@ class ControladorAlistar {
                 $itembus["estado"]=["encontrado"];
 
                 $cont=0;
-
+                
                 while($row = $busqueda->fetch()){
 
                     //solo muestra los items que no estan alistados
@@ -276,9 +280,15 @@ class ControladorAlistar {
         return $resultado;
     }
 
-    public function ctrEliminarItemCaja($cod_barras){
+    public function ctrEliminarItemCaja($cod_barras,$no_caja=null){
+        
+        if ($no_caja==null) {
+            $busqueda=$this->modelo->mdlMostrarNumCaja();
+            $row=$busqueda->fetch();
+            $no_caja=$row['numcaja'];
+        }
 
-        return $this->modelo->mdlEliminarItemCaja($cod_barras);
+        return $this->modelo->mdlEliminarItemCaja($cod_barras,$no_caja);
 
     }
 }

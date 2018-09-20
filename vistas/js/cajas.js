@@ -192,8 +192,7 @@ $(document).ready(function () {
                         data: { 'req': req, "numcaja": numcaja, "items": items },//datos que se enviaran          
                         dataType: 'JSON',
                         success: function (res) {
-                            console.log(res);
-                            // return 0;
+                            
                             if (res) {
 
                                 swal("¡Caja Modificada exitosamente!", {
@@ -275,7 +274,7 @@ $(document).ready(function () {
 ============================================================================================================================*/
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function mostrarCajas() {
+function mostrarCajas(){
     //refresca la tabla, para volver a cargar los datos
     var dt = $.fn.dataTable.tables();
     $('#tablacajas').html("");
@@ -293,7 +292,6 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-
 
             var caja = res["contenido"];
 
@@ -405,7 +403,7 @@ function mostrarCajas() {
 
 }
 
-function recargarCajas() {
+function recargarCajas(){
     //espera a que la funcion termine para reiniciar las tablas
     $.when(mostrarCajas()).done(function () {
 
@@ -495,10 +493,10 @@ function mostrarItems(numcaja, estado = null) {
                 // $("#Rerror").hide();
 
                 var item = res["contenido"];
-
+                let cajar;
                 if (estado == 4) {
                     for (var i in item) {
-
+                       
                         $("#tablaerror").append($(`<tr id='${item[i]['iditem']}'><td> 
                             ${item[i]['descripcion']}</td><td> 
                             ${item[i]['no_caja']}</td><td> 

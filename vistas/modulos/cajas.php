@@ -192,7 +192,10 @@
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
 <style scoped>
-    #EditarCaja2{
+    /* #EditarCaja2{
+        width:100%;
+    } */
+    .modal{
         width:100%;
     }
     .tabla  td:first-child, .tabla  th:first-child{

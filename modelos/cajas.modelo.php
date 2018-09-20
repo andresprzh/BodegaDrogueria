@@ -29,7 +29,7 @@ class ModeloCaja extends Conexion{
         $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
 		FROM caja 
 		LEFT JOIN pedido ON pedido.no_caja=caja.no_caja
-        INNER JOIN errores ON errores.no_caja_recibido=caja.no_caja
+        LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
 		INNER JOIN usuario ON usuario.id_usuario=Alistador
 		WHERE caja.no_caja LIKE :numcaja 
 		AND (pedido.no_req=:no_req OR errores.no_req=:no_req)
@@ -98,7 +98,8 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
-    public function mdlCancelarRecibidos($numcaja){
+    public function mdlCancelarRecibidos($numcaja)
+    {
 
         $stmt= $this->link->prepare("DELETE FROM recibido WHERE no_caja=:no_caja");
 
@@ -166,21 +167,15 @@ class ModeloCaja extends Conexion{
         $iditem=$items["iditem"];
         $alistados=$items["alistados"];
         $estado=3;//estado de item corregido
-        if ($alistados==0) {
-            $numcaja=1;
-            $estado=0;
-        }
+        
+
         $stmt= $this->link->prepare("INSERT INTO pedido(item,no_req,no_caja,disp,pedido,alistado,estado) 
         VALUES(:iditem,:no_req,:no_caja,:alistados,:alistados,:alistados,:estado)
         ON DUPLICATE KEY UPDATE
         alistado=:alistados,
-        estado=:estado,
-        no_caja=:no_caja;
+        estado=:estado;
         ");
-
-        // $stmt= $this->link->prepare("REPLACE INTO pedido(item,no_req,no_caja,disp,pedido,alistado,estado) 
-        // VALUES(:iditem,:no_req,:no_caja,:alistados,:alistados,:alistados,:estado);
-        // ");
+       
 
         $stmt->bindParam(":iditem",$iditem,PDO::PARAM_STR);
         $stmt->bindParam(":alistados",$alistados,PDO::PARAM_INT);
@@ -189,11 +184,34 @@ class ModeloCaja extends Conexion{
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $res=$stmt->execute();
-        $stmt->closeCursor();
+        // $stmt->closeCursor();
         // retorna el resultado de la sentencia
-        return $res;
+        // return $res;
+        return $stmt->errorInfo();
+
         
 
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    public function mdlEliminarItemPedido($item,$numcaja)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        $stmt= $this->link->prepare('DELETE FROM recibido
+        WHERE item=:item
+        AND no_req=:no_req
+        AND no_caja=:no_caja;');
+
+        $stmt->bindParam(":item",$item,PDO::PARAM_STR);
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        
+        // retorna el resultado de la sentencia
+	    return $res;
+        $stmt->closeCursor();  
         // cierra la conexion
         $stmt=null;
     }

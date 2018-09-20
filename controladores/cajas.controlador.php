@@ -21,7 +21,8 @@ class ControladorCajas extends ControladorAlistar {
     /* ============================================================================================================================
                                                         FUNCIONES   
     ============================================================================================================================*/
-    public function ctrBuscarCaja($numcaja){
+    public function ctrBuscarCaja($numcaja)
+    {
 
         $busqueda=$this->modelo->mdlMostrarCaja($numcaja);
 
@@ -85,8 +86,10 @@ class ControladorCajas extends ControladorAlistar {
         return $cajabus;
 
     }
+
     // crea documento de texto
-    public function ctrDocumento($items,$numcaja){
+    public function ctrDocumento($items,$numcaja)
+    {
         
         $res = $this->modelo->mdlModificarCaja($numcaja);
         // $items=$this->ctrBuscarItemCaja($numcaja);
@@ -130,8 +133,6 @@ class ControladorCajas extends ControladorAlistar {
     public function ctrBuscarItemCancelados($numcaja)
     {
         $busqueda = $this->modelo->mdlMostrarItemCancelados($numcaja);
-         
-        
 
         if ($busqueda->rowCount() > 0) {
 
@@ -256,8 +257,20 @@ class ControladorCajas extends ControladorAlistar {
 
         for ($i=0; $i <count($items) ; $i++) {
             //modifica los items
-            $resultado=$this->modelo->mdlModificarItem($items[$i],$numcaja);
+
+            // si el se alistan 0 se saca el item de la caja
+            if ($items[$i]["alistados"]==0) {
+                $resultado=$this->ctrEliminarItemCaja($items[$i]["iditem"],$numcaja);
+                // si se modifica la caja elimina el item de la tabla de pedidos
+                if ($resultado) {
+                    $resultado=$this->modelo->mdlEliminarItemPedido($items[$i]["iditem"],$numcaja);
+                }
+    
+            }else{
+                $resultado=$this->modelo->mdlModificarItem($items[$i],$numcaja);
+            }
         }
+
         if ($resultado) {
             // verifica el estado de  la caja
             $busqueda=$this->modelo->mdlVerificarCaja($numcaja);

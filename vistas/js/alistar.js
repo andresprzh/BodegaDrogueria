@@ -300,7 +300,6 @@ function BuscarCodBar() {
         data: { "codigo": codigo, "req": req },//datos que se enviaran
         dataType: 'json',
         success: function (res) {
-            
             AgregarItem(res);
 
             $('#codbarras').val("");
@@ -318,47 +317,55 @@ function AgregarItem(res) {
     //busca el estado de del resultado
     //si encontro el codigo de barras muestar el contenido de la busqueda
     if (res['estado'] == 'encontrado') {
+        
         var items = res['contenido'];
-
-        swal(`${items['descripcion']}` ,`disponibilidad: ${items['disponibilidad']}\t pedidos: ${items['pedidos']} `, {
-            content: {
-                element: "input",
-                attributes: {
-                  placeholder: "Cantidad a alistar",
-                  type: "number",
+        // si se ecnuetra el item 2 o mas veces en alguna otra caja
+        if (items) {
+    
+            swal(`${items['descripcion']}` ,`disponibilidad: ${items['disponibilidad']}\t pedidos: ${items['pedidos']} `, {
+                content: {
+                    element: "input",
+                    attributes: {
+                    placeholder: "Cantidad a alistar",
+                    type: "number",
+                    },
                 },
-              },
-          })
-          .then((value) => {
-              if (!value) {
-                  value=1;
-              }
-            var tabla = $('#TablaEd').DataTable();
-            tabla.row.add( [
-                items['descripcion'],  
-                `<input type= 'number' min='1' class='alistados eliminaritem' value='${value}'>`,
-                items['pedidos'],
-                items['codigo'],
-                items['iditem'],
-                items['referencia'],
-                items['disponibilidad'],    
-                items['ubicacion'],  
-                `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
-                <i class='fas fa-times'></i>" 
-                </button></tr>`,
-            ] ).draw(false);
+            })
+            .then((value) => {
+                if (!value) {
+                    value=1;
+                }
+                var tabla = $('#TablaEd').DataTable();
+                tabla.row.add( [
+                    items['descripcion'],  
+                    `<input type= 'number' min='1' class='alistados eliminaritem' value='${value}'>`,
+                    items['pedidos'],
+                    items['codigo'],
+                    items['iditem'],
+                    items['referencia'],
+                    items['disponibilidad'],    
+                    items['ubicacion'],  
+                    `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
+                    <i class='fas fa-times'></i>" 
+                    </button></tr>`,
+                ] ).draw(false);
 
-            $("#TablaE").removeClass("hide");
+                $("#TablaE").removeClass("hide");
 
-            // se muestra un mensaje con el item agregado
-            var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">' + items['descripcion'] + '</span></p>';
-            M.toast({ html: toastHTML, classes: "light-green darken-4 rounded",displayLength: 500 });
-        });
+                // se muestra un mensaje con el item agregado
+                var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">' + items['descripcion'] + '</span></p>';
+                M.toast({ html: toastHTML, classes: "light-green darken-4 rounded",displayLength: 500 });
+            });
+        }else{
+            swal('Item ya fue alistado en otra caja', {
+                icon: "warning",
+            });
+        }
         //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
     } else {
         swal(res['contenido'], {
             icon: "warning",
-        })
+        });
     }
 
 }

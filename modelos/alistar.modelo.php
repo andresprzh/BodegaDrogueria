@@ -109,18 +109,21 @@ class ModeloAlistar extends Conexion{
     }
 
     // saca el item de una caja cambiando la caja a 1 su estado a 0 y la cantidad alistada a 0
-    public function mdlEliminarItemCaja($item){
+    public function mdlEliminarItemCaja($item,$no_caja){
         $no_req=$this->req[0];$alistador=$this->req[1];
         
-        $sql="UPDATE pedido SET no_caja=1,estado=0,alistado=0 WHERE item=:item;";
+        
+        $sql="UPDATE pedido SET no_caja=1,estado=0,alistado=0 WHERE item=:item AND no_req=:no_req; AND no_caja=:no_caja";
 
         $stmt= $this->link->prepare($sql);
 
         $stmt->bindParam(":item",$item,PDO::PARAM_STR);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+        $stmt->bindParam(":no_caja",$no_caja,PDO::PARAM_INT);
 
         $res=$stmt->execute();
         
-        return $stmt->errorinfo();
+        return $res;
 
         // cierra la conexion
         $stmt=null;
@@ -164,7 +167,8 @@ class ModeloAlistar extends Conexion{
         $stmt=null;
     }
 
-    public function mdlMostrarIE($item){
+    public function mdlMostrarIE($item)
+    {
 
         $no_req=$this->req[0];
 
@@ -194,7 +198,8 @@ class ModeloAlistar extends Conexion{
 
     }
 
-    public function mdlAgregarIE($items){
+    public function mdlAgregarIE($items)
+    {
         // guarda datos de la requisicion
         $no_req=$this->req[0];$persona=$this->req[1];
         $datos="";
@@ -226,7 +231,8 @@ class ModeloAlistar extends Conexion{
         return ($res); 
     }
     //muestra el numero de la caja correspondiente a la requisicion
-    public function mdlMostrarNumCaja(){   
+    public function mdlMostrarNumCaja()
+    {   
         
         $alistador=$this->req[1];
          
@@ -242,6 +248,6 @@ class ModeloAlistar extends Conexion{
          // cierra la conexion
          $stmt=null;
  
-     }
+    }
 
 }

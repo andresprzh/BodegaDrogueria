@@ -130,7 +130,7 @@ CREATE TABLE pedido(
 
 
 
-	PRIMARY KEY(item,no_req),
+	PRIMARY KEY(item,no_req,no_caja),
 
 	CONSTRAINT pedido_Item
 	FOREIGN KEY(item) 
@@ -239,6 +239,7 @@ DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS AutoIncrementG;
 DROP TRIGGER IF EXISTS EstadoRecibido;
+DROP TRIGGER IF EXISTS EstadoRecibido2;
 DROP TRIGGER IF EXISTS ReqEnviado;
 DROP TRIGGER IF EXISTS ReqEnviado2;
 
@@ -268,9 +269,9 @@ DELIMITER $$
 		DECLARE numcaja INT(10);
 		SET numcaja=NumeroCaja(alistador);
 		
-		SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion,
+		SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion,pedido.no_caja,
 		MIN(COD_BARRAS.ID_CODBAR) AS ID_CODBAR,ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
-		caja.no_caja,usuario.nombre,requisicion.lo_origen,requisicion.lo_destino
+		usuario.nombre,requisicion.lo_origen,requisicion.lo_destino
 		FROM COD_BARRAS
 		INNER JOIN ITEMS ON ID_ITEM=ID_ITEMS	
 		INNER JOIN pedido ON Item=ID_ITEM	
@@ -283,7 +284,7 @@ DELIMITER $$
 		OR LOWER(DESCRIPCION)  LIKE codigo ) 
 		AND pedido.no_req LIKE no_req
 		AND pedido.no_caja LIKE numerocaja
-		GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion;
+		GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion,pedido.no_caja;
 
 		
 		UPDATE pedido
@@ -365,6 +366,7 @@ DELIMITER $$
 $$
 
 
+
 -- triger que asigna fecha de inicio cada ves que se crea una caja
 DELIMITER $$
 	CREATE TRIGGER InicioAbrir 
@@ -386,32 +388,51 @@ DELIMITER $$
 
 $$
 
-DROP TRIGGER IF EXISTS EstadoRecibido;
 -- trigger que modifica el estado del Item recibido  
 DELIMITER $$
-
 	CREATE TRIGGER EstadoRecibido 
 	BEFORE INSERT ON recibido
 	FOR EACH ROW 
 	BEGIN
-	
-		DECLARE caja INT(10);
+				
+		DECLARE cja INT(10);
 		DECLARE numalistado INT(5);
 		DECLARE ubc VARCHAR(6);
 		DECLARE numpedido INT(5);
 		DECLARE ider INT(5);
-		DECLARE est INT(1);
-		
-		SELECT no_caja,alistado,ubicacion,pedido INTO caja, numalistado,ubc,numpedido
+		DECLARE num INT(1);
+		DECLARE estado INT(1);
+							
+		-- busca si el item está mas de 1  vez en la requisicions
+		SELECT COUNT(no_caja) INTO num
 		FROM pedido
-		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-		WHERE ITEMS.ID_Item = new.Item
-		AND pedido.no_req=new.no_req;
+		WHERE pedido.item = new.item
+		AND pedido.no_req = new.no_req;
+
+		--	si está se busca si dicha caja coincide con la que se recibio
+		IF num>1 THEN
+
+			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
+			FROM pedido
+			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+			WHERE ITEMS.ID_Item = new.item
+			AND pedido.no_req=new.no_req
+			AND pedido.no_caja=new.no_caja;
+			
+		-- si no se busca normalmente en pedido
+		ELSE
+			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
+			FROM pedido
+			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+			WHERE ITEMS.ID_Item = new.item
+			AND pedido.no_req=new.no_req;
 	
-		IF caja IS NULL THEN
+		END IF;
+
+		IF cja IS NULL THEN
 			SET new.estado=2;
-			SET caja=1;
-		ELSEIF caja<>new.no_caja THEN
+			SET cja=1;
+		ELSEIF cja<>new.no_caja THEN
 			SET new.estado=3;
 		ELSEIF new.recibidos<numalistado THEN
 			SET new.estado=0;
@@ -420,7 +441,7 @@ DELIMITER $$
 		ELSE 
 			SET new.estado=4;
 		END IF;
-		
+
 		IF ubc IS NULL THEN
 			SET ubc='----';
 			SET numpedido=0;
@@ -429,18 +450,83 @@ DELIMITER $$
 		
 		IF new.estado<>4 THEN
 			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
-			VALUES(new.item,new.no_req,caja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
+			VALUES(new.item,new.no_req,cja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
 		END IF;
 
-	END 
-	
+	END 	
 $$
 
-DROP TRIGGER IF EXISTS ReqEnviado;
+DELIMITER $$
+	CREATE TRIGGER EstadoRecibido2 
+	BEFORE UPDATE ON recibido
+	FOR EACH ROW 
+	BEGIN
+				
+		DECLARE cja INT(10);
+		DECLARE numalistado INT(5);
+		DECLARE ubc VARCHAR(6);
+		DECLARE numpedido INT(5);
+		DECLARE ider INT(5);
+		DECLARE num INT(1);
+		DECLARE estado INT(1);
+							
+		-- busca si el item está mas de 1  vez en la requisicions
+		SELECT COUNT(no_caja) INTO num
+		FROM pedido
+		WHERE pedido.item = new.item
+		AND pedido.no_req = new.no_req;
+
+		--	si está se busca si dicha caja coincide con la que se recibio
+		IF num>1 THEN
+
+			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
+			FROM pedido
+			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+			WHERE ITEMS.ID_Item = new.item
+			AND pedido.no_req=new.no_req
+			AND pedido.no_caja=new.no_caja;
+			
+		-- si no se busca normalmente en pedido
+		ELSE
+			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
+			FROM pedido
+			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+			WHERE ITEMS.ID_Item = new.item
+			AND pedido.no_req=new.no_req;
+	
+		END IF;
+
+		IF cja IS NULL THEN
+			SET new.estado=2;
+			SET cja=1;
+		ELSEIF cja<>new.no_caja THEN
+			SET new.estado=3;
+		ELSEIF new.recibidos<numalistado THEN
+			SET new.estado=0;
+		ELSEIF new.recibidos>numalistado THEN
+			SET new.estado=1;
+		ELSE 
+			SET new.estado=4;
+		END IF;
+
+		IF ubc IS NULL THEN
+			SET ubc='----';
+			SET numpedido=0;
+			SET numalistado=0;
+		END IF;
+		
+		IF new.estado<>4 THEN
+			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
+			VALUES(new.item,new.no_req,cja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
+		END IF;
+		
+	END 	
+$$
+
+
 -- trigger que modifica el estado de enviado de la requisicion 
 -- y agrega los items en recibido con estado 2
 DELIMITER $$
-
 	CREATE TRIGGER ReqEnviado 
 	AFTER UPDATE ON pedido
 	FOR EACH ROW 
@@ -452,14 +538,19 @@ DELIMITER $$
 		AND estado<>3
 		AND no_req=new.no_req;
 		
-      IF new.estado=1 OR new.estado=2 THEN
+      IF new.estado=2 THEN
 			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
 			VALUES(new.item,new.no_req,new.no_caja,0);
 		-- si el item fue corregido
       ELSEIF new.estado=3 THEN 
-      	REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
-			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
-      ELSE
+--      	REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
+--			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
+			INSERT INTO recibido(Item,No_Req,no_caja,recibidos) 
+			VALUES(new.item,new.no_req,new.no_caja,new.alistado)
+			ON DUPLICATE KEY UPDATE
+        	estado=0;
+		  
+      ELSEIF new.estado=0 THEN
       	DELETE FROM recibido
       	WHERE item=new.item
       	AND no_caja=new.no_caja;
@@ -470,23 +561,24 @@ DELIMITER $$
 			SET enviado=NOW(),estado=1
 			WHERE requisicion.no_req=new.no_req;
 		END IF;
-		
-		
+			
 	END 
-
 $$
 
-DROP TRIGGER IF EXISTS ReqEnviado2;
-DELIMITER $$
 
+DELIMITER $$
 	CREATE TRIGGER ReqEnviado2
 	AFTER INSERT ON pedido
 	FOR EACH ROW 
 	BEGIN
 				
       IF new.estado=3 THEN
-			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
-			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
+--      	REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
+--			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
+			INSERT INTO recibido(Item,No_Req,no_caja,recibidos) 
+			VALUES(new.item,new.no_req,new.no_caja,new.alistado)
+			ON DUPLICATE KEY UPDATE
+        	estado=0;
       ELSEIF new.estado=0 THEN
       	DELETE FROM recibido
       	WHERE item=new.item
@@ -495,7 +587,6 @@ DELIMITER $$
 		END IF;		
 		
 	END 
-
 $$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
