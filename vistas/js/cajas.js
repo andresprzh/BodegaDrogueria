@@ -111,7 +111,7 @@ $(document).ready(function () {
                 // var numcaja = $('#NumeroCaja').html();
                 // obtiene los 3 ultimos caracteres de la requisicion
                 var no_res = req[0].substr(req[0].length - 3);
-
+                numcaja=("00" + numcaja).slice(-2);
                 // crea el nombre del documento a partir de la requisicion y la caja
                 var nomdoc = 'DS' + no_res + 'C' + numcaja + '.TR1';
                 // si hay un error al buscar los archivos no genera el documento
