@@ -13,9 +13,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "ajax/alistar.requisicion.ajax.php",
                 method: "POST",
-                data: '',
-                contentType: false,
-                processData: false,
+                data: {'valor':3},
                 dataType: "json",
                 success: function (res) {
                     var icon;
@@ -69,9 +67,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "ajax/alistar.requisicion.ajax.php",
                 method: "POST",
-                data: '',
-                contentType: false,
-                processData: false,
+                data: {'valor':3},
                 dataType: "json",
                 success: function (res) {
                     var icon;
@@ -130,9 +126,7 @@ $(document).ready(function () {
             $.ajax({
                 url: "ajax/alistar.requisicion.ajax.php",
                 method: "POST",
-                data: '',
-                contentType: false,
-                processData: false,
+                data: {'valor':3},
                 dataType: "json",
                 success: function (res) {
                     var icon;
