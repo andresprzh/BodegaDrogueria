@@ -196,7 +196,7 @@ $(document).ready(function(){
             //si se le da click en Resgitrar procede a generar e reporte
             if (registrar) {
                 
-                //consigue el codigo de barras
+                //consigue el numeor de la caja
                 var caja= $('#cajas').val();
                 
                 //consigue el numero de requerido
@@ -213,12 +213,11 @@ $(document).ready(function(){
                 var items=new Array();
                 for (var i in datos) {
                     items[i]={
-                        "codbarras":datos[i][0],
-                        "item":datos[i][1],
+                        "codbarras":datos[i][1],
+                        "item":datos[i][2],
                         "recibidos": $(datos[i][4]).val()
                     }                
                 }
-                
 
                 $.ajax({   
                     url: "ajax/pv.registrar.ajax.php",
@@ -326,7 +325,6 @@ function BuscarCodBar(){
             items[1]=datos.map(function(value,index) { return value[1]; });
             items[2]=datos.map(function(value,index) { return value[2]; });
             items[3]=datos.map(function(value,index) { return value[3]; });
-            
         if (res["estado"]=='encontrado') {
             var cantr=1;
             
@@ -352,10 +350,10 @@ function BuscarCodBar(){
                 
                 // agrega datos en la tabla
                 tabla.row.add( [
+                    item['descripcion'],
                     item['codigo'],
                     item['iditem'],
                     item['referencia'],
-                    item['descripcion'],
                     // cantr
                     '<input type="number" class="validate" value="'+cantr+'">',
                     "<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' >" +
@@ -372,42 +370,42 @@ function BuscarCodBar(){
 }     
 
 // FUNCION QUE INICIA DATATABLE
-function iniciar_tabla(){
-    
-    
-        var tabla= $("table.tablas").DataTable({
-                            
-        responsive:true,
-        
+function iniciar_tabla(tabla) {
+
+    if (!tabla) {
+        tabla="table.datatable";
+    }
+
+    var tabla = $(tabla).DataTable({
+
         "bLengthChange": false,
         "bFilter": true,
+        "sDom": '<"top">t<"bottom"irp><"clear">',
         "pageLength": 5,
-
         "language": {
-            "sProcessing":     "Procesando...",
-            "sZeroRecords":    "No se encontraron resultados",
-            "sEmptyTable":     "Ningún dato disponible en esta tabla",
-            "sInfo":           "Mostrando _START_ - _END_ de  _TOTAL_ registros",
-            "sInfoEmpty":      "Mostrando 0 - 0 de 0 registros",
-            "sInfoFiltered":   "(filtrado _MAX_ registros)",
-            "sSearch":         "Buscar:",
-            "sUrl":            "",
-            "sInfoThousands":  ",",
+            "sProcessing": "Procesando...",
+            "sZeroRecords": "No se encontraron resultados",
+            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sInfo": "_TOTAL_ Items",
+            "sInfoEmpty": "",
+            "sInfoFiltered": "(filtrado _MAX_ registros)",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
             "sLoadingRecords": "Cargando...",
             "oPaginate": {
-                "sFirst":    "Primero",
-                "sLast":     "Último",
-                "sNext":     "Siguiente",
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
                 "sPrevious": "Anterior"
             },
-            "oAria": {
-                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-            }
-        }
-    
+        },
+        scrollY: "600px",
+        scrollCollapse: true,
+        paging: false
+
     });
 
     return tabla;
-    
+
 }

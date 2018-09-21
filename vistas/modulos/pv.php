@@ -66,16 +66,16 @@
 
     <h4 class="header center " >Items</h4>     
 
-    <table class="tablas centered "  id="tabla">
+    <table class="tablas centered datatable"  id="tabla">
 
         <thead>
         
         <tr class="white-text green darken-3 ">
 
+            <th>Descripción</th>
             <th>Codigo de barras</th>
             <th>ID item</th>
             <th>Referencia</th>
-            <th>Descripción</th>
             <th>Cantidad</th>
             <th data-priority="2" class='black-text'>Eliminar</th>
             
@@ -113,7 +113,7 @@
 
         </div>
 
-        <table class="" id="TablaM"  >
+        <table class="tabla" id="TablaM"  >
                 
                     <thead>
 
