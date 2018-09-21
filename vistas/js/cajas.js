@@ -13,12 +13,9 @@ $(document).ready(function () {
     $.ajax({
         url: "ajax/alistar.requisicion.ajax.php",
         method: "POST",
-        data: '',
-        contentType: false,
-        processData: false,
+        data: {'valor':3},
         dataType: "json",
         success: function (res) {
-
 
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {

@@ -15,7 +15,7 @@ class ModeloRequierir extends Conexion{
         if ($valor==null) {
             $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = 0");
         }else {
-            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = :$item");
+            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item < :$item");
         }
         
         //para evitar sql injection
