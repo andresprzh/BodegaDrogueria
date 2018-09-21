@@ -65,6 +65,7 @@ $(document).ready(function () {
                 //no muestra datos en la tabla
                 $('#ubicacion').val("");
                 cambiarUbicacion();
+                $( "#codbarras" ).focus();
 
             });   
         });
@@ -80,6 +81,7 @@ $(document).ready(function () {
             BuscarCodBar();
             MostrarItems();
             cambiarUbicacion();
+            $( "#codbarras" ).focus();
         }
 
     });
@@ -91,6 +93,7 @@ $(document).ready(function () {
         BuscarCodBar();
         MostrarItems();
         cambiarUbicacion();
+        $( "#codbarras" ).focus();
 
     });
 
@@ -303,6 +306,7 @@ function BuscarCodBar() {
             AgregarItem(res);
 
             $('#codbarras').val("");
+            
         }
 
     });
@@ -355,11 +359,13 @@ function AgregarItem(res) {
                 // se muestra un mensaje con el item agregado
                 var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">' + items['descripcion'] + '</span></p>';
                 M.toast({ html: toastHTML, classes: "light-green darken-4 rounded",displayLength: 500 });
+                $( "#codbarras" ).focus();
             });
         }else{
             swal('Item ya fue alistado en otra caja', {
                 icon: "warning",
             });
+            $( "#codbarras" ).focus();
         }
         //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
     } else {

@@ -97,6 +97,7 @@ $(document).ready(function(){
     $("#cajas").change(function (e) { 
         $( ".input_barras" ).removeClass( "hide" ); 
         $( "#Registrar" ).addClass( "hide" );
+        $( "#codbarras" ).focus();
     });      
 
     // EVENTO INPUT  CODIGO DE BARRAS
@@ -359,7 +360,8 @@ function BuscarCodBar(){
                     "</button>"
                 ] ).draw(false);
             }
-            $( "#Registrar" ).removeClass( "hide" ); 
+            $( "#Registrar" ).removeClass( "hide" );
+            $( "#codbarras" ).focus(); 
         }
                     
         }

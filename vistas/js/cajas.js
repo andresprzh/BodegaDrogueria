@@ -301,9 +301,9 @@ function mostrarCajas(){
                 $("#refresh").prop("disabled", false);
                 var caja = res["contenido"];
                 let color = {
-                    0: "grey",
+                    0: "yellow",
                     1: "green",
-                    2: "tea",
+                    2: "orange",
                     3: "green",
                     4: "red",
                     9: "black"
@@ -531,21 +531,25 @@ function mostrarItems(numcaja, estado = null) {
 
 // FUNCION QUE INICIA DATATABLE
 function iniciarTabla(tab) {
-
+    let hight="600px";
+    if (tab==="#TablaM") {
+        hight="350px";
+    }
+    
     tabla = $(tab).DataTable({
 
-        responsive: true,
+        responsive:true,
 
         "bLengthChange": false,
         "bFilter": true,
-        "pageLength": 5,
-
+        "sDom": '<"top">t<"bottom"irp><"clear">',
+        
         "language": {
             "sProcessing": "Procesando...",
             "sZeroRecords": "No se encontraron resultados",
             "sEmptyTable": "Ningún dato disponible en esta tabla",
-            "sInfo": "Mostrando _START_ - _END_ de  _TOTAL_ registros",
-            "sInfoEmpty": "Mostrando 0 - 0 de 0 registros",
+            "sInfo": "_TOTAL_ Items",
+            "sInfoEmpty": "",
             "sInfoFiltered": "(filtrado _MAX_ registros)",
             "sSearch": "Buscar:",
             "sUrl": "",
@@ -557,11 +561,11 @@ function iniciarTabla(tab) {
                 "sNext": "Siguiente",
                 "sPrevious": "Anterior"
             },
-            "oAria": {
-                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-            },
-        }
+        },
+        scrollY: hight,
+        scrollCollapse: true,
+        paging: false,
+        
 
     });
 

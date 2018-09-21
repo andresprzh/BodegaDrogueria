@@ -19,7 +19,7 @@ if (isset($_POST['valor'])) {
 
 
 $cont=0;//contador para almacenar los datos en un vector
-// print json_encode($res->fetch());
+
 // si hay resultados los regresa como json
 if ($res->rowCount()>0) {
     while($row = $res->fetch()) {
