@@ -96,16 +96,22 @@ class ControladorCajas extends ControladorAlistar {
         if ($res) {          
             $documento='';
             foreach($items as $row){
+                $Mensaje=$row['mensajes'];
+                if ($row['mensajes']=='' ){
+                    $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
+                    $busqueda=$busqueda->fetch();
+                    $Mensaje=substr($busqueda['nombre'],0,19);
+                    
+                }
                 $origen=str_replace('BD','',$row["origen"]);
                 $destino=str_replace('VE','',$row["destino"]);
                 $destino=$origen.substr($destino,1,-1);
                 $localicacion=str_replace('-','',$row["origen"].$destino.'I');
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $item=str_pad($row["id"],6+15," ",STR_PAD_RIGHT);
+                $item=str_pad($row["id"],6+12," ",STR_PAD_RIGHT);
                 $num=$row["alistados"]*1000;
                 $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
-                $Mensaje=$row['mensajes'];
                 
                 $documento.=($localicacion.$item.$alistado.$Mensaje."\r\n");
 
