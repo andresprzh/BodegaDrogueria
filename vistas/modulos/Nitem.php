@@ -18,7 +18,7 @@
     
         <div class="input-field col s12 m10 l11  hide input_item">
 
-            <input  id="item" type="text" class="validate"  pattern=".{3,}" minlength="1"  title="minimo 3 caracteres" required>
+            <input  id="item" type="text"   pattern=".{3,}" minlength="1"  title="minimo 3 caracteres" required>
             <label for="codbarras" >Item</label>
 
         </div>  

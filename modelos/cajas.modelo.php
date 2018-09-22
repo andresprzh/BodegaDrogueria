@@ -22,25 +22,40 @@ class ModeloCaja extends Conexion{
     ============================================================================================================================*/
 
     // muestra cajas que no se han recibido
-    public function mdlMostrarCaja($numcaja)
-    {
-        $no_req=$this->req[0];$alistador=$this->req[1];
-
-        $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
-		FROM caja 
-		LEFT JOIN pedido ON pedido.no_caja=caja.no_caja
-        LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
-		INNER JOIN usuario ON usuario.id_usuario=Alistador
-		WHERE caja.no_caja LIKE :numcaja 
-		AND (pedido.no_req=:no_req OR errores.no_req=:no_req)
-		AND caja.no_caja <> 1
-		/* AND caja.estado <> 3  */
-        GROUP BY caja.no_caja,caja.estado;';
-        
-        $stmt= $this->link->prepare($sql);
-
+    public function mdlMostrarCaja($numcaja,$estado=null)
+    {   
+        $no_req=$this->req[0];$persona=$this->req[1];
+        if ($estado==null) {
+            $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
+            FROM caja 
+            LEFT JOIN pedido ON pedido.no_caja=caja.no_caja
+            LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
+            INNER JOIN usuario ON usuario.id_usuario=Alistador
+            WHERE caja.no_caja LIKE :numcaja 
+            AND (pedido.no_req=:no_req OR errores.no_req=:no_req)
+            AND caja.no_caja <> 1
+            GROUP BY caja.no_caja,caja.estado;';
+            $stmt= $this->link->prepare($sql);
+        }else {
+            $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
+            FROM caja 
+            LEFT JOIN pedido ON pedido.no_caja=caja.no_caja
+            LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
+            INNER JOIN usuario ON usuario.id_usuario=Alistador
+            WHERE caja.no_caja LIKE :numcaja 
+            AND (pedido.no_req=:no_req OR errores.no_req=:no_req)
+            AND caja.no_caja <> 1
+            AND caja.estado >= :estado
+            AND caja.encargado_punto=:persona
+            GROUP BY caja.no_caja,caja.estado;';
+            $stmt= $this->link->prepare($sql);
+            $stmt->bindParam(":estado",$estado,PDO::PARAM_INT);
+            $stmt->bindParam(":persona",$persona,PDO::PARAM_INT);
+        }
+       
         $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_STR);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+        
 
         $stmt->execute();
 

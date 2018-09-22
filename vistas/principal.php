@@ -81,7 +81,8 @@
         "tareas",
         "usuarios",
         "Nitem",
-        "salir"
+        "salir",
+        "pvcajas"
         ];
     $jefe=[
       "inicio",
@@ -100,7 +101,8 @@
     $pv=[
       "inicio",
       "pv",
-      "salir"
+      "salir",
+      "pvcajas"
     ];
     $jefed=[
       "inicio",

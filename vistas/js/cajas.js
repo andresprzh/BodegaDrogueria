@@ -13,7 +13,7 @@ $(document).ready(function () {
     $.ajax({
         url: "ajax/alistar.requisicion.ajax.php",
         method: "POST",
-        data: {'valor':3},
+        data: { 'valor': 3 },
         dataType: "json",
         success: function (res) {
 
@@ -111,9 +111,9 @@ $(document).ready(function () {
                 // var numcaja = $('#NumeroCaja').html();
                 // obtiene los 3 ultimos caracteres de la requisicion
                 var no_res = req[0].substr(req[0].length - 3);
-                numcaja=("00" + numcaja).slice(-2);
+                numcaja = ("00" + numcaja).slice(-2);
                 // crea el nombre del documento a partir de la requisicion y la caja
-                var nomdoc = 'DS' + no_res + 'C' + numcaja + '.TR1';
+                var nomdoc = 'C' + numcaja + 'DS' + no_res + '.TR1';
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({
@@ -189,7 +189,7 @@ $(document).ready(function () {
                         data: { 'req': req, "numcaja": numcaja, "items": items },//datos que se enviaran          
                         dataType: 'JSON',
                         success: function (res) {
-                            
+
                             if (res) {
 
                                 swal("¡Caja Modificada exitosamente!", {
@@ -271,7 +271,7 @@ $(document).ready(function () {
 ============================================================================================================================*/
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function mostrarCajas(){
+function mostrarCajas() {
     //refresca la tabla, para volver a cargar los datos
     var dt = $.fn.dataTable.tables();
     $('#tablacajas').html("");
@@ -400,7 +400,7 @@ function mostrarCajas(){
 
 }
 
-function recargarCajas(){
+function recargarCajas() {
     //espera a que la funcion termine para reiniciar las tablas
     $.when(mostrarCajas()).done(function () {
 
@@ -429,7 +429,7 @@ function mostrarItemsCaja(e, estado) {
     if ([0, 9].includes(estado)) {
         $("#Documento").attr("disabled", "disabled");
         $("#eliminar").removeAttr("disabled", "disabled");
-    }else if([3, 9].includes(estado)){
+    } else if ([3, 9].includes(estado)) {
         $("#Documento").removeAttr("disabled");
         $("#eliminar").attr("disabled", "disabled");
     } else {
@@ -493,7 +493,7 @@ function mostrarItems(numcaja, estado = null) {
                 let cajar;
                 if (estado == 4) {
                     for (var i in item) {
-                       
+
                         $("#tablaerror").append($(`<tr id='${item[i]['iditem']}'><td> 
                             ${item[i]['descripcion']}</td><td> 
                             ${item[i]['no_caja']}</td><td> 
@@ -531,19 +531,19 @@ function mostrarItems(numcaja, estado = null) {
 
 // FUNCION QUE INICIA DATATABLE
 function iniciarTabla(tab) {
-    let hight="600px";
-    if (tab==="#TablaM") {
-        hight="350px";
+    let hight = "600px";
+    if (tab === "#TablaM") {
+        hight = "350px";
     }
-    
+
     tabla = $(tab).DataTable({
 
-        responsive:true,
+        responsive: true,
 
         "bLengthChange": false,
         "bFilter": true,
         "sDom": '<"top">t<"bottom"irp><"clear">',
-        
+
         "language": {
             "sProcessing": "Procesando...",
             "sZeroRecords": "No se encontraron resultados",
@@ -565,7 +565,7 @@ function iniciarTabla(tab) {
         scrollY: hight,
         scrollCollapse: true,
         paging: false,
-        
+
 
     });
 

@@ -47,6 +47,7 @@
                 echo '<li><a href="cajas" ><i class="fas fa-boxes"></i>Cajas</a></li>';
                 echo '<li><a href="Nitem" ><i class="fas fa-plus-square"></i>Agregar items</a></li>';
                 echo '<li><a href="pv" ><i class="fas fa-clipboard-check"></i>Pventa</a></li>';
+                echo '<li><a href="pvcajas" ><i class="fas fa-boxes"></i>PVcajas</a></li>';
                 echo '<li><a href="tareas" ><i class="fas fa-tasks"></i>Tareas</a></li>';
                 echo '<li><a href="usuarios" ><i class="fas fa-users"></i>Usuario</a></li>';
             }
@@ -66,7 +67,8 @@
                 echo '<li><a href="alistar" >Alistar</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==4) {
-                echo '<li><a href="pv" >Pventa</a></li>';
+                echo '<li><a href="pv"><i class="fas fa-clipboard-check"></i>Pventa</a></li>';
+                echo '<li><a href="pvcajas" ><i class="fas fa-boxes"></i>PVcajas</a></li>';
             }
             
 

@@ -21,11 +21,11 @@ class ControladorCajas extends ControladorAlistar {
     /* ============================================================================================================================
                                                         FUNCIONES   
     ============================================================================================================================*/
-    public function ctrBuscarCaja($numcaja)
+    public function ctrBuscarCaja($numcaja,$estado=null)
     {
 
-        $busqueda=$this->modelo->mdlMostrarCaja($numcaja);
-
+        $busqueda=$this->modelo->mdlMostrarCaja($numcaja,$estado);
+        
         if ($busqueda->rowCount() > 0) {
 
             if($busqueda->rowCount() == 1){

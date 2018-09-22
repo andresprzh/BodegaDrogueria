@@ -174,36 +174,40 @@ class ControladorPV extends ControladorCajas{
                 $origen=$origen.substr($destino,1,-1);
                 $localicacion=str_replace("-","",$origen.$row["lo_destino"]."C");
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $item=str_pad($row["item"],13+15," ",STR_PAD_RIGHT);
+                $item=str_pad($row["item"],13+12," ",STR_PAD_RIGHT);
                 $num=$row["recibidos"]*1000;
                 $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
                 
+                $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
+                $busqueda=$busqueda->fetch();
+                $mensaje=substr($busqueda['nombre'],0,19);
+
                 switch ($row["rec_estado"]) {
                     
                     case 0:
                         
                         if ($row["recibidos"]==0) {
-                            $mensaje="Item no recibido";
+
                             $mensajeitem="item no recibido";
                         }else {
-                            $mensaje="Menos items";
+                            
                             $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
                         }
                         break;
 
                     case 1:
-                        $mensaje="Mas items";
+                        
                         $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];                        
                         break;
 
                     case 2:
-                        $mensaje="Req diferente";
+                        
                         $mensajeitem="El item  recibido no estaba en la requisicion";
                         break;
 
                     case 3:
-                        $mensaje="Caja diferente";
+                        
                         if ($row["cajap"]==1) {
                             $mensajeitem="El item recibido no está alistado en niguna caja";
                         }else{
@@ -212,7 +216,7 @@ class ControladorPV extends ControladorCajas{
                         break;
                     
                     default:
-                        $mensaje="Ok";
+                        
                         break;
                 }
                 if ($row["rec_estado"] != 4) {

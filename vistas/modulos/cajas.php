@@ -87,6 +87,15 @@
 
         </div>
 
+        <div class="modal-footer grey lighten-3">
+            <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s12 m12 l8" >
+                <i class="fas fa-file-alt"></i>
+            </button>
+            <button id="eliminar" title="Cancelar Caja" class="btn left waves-effect red darken-4 col s12 m12 l8" >
+                <i class="fas fa-ban"></i>
+            </button>
+        </div>
+
         <table class="datatable centered " id="TablaM"  >
                 
                     <thead>
@@ -111,14 +120,7 @@
 
         </table> 
         
-        <div class="modal-footer grey lighten-3">
-            <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s12 m12 l8" >
-                <i class="fas fa-file-alt"></i>
-            </button>
-            <button id="eliminar" title="Cancelar Caja" class="btn left waves-effect red darken-4 col s12 m12 l8" >
-                <i class="fas fa-ban"></i>
-            </button>
-        </div>
+        
         
     </div>
 
@@ -188,6 +190,7 @@
 
         </div>
     </div>
+</div>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
