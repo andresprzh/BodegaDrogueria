@@ -121,10 +121,12 @@ class ControladorPV extends ControladorCajas{
         if ($resultado==true) {
             $resultado["estado"]=$this->modelo->mdlModCaja($numcaja);
             if($resultado["estado"]==true){
-                $resultado["contenido"]=$this->ctrDocumentoR($numcaja);
+                $resultado["contenido"]=$this->ctrVerificarRegistro($numcaja);
                 //si hay errores en los items recibido en la caja se cambia el estado de la caja
-                if ($resultado["contenido"]["estado"]=="error0") {
+                if ($resultado["contenido"]["estado"]!="ok" ) {
                     $resultado["estado"]=$this->modelo->mdlModCaja($numcaja,4);
+                }else {
+                    $resultado["contenido"]=$this->ctrDocumentoR($numcaja);
                 }
             }
         }
@@ -159,29 +161,28 @@ class ControladorPV extends ControladorCajas{
     }
 
     // crea archivo plano de la caja recibida
-    private function ctrDocumentoR($numcaja){
+    private function ctrVerificarRegistro($numcaja){
         $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
 
         $resultado["estado"]="ok";
         if ($busqueda->rowCount()>0) {
             $recibidos=$busqueda->fetchAll();
             $i=0;
-            $resultado["string"]="";
             foreach ($recibidos as $row) {
 
-                $origen=str_replace("BD","",$row["lo_origen"]);
-                $destino=str_replace("VE","",$row["lo_destino"]);
-                $origen=$origen.substr($destino,1,-1);
-                $localicacion=str_replace("-","",$origen.$row["lo_destino"]."C");
-                $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $item=str_pad($row["item"],13+12," ",STR_PAD_RIGHT);
-                $num=$row["recibidos"]*1000;
-                $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
-                $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+                // $origen=str_replace("BD","",$row["lo_origen"]);
+                // $destino=str_replace("VE","",$row["lo_destino"]);
+                // $origen=$origen.substr($destino,1,-1);
+                // $localicacion=str_replace("-","",$origen.$row["lo_destino"]."C");
+                // $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+                // $item=str_pad($row["iditem"],13+12," ",STR_PAD_RIGHT);
+                // $num=$row["recibidos"]*1000;
+                // $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
+                // $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
                 
-                $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
-                $busqueda=$busqueda->fetch();
-                $mensaje=substr($busqueda['nombre'],0,19);
+                // $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
+                // $busqueda=$busqueda->fetch();
+                // $mensaje=substr($busqueda['nombre'],0,19);
 
                 switch ($row["rec_estado"]) {
                     
@@ -216,18 +217,23 @@ class ControladorPV extends ControladorCajas{
                         break;
                     
                     default:
-                        
+                        // $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
+                        // $resultado["item"][$i]["iditem"]=$row["item"];
+                        // $i++;
                         break;
                 }
                 if ($row["rec_estado"] != 4) {
                     $resultado["estado"]="error0";
-                    $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
-                    $resultado["item"][$i]["id"]=$row["item"];
+                    $resultado["item"][$i]=$row;
                     $resultado["item"][$i]["mensaje"]=$mensajeitem;
+
+                    // $resultado["item"][$i]["descripcion"]=$row["descripcion"];
+                    // $resultado["item"][$i]["iditem"]=$row["iditem"];
+                    // $resultado["item"][$i]["mensaje"]=$mensajeitem;
                     $i++;
                 }
                 
-                $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\r\n");
+                // $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\r\n");
             }
         }else {
             $resultado["estado"]="error1";
@@ -235,6 +241,80 @@ class ControladorPV extends ControladorCajas{
 
         return $resultado;
     }
+
+    public function ctrBuscarItemrec($numcaja)
+    {
+         $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
+          
+        if ($busqueda->rowCount() > 0) {
+
+            $itembus["estado"]="encontrado";
+
+            $itembus["contenido"]=$busqueda->fetchAll();
+            // $cont=0;
+
+            // while($row = $busqueda->fetch()){
+
+            //     $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+            //                         "iditem"=>$row["item"],    
+            //                         "referencia"=>$row["ID_REFERENCIA"],
+            //                         "descripcion"=>$row["DESCRIPCION"],
+            //                         "disponibilidad"=>$row["disp"],
+            //                         "pedidos"=>$row["pedido"],
+            //                         "alistados"=>$row["alistado"],
+            //                         'ubicacion'=>$row["ubicacion"],
+            //                         'origen'=>$row["lo_origen"],
+            //                         'destino'=>$row["lo_destino"]
+            //                         ];
+            //     $cont++;
+
+            // }
+
+            
+            
+            return $itembus;
+
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            return ['estado'=>"error",
+                    'contenido'=>"Caja sin Items!"];
+
+        }
+    }
     
+    public function ctrDocumentoR($numcaja)
+    {
+        $busqueda=$this->modelo->mdlMostrarrecibidos($numcaja);
+
+        $resultado["estado"]=true;
+        if ($busqueda->rowCount()>0) {
+            $recibidos=$busqueda->fetchAll();
+            $i=0;
+            $resultado["string"]="";
+            foreach ($recibidos as $row) {
+
+                $origen=str_replace("BD","",$row["lo_origen"]);
+                $destino=str_replace("VE","",$row["lo_destino"]);
+                $origen=$origen.substr($destino,1,-1);
+                $localicacion=str_replace("-","",$origen.$row["lo_destino"]."I");
+                $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+                $item=str_pad($row["iditem"],13+12," ",STR_PAD_RIGHT);
+                $num=$row["recibidos"]*1000;
+                $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
+                $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+                
+                $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
+                $busqueda=$busqueda->fetch();
+                $mensaje=substr($busqueda['nombre'],0,19);
+                
+                $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\r\n");
+            }
+        }else {
+            $resultado["estado"]=false;
+        }
+
+        return $resultado;
+    }
     
 }

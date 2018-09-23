@@ -52,6 +52,12 @@ $(document).ready(function () {
 
     });
 
+    // evento si se da click en generar documento
+    $("#Documento").click(function (e) {
+        let numcaja = $('.modal .NumeroCaja').html();
+        documento(numcaja);
+    });
+
 });
 
 /* ============================================================================================================================
@@ -74,7 +80,7 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-            console.log(res);
+
             var caja = res["contenido"];
 
             //si no encuentra la caja muestra en pantalla que no se encontro
@@ -96,7 +102,7 @@ function mostrarCajas() {
                     9: "black"
                 };
 
-
+                let botonestado = '';
 
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
@@ -122,6 +128,7 @@ function mostrarCajas() {
                                             ${caja["recibido"]}
                                             </p>
                                             <button 
+                                            onclick="documento(${caja["no_caja"]})"
                                             title="GenerarDocumento" 
                                             class="btn-floating  secondary-content waves-effect green darken-4 " 
                                             >
@@ -133,10 +140,16 @@ function mostrarCajas() {
                 } else {
                     for (var i in caja) {
 
+                        botonestado = '';
+                        if (caja[i]["estado"] != 3) {
+                            botonestado = 'disabled';
+                        }
+
                         // reemplaza varoles nul por ---
                         if (caja[i]["tipocaja"] === null) {
                             caja[i]["tipocaja"] = "---"
                         }
+
 
                         $("#cajas").append($(`<li
                                               class="collection-item avatar" 
@@ -155,7 +168,9 @@ function mostrarCajas() {
                                                 ${caja[i]["recibido"]}
                                                 </p>
                                                 <button 
+                                                onclick="documento(${caja[i]["no_caja"]})"
                                                 title="GenerarDocumento" 
+                                                ${botonestado}
                                                 class="btn-floating  secondary-content waves-effect green darken-4 " >
                                                     <i class="fas fa-file-alt"></i>
                                                 </button>
@@ -179,42 +194,108 @@ function mostrarItemsCaja(numcaja, estado, recibido) {
 
     $(".NumeroCaja").html(numcaja);
 
-    // let numcaja = caja["no_caja"];
-    // console.log(caja);
-    // return 0;
-    // //obtienen los datos de la caja para pasarlo al modal
-    // var datos = table.row(e).data();
-    // var numcaja = datos[0];
-    // var alistador = datos[1];
-    // var tipocaja = datos[2];
-    // var cierre = datos[4];
-
-    // // se muestran los datos generales de la caja
-    // $(".NumeroCaja").html(numcaja);
-    // $("#alistador").html(alistador);
-    // $("#tipocaja").html(tipocaja);
-    // $("#cierre").html(cierre);
-
-    // // si la caja no esta cerrada, ya fue recibida en el punto de venta o 
-    // // fue cancelada se desabilita la opcion de crear documento
-
     if (estado == 3) {
         $("#Documento").removeAttr("disabled");
+        $("#TablaM thead tr").addClass("green darken-3");
+        $("#TablaM thead tr").removeClass("red darken-3");
     } else {
         $("#Documento").attr("disabled", "disabled");
+        $("#TablaM thead tr").addClass("red darken-3");
+        $("#TablaM thead tr").removeClass("green darken-3");
     }
+    mostrarItems(numcaja, estado);
+}
 
-    // // destruye la datatable 2(tabla del modal)
-    // var dt = $.fn.dataTable.tables()[1];
-    // $("#tablamodal").html("");
-    // $(dt).DataTable().clear();
-    // $(dt).DataTable().destroy();
+function mostrarItems(numcaja, estado = null) {
+
+    //consigue el numero de requerido
+    var requeridos = $(".requeridos").val();
+    //id usuario es obtenida de las variables de sesion
+    var req = [requeridos, id_usuario];
+
+    return $.ajax({
+        url: "ajax/pvcajas.cajas.ajax.php",
+        method: "POST",
+        data: { "req": req, "numcaja": numcaja, "estado": estado },
+        dataType: "JSON",
+        success: function (res) {
 
 
-    // //espera a que la funcion termine para reiniciar las tablas
-    // $.when(mostrarItems(numcaja, estado)).done(function () {
-    //     //Reinicia Tabla
-    //     table[1] = iniciarTabla("#TablaM");
-    // });
+            $("#TablaM tbody").html("");
+
+
+            var item = res["contenido"];
+
+            //si no encuentra el item muestra en pantalla que no se encontro
+            if (res["estado"] == "error") {
+
+            }
+            //en caso de contrar el item mostrarlo en la tabla
+            else {
+
+                // $("#Rerror").hide();
+
+                var item = res["contenido"];
+
+
+                for (var i in item) {
+                    $("#TablaM tbody").append($(`<tr id="${item[i]['iditem']}"><td>
+                        ${item[i]['descripcion']} </td><td>    
+                        ${item[i]['iditem']} </td><td>
+                        ${item[i]['recibidos']}</td>
+                        </tr>`));
+
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+function documento(numcaja) {
+
+    //consigue el numero de requerido
+    var requeridos = $(".requeridos").val();
+    //id usuario es obtenida de las variables de sesion
+    var req = [requeridos, id_usuario];
+
+    return $.ajax({
+        url: "ajax/pvcajas.documento.ajax.php",
+        method: "POST",
+        data: { "req": req, "numcaja": numcaja },
+        dataType: "JSON",
+        success: function (res) {
+
+            // return 0;
+            if (res["estado"] == true) {
+
+                // let numcaja = $("#cajas").val();
+                // obtiene los 3 ultimos caracteres de la requisicion
+                let no_req = req[0].substr(req[0].length - 3);
+                numcaja = ("00" + numcaja).slice(-2);
+
+                // crea el nombre del documento a partir de la requisicion y la caja
+                let nomdoc = "C" + numcaja + "DE" + no_req + ".TR1";
+
+                let element = document.createElement("a");
+                element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["string"]));
+                element.setAttribute("download", nomdoc);
+
+                element.style.display = "none";
+                document.body.appendChild(element);
+
+                element.click();
+
+                document.body.removeChild(element);
+
+            }
+        }
+
+    });
+
 }
 

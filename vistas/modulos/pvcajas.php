@@ -12,7 +12,7 @@
     </div>
     <div class="input-field col s3 m1 l1  input_refresh">
 
-        <button id="refresh" title="Recargar" disabled onclick="recargarCajas()" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
+        <button id="refresh" title="Recargar" disabled onclick="mostrarCajas()" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
             <i class="fas fa-sync"></i>
         </button>
         
@@ -22,46 +22,7 @@
 
 <div>
     <ul class="collection" id="cajas">
-        <li class="collection-item avatar">
-            <i class="fas fa-box circle"></i>
-            <span class="title">Title</span>
-            <p>First Line <br>
-                Second Line
-            </p>
-            <button id="Documento" title="GenerarDocumento" class="btn-floating  secondary-content waves-effect green darken-4 " >
-                <i class="fas fa-file-alt"></i>
-            </button>
-        </li>
-        <li class="collection-item avatar">
-            <i class="fas fa-box circle red" ></i>
-            <span class="title">Title</span>
-            <p>First Line <br>
-                Second Line
-            </p>
-            <button id="Documento" title="GenerarDocumento" class="btn-floating  secondary-content waves-effect green darken-4 " >
-                <i class="fas fa-file-alt"></i>
-            </button>
-        </li>
-        <li class="collection-item avatar">
-            <i class="fas fa-box circle green" ></i>
-            <span class="title">Title</span>
-            <p>First Line <br>
-                Second Line
-            </p>
-            <button id="Documento" title="GenerarDocumento" class="btn-floating  secondary-content waves-effect green darken-4 " >
-                <i class="fas fa-file-alt"></i>
-            </button>
-        </li>
-        <li class="collection-item avatar">
-            <i class="fas fa-box circle blue" ></i>
-            <span class="title">Title</span>
-            <p>First Line <br>
-                Second Line
-            </p>
-            <button id="Documento" title="GenerarDocumento" class="btn-floating  secondary-content waves-effect green darken-4 " >
-                <i class="fas fa-file-alt"></i>
-            </button>
-        </li>
+        
     </ul>
 </div>
 <!-- ============================================================================================================================
@@ -84,13 +45,13 @@
             </button>
         </div>
 
-        <table class="datatable centered " id="TablaM"  >
+        <table class="tabla centered " id="TablaM"  >
                 
                     <thead>
 
                     <tr  class="white-text green darken-3" >
                         <th>Descripción</th>
-                        <th>Codigo de barras</th>
+                        <th>ID item</th>
                         <th>Recibidos</th>
                     </tr>
 
@@ -108,6 +69,17 @@
 <style scope>
     #cajas .modal-trigger:hover{
         cursor: pointer;
+    }
+    /* .modal{
+        width:100%;
+    } */
+    .tabla  td:first-child, .tabla  th:first-child{
+        width:30%;
+        text-align: center;
+    }
+    .tabla  td:last-child, .tabla  th:last-child{
+        width:30%;
+        text-align: center;
     }
 </style>
 <!-- ============================================================================================================================

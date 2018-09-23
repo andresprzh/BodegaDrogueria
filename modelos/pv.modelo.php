@@ -104,13 +104,25 @@ class ModeloPV extends Conexion{
 
     // muestra los items recibidos
     public function mdlMostrarItemsRec($numcaja){
-        $sql="SELECT recibido.item,DESCRIPCION,pedido.no_caja AS cajap,recibido.no_caja AS cajar,pedido.alistado,
-        recibido.recibidos,pedido.estado AS ped_estado,recibido.estado AS rec_estado,lo_origen,lo_destino
+        // $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,pedido.no_caja AS cajap,recibido.no_caja AS cajar,pedido.alistado,
+        // recibido.recibidos,pedido.estado AS ped_estado,recibido.estado AS rec_estado,lo_origen,lo_destino,MIN(ID_CODBAR) AS codigo
+        // FROM recibido
+        // INNER JOIN ITEMS ON ITEMS.ID_ITEM=recibido.item
+        // INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
+        // INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
+        // LEFT JOIN  bodegadrogueria.pedido ON pedido.item=recibido.item
+        // WHERE recibido.no_caja=:no_caja
+        // GROUP BY recibido.item,DESCRIPCION ,pedido.no_caja ,recibido.no_caja ,pedido.alistado,
+        // recibido.recibidos,pedido.estado,recibido.estado,lo_origen,lo_destino;";
+        $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,pedido.alistado,
+        pedido.no_caja AS cajap,recibido.no_caja AS cajar,
+        recibido.recibidos,recibido.estado AS rec_estado
         FROM recibido
-        INNER JOIN ITEMS on ITEMS.ID_ITEM=recibido.item
-        INNER JOIN requisicion on requisicion.no_req=recibido.no_req
+        INNER JOIN ITEMS ON ITEMS.ID_ITEM=recibido.item
+        INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
         LEFT JOIN  bodegadrogueria.pedido ON pedido.item=recibido.item
         WHERE recibido.no_caja=:no_caja";
+
         $stmt= $this->link->prepare($sql );
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
@@ -136,5 +148,19 @@ class ModeloPV extends Conexion{
 
         // cierra la conexion
         $stmt=null;
+    }
+
+    public function mdlMostrarrecibidos($numcaja){
+
+        $sql="SELECT item as iditem,recibido.no_req,no_caja,recibidos,recibido.estado,requisicion.lo_origen,requisicion.lo_destino
+        FROM recibido
+        INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
+        WHERE no_caja=:no_caja;";
+        $stmt= $this->link->prepare($sql );
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ($stmt);  
     }
 }

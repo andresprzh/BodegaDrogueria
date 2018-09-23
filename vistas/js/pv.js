@@ -225,14 +225,32 @@ $(document).ready(function () {
                         dataType: "JSON",
                         success: function (res) {
 
-
                             if (res["estado"] == true) {
-                                if (res["contenido"]["estado"] == "ok") {
+                                // crea el documento si no hay errores en los items recibidos
+                                if (res["contenido"]["estado"] == true) {
                                     swal({
                                         title: "¡Items registrados!",
                                         icon: "success",
                                     }).then((ok) => {
                                         location.reload();
+                                        let numcaja = $("#cajas").val();
+                                        // obtiene los 3 ultimos caracteres de la requisicion
+                                        let no_req = req[0].substr(req[0].length - 3);
+                                        numcaja = ("00" + numcaja).slice(-2);
+
+                                        // crea el nombre del documento a partir de la requisicion y la caja
+                                        let nomdoc = "C" + numcaja + "DE" + no_req + ".TR1";
+
+                                        let element = document.createElement("a");
+                                        element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["contenido"]["string"]));
+                                        element.setAttribute("download", nomdoc);
+
+                                        element.style.display = "none";
+                                        document.body.appendChild(element);
+
+                                        element.click();
+
+                                        document.body.removeChild(element);
                                     });
                                 } else if (res["contenido"]["estado"] == "error0") {
                                     $('.modal').modal('open');
@@ -255,24 +273,7 @@ $(document).ready(function () {
                                             location.reload();
                                         });
                                 }
-                                var numcaja = $("#cajas").val();
-                                // obtiene los 3 ultimos caracteres de la requisicion
-                                var no_req = req[0].substr(req[0].length - 3);
-                                numcaja = ("00" + numcaja).slice(-2);
 
-                                // crea el nombre del documento a partir de la requisicion y la caja
-                                var nomdoc = "C" + numcaja + "DE" + no_req + ".TR1";
-
-                                var element = document.createElement("a");
-                                element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["contenido"]["string"]));
-                                element.setAttribute("download", nomdoc);
-
-                                element.style.display = "none";
-                                document.body.appendChild(element);
-
-                                element.click();
-
-                                document.body.removeChild(element);
                             } else {
                                 swal({
                                     title: "¡Error!",

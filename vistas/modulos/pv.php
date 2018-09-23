@@ -136,7 +136,20 @@
 </div>
 
 <style scoped>
-
+    /* #EditarCaja2{
+        width:100%;
+    } */
+    .modal{
+        width:100%;
+    }
+    .tabla  td:first-child, .tabla  th:first-child{
+        width:30%;
+        text-align: center;
+    }
+    .tabla  td:last-child, .tabla  th:last-child{
+        width:30%;
+        text-align: center;
+    }
 </style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
