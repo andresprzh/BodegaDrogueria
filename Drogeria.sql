@@ -383,7 +383,9 @@ DELIMITER $$
 	BEFORE UPDATE ON caja
 	FOR EACH ROW 
 	BEGIN
-		SET new.cerrar=now() ;
+		IF new.estado=1 THEN 
+			SET new.cerrar=now() ;
+		END IF;
 	END 
 
 $$

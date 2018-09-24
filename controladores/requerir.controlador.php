@@ -19,7 +19,6 @@ class ControladorRequerir{
         $item='No_Req';
         $valor=$this->cabecera[0];
 
-
         //si no encuentra el numero de la requisicion no la sube a la base de datos
         if ($valor===null) {
             echo ('<script>
@@ -34,7 +33,7 @@ class ControladorRequerir{
             $no_req=$modelo->mdlMostrarReq($item,$valor);
             $no_req=$no_req->fetch();
             
-            //si la requisicion no existe busca los items y sube el archivo a la base de datos
+            //si la requisicion no existe busca los items y sube el archivo a la base de datos  
             if($no_req["no_req"]==$valor){
                 
                 echo '<script>
@@ -66,8 +65,6 @@ class ControladorRequerir{
                 if ($resultado) {
                     
                     $busqueda=$modelo->mdlMostrarItems($this->cabecera[0]);
-                    // print json_encode($busqueda->rowCount());
-                     
                     if ($busqueda->rowCount() > 0) {
                         
                         echo '<table class="tabla "  >

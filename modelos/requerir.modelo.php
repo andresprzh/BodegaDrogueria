@@ -9,13 +9,15 @@ class ModeloRequierir extends Conexion{
         
     }
 
-    public function mdlMostrarReq($item,$valor=null){
+    public function mdlMostrarReq($item=null,$valor=null){
     
         $tabla='requisicion';
         if ($valor==null) {
             $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = 0");
-        }else {
+        }else if($item=='estado') {
             $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item < :$item");
+        }else {
+            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = :$item");
         }
         
         //para evitar sql injection
@@ -38,16 +40,19 @@ class ModeloRequierir extends Conexion{
     public function mdlMostrarItems($req){
        
         $stmt= $this->link->prepare('SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion,
-		MIN(COD_BARRAS.ID_CODBAR) AS ID_CODBAR,ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
-		caja.no_caja,usuario.nombre,requisicion.lo_origen,requisicion.lo_destino
-		FROM COD_BARRAS
-		INNER JOIN ITEMS ON ID_ITEM=ID_ITEMS	
-		INNER JOIN pedido ON Item=ID_ITEM	
-		INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
-		LEFT JOIN caja ON caja.no_caja=pedido.no_caja
-		LEFT JOIN usuario ON id_usuario=caja.alistador
-		WHERE pedido.no_req = :no_req
-		GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion;');
+        ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
+        caja.no_caja,usuario.nombre,requisicion.lo_origen,requisicion.lo_destino,
+        MIN(COD_BARRAS.ID_CODBAR) AS ID_CODBAR
+        FROM COD_BARRAS
+        INNER JOIN ITEMS ON ID_ITEM=ID_ITEMS	
+        INNER JOIN pedido ON Item=ID_ITEM	
+        INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
+        LEFT JOIN caja ON caja.no_caja=pedido.no_caja
+        LEFT JOIN usuario ON id_usuario=caja.alistador
+        WHERE pedido.no_req = :no_req
+        GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion,
+        ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
+        caja.no_caja,usuario.nombre,requisicion.lo_origen,requisicion.lo_destino;');
 
         
         $stmt->bindParam(":no_req",$req,PDO::PARAM_STR);
