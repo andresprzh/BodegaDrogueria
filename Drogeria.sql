@@ -442,6 +442,11 @@ DELIMITER $$
 			SET new.estado=1;
 		ELSE 
 			SET new.estado=4;
+			UPDATE pedido
+			SET pedido.estado=4
+			WHERE pedido.item=new.item
+			AND pedido.no_req=new.no_req
+			AND pedido.no_caja=new.no_caja;
 		END IF;
 
 		IF ubc IS NULL THEN
@@ -509,6 +514,11 @@ DELIMITER $$
 			SET new.estado=1;
 		ELSE 
 			SET new.estado=4;
+			UPDATE pedido
+			SET pedido.estado=4
+			WHERE pedido.item=new.item
+			AND pedido.no_req=new.no_req
+			AND pedido.no_caja=new.no_caja;
 		END IF;
 
 		IF ubc IS NULL THEN
@@ -528,17 +538,27 @@ $$
 
 -- trigger que modifica el estado de enviado de la requisicion 
 -- y agrega los items en recibido con estado 2
+drop trigger if exists ReqEnviado;
 DELIMITER $$
 	CREATE TRIGGER ReqEnviado 
 	AFTER UPDATE ON pedido
 	FOR EACH ROW 
 	BEGIN
 		DECLARE numalistados TINYINT;		
+		DECLARE numrecibidos TINYINT;	
+		
 		SELECT count(estado) INTO numalistados
 		FROM pedido
-		WHERE estado<>2
+		WHERE (estado=0
+		OR estado=1)
+		AND no_req=new.no_req;
+		
+		SELECT count(estado) INTO numrecibidos
+		FROM pedido
+		WHERE estado<>4
 		AND estado<>3
 		AND no_req=new.no_req;
+		
 		
       IF new.estado=2 THEN
 			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
@@ -563,6 +583,13 @@ DELIMITER $$
 			SET enviado=NOW(),estado=1
 			WHERE requisicion.no_req=new.no_req;
 		END IF;
+		
+		IF numalistados=0 THEN
+			UPDATE requisicion
+			SET enviado=NOW(),estado=1
+			WHERE requisicion.no_req=new.no_req;
+		END IF;		
+
 			
 	END 
 $$

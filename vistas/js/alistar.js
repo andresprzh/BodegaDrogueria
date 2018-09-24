@@ -22,12 +22,12 @@ $(document).ready(function () {
         processData: false,
         dataType: "JSON",
         success: function (res) {
-
+            
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
                 $("#requeridos").append($('<option value="' + res[i]["no_req"] + '">' + res[i]["no_req"] + '</option>'));
-
+                
             }
 
             // INICIA MENU DE SELECCION

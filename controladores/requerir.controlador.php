@@ -19,8 +19,10 @@ class ControladorRequerir{
         $item='No_Req';
         $valor=$this->cabecera[0];
 
+
         //si no encuentra el numero de la requisicion no la sube a la base de datos
         if ($valor===null) {
+            
             echo ('<script>
                 swal({
                     title: "¡Requisicion no encontrada",

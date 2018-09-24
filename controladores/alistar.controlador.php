@@ -57,7 +57,7 @@ class ControladorAlistar {
                         $itembus["estado"]='encontrado';
                         break;
 
-                    // 1 si el item ya esta siendo alistado pro alguien
+                    // 1 si el item ya esta siendo alistado por alguien
                     case 1:
                         $itembus["estado"]='error1';
                         $itembus["contenido"]='Item en alistamiento por '.$itembus['contenido']['alistador'];
@@ -65,12 +65,16 @@ class ControladorAlistar {
 
                     // 2 si el item ya fue alistado en la caja
                     case 2:
-                        $itembus["estado"]='error2';
+                        $itembus["estado"]='error1';
                         $itembus["contenido"]='Item ya alistado en la caja '.$itembus['contenido']['caja'].' por '.$itembus['contenido']['alistador'];
                         break;
                     case 3:
-                        $itembus["estado"]='error2';
+                        $itembus["estado"]='error1';
                         $itembus["contenido"]='Item ya alistado en la caja '.$itembus['contenido']['caja'].' por '.$itembus['contenido']['alistador'];
+                        break;
+                    case 4:
+                        $itembus["estado"]='error1';
+                        $itembus["contenido"]='Item ya fue alistado y recibido en la caja '.$itembus['contenido']['caja'].' por '.$itembus['contenido']['alistador'];
                         break;
                 }
                 //retorna el item a la funcion
