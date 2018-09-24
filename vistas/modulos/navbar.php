@@ -50,6 +50,7 @@
                 echo '<li><a href="pvcajas" ><i class="fas fa-boxes"></i>PVcajas</a></li>';
                 echo '<li><a href="tareas" ><i class="fas fa-tasks"></i>Tareas</a></li>';
                 echo '<li><a href="usuarios" ><i class="fas fa-users"></i>Usuario</a></li>';
+                echo '<li><a href="transportador" ><i class="fas fa-truck"></i>PVcajas</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==2) {
                 echo '<li><a href="requerir" ><i class="fas fa-upload"></i>Subir archivo requisicion</a></li>';
@@ -69,6 +70,9 @@
             if ($_SESSION["usuario"]["perfil"]==4) {
                 echo '<li><a href="pv"><i class="fas fa-clipboard-check"></i>Pventa</a></li>';
                 echo '<li><a href="pvcajas" ><i class="fas fa-boxes"></i>PVcajas</a></li>';
+            }
+            if ($_SESSION["usuario"]["perfil"]==6) {
+                echo '<li><a href="transportador" ><i class="fas fa-truck"></i>PVcajas</a></li>';
             }
             
 

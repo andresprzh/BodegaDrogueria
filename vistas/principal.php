@@ -82,7 +82,8 @@
         "usuarios",
         "Nitem",
         "salir",
-        "pvcajas"
+        "pvcajas",
+        "transportador"
         ];
     $jefe=[
       "inicio",
@@ -112,6 +113,11 @@
       "salir"
     ];
 
+    $transportador=[
+      "inicio",
+      "transportador",
+      "salir"
+    ];
     echo "<main>";
 
     if (isset($_GET["ruta"])) {
@@ -137,6 +143,10 @@
         include "modulos/".$_GET["ruta"].".php";
 
       }elseif ($_SESSION["usuario"]["perfil"]==5 && in_array($_GET["ruta"],$jefed)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
+
+      }elseif ($_SESSION["usuario"]["perfil"]==6 && in_array($_GET["ruta"],$transportador)) {
         
         include "modulos/".$_GET["ruta"].".php";
 

@@ -98,6 +98,7 @@ CREATE TABLE caja(
 	no_caja INT(10) NOT NULL AUTO_INCREMENT,
 	alistador INT(10),
 	encargado_punto INT(10),
+	transportador INT(10),
 	tipo_caja CHAR(3) ,
 	estado INT(1) DEFAULT '0' ,
 	abrir DATETIME ,
@@ -114,6 +115,10 @@ CREATE TABLE caja(
 
 	CONSTRAINT caja_encargado_usuario
 	FOREIGN KEY(encargado_punto) 
+	REFERENCES usuario(id_usuario),
+	
+	CONSTRAINT caja_transportador_usuario
+	FOREIGN KEY(transportador) 
 	REFERENCES usuario(id_usuario)
 );
 
@@ -212,7 +217,7 @@ CREATE TABLE errores(
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
 
-INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD");
+INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(5,"Transportador");
 UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
 INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
