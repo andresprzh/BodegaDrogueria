@@ -294,7 +294,7 @@ class ModeloCaja extends Conexion{
     public function mdlDespachar($numcaja,$transportador)
     {
         
-        $stmt= $this->link->prepare('UPDATE caja SET transportador=:transportador,estado=2 WHERE no_caja=:no_caja');
+        $stmt= $this->link->prepare('UPDATE caja SET transportador=:transportador,estado=2,enviado=NOW() WHERE no_caja=:no_caja');
         $stmt->bindParam(":transportador",$transportador,PDO::PARAM_INT);
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
         

@@ -316,7 +316,10 @@ $(document).ready(function () {
                                         swal({
                                             type: 'success',
                                             html: 'Cajas asignadas  para despachar'
+                                        }).then(function (res) {
+                                            recargarCajas();
                                         });
+
                                     } else {
                                         swal({
                                             type: 'error',

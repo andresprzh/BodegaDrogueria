@@ -117,6 +117,7 @@ CREATE TABLE caja(
 	cerrar DATETIME,
 	enviado DATETIME ,
    recibido DATETIME,
+   registrado DATETIME,
 
 
 	PRIMARY KEY(no_caja),
