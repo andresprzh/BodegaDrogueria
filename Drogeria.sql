@@ -42,12 +42,6 @@ CREATE TABLE IF NOT EXISTS `COD_BARRAS` (
   REFERENCES ITEMS (ID_ITEM) 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-/*se añaden las llaves para las tablas items y cod_barras*/
--- ALTER TABLE `ITEMS` ADD CONSTRAINT ITEMS_PK PRIMARY KEY (`ID_ITEM`);
--- CREATE INDEX `INDEX_REF` ON `ITEMS`(`ID_REFERENCIA`);
--- ALTER TABLE `COD_BARRAS` ADD CONSTRAINT CODBAR_PK PRIMARY KEY (`ID_CODBAR`);
--- ALTER TABLE `COD_BARRAS` ADD CONSTRAINT BAR_ITEM FOREIGN KEY (ID_ITEMS) REFERENCES ITEMS (ID_ITEM) ;
-
 -- tabla perfiles de usuarios
 CREATE TABLE  perfiles(
 	id_perfil INT(1) NOT NULL AUTO_INCREMENT,
@@ -78,6 +72,16 @@ CREATE TABLE usuario(
 	INDEX (id_usuario)
 );
 
+CREATE TABLE IF NOT EXISTS `sedes` (
+  `codigo` char(6) NOT NULL,
+  `descripcion` char(40) DEFAULT NULL,
+  `direccion1` char(40) DEFAULT NULL,
+  `direccion2` char(40) DEFAULT NULL,
+  `direccion3` char(40) DEFAULT NULL,
+  `grupo_co` char(2) DEFAULT NULL,
+  PRIMARY KEY (`codigo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*tabla de la requisicion a bodega*/
 CREATE TABLE requisicion(
 	no_req CHAR(10) NOT NULL,
@@ -91,6 +95,14 @@ CREATE TABLE requisicion(
 	estado INT(1) DEFAULT 0,
 
 	PRIMARY KEY(no_req)
+
+	CONSTRAINT requisicion_origen
+	FOREIGN KEY(lo_origen) 
+	REFERENCES sedes(codigo),
+
+	CONSTRAINT requisicion_destino
+	FOREIGN KEY(lo_destino) 
+	REFERENCES sedes(codigo)
 );
 
 /*tabla caja*/
@@ -217,19 +229,48 @@ CREATE TABLE errores(
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
 
-INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(5,"Transportador");
+INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador");
 UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
 INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
-/* LOAD DATA LOCAL INFILE 'ITEMS.csv' INTO TABLE bodegadrogueria.ITEMS
-FIELDS TERMINATED BY ',' ENCLOSED BY '' 
-LINES TERMINATED BY '\n' ;
-
-
-LOAD DATA LOCAL INFILE 'COD_BARRAS.csv' INTO TABLE bodegadrogueria.COD_BARRAS
-FIELDS TERMINATED BY ',' ENCLOSED BY '' 
-LINES TERMINATED BY '\n' ; */
+INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
+	('001-BD', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
+	('001-VE', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
+	('002-VE', ' VERSALLES', ' CL 23BN 3N 100', '', '', ' 0'),
+	('003-VE', ' CAMINO REAL', ' CL 9 51 05', '', '', ' 0'),
+	('004-VE', ' ALFONSO LOPEZ', ' CL 70 7TBIS 59', '', '', ' 0'),
+	('005-VE', ' INGENIO', ' CR 85C 15 119', '', '', ' 0'),
+	('006-VE', ' VILLA DEL SUR', ' CR 42A 26E 41', '', '', ' 0'),
+	('007-VE', ' PORTADA', ' AV 4OESTE 7 47', '', '', ' 0'),
+	('008-VE', ' SAN FERNANDO', ' CL 5 37 A 65/67', '', '', ' 0'),
+	('009-VE', ' CALIMA LA 14', ' CL 70 1 245 L CENTRO COMERCIAL CALIMA', '', '', ' 0'),
+	('010-VE', ' PLAZA CAICEDO', ' CR 5 12 16 LOCAL 1', '', '', ' 0'),
+	('011-VE', ' VALLE LILI', ' CR 98B 25 130', '', '', ' 0'),
+	('012-VE', ' COSMOCENTRO', ' CL 5 50 106 LC 282', '', '', ' 0'),
+	('013-VE', ' CALLE 7A', ' CL 7 No.30A 12', '', '', ' 0'),
+	('014-VE', ' CENTRO SAN JORGE', ' CR 2 14 34', '', '', ' 0'),
+	('015-VE', ' LA FLORA', ' CL 52 N NRO 5B88', '', '', ' 0'),
+	('016-VE', ' UNICENTRO LOCAL 362', ' CR 100 5 169', '', '', ' 0'),
+	('017-VE', ' ALFAGUARA LOCAL 1 66', ' CL 2#22175 CENTRO COMERCIAL ALFAGUARA', ' A LOCAL 166', '', '\r'),
+	('018-VE', ' ELITE', ' CR 7 1452 LOCAL 156 PRIMER PISO', ' EDIFICIO COMERCIAL CENTRO ELITE', '', '\r'),
+	('019-VE', ' VILLA COLOMBIA', ' CLL 50 12 09 L 102A', '', '', '\r'),
+	('020-VE', ' GASTOS ADMINISTRATIVOS POR REPARTIR', ' CLL 23BN 3N 100', '', '', '\r'),
+	('021-VE', ' VINCULADAS', ' CL 23 B N 3 N 100', '', '', '\r'),
+	('022-VE', ' CALL CENTER', ' CL 23BN 3N 100', '', '', '\r'),
+	('023-VE', ' JARDIN PLAZA', ' CL 16 98 155', '', '', '\r'),
+	('090-VE', ' MEDICAMENTOS', ' CR 2 14 26', '', '', '\r'),
+	('091-VE', ' COSMETICOS', ' CR 2 14 26', '', '', '\r'),
+	('092-VE', ' VARIOS', ' CR 2 14 26', '', '', '\r'),
+	('093-VE', ' REEMPAQUE', ' CR 2 14 26', '', '', '\r'),
+	('099-VE', ' VENTAS AL POR MAYOR (CREDITOS)', ' CR 2 14 34', '', '', '\r'),
+	('100-VE', ' CALLE 7A', ' CL 7 30A 12', '', '', '\r'),
+	('101-VE', ' BOGOTA CHAPINERO', ' CLL 53 13 64', ' CLL 53 13 52', '', '\r'),
+	('102-VE', ' BOGOTA AUTONORTE', ' LOCAL #1 AV CR 45 #97 80', '', '', '\r'),
+	('110-VE', ' GASTOS ADMINISTRATIVOS POR DISTRIBUIR', ' CLL 7 30A12', '', '', '\r'),
+	('900-VE', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
+	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r');
+	
 
 /* ELIMINA PROCEDIMIENTOS SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
@@ -543,7 +584,7 @@ $$
 
 -- trigger que modifica el estado de enviado de la requisicion 
 -- y agrega los items en recibido con estado 2
-drop trigger if exists ReqEnviado;
+
 DELIMITER $$
 	CREATE TRIGGER ReqEnviado 
 	AFTER UPDATE ON pedido
@@ -587,9 +628,13 @@ DELIMITER $$
 			UPDATE requisicion
 			SET enviado=NOW(),estado=1
 			WHERE requisicion.no_req=new.no_req;
+		ELSE
+			UPDATE requisicion
+			SET estado=0
+			WHERE requisicion.no_req=new.no_req;
 		END IF;
 		
-		IF numalistados=0 THEN
+		IF numrecibidos=0 THEN
 			UPDATE requisicion
 			SET enviado=NOW(),estado=1
 			WHERE requisicion.no_req=new.no_req;

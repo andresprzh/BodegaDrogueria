@@ -11,7 +11,7 @@ class ControladorCajas extends ControladorAlistar {
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($req) {
+    function __construct($req=null) {
 
         parent::__construct($req);
         $this->modelo=new ModeloCaja($req);
@@ -124,13 +124,20 @@ class ControladorCajas extends ControladorAlistar {
     }
 
     public function ctrCancelar($numcaja){
+        // cambia items de la caja a no alistados
         $res = $this->modelo->mdlCancelarItems($numcaja);
         
+        // elimina los registros de items resibidos de dicha caja
         if($res){
             $res = $this->modelo->mdlCancelarRecibidos($numcaja);
         }
+        // elimina los registros de errores de dicha caja
         if($res){
-            $res = $this->modelo->mdlCancelarCaja($numcaja);
+            $res = $this->modelo->mdlCancelarErrores($numcaja);
+        }
+        // elimina la caja
+        if($res){
+            $res = $this->modelo->mdlEliminarCaja($numcaja);
         }
         return $res;
         
@@ -294,5 +301,15 @@ class ControladorCajas extends ControladorAlistar {
         return $resultado;
     }
 
+    public function ctrDespacharCajas($cajas,$transportador)
+    {   
+        $resultado=true;
+        for ($i=0; $i <count($cajas) ; $i++) { 
+            $resultado=$this->modelo->mdlDespachar($cajas[$i],$transportador);
+        }
+        return $resultado;
+    }
+
+    
    
 }

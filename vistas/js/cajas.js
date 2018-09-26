@@ -11,8 +11,8 @@ $(document).ready(function () {
 
     // pone items en el input select
     $.ajax({
-        url: "ajax/alistar.requisicion.ajax.php",
-        method: "POST",
+        url: "api/alistar/requisiciones",
+        method: "GET",
         data: { 'valor': 3 },
         dataType: "json",
         success: function (res) {
@@ -77,9 +77,9 @@ $(document).ready(function () {
     });
 
     // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
-    $("#Documento").click(function (e) {
+    $('#Documento').click(function (e) {
         //consigue el numero de requerido
-        var requeridos = $(".requeridos").val();
+        var requeridos = $('.requeridos').val();
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
 
@@ -91,9 +91,9 @@ $(document).ready(function () {
 
         for (var i in datos) {
             items[i] = {
-                "id": datos[i][1],
-                "alistados": datos[i][6],
-                "mensajes": $(datos[i][8]).val(),
+                'id': datos[i][1],
+                'alistados': datos[i][6],
+                'mensajes': $(datos[i][8]).val(),
                 'origen': $('#origen').html(),
                 'destino': $('#destino').html()
             }
@@ -102,23 +102,23 @@ $(document).ready(function () {
 
         $.ajax({
 
-            url: "ajax/cajas.documento.ajax.php",
-            method: "POST",
-            data: { "req": req, "items": items, "numcaja": numcaja },
+            url: 'ajax/cajas.documento.ajax.php',
+            method: 'POST',
+            data: { 'req': req, 'items': items, 'numcaja': numcaja },
             dataType: 'JSON',
             success: function (res) {
 
                 // var numcaja = $('#NumeroCaja').html();
                 // obtiene los 3 ultimos caracteres de la requisicion
                 var no_res = req[0].substr(req[0].length - 3);
-                numcaja = ("00" + numcaja).slice(-2);
+                numcaja = ('00' + numcaja).slice(-2);
                 // crea el nombre del documento a partir de la requisicion y la caja
                 var nomdoc = 'C' + numcaja + 'DS' + no_res + '.TR1';
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({
-                        title: "!Error al generar el documento¡",
-                        icon: "error",
+                        title: '!Error al generar el documento¡',
+                        icon: 'error',
                         buttons: true,
                         dangerMode: true,
                     });
@@ -147,17 +147,17 @@ $(document).ready(function () {
     });
 
     // EVENTO SI SE PRESIONA EL BOTON CERRAR
-    $("#modificar").on('click', function (e) {
+    $('#modificar').on('click', function (e) {
 
         //consigue el numero de requerido
-        let requeridos = $(".requeridos").val();
+        let requeridos = $('.requeridos').val();
         //id usuario es obtenida de las variables de sesion
         let req = [requeridos, id_usuario];
 
         //si se presiona aceptar se continua con el proceso
         swal({
-            title: "¿Modificar caja?",
-            icon: "warning",
+            title: '¿Modificar caja?',
+            icon: 'warning',
             buttons: ['Cancelar', 'Modificar']
         })
             .then((Cerrar) => {
@@ -166,15 +166,15 @@ $(document).ready(function () {
                 if (Cerrar) {
 
                     // Busca los datos en la tabla
-                    let table = document.getElementById("tablaerror");
-                    let tr = table.getElementsByTagName("tr");
+                    let table = document.getElementById('tablaerror');
+                    let tr = table.getElementsByTagName('tr');
                     let items = new Array;
 
                     for (let i = 0; i < tr.length; i++) {
 
                         items[i] = {
-                            "iditem": tr[i].id,
-                            "alistados": $(tr[i]).find("input").val(),
+                            'iditem': tr[i].id,
+                            'alistados': $(tr[i]).find('input').val(),
                         };
                     }
 
@@ -186,14 +186,14 @@ $(document).ready(function () {
                     $.ajax({
                         url: 'ajax/caja.modificar.ajax.php',//url de la funcion
                         method: 'post',//metodo post para mandar datos
-                        data: { 'req': req, "numcaja": numcaja, "items": items },//datos que se enviaran          
+                        data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
                         dataType: 'JSON',
                         success: function (res) {
 
                             if (res) {
 
-                                swal("¡Caja Modificada exitosamente!", {
-                                    icon: "success",
+                                swal('¡Caja Modificada exitosamente!', {
+                                    icon: 'success',
                                 })
                                     .then((event) => {
 
@@ -204,8 +204,8 @@ $(document).ready(function () {
 
                             } else {
 
-                                swal("¡Error al modificar la caja!", {
-                                    icon: "error",
+                                swal('¡Error al modificar la caja!', {
+                                    icon: 'error',
                                 });
 
                             }
@@ -217,17 +217,17 @@ $(document).ready(function () {
 
     });
 
-    $("#eliminar").click(function (e) {
+    $('#eliminar').click(function (e) {
         //consigue el numero de requerido
-        let requeridos = $(".requeridos").val();
+        let requeridos = $('.requeridos').val();
         //id usuario es obtenida de las variables de sesion
         let req = [requeridos, id_usuario];
         // se consigue el numero de la caja
-        let caja = $(".NumeroCaja").html();
+        let caja = $('.NumeroCaja').html();
 
         swal({
             title: `¿Esta seguro de cancelar la caja ${caja}?`,
-            icon: "warning",
+            icon: 'warning',
             buttons: ['No', 'Si']
         })
             .then((Si) => {
@@ -235,16 +235,16 @@ $(document).ready(function () {
                 if (Si) {
 
                     $.ajax({
-                        type: "POST",
-                        url: "ajax/cajas.cancelar.ajax.php",
-                        data: { "numcaja": caja, "req": req },
-                        dataType: "JSON",
+                        type: 'POST',
+                        url: 'ajax/cajas.cancelar.ajax.php',
+                        data: { 'numcaja': caja, 'req': req },
+                        dataType: 'JSON',
                         success: function (res) {
-                            // console.log(res);
+
                             if (res) {
                                 swal({
                                     title: `Caja ${caja} cancelada`,
-                                    icon: "success",
+                                    icon: 'success',
                                 })
                                     .then(() => {
                                         $('.modal').modal('close');
@@ -253,7 +253,7 @@ $(document).ready(function () {
                             } else {
                                 swal({
                                     title: `No se pudo cancelar la caja ${caja} `,
-                                    icon: "error",
+                                    icon: 'error',
                                 })
                             }
                         }
@@ -262,6 +262,81 @@ $(document).ready(function () {
                 }
 
             });
+    });
+
+    $('#despachar').click(function (e) {
+
+        var datos = $("#TablaC").DataTable().data().toArray();
+
+
+        var cajas = new Array();
+        for (var i in datos) {
+
+            cajas[i] = datos[i][0];
+
+        }
+        let resultado;
+        ajax('api/cajas/conductor', 'GET').done(function (res) {
+
+            if (res) {
+                if (res['estado']) {
+
+                    let opciones = res['contenido'];
+
+                    swal({
+                        title: 'Seleccionar Transportador',
+                        input: 'select',
+                        inputOptions: opciones,
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonText: 'Asignar',
+                        confirmButtonClass: 'green darken-3',
+                        inputValidator: function (value) {
+                            return new Promise(function (resolve, reject) {
+                                if (value !== '') {
+                                    resolve();
+                                } else {
+                                    reject('You need to select a Tier');
+                                }
+                            });
+                        }
+                    }).then(function (result) {
+                        if (result.value) {
+                            transportador = result.value;
+                            // ajax('api/cajas/despachar', 'POST').done(function (res) {
+                            //     console.log(res);
+                            // });
+                            $.ajax({
+                                url: 'api/cajas/despachar',
+                                method: "POST",
+                                data: { 'cajas': cajas, 'transportador': transportador },
+                                // dataType: 'JSON',
+                                success: function (res) {
+                                    if (res) {
+                                        swal({
+                                            type: 'success',
+                                            html: 'Cajas asignadas  para despachar'
+                                        });
+                                    } else {
+                                        swal({
+                                            type: 'error',
+                                            html: 'No se puedo asignar cajas para despachar'
+                                        });
+                                    }
+                                }
+                            });
+
+                        }
+                    });
+
+                }
+            }
+        })
+
+
+        // console.log(resultado);
+        return 0;
+
     });
 
 });
@@ -289,8 +364,8 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-
-            var caja = res["contenido"];
+            let estado_despacho = true;
+            let caja = res["contenido"];
 
             //si no encuentra la caja muestra en pantalla que no se encontro
             if (res["estado"] == "error") {
@@ -299,21 +374,23 @@ function mostrarCajas() {
             //en caso de contrar el item mostrarlo en la tabla
             else {
                 $("#refresh").prop("disabled", false);
-                var caja = res["contenido"];
+                caja = res["contenido"];
                 let color = {
                     0: "yellow",
                     1: "green",
                     2: "orange",
                     3: "green",
-                    4: "red",
+                    4: "green",
+                    5: "red",
                     9: "black"
                 };
                 let logo = {
                     0: "box-open",
                     1: "box",
-                    2: "box",
-                    3: "check-double",
+                    2: "truck",
+                    3: "calendar-check",
                     4: "check-double",
+                    5: "check-double",
                     9: "ban"
                 };
                 // modal a abirl al precionar boton de caja
@@ -353,8 +430,11 @@ function mostrarCajas() {
                                         </button></td>+
                                         </tr>`));
                 } else {
-                    for (var i in caja) {
 
+                    for (var i in caja) {
+                        if (caja[i]["estado"] != 1) {
+                            estado_despacho = false;
+                        }
                         // reemplaza varoles nul por ---
                         if (caja[i]["tipocaja"] === null) {
                             caja[i]["tipocaja"] = "---"
@@ -386,6 +466,18 @@ function mostrarCajas() {
                                             </button></td>
                                             </tr>`));
 
+
+
+                    }
+
+                    // si todas las cajas estan en estado 1(cerradas), se activa boton de despachar pedido
+
+                    if (estado_despacho) {
+
+                        $("#despachar").removeAttr("disabled", "disabled");
+                    } else {
+
+                        $("#despachar").attr("disabled", "disabled");
                     }
                 }
 
@@ -426,15 +518,15 @@ function mostrarItemsCaja(e, estado) {
 
     // si la caja no esta cerrada, ya fue recibida en el punto de venta o 
     // fue cancelada se desabilita la opcion de crear documento
-    if ([0, 9].includes(estado)) {
-        $("#Documento").attr("disabled", "disabled");
-        $("#eliminar").removeAttr("disabled", "disabled");
-    } else if ([3, 9].includes(estado)) {
+    if (estado == 3) {
         $("#Documento").removeAttr("disabled");
-        $("#eliminar").attr("disabled", "disabled");
     } else {
-        $("#eliminar").removeAttr("disabled", "disabled");
-        $("#Documento").removeAttr("disabled");
+        $("#Documento").attr("disabled", "disabled");
+        if ([0, 1].includes(estado)) {
+            $("#eliminar").removeAttr("disabled", "disabled");
+        } else {
+            $("#eliminar").attr("disabled", "disabled");
+        }
     }
 
     // destruye la datatable 2(tabla del modal)
@@ -571,4 +663,14 @@ function iniciarTabla(tab) {
 
     return tabla;
 
+}
+
+function ajax(url, method) {
+
+    return $.ajax({
+        url: 'api/cajas/conductor',
+        method: 'GET',
+        dataType: 'JSON'
+
+    });
 }

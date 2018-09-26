@@ -136,7 +136,7 @@ class ModeloPV extends Conexion{
         $no_req=$this->req[0];$alistador=$this->req[1];
         
 
-        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:no_req,2);");
+        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:no_req,3);");
 
         $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);

@@ -1,3 +1,4 @@
+<script src="vistas/plugins/sweetalert2/sweetalert2.all.js"></script>
 <h2 class="header center ">Pedido</h2>
 <!-- ============================================================================================================================
                                                 INPUT SELECCIONAR REQUISICION   
@@ -54,7 +55,17 @@
                 <tbody id="tablacajas"></tbody>
                 
         </table>  
+        <div class="row">
+
+            <!-- <div class="right input-field col s4 m2 l2"> -->
+
+                <button id="despachar" class="right btn waves-effect tea darken-4 col s12 m2 l2" >
+                    Despachar cajas
+                </button>
                 
+            <!-- </div>   -->
+            
+        </div>
     </div>
     
 </div>
@@ -91,7 +102,7 @@
             <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s12 m12 l8" >
                 <i class="fas fa-file-alt"></i>
             </button>
-            <button id="eliminar" title="Cancelar Caja" class="btn left waves-effect red darken-4 col s12 m12 l8" >
+            <button id="eliminar" title="Eliminar Caja" class="btn left waves-effect red darken-4 col s12 m12 l8" >
                 <i class="fas fa-ban"></i>
             </button>
         </div>

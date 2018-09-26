@@ -10,7 +10,7 @@ class ModeloCaja extends Conexion{
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($req) {
+    function __construct($req=null) {
 
         $this->req=$req;
         parent::__construct();
@@ -20,6 +20,8 @@ class ModeloCaja extends Conexion{
       /* ============================================================================================================================
                                                         FUNCIONES   
     ============================================================================================================================*/
+
+    
 
     // muestra cajas que no se han recibido
     public function mdlMostrarCaja($numcaja,$estado=null)
@@ -83,11 +85,12 @@ class ModeloCaja extends Conexion{
 
     }
 
-    public function mdlCancelarCaja($numcaja)
+    public function mdlEliminarCaja($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
 
-        $stmt= $this->link->prepare("UPDATE caja SET estado=9 WHERE no_caja=:no_caja");
+        // $stmt= $this->link->prepare("UPDATE caja SET estado=9 WHERE no_caja=:no_caja");
+        $stmt= $this->link->prepare("DELETE FROM caja WHERE no_caja=:no_caja");
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
 
@@ -117,6 +120,20 @@ class ModeloCaja extends Conexion{
     {
 
         $stmt= $this->link->prepare("DELETE FROM recibido WHERE no_caja=:no_caja");
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();
+        return $res;
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    public function mdlCancelarErrores($numcaja)
+    {
+
+        $stmt= $this->link->prepare("DELETE FROM errores WHERE no_caja_recibido=:no_caja");
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
 
@@ -273,4 +290,21 @@ class ModeloCaja extends Conexion{
         // cierra la conexion
         $stmt=null;
     }
+
+    public function mdlDespachar($numcaja,$transportador)
+    {
+        
+        $stmt= $this->link->prepare('UPDATE caja SET transportador=:transportador,estado=2 WHERE no_caja=:no_caja');
+        $stmt->bindParam(":transportador",$transportador,PDO::PARAM_INT);
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        
+        $res=$stmt->execute();
+        $stmt->closeCursor();
+        // retorna el resultado de la sentencia
+	    return $res;
+          
+        // cierra la conexion
+        $stmt=null;
+    }
+
 }
