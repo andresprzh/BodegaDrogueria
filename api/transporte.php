@@ -33,9 +33,17 @@ if (isset($_GET['ruta'])) {
             break;
         
         case "pedidos":
-            $usuario=$_GET['usuario'];
+            $usuario=$_GET["usuario"];
             $controlador= new ControladorTransportador($usuario);
-            $controlador->mdlBuscarPedidos();
+            $resultado=$controlador->ctrBuscarPedidos();
+            print json_encode($resultado);
+            break;
+
+        case "entregar":
+            $cajas=$_POST["cajas"];
+            $controlador= new ControladorTransportador();
+            $resultado=$controlador->ctrEntregarCajas($cajas);
+            print json_encode($resultado);
             break;
 
     }

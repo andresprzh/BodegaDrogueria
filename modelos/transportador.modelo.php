@@ -52,7 +52,8 @@ class ModeloTransportador extends Conexion{
         INNER JOIN requisicion ON pedido.no_req=requisicion.no_req
         INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
         WHERE DATE(caja.enviado)=DATE(NOW())
-        AND transportador=6
+        AND transportador=:transportador
+        AND caja.estado=2
         GROUP BY requisicion.lo_origen,requisicion.lo_destino,sedes.descripcion,sedes.direccion1,caja.tipo_caja,caja.no_caja
         ORDER BY requisicion.lo_destino ASC,caja.tipo_caja ASC");
 
@@ -64,5 +65,18 @@ class ModeloTransportador extends Conexion{
         // return $stmt->fetchAll();
         return  $stmt;
         $stm=null;
+    }
+
+    public function mdlEntregarCaja($numcaja){
+        $stmt= $this->link->prepare('UPDATE caja SET estado=3,recibido=NOW() WHERE no_caja=:no_caja');
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        
+        $res=$stmt->execute();
+        $stmt->closeCursor();
+        // retorna el resultado de la sentencia
+	    return $res;
+          
+        // cierra la conexion
+        $stmt=null;
     }
 }

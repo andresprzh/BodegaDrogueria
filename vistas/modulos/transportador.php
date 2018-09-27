@@ -5,17 +5,9 @@
 ============================================================================================================================ -->
 <div class="row">
 
-    <div class="input-field col s9 m10 l11 " >
-
-        <select   list="destino" name="destino" class="destino browser-default col s12 " id="destino">
-            <option value="" disabled selected>Destino</option>
-        </select>
-        
-
-    </div>
     <div class="input-field col s3 m1 l1  input_refresh">
 
-        <button id="refresh" title="Recargar" disabled onclick="recargarCajas()" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
+        <button id="refresh" title="Recargar"  onclick="cargarpedidos()" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
             <i class="fas fa-sync"></i>
         </button>
         
@@ -27,20 +19,7 @@
 
 <div class="row">
     <ul class="collapsible col s12" id="pedidos">
-        <li>
-            <div class="collapsible-header">
-                <i class="fas fa-truck collapsible-primary" ></i>First
-                <button class="collapsible-secondary not-collapse btn green">Entregar</button>
-            </div>
-            <div class="collapsible-body">
-                <ul>
-                    <li>algo1</li>
-                    <li>algo2</li>
-                    <li>algo3</li>
-                </ul>
-            </div>
-            
-        </li>
+    </ul>
 </div>
 
 <style>
