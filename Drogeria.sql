@@ -94,7 +94,7 @@ CREATE TABLE requisicion(
 	recibido DATETIME,
 	estado INT(1) DEFAULT 0,
 
-	PRIMARY KEY(no_req)
+	PRIMARY KEY(no_req),
 
 	CONSTRAINT requisicion_origen
 	FOREIGN KEY(lo_origen) 
