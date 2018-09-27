@@ -7,7 +7,7 @@ $(document).ready(function () {
     $('.modal').modal();
     // pone items en el input select
     $.ajax({
-        url: 'ajax/alistar.requisicion.ajax.php',
+        url: 'api/alistar/requisiciones',
         method: "POST",
         data: '',
         contentType: false,

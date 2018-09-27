@@ -102,7 +102,7 @@ $(document).ready(function () {
 
         $.ajax({
 
-            url: 'ajax/cajas.documento.ajax.php',
+            url: 'api/cajas/documento',
             method: 'POST',
             data: { 'req': req, 'items': items, 'numcaja': numcaja },
             dataType: 'JSON',
@@ -188,7 +188,7 @@ $(document).ready(function () {
 
 
                     $.ajax({
-                        url: 'ajax/caja.modificar.ajax.php',//url de la funcion
+                        url: 'api/caja/modificar',//url de la funcion
                         method: 'post',//metodo post para mandar datos
                         data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
                         dataType: 'JSON',
@@ -232,7 +232,7 @@ $(document).ready(function () {
         let caja = $('.NumeroCaja').html();
 
         swal({
-            title: `¿Esta seguro de cancelar la caja ${caja}?`,
+            title: `¿Esta seguro de eliminr la caja ${caja}?`,
             icon: 'warning',
             buttons: ['No', 'Si']
         })
@@ -242,7 +242,7 @@ $(document).ready(function () {
 
                     $.ajax({
                         type: 'POST',
-                        url: 'ajax/cajas.cancelar.ajax.php',
+                        url: 'api/cajas/eliminar',
                         data: { 'numcaja': caja, 'req': req },
                         dataType: 'JSON',
                         success: function (res) {
@@ -368,7 +368,7 @@ function mostrarCajas() {
 
     return $.ajax({
 
-        url: "ajax/cajas.cajas.ajax.php",
+        url: "api/cajas/cajas",
         method: "POST",
         data: { "req": req },
         dataType: "JSON",
@@ -561,7 +561,7 @@ function mostrarItems(numcaja, estado = null) {
     var req = [requeridos, id_usuario];
 
     return $.ajax({
-        url: "ajax/cajas.cajas.ajax.php",
+        url: "api/cajas/cajas",
         method: "POST",
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
