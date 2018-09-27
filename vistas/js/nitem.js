@@ -102,7 +102,7 @@ $(document).ready(function () {
 
                     $.ajax({
                         type: "POST",
-                        url: "ajax/nitem.agregar.ajax.php",
+                        url: "api/nitem/agregar",
                         data: { "items": items, "req": req },
                         dataType: "JSON",
                         success: function (res) {
@@ -169,7 +169,7 @@ function buscarItem(item, req) {
 
     $.ajax({
         type: "post",
-        url: "ajax/nitem.items.ajax.php",
+        url: "api/nitem/items",
         data: { "item": item, "req": req },
         dataType: "JSON",
         success: function (res) {
