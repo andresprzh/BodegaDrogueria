@@ -437,13 +437,14 @@ DELIMITER $$
 
 $$
 
+-- DROP TRIGGER IF EXISTS  EstadoRecibido;
 -- trigger que modifica el estado del Item recibido  
 DELIMITER $$
 	CREATE TRIGGER EstadoRecibido 
 	BEFORE INSERT ON recibido
 	FOR EACH ROW 
 	BEGIN
-				
+	
 		DECLARE cja INT(10);
 		DECLARE numalistado INT(5);
 		DECLARE ubc VARCHAR(6);
@@ -451,7 +452,7 @@ DELIMITER $$
 		DECLARE ider INT(5);
 		DECLARE num INT(1);
 		DECLARE estado INT(1);
-							
+		
 		-- busca si el item está mas de 1  vez en la requisicions
 		SELECT COUNT(no_caja) INTO num
 		FROM pedido
@@ -489,11 +490,6 @@ DELIMITER $$
 			SET new.estado=1;
 		ELSE 
 			SET new.estado=4;
-			UPDATE pedido
-			SET pedido.estado=4
-			WHERE pedido.item=new.item
-			AND pedido.no_req=new.no_req
-			AND pedido.no_caja=new.no_caja;
 		END IF;
 
 		IF ubc IS NULL THEN
@@ -515,7 +511,7 @@ DELIMITER $$
 	BEFORE UPDATE ON recibido
 	FOR EACH ROW 
 	BEGIN
-				
+	
 		DECLARE cja INT(10);
 		DECLARE numalistado INT(5);
 		DECLARE ubc VARCHAR(6);
@@ -523,7 +519,7 @@ DELIMITER $$
 		DECLARE ider INT(5);
 		DECLARE num INT(1);
 		DECLARE estado INT(1);
-							
+								
 		-- busca si el item está mas de 1  vez en la requisicions
 		SELECT COUNT(no_caja) INTO num
 		FROM pedido
@@ -561,11 +557,6 @@ DELIMITER $$
 			SET new.estado=1;
 		ELSE 
 			SET new.estado=4;
-			UPDATE pedido
-			SET pedido.estado=4
-			WHERE pedido.item=new.item
-			AND pedido.no_req=new.no_req
-			AND pedido.no_caja=new.no_caja;
 		END IF;
 
 		IF ubc IS NULL THEN
@@ -578,7 +569,7 @@ DELIMITER $$
 			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
 			VALUES(new.item,new.no_req,cja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
 		END IF;
-		
+
 	END 	
 $$
 
@@ -645,21 +636,21 @@ DELIMITER $$
 	END 
 $$
 
-
+DROP TRIGGER IF EXISTS ReqEnviado2;
 DELIMITER $$
 	CREATE TRIGGER ReqEnviado2
 	AFTER INSERT ON pedido
 	FOR EACH ROW 
 	BEGIN
 				
-      IF new.estado=3 THEN
---      	REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
---			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
+
+		IF new.estado=3 THEN      
 			INSERT INTO recibido(Item,No_Req,no_caja,recibidos) 
 			VALUES(new.item,new.no_req,new.no_caja,new.alistado)
 			ON DUPLICATE KEY UPDATE
         	estado=0;
       ELSEIF new.estado=0 THEN
+--      IF new.estado=0 THEN
       	DELETE FROM recibido
       	WHERE item=new.item
       	AND no_req=new.no_req

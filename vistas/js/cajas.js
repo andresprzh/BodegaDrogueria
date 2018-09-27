@@ -146,7 +146,7 @@ $(document).ready(function () {
 
     });
 
-    // EVENTO SI SE PRESIONA EL BOTON CERRAR
+    // EVENTO SI SE PRESIONA EL BOTON MODIFICAR
     $('#modificar').on('click', function (e) {
 
         //consigue el numero de requerido
@@ -155,15 +155,19 @@ $(document).ready(function () {
         let req = [requeridos, id_usuario];
 
         //si se presiona aceptar se continua con el proceso
+        
         swal({
             title: '¿Modificar caja?',
-            icon: 'warning',
-            buttons: ['Cancelar', 'Modificar']
+            type: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Modificar',
+            confirmButtonClass: 'green darken-3',
         })
-            .then((Cerrar) => {
+            .then(function (result) {
 
                 //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
-                if (Cerrar) {
+                if (result.value) {
 
                     // Busca los datos en la tabla
                     let table = document.getElementById('tablaerror');
@@ -189,13 +193,14 @@ $(document).ready(function () {
                         data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
                         dataType: 'JSON',
                         success: function (res) {
-
+                            
                             if (res) {
 
-                                swal('¡Caja Modificada exitosamente!', {
-                                    icon: 'success',
+                                swal({
+                                    title:'¡Caja Modificada exitosamente!',
+                                    type: 'success',
                                 })
-                                    .then((event) => {
+                                    .then(function (result) {
 
                                         $('.modal').modal('close');
                                         recargarCajas();
@@ -204,8 +209,9 @@ $(document).ready(function () {
 
                             } else {
 
-                                swal('¡Error al modificar la caja!', {
-                                    icon: 'error',
+                                swal({
+                                    title:'¡Error al modificar la caja!',
+                                    type: 'error',
                                 });
 
                             }
@@ -414,7 +420,7 @@ function mostrarCajas() {
                         caja["cerrar"] = "---"
                     }
                     // si la caja ya fue enviada da la opcion de corregirla
-                    if (caja["estado"] == '4') {
+                    if (caja["estado"] == '5') {
                         modal_target = "EditarCaja2";
                     }
 
@@ -449,7 +455,7 @@ function mostrarCajas() {
                             caja[i]["cerrar"] = "---"
                         }
                         // si la caja ya fue enviada da la opcion de corregirla
-                        if (caja[i]["estado"] == '4') {
+                        if (caja[i]["estado"] == '5') {
                             modal_target = "EditarCaja2";
                         } else {
                             modal_target = "EditarCaja";
@@ -519,9 +525,9 @@ function mostrarItemsCaja(e, estado) {
     $("#tipocaja").html(tipocaja);
     $("#cierre").html(cierre);
 
-    // si la caja no esta cerrada, ya fue recibida en el punto de venta o 
-    // fue cancelada se desabilita la opcion de crear documento
-    if (estado == 3) {
+    // solo se permite crear doumento cajas recibidas sin errores
+    // solo se pueden eliminar cajas que no se han recibido en el pv
+    if (estado == 4) {
         $("#Documento").removeAttr("disabled");
     } else {
         $("#Documento").attr("disabled", "disabled");
@@ -586,9 +592,11 @@ function mostrarItems(numcaja, estado = null) {
 
                 var item = res["contenido"];
                 let cajar;
-                if (estado == 4) {
+                if (estado == 5) {
                     for (var i in item) {
-
+                        if (item[i]['no_caja']==1) {
+                            item[i]['no_caja']='---';
+                        }
                         $("#tablaerror").append($(`<tr id='${item[i]['iditem']}'><td> 
                             ${item[i]['descripcion']}</td><td> 
                             ${item[i]['no_caja']}</td><td> 

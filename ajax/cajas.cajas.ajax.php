@@ -25,7 +25,7 @@ if (isset($_POST['numcaja'])) {
             case 9:
                 $respuesta=$controlador->ctrBuscarItemCancelados($numcaja);
                 break;
-            case 4:
+            case 5:
                 $respuesta=$controlador->ctrBuscarItemError($numcaja);
                 break;
             default:

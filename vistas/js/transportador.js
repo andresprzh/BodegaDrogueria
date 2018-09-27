@@ -53,7 +53,7 @@ function cargarpedidos() {
     return $.ajax({
         url: 'api/transporte/pedidos',
         method: 'GET',
-        data: { 'usuario': 6 },
+        data: { 'usuario': id_usuario },
         dataType: 'JSON',
         success: function (res) {
 

@@ -72,7 +72,7 @@ class ModeloPV extends Conexion{
     }
 
     //modifica registro en tabla para agregar la fecha en la que fue recibido
-    public function mdlModCaja($NumCaja,$estado=3){
+    public function mdlModCaja($NumCaja,$estado=4){
         // $this->link->closeCursor();
         $persona=$this->req[1];
 

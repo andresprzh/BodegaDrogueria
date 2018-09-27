@@ -259,7 +259,7 @@ $(document).ready(function () {
                                     for (var i in item) {
                                         $("#tablamodal").append($(`<tr><td>
                                                         ${item[i]["descripcion"]}</td><td>
-                                                        ${item[i]["id"]}</td><td>
+                                                        ${item[i]["iditem"]}</td><td>
                                                         ${item[i]["mensaje"]}</td>
                                                         </tr>`));
                                     }

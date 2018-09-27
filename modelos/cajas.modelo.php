@@ -216,10 +216,10 @@ class ModeloCaja extends Conexion{
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $res=$stmt->execute();
-        // $stmt->closeCursor();
+        $stmt->closeCursor();
         // retorna el resultado de la sentencia
-        // return $res;
-        return $stmt->errorInfo();
+        return $res;
+        // return $stmt->errorInfo();
 
         
 
@@ -253,7 +253,7 @@ class ModeloCaja extends Conexion{
         $no_req=$this->req[0];$alistador=$this->req[1];
         
         $stmt= $this->link->prepare('UPDATE caja
-		SET estado=3
+		SET estado=4
 		WHERE no_caja=:numcaja;
         ');
 

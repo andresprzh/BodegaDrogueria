@@ -97,8 +97,9 @@ function mostrarCajas() {
                     0: "yellow",
                     1: "green",
                     2: "orange",
-                    3: "green",
-                    4: "red",
+                    3: "orange",
+                    4: "green",
+                    5: "red",
                     9: "black"
                 };
 
@@ -106,6 +107,11 @@ function mostrarCajas() {
 
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
+
+                    
+                    if (caja["estado"] != 4) {
+                        botonestado = 'disabled';
+                    }
 
                     // reemplaza varoles nul por ---
                     if (caja["tipocaja"] === null) {
@@ -129,7 +135,8 @@ function mostrarCajas() {
                                             </p>
                                             <button 
                                             onclick="documento(${caja["no_caja"]})"
-                                            title="GenerarDocumento" 
+                                            title="GenerarDocumento"
+                                            ${botonestado} 
                                             class="btn-floating  secondary-content waves-effect green darken-4 " 
                                             >
                                                 <i class="fas fa-file-alt"></i>
@@ -141,7 +148,7 @@ function mostrarCajas() {
                     for (var i in caja) {
 
                         botonestado = '';
-                        if (caja[i]["estado"] != 3) {
+                        if (caja[i]["estado"] != 4) {
                             botonestado = 'disabled';
                         }
 
