@@ -105,6 +105,13 @@ CREATE TABLE requisicion(
 	REFERENCES sedes(codigo)
 );
 
+CREATE TABLE  tipo_caja(
+	tipo_caja CHAR(3) NOT NULL,
+	descripcion CHAR(20) NOT NULL,
+	
+	PRIMARY KEY(tipo_caja)
+	
+);
 /*tabla caja*/
 CREATE TABLE caja(
 	no_caja INT(10) NOT NULL AUTO_INCREMENT,
@@ -132,7 +139,11 @@ CREATE TABLE caja(
 	
 	CONSTRAINT caja_transportador_usuario
 	FOREIGN KEY(transportador) 
-	REFERENCES usuario(id_usuario)
+	REFERENCES usuario(id_usuario),
+	
+	CONSTRAINT caja_tipo
+	FOREIGN KEY(tipo_caja) 
+	REFERENCES tipo_caja(tipo_caja)
 );
 
 /*Crea la tabla donde se almacenan los productos pedidos en la requisicion*/
@@ -226,7 +237,12 @@ CREATE TABLE errores(
 );
 
 
- 
+INSERT INTO tipo_caja  VALUES 
+('CRT','Caja de cartón'),
+('CPL','Caja plástica'),
+('CAP','Canasta plástica'),
+('GLN','Galon'),
+('GLA','Galoneta');
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
 

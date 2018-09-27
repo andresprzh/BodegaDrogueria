@@ -24,7 +24,7 @@ $(document).ready(function () {
 ============================================================================================================================*/
 
 function entregar(cajas) {
-    console.log(cajas);
+    
     $.ajax({
         url: 'api/transporte/entregar',
         method: 'POST',
