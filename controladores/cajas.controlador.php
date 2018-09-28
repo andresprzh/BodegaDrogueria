@@ -91,9 +91,7 @@ class ControladorCajas extends ControladorAlistar {
     public function ctrDocumento($items,$numcaja)
     {
         
-        $res = $this->modelo->mdlModificarCaja($numcaja);
-        // $items=$this->ctrBuscarItemCaja($numcaja);
-        if ($res) {          
+                 
             $documento='';
             foreach($items as $row){
                 $Mensaje=$row['mensajes'];
@@ -117,7 +115,7 @@ class ControladorCajas extends ControladorAlistar {
 
             }
             $res=$documento;
-        }
+        
 
         return $res;
 

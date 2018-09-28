@@ -12,12 +12,12 @@ $(document).ready(function () {
     });
     // pone items en el input select
     $.ajax({
-        url: "ajax/alistar.requisicion.ajax.php",
-        method: "POST",
+        url: "api/alistar/requisiciones",
+        method: "GET",
         data: { 'valor': 2 },
         dataType: "json",
         success: function (res) {
-
+            
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -55,7 +55,7 @@ $(document).ready(function () {
         $('#cajas').html('<option value="" disabled selected>Seleccionar</option>');
 
         $.ajax({
-            url: 'ajax/pv.cajas.ajax.php',//url de la funcion
+            url: 'api/pv/cajas',//url de la funcion
             type: 'post',//metodo post para mandar datos
             data: { "req": req },//datos que se enviaran
             dataType: "JSON",
@@ -219,7 +219,7 @@ $(document).ready(function () {
                     }
 
                     $.ajax({
-                        url: "ajax/pv.registrar.ajax.php",
+                        url: "api/pv/registrar",
                         type: "POST",//metodo post para mandar datos
                         data: { "caja": caja, "req": req, "items": items },//datos que se enviaran
                         dataType: "JSON",
@@ -313,7 +313,7 @@ function BuscarCodBar() {
 
     // ajax para ejecutar un script php mandando los datos
     return $.ajax({
-        url: 'ajax/pv.items.ajax.php',//url de la funcion
+        url: 'api/pv/items',//url de la funcion
         type: 'post',//metodo post para mandar datos
         data: { "codigo": codigo, "req": req },//datos que se enviaran
         dataType: 'json',

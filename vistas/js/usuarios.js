@@ -115,7 +115,7 @@ $(document).ready(function () {
                                                 
                     $.ajax({
                         type: "POST",
-                        url: "ajax/usuarios.modificar.ajax.php",
+                        url: "api/usuarios/modificar",
                         data: {"datosusuario":datosusuario,"button":buttonid},
                         dataType: "JSON",
                         success: function (res) {
@@ -198,7 +198,7 @@ function CargarPerfiles() {
     
     return $.ajax({
         type: "GET",
-        url: "ajax/usuaios.perfiles.ajax.php",
+        url: "api/usuarios/perfiles",
         dataType: "JSON",
         success: function (res) {
             
@@ -222,7 +222,7 @@ function CargarUsuarios() {
     
     return $.ajax({
         type: "GET",
-        url: "ajax/usuarios.usuarios.ajax.php",
+        url: "api/usuarios/usuarios",
         dataType: "JSON",
         success: function (res) {
             // console.log(res);
@@ -273,7 +273,7 @@ function modUsuario(datosusuario,buttonid) {
 
     return $.ajax({
         type: "POST",
-        url: "ajax/usuarios.modificar.ajax.php",
+        url: "api/usuarios/modificar",
         data: {"datosusuario":datosusuario,"button":buttonid},
         dataType: "JSON",
         success: function (res) {

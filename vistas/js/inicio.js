@@ -37,8 +37,8 @@ function tablarequeridos(){
             </ul>`));
     // pone requisiciones en el input select
     $.ajax({
-        url: "ajax/alistar.requisicion.ajax.php",
-        method: "POST",
+        url: "api/alistar/requisiciones",
+        method: "GET",
         data: {'valor':3},
         dataType: "json",
         success: function (res) {

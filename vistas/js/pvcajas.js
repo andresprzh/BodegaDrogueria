@@ -13,12 +13,12 @@ $(document).ready(function () {
 
     // pone items en el input select
     $.ajax({
-        url: "ajax/alistar.requisicion.ajax.php",
-        method: "POST",
+        url: "api/alistar/requisiciones",
+        method: "GET",
         data: { 'valor': 3 },
-        dataType: "json",
+        dataType: "JSON",
         success: function (res) {
-
+            
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -75,7 +75,7 @@ function mostrarCajas() {
 
     return $.ajax({
 
-        url: "ajax/pvcajas.cajas.ajax.php",
+        url: "api/cajas/pvcajas",
         method: "POST",
         data: { "req": req },
         dataType: "JSON",
@@ -156,7 +156,7 @@ function mostrarCajas() {
                         if (caja[i]["tipocaja"] === null) {
                             caja[i]["tipocaja"] = "---"
                         }
-
+                        
 
                         $("#cajas").append($(`<li
                                               class="collection-item avatar" 
@@ -201,7 +201,7 @@ function mostrarItemsCaja(numcaja, estado, recibido) {
 
     $(".NumeroCaja").html(numcaja);
 
-    if (estado == 3) {
+    if (estado == 4) {
         $("#Documento").removeAttr("disabled");
         $("#TablaM thead tr").addClass("green darken-3");
         $("#TablaM thead tr").removeClass("red darken-3");
@@ -221,7 +221,7 @@ function mostrarItems(numcaja, estado = null) {
     var req = [requeridos, id_usuario];
 
     return $.ajax({
-        url: "ajax/pvcajas.cajas.ajax.php",
+        url: "api/cajas/pvcajas",
         method: "POST",
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
@@ -271,13 +271,12 @@ function documento(numcaja) {
     var req = [requeridos, id_usuario];
 
     return $.ajax({
-        url: "ajax/pvcajas.documento.ajax.php",
+        url: "api/cajas/documento",
         method: "POST",
         data: { "req": req, "numcaja": numcaja },
         dataType: "JSON",
         success: function (res) {
-
-            // return 0;
+            
             if (res["estado"] == true) {
 
                 // let numcaja = $("#cajas").val();

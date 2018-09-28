@@ -1,13 +1,15 @@
 <?php
 
 // include "../controladores/alistar.controlador.php";
-include "../controladores/cajas.controlador.php";
+include "../controladores/pv.controlador.php";
+// include "../controladores/cajas.controlador.php";
 
 
 require "../modelos/conexion.php";
 require "../modelos/alistar.modelo.php";
 require "../modelos/requerir.modelo.php";
 require "../modelos/cajas.modelo.php";
+require "../modelos/pv.modelo.php";
 
 if (isset($_GET['ruta'])) {
     
@@ -105,13 +107,19 @@ if (isset($_GET['ruta'])) {
            // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
             $req=$_POST["req"];
             $numcaja=$_POST['numcaja'];
-            $items=$_POST['items'];
+            
 
-            //crea objeto controlador 
-            $controlador=new ControladorCajas($req);
-
-            $resultado=$controlador->ctrDocumento($items,$numcaja);
-
+            // documento items alistados
+            if (isset($_POST['items'])) {
+                $controlador=new ControladorCajas($req);
+                $items=$_POST['items'];
+                $resultado=$controlador->ctrDocumento($items,$numcaja);
+            // documento items srecibidos
+            }else {
+                $controlador=new ControladorPV($req);
+                $resultado=$controlador->ctrDocumentoR($numcaja);
+            }
+            
 
             print json_encode($resultado);
             break;
@@ -148,7 +156,43 @@ if (isset($_GET['ruta'])) {
             $resultado=$controlador->ctrModificarCaja($numcaja,$items);
 
             print json_encode($resultado);
+            break;
         
+        /* ============================================================================================================================
+                                                MUESTRA LAS CAJAS O LOS ITEMS DE LA CAJA
+        ============================================================================================================================*/
+        case "pvcajas":
+            // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
+            $req=$_POST['req'];
+
+            //crea objeto controlador 
+            $controlador=new ControladorPV($req);
+
+            // si se pasa el numeor de la caja se busca dicha caja 
+            if (isset($_POST['numcaja'])) {
+
+                $numcaja=$_POST['numcaja'];
+                // regresa el resultado de la buqueda como un objeto JSON
+                if (isset($_POST['estado'])) {
+                                
+                    $respuesta=$controlador->ctrBuscarItemrec($numcaja);
+                    
+                }
+                
+                
+            // si no se paso el numero de la caja busca todas las cajas de la requisicion  seleccionada
+            }else{
+                $numcaja='%%';
+                // regresa el resultado de la buqueda como un objeto JSON
+                $respuesta=$controlador->ctrBuscarCaja($numcaja,3);
+                // print json_encode($algo);
+            }
+
+
+            // muestra el vector como dato JSON
+
+            print json_encode($respuesta);
+
     }
     
 }

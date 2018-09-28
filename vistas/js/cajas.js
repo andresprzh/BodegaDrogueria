@@ -188,7 +188,7 @@ $(document).ready(function () {
 
 
                     $.ajax({
-                        url: 'api/caja/modificar',//url de la funcion
+                        url: 'api/cajas/modificar',//url de la funcion
                         method: 'post',//metodo post para mandar datos
                         data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
                         dataType: 'JSON',
