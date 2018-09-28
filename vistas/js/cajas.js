@@ -118,9 +118,7 @@ $(document).ready(function () {
                 if (!res) {
                     swal({
                         title: '!Error al generar el documento¡',
-                        icon: 'error',
-                        buttons: true,
-                        dangerMode: true,
+                        type: 'error',
                     });
 
                     // si no hay error genera le documento y lo manda a decargar
@@ -233,12 +231,16 @@ $(document).ready(function () {
 
         swal({
             title: `¿Esta seguro de eliminr la caja ${caja}?`,
-            icon: 'warning',
-            buttons: ['No', 'Si']
+            type: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'No',
+            confirmButtonText: 'Si',
+            confirmButtonClass: 'red darken-3',
+            
         })
-            .then((Si) => {
+            .then((result) => {
 
-                if (Si) {
+                if (result.value) {
 
                     $.ajax({
                         type: 'POST',
@@ -250,7 +252,7 @@ $(document).ready(function () {
                             if (res) {
                                 swal({
                                     title: `Caja ${caja} cancelada`,
-                                    icon: 'success',
+                                    type: 'success',
                                 })
                                     .then(() => {
                                         $('.modal').modal('close');
@@ -259,7 +261,7 @@ $(document).ready(function () {
                             } else {
                                 swal({
                                     title: `No se pudo cancelar la caja ${caja} `,
-                                    icon: 'error',
+                                    type: 'error',
                                 })
                             }
                         }
@@ -441,9 +443,15 @@ function mostrarCajas() {
                 } else {
 
                     for (var i in caja) {
-                        if (caja[i]["estado"] != 1) {
+                        // console.log([0,2,3,5].includes(parseInt(caja[i]["estado"])));
+                        if ([0,2,3,5].includes(parseInt(caja[i]["estado"]))){
+                        // if (caja[i]["estado"] ==0 || caja[i]["estado"]==2 || caja[i]["estado"]==3 || caja[i]["estado"]==5) {
+                            
                             estado_despacho = false;
+                            
+                            
                         }
+                        
                         // reemplaza varoles nul por ---
                         if (caja[i]["tipocaja"] === null) {
                             caja[i]["tipocaja"] = "---"

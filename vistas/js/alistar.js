@@ -313,7 +313,6 @@ function BuscarCodBar() {
 
 }
 
-
 //FUNCION QUE AGREGA ITEM A LA TABLA EDITABLE
 function AgregarItem(res) {
 
@@ -375,7 +374,6 @@ function AgregarItem(res) {
 
 }
 
-
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
 function MostrarItems() {
 
@@ -422,7 +420,6 @@ function MostrarItems() {
     });
 
 }
-
 
 // FUNCION QUE CREA O MUESTRA UNA CAJA
 function MostrarCaja() {
