@@ -6,8 +6,13 @@ $(document).ready(function () {
     //INICIA EL MODAL
     $('.modal').modal();
 
+    // INICIAR TABS
+    $('.tabs').tabs({ 
+        'swipeable': true 
+    });
+
     // INICIA DATATABLE
-    table = iniciarTabla('#TablaC');
+    table = iniciarTabla('.datatable');
 
     // pone items en el input select
     $.ajax({
@@ -45,7 +50,9 @@ $(document).ready(function () {
         //espera a que la funcion termine para reiniciar las tablas
         $.when(mostrarCajas()).done(function () {
 
-            table = iniciarTabla('#TablaC');
+            table[0] = iniciarTabla('#TablaC');
+            table[1] = iniciarTabla('#TablaCE');
+            // table = iniciarTabla('.datatable');
 
         });
 
@@ -274,11 +281,11 @@ $(document).ready(function () {
 
     $('#despachar').click(function (e) {
 
-        var datos = $("#TablaC").DataTable().data().toArray();
+        let datos = $("#TablaC").DataTable().data().toArray();
 
 
-        var cajas = new Array();
-        for (var i in datos) {
+        let cajas = new Array();
+        for (let i in datos) {
 
             cajas[i] = datos[i][0];
 
@@ -311,9 +318,6 @@ $(document).ready(function () {
                     }).then(function (result) {
                         if (result.value) {
                             transportador = result.value;
-                            // ajax('api/cajas/despachar', 'POST').done(function (res) {
-                            //     console.log(res);
-                            // });
                             $.ajax({
                                 url: 'api/cajas/despachar',
                                 method: "POST",
@@ -326,6 +330,7 @@ $(document).ready(function () {
                                             html: 'Cajas asignadas  para despachar'
                                         }).then(function (res) {
                                             recargarCajas();
+                                            
                                         });
 
                                     } else {
@@ -344,8 +349,6 @@ $(document).ready(function () {
             }
         })
 
-
-        // console.log(resultado);
         return 0;
 
     });
@@ -358,11 +361,17 @@ $(document).ready(function () {
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
 function mostrarCajas() {
-    //refresca la tabla, para volver a cargar los datos
-    var dt = $.fn.dataTable.tables();
-    $('#tablacajas').html("");
-    $(dt).DataTable().clear();
-    $(dt).DataTable().destroy();
+
+    // borra y limpia tabla de cajas alistadas
+    $('#TablaC tbody').html('');
+    $("#TablaC").DataTable().clear();
+    $("#TablaC").DataTable().destroy();
+    
+    // borra y limpia tabla de cajas enviadas
+    $('#TablaCR tbody').html('');
+    $("#TablaCE").DataTable().clear();
+    $("#TablaCE").DataTable().destroy();
+
     //consigue el numero de requerido
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
@@ -375,7 +384,8 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-            let estado_despacho = true;
+
+            let estado_despacho = false;
             let caja = res["contenido"];
 
             //si no encuentra la caja muestra en pantalla que no se encontro
@@ -406,7 +416,7 @@ function mostrarCajas() {
                 };
                 // modal a abirl al precionar boton de caja
                 let modal_target = "EditarCaja";
-
+                let tablatarget;
 
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
@@ -421,19 +431,34 @@ function mostrarCajas() {
                     if (caja["cerrar"] === null) {
                         caja["cerrar"] = "---"
                     }
-                    // si la caja ya fue enviada da la opcion de corregirla
-                    if (caja["estado"] == '5') {
-                        modal_target = "EditarCaja2";
-                    }
+                    
+                    if (caja["estado"]<2) {
+                        estado_despacho=true;
+                        tablatarget="#TablaC";
 
-                    $("#tablacajas").append($(`<tr>
-                                        <td class='numcaja'>${caja["no_caja"]}</td>
+                        if (caja["estado"]!=1){  
+                            estado_despacho = false;
+                        }
+
+                    }else{
+                        tablatarget="#TablaCE";
+
+                        // si la caja ya fue enviada y presenta errores da la opcion de corregirla
+                        if (caja["estado"] == '5') {
+                            modal_target = "EditarCaja2";
+                        } else {
+                            modal_target = "EditarCaja";
+                        }
+                    }
+                    
+                    $(tablatarget+" tbody").append($(`<tr>
+                                        <td class="numcaja">${caja["no_caja"]}</td>
                                         <td class="alistadores">${caja["alistador"]}</td>
                                         <td class="tipocajas">${caja["tipocaja"]}</td>
                                         <td>${caja["abrir"]}</td>
                                         <td class="cierres">${caja["cerrar"]}</td><td>
                                         <button  
-                                        onclick="mostrarItemsCaja(0,${caja["estado"]})"  
+                                        onclick="mostrarItemsCaja(0,${caja["estado"]},"${tablatarget}")"  
                                         title="Revisar"  
                                         data-target="${modal_target}"
                                         class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
@@ -441,16 +466,12 @@ function mostrarCajas() {
                                         </button></td>+
                                         </tr>`));
                 } else {
-
+                    // cuenta ls posiciones en las tablas c y ce
+                    let cont_tablac=0;
+                    let cont_tablace=0;
+                    let cont;
                     for (var i in caja) {
-                        // console.log([0,2,3,5].includes(parseInt(caja[i]["estado"])));
-                        if ([0,2,3,5].includes(parseInt(caja[i]["estado"]))){
-                        // if (caja[i]["estado"] ==0 || caja[i]["estado"]==2 || caja[i]["estado"]==3 || caja[i]["estado"]==5) {
-                            
-                            estado_despacho = false;
-                            
-                            
-                        }
+                        
                         
                         // reemplaza varoles nul por ---
                         if (caja[i]["tipocaja"] === null) {
@@ -462,26 +483,52 @@ function mostrarCajas() {
                         if (caja[i]["cerrar"] === null) {
                             caja[i]["cerrar"] = "---"
                         }
-                        // si la caja ya fue enviada da la opcion de corregirla
-                        if (caja[i]["estado"] == '5') {
-                            modal_target = "EditarCaja2";
-                        } else {
-                            modal_target = "EditarCaja";
+
+                        
+
+                        if (caja[i]["estado"]<2) {
+
+                            estado_despacho = true;
+
+                            tablatarget="#TablaC";
+                            
+                            cont=cont_tablac;
+                            cont_tablac++;
+                            
+                            if (caja[i]["estado"]!=1){  
+                                estado_despacho = false;
+                            }
+
+                        }else{
+                            
+                            tablatarget="#TablaCE";
+                            
+                            cont=cont_tablace;
+                            cont_tablace++;
+                            
+                            // si la caja ya fue enviada y presenta errores da la opcion de corregirla
+                            if (caja[i]["estado"] == '5') {
+                                modal_target = "EditarCaja2";
+                            } else {
+                                modal_target = "EditarCaja";
+                            }
                         }
-                        $("#tablacajas").append($(`<tr>
+
+                        $(tablatarget+' tbody').append($(`<tr>
                                             <td class="numcaja">${caja[i]["no_caja"]}</td>
                                             <td class="alistadores">${caja[i]["alistador"]}</td>
                                             <td class="tipocajas">${caja[i]["tipocaja"]}</td>
                                             <td>${caja[i]["abrir"]}</td>
                                             <td class="cierres">${caja[i]["cerrar"]}</td><td>
                                             <button  
-                                            onclick="mostrarItemsCaja(${i},${caja[i]["estado"]})"  
+                                            onclick="mostrarItemsCaja(${cont},${caja[i]["estado"]},'${tablatarget}')"  
                                             title="Revisar"  
                                             data-target="${modal_target}" 
                                             class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
                                                 <i class="fas fa-${logo[caja[i]["estado"]]}"></i>
                                             </button></td>
                                             </tr>`));
+                        
 
 
 
@@ -497,8 +544,8 @@ function mostrarCajas() {
                         $("#despachar").attr("disabled", "disabled");
                     }
                 }
-
-                $("#TablaCajas").removeClass("hide");
+                
+                // $("#TablaCajas").removeClass("hide");
 
 
             }
@@ -513,15 +560,20 @@ function recargarCajas() {
     //espera a que la funcion termine para reiniciar las tablas
     $.when(mostrarCajas()).done(function () {
 
-        table = iniciarTabla("#TablaC");
+        table[0] = iniciarTabla('#TablaC');
+        table[1] = iniciarTabla('#TablaCE');
 
     });
 }
 //FUNCION SI SE DA CLICK EN BOTON DOCUMENTO(MUESTRA ITEMS DE 1 CAJA ESPECIFICA)
-function mostrarItemsCaja(e, estado) {
+function mostrarItemsCaja(e, estado,nombre_tabla) {
+    
+    
+    let tabla= $(nombre_tabla).DataTable();
 
     //obtienen los datos de la caja para pasarlo al modal
-    var datos = table.row(e).data();
+    var datos = tabla.row(e).data();
+    
     var numcaja = datos[0];
     var alistador = datos[1];
     var tipocaja = datos[2];
@@ -546,17 +598,16 @@ function mostrarItemsCaja(e, estado) {
         }
     }
 
-    // destruye la datatable 2(tabla del modal)
-    var dt = $.fn.dataTable.tables()[1];
-    $("#tablamodal").html("");
-    $(dt).DataTable().clear();
-    $(dt).DataTable().destroy();
+    // destruye la datatable (tabla del modal)
+    $('#TablaM tbody').html('');
+    $("#TablaM").DataTable().clear();
+    $("#TablaM").DataTable().destroy();
 
 
     //espera a que la funcion termine para reiniciar las tablas
     $.when(mostrarItems(numcaja, estado)).done(function () {
         //Reinicia Tabla
-        table[1] = iniciarTabla("#TablaM");
+        table[2] = iniciarTabla("#TablaM");
     });
 }
 
@@ -574,12 +625,6 @@ function mostrarItems(numcaja, estado = null) {
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-
-            var dt = $.fn.dataTable.tables()[1];
-            $("#tablamodal").html("");
-            $("#tablaerror").html("");
-            $(dt).DataTable().clear();
-            $(dt).DataTable().destroy();
 
             origen = res["contenido"][0]["origen"];
             destino = res["contenido"][0]["destino"];

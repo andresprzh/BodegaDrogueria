@@ -26,29 +26,44 @@
 <div class="divider green darken-4"></div>
 
 
-<div class="row hide " id="Cajas">
+<div class="row " id="contenido">
+    <div class="col s12" id="tabsmenu">
+            
+            <ul class="tabs ">
+                <li class="tab col s6" id="tabsI1">
+                    <a class="black-text"  href="#TablaA">
+                        <i class="fas fa-box"></i>
+                        <span style="font-size:100%">Cajas Alistadas</span>
+                    </a>
+                </li>
+                <li class="tab col s6 " id="tabsI2">
+                    <a class="black-text"  href="#TablaR">
+                        <i class="fas fa-check"></i>
+                        <span style="font-size:100%">Cajas Enviadas</span>
+                    </a>
+                </li>
+            </ul>
 
-<!-- ============================================================================================================================
-                                                Tabla que lista todas las cajas  
-============================================================================================================================ -->
-    <h5 class="header center ">Cajas</h5>
-
-    <div class="col s12 m12 l12 ">
+    </div>
+    <!-- ============================================================================================================================
+                                                Tabla que lista todas las cajas Alistadas 
+    ============================================================================================================================ -->
+    <div class="col s12 " id="TablaA">
 
         <table class="datatable centered " id="TablaC" >
 
                 <thead>
                 
-                <tr class="white-text green darken-3 ">
+                    <tr class="white-text green darken-3 ">
 
-                    <th># Caja</th>
-                    <th>Alistador</th>
-                    <th>Tipo de caja</th>
-                    <th>Abierta</th>
-                    <th>Cerrada</th>
-                    <th>Ver</th>
-                    
-                </tr>
+                        <th># Caja</th>
+                        <th>Alistador</th>
+                        <th>Tipo de caja</th>
+                        <th>Abierta</th>
+                        <th>Cerrada</th>
+                        <th>Ver</th>
+                        
+                    </tr>
 
                 </thead>
 
@@ -59,13 +74,42 @@
 
             <!-- <div class="right input-field col s4 m2 l2"> -->
 
-                <button id="despachar" class="right btn waves-effect tea darken-4 col s12 m2 l2" >
+                <button id="despachar" class="right btn waves-effect tea darken-4 col s12 m2 l2"  disabled>
                     Despachar cajas
                 </button>
                 
             <!-- </div>   -->
             
         </div>
+
+    </div>
+
+     <!-- ============================================================================================================================
+                                                Tabla que lista todas las cajas Resibidas 
+    ============================================================================================================================ -->
+    <div class="col s12 " id="TablaR">
+
+        <table class="datatable centered " id="TablaCE" >
+
+                <thead>
+                
+                    <tr class="white-text green darken-3 ">
+
+                        <th># Caja</th>
+                        <th>Alistador</th>
+                        <th>Tipo de caja</th>
+                        <th>Abierta</th>
+                        <th>Cerrada</th>
+                        <th>Ver</th>
+                        
+                    </tr>
+
+                </thead>
+
+                <tbody id="tablacajas"></tbody>
+                
+        </table>
+
     </div>
     
 </div>
