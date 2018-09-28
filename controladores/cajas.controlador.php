@@ -273,6 +273,7 @@ class ControladorCajas extends ControladorAlistar {
             if ($items[$i]["alistados"]==0) {
                 $resultado=$this->ctrEliminarItemCaja($items[$i]["iditem"],$numcaja);
                 // si se modifica la caja elimina el item de la tabla de pedidos
+                // return $resultado;
                 if ($resultado) {
                     $resultado=$this->modelo->mdlEliminarItemPedido($items[$i]["iditem"],$numcaja);
                 }

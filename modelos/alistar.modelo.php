@@ -92,7 +92,7 @@ class ModeloAlistar extends Conexion{
         $no_req=$this->req[0];$alistador=$this->req[1];
         
         
-        $sql="UPDATE pedido SET no_caja=1,estado=0,alistado=0 WHERE item=:item AND no_req=:no_req; AND no_caja=:no_caja";
+        $sql="UPDATE pedido SET no_caja=1,estado=0,alistado=0 WHERE item=:item AND no_req=:no_req AND no_caja=:no_caja";
 
         $stmt= $this->link->prepare($sql);
 
@@ -103,6 +103,7 @@ class ModeloAlistar extends Conexion{
         $res=$stmt->execute();
         
         return $res;
+        // return $no_caja;
 
         // cierra la conexion
         $stmt=null;

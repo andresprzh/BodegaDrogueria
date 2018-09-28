@@ -196,9 +196,10 @@ $(document).ready(function () {
                         url: 'api/cajas/modificar',//url de la funcion
                         method: 'post',//metodo post para mandar datos
                         data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
-                        dataType: 'JSON',
+                        // dataType: 'JSON',
                         success: function (res) {
-                            
+                            console.log(res);
+                            return 0;
                             if (res) {
 
                                 swal({
@@ -600,6 +601,7 @@ function mostrarItemsCaja(e, estado,nombre_tabla) {
 
     // destruye la datatable (tabla del modal)
     $('#TablaM tbody').html('');
+    $('#TablaEr tbody').html('');
     $("#TablaM").DataTable().clear();
     $("#TablaM").DataTable().destroy();
 
@@ -638,7 +640,7 @@ function mostrarItems(numcaja, estado = null) {
             if (res["estado"] == "error") {
 
             }
-            //en caso de contrar el item mostrarlo en la tabla
+            //en caso de econtrar el item mostrarlo en la tabla
             else {
 
                 // $("#Rerror").hide();
