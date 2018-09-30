@@ -48,7 +48,7 @@ CREATE TABLE  perfiles(
 	des_perfil CHAR(20),
 
 	PRIMARY KEY(id_perfil)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 
@@ -70,7 +70,7 @@ CREATE TABLE usuario(
 	REFERENCES perfiles(id_perfil),
 	
 	INDEX (id_usuario)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `sedes` (
   `codigo` char(6) NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE requisicion(
 	CONSTRAINT requisicion_destino
 	FOREIGN KEY(lo_destino) 
 	REFERENCES sedes(codigo)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE  tipo_caja(
 	tipo_caja CHAR(3) NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE  tipo_caja(
 	
 	PRIMARY KEY(tipo_caja)
 	
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*tabla caja*/
 CREATE TABLE caja(
 	no_caja INT(10) NOT NULL AUTO_INCREMENT,
@@ -144,7 +144,7 @@ CREATE TABLE caja(
 	CONSTRAINT caja_tipo
 	FOREIGN KEY(tipo_caja) 
 	REFERENCES tipo_caja(tipo_caja)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Crea la tabla donde se almacenan los productos pedidos en la requisicion*/
 CREATE TABLE pedido(
@@ -174,7 +174,7 @@ CREATE TABLE pedido(
 	REFERENCES caja(no_caja),
 	
 	INDEX (estado)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 CREATE TABLE recibido(
@@ -200,7 +200,7 @@ CREATE TABLE recibido(
 	REFERENCES caja(no_caja),
 	
 	INDEX (estado)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE errores(
 	item CHAR(6) NOT NULL,
@@ -234,7 +234,7 @@ CREATE TABLE errores(
 	
 	
 	INDEX (estado)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 INSERT INTO tipo_caja  VALUES 
@@ -289,8 +289,9 @@ INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direc
 	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r');
 	
 
-/* ELIMINA PROCEDIMIENTOS SI EXISTE */
+/* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
+DROP FUNCTION IF EXISTS VerificarCaja;
 DROP PROCEDURE IF EXISTS BuscarCod;
 DROP PROCEDURE IF EXISTS BuscarRecibido;
 DROP PROCEDURE IF EXISTS Buscarcaja;
@@ -320,6 +321,52 @@ DELIMITER $$
 		DESC LIMIT 1;
 
 		RETURN numcaja;
+	END 
+$$
+
+-- procedimiento que verifica el estado de los items recibidos de una requisicion comparandolos con  los items pedidos o alistados
+DELIMITER $$
+	CREATE FUNCTION VerificarCaja(numcaja INT(10),req CHAR(10))
+	RETURNS TINYINT(1)
+	BEGIN
+		DECLARE cantidad TINYINT;
+		-- actualiza el estado de los items recibidos de una requisicion para recalcular el estado
+		UPDATE recibido
+		SET estado=0
+		WHERE no_req=req;
+		
+		-- cuenta la cantidad de items que tienen errores
+		SELECT COUNT(item) INTO cantidad
+		FROM recibido
+		WHERE no_caja=numcaja
+		AND no_req=req
+		AND estado <>4;
+		
+		-- si no hay errores regreasa verdadero
+		IF cantidad=0 THEN
+		
+			-- elimina los items repetidos fuera de la caja si la caja se verifico correctamente
+			DELETE item1
+			FROM
+			pedido AS item1,
+			pedido AS item2
+			WHERE item1.no_caja =1
+			AND item2.no_caja<>1
+			AND item1.item <=> item2.item
+			AND item1.no_req <=> item2.no_req;
+			
+			-- cambia el estado de la caja a recibida
+			UPDATE caja
+			SET estado=4
+			WHERE no_caja=numcaja;
+			return true;
+			
+		ELSE
+		
+			return false;
+			
+		END IF;
+		
 	END 
 $$
 
@@ -427,7 +474,6 @@ DELIMITER $$
 		AND pedido.Item IS NULL;
 	END 
 $$
-
 
 
 -- triger que asigna fecha de inicio cada ves que se crea una caja
@@ -619,12 +665,12 @@ DELIMITER $$
 			VALUES(new.item,new.no_req,new.no_caja,0);
 		-- si el item fue corregido
       ELSEIF new.estado=3 THEN 
---      	REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
---			VALUES(new.item,new.no_req,new.no_caja,new.alistado);
-			INSERT INTO recibido(Item,No_Req,no_caja,recibidos) 
-			VALUES(new.item,new.no_req,new.no_caja,new.alistado)
-			ON DUPLICATE KEY UPDATE
-        	estado=0;
+			-- inserta valores en pedido solo si no exites el registrp
+			INSERT INTO recibido (Item,No_Req,no_caja,recibidos) 
+			SELECT * FROM (SELECT new.item as item, new.no_req as req,new.no_caja as caja ,new.alistado as recibido) as temp
+			WHERE NOT EXISTS (
+				SELECT 1 FROM recibido WHERE item = new.item AND no_req=new.no_req AND no_caja=new.no_caja
+			) LIMIT 1;
 		  
       ELSEIF new.estado=0 THEN
       	DELETE FROM recibido
@@ -652,7 +698,7 @@ DELIMITER $$
 	END 
 $$
 
-DROP TRIGGER IF EXISTS ReqEnviado2;
+
 DELIMITER $$
 	CREATE TRIGGER ReqEnviado2
 	AFTER INSERT ON pedido
@@ -661,10 +707,13 @@ DELIMITER $$
 				
 
 		IF new.estado=3 THEN      
-			INSERT INTO recibido(Item,No_Req,no_caja,recibidos) 
-			VALUES(new.item,new.no_req,new.no_caja,new.alistado)
-			ON DUPLICATE KEY UPDATE
-        	estado=0;
+			-- inserta valores en pedido solo si no exites el registrp
+			INSERT INTO recibido (Item,No_Req,no_caja,recibidos) 
+			SELECT * FROM (SELECT new.item as item, new.no_req as req,new.no_caja as caja ,new.alistado as recibido) as temp
+			WHERE NOT EXISTS (
+				SELECT 1 FROM recibido WHERE item = new.item AND no_req=new.no_req AND no_caja=new.no_caja
+			) LIMIT 1;
+
       ELSEIF new.estado=0 THEN
 --      IF new.estado=0 THEN
       	DELETE FROM recibido

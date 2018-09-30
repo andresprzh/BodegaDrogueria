@@ -269,6 +269,8 @@ class ControladorCajas extends ControladorAlistar {
         for ($i=0; $i <count($items) ; $i++) {
             //modifica los items
 
+                                     
+            
             // si el se alistan 0 se saca el item de la caja
             if ($items[$i]["alistados"]==0) {
                 $resultado=$this->ctrEliminarItemCaja($items[$i]["iditem"],$numcaja);
@@ -284,19 +286,19 @@ class ControladorCajas extends ControladorAlistar {
         }
 
         if ($resultado) {
-            // verifica el estado de  la caja
-            $busqueda=$this->modelo->mdlVerificarCaja($numcaja);
-            $row = $busqueda->fetch();
-            // si todos los items recibidos coinciden con los enviados cambia el estaod de la caja a recibida
-            if ($row['cantidad']==0) {
-                $resultado=$this->modelo->mdlCerrarCaja($numcaja);
-            }
+
+            $resultado =$this->modelo->mdlVerificarCaja($numcaja);
+            
+            // // verifica el estado de  la caja
+            // $busqueda=$this->modelo->mdlVerificarCaja($numcaja);
+            // $row = $busqueda->fetch();
+            // // si todos los items recibidos coinciden con los enviados cambia el estado de la caja a recibida
+            // if ($row['cantidad']==0) {
+            //     $resultado=$this->modelo->mdlCerrarCaja($numcaja);
+            // }
            
         }
-        // // si cambia el estado de la caja crea nuevamente el archivo plano
-        // if ($resultado) {
-        //     $resultado=$this->ctrDocumento($items,$numcaja);
-        // }
+      
         return $resultado;
     }
 

@@ -7,8 +7,8 @@ $(document).ready(function () {
     $('.modal').modal();
 
     // INICIAR TABS
-    $('.tabs').tabs({ 
-        'swipeable': true 
+    $('.tabs').tabs({
+        'swipeable': true
     });
 
     // INICIA DATATABLE
@@ -160,7 +160,7 @@ $(document).ready(function () {
         let req = [requeridos, id_usuario];
 
         //si se presiona aceptar se continua con el proceso
-        
+
         swal({
             title: '¿Modificar caja?',
             type: 'warning',
@@ -184,9 +184,11 @@ $(document).ready(function () {
                         items[i] = {
                             'iditem': tr[i].id,
                             'alistados': $(tr[i]).find('input').val(),
+                            'estado': $(tr[i]).attr('name'),
+                            'cajae': $(tr[i]).find(':nth-child(2)').text().replace(/(^\s+|\s+$)/g, ''),
+                            'cajar': $(tr[i]).find(':nth-child(3)').text().replace(/(^\s+|\s+$)/g, '')
                         };
                     }
-
 
                     //guarda el tipo de caja en una variable
                     var numcaja = $('.NumeroCaja').html();
@@ -196,14 +198,12 @@ $(document).ready(function () {
                         url: 'api/cajas/modificar',//url de la funcion
                         method: 'post',//metodo post para mandar datos
                         data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
-                        // dataType: 'JSON',
+                        dataType: 'JSON',
                         success: function (res) {
-                            console.log(res);
-                            return 0;
                             if (res) {
 
                                 swal({
-                                    title:'¡Caja Modificada exitosamente!',
+                                    title: '¡Caja Modificada exitosamente!',
                                     type: 'success',
                                 })
                                     .then(function (result) {
@@ -216,7 +216,7 @@ $(document).ready(function () {
                             } else {
 
                                 swal({
-                                    title:'¡Error al modificar la caja!',
+                                    title: '¡Error al modificar la caja!',
                                     type: 'error',
                                 });
 
@@ -244,7 +244,7 @@ $(document).ready(function () {
             cancelButtonText: 'No',
             confirmButtonText: 'Si',
             confirmButtonClass: 'red darken-3',
-            
+
         })
             .then((result) => {
 
@@ -323,7 +323,7 @@ $(document).ready(function () {
                                 url: 'api/cajas/despachar',
                                 method: "POST",
                                 data: { 'cajas': cajas, 'transportador': transportador },
-                                // dataType: 'JSON',
+                                dataType: 'JSON',
                                 success: function (res) {
                                     if (res) {
                                         swal({
@@ -331,7 +331,7 @@ $(document).ready(function () {
                                             html: 'Cajas asignadas  para despachar'
                                         }).then(function (res) {
                                             recargarCajas();
-                                            
+
                                         });
 
                                     } else {
@@ -367,7 +367,7 @@ function mostrarCajas() {
     $('#TablaC tbody').html('');
     $("#TablaC").DataTable().clear();
     $("#TablaC").DataTable().destroy();
-    
+
     // borra y limpia tabla de cajas enviadas
     $('#TablaCR tbody').html('');
     $("#TablaCE").DataTable().clear();
@@ -421,7 +421,6 @@ function mostrarCajas() {
 
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
-
                     // reemplaza varoles nul por ---
                     if (caja["tipocaja"] === null) {
                         caja["tipocaja"] = "---"
@@ -432,17 +431,17 @@ function mostrarCajas() {
                     if (caja["cerrar"] === null) {
                         caja["cerrar"] = "---"
                     }
-                    
-                    if (caja["estado"]<2) {
-                        estado_despacho=true;
-                        tablatarget="#TablaC";
 
-                        if (caja["estado"]!=1){  
+                    if (caja["estado"] < 2) {
+                        estado_despacho = true;
+                        tablatarget = "#TablaC";
+
+                        if (caja["estado"] != 1) {
                             estado_despacho = false;
                         }
 
-                    }else{
-                        tablatarget="#TablaCE";
+                    } else {
+                        tablatarget = "#TablaCE";
 
                         // si la caja ya fue enviada y presenta errores da la opcion de corregirla
                         if (caja["estado"] == '5') {
@@ -451,8 +450,8 @@ function mostrarCajas() {
                             modal_target = "EditarCaja";
                         }
                     }
-                    
-                    $(tablatarget+" tbody").append($(`<tr>
+
+                    $(tablatarget + " tbody").append($(`<tr>
                                         <td class="numcaja">${caja["no_caja"]}</td>
                                         <td class="alistadores">${caja["alistador"]}</td>
                                         <td class="tipocajas">${caja["tipocaja"]}</td>
@@ -468,12 +467,12 @@ function mostrarCajas() {
                                         </tr>`));
                 } else {
                     // cuenta ls posiciones en las tablas c y ce
-                    let cont_tablac=0;
-                    let cont_tablace=0;
+                    let cont_tablac = 0;
+                    let cont_tablace = 0;
                     let cont;
                     for (var i in caja) {
-                        
-                        
+
+
                         // reemplaza varoles nul por ---
                         if (caja[i]["tipocaja"] === null) {
                             caja[i]["tipocaja"] = "---"
@@ -485,28 +484,28 @@ function mostrarCajas() {
                             caja[i]["cerrar"] = "---"
                         }
 
-                        
 
-                        if (caja[i]["estado"]<2) {
+
+                        if (caja[i]["estado"] < 2) {
 
                             estado_despacho = true;
 
-                            tablatarget="#TablaC";
-                            
-                            cont=cont_tablac;
+                            tablatarget = "#TablaC";
+
+                            cont = cont_tablac;
                             cont_tablac++;
-                            
-                            if (caja[i]["estado"]!=1){  
+
+                            if (caja[i]["estado"] != 1) {
                                 estado_despacho = false;
                             }
 
-                        }else{
-                            
-                            tablatarget="#TablaCE";
-                            
-                            cont=cont_tablace;
+                        } else {
+
+                            tablatarget = "#TablaCE";
+
+                            cont = cont_tablace;
                             cont_tablace++;
-                            
+
                             // si la caja ya fue enviada y presenta errores da la opcion de corregirla
                             if (caja[i]["estado"] == '5') {
                                 modal_target = "EditarCaja2";
@@ -515,7 +514,7 @@ function mostrarCajas() {
                             }
                         }
 
-                        $(tablatarget+' tbody').append($(`<tr>
+                        $(tablatarget + ' tbody').append($(`<tr>
                                             <td class="numcaja">${caja[i]["no_caja"]}</td>
                                             <td class="alistadores">${caja[i]["alistador"]}</td>
                                             <td class="tipocajas">${caja[i]["tipocaja"]}</td>
@@ -529,7 +528,7 @@ function mostrarCajas() {
                                                 <i class="fas fa-${logo[caja[i]["estado"]]}"></i>
                                             </button></td>
                                             </tr>`));
-                        
+
 
 
 
@@ -545,7 +544,7 @@ function mostrarCajas() {
                         $("#despachar").attr("disabled", "disabled");
                     }
                 }
-                
+
                 // $("#TablaCajas").removeClass("hide");
 
 
@@ -567,14 +566,14 @@ function recargarCajas() {
     });
 }
 //FUNCION SI SE DA CLICK EN BOTON DOCUMENTO(MUESTRA ITEMS DE 1 CAJA ESPECIFICA)
-function mostrarItemsCaja(e, estado,nombre_tabla) {
-    
-    
-    let tabla= $(nombre_tabla).DataTable();
+function mostrarItemsCaja(e, estado, nombre_tabla) {
+
+
+    let tabla = $(nombre_tabla).DataTable();
 
     //obtienen los datos de la caja para pasarlo al modal
     var datos = tabla.row(e).data();
-    
+
     var numcaja = datos[0];
     var alistador = datos[1];
     var tipocaja = datos[2];
@@ -643,21 +642,20 @@ function mostrarItems(numcaja, estado = null) {
             //en caso de econtrar el item mostrarlo en la tabla
             else {
 
-                // $("#Rerror").hide();
-
                 var item = res["contenido"];
                 let cajar;
                 if (estado == 5) {
                     for (var i in item) {
-                        if (item[i]['no_caja']==1) {
-                            item[i]['no_caja']='---';
+                        if (item[i]['no_caja'] == 1) {
+                            item[i]['no_caja'] = '---';
                         }
-                        $("#tablaerror").append($(`<tr id='${item[i]['iditem']}'><td> 
+                        // guarda el id del item en el id de la fila y el estaod en el nombre de la fila
+                        $("#tablaerror").append($(`<tr id='${item[i]['iditem']}' name='${item[i]['estado']}'><td> 
                             ${item[i]['descripcion']}</td><td> 
                             ${item[i]['no_caja']}</td><td> 
                             ${item[i]['no_cajaR']}</td><td> 
                             <input type= 'number' min='1' class='alistados eliminaritem' value='${item[i]['alistados']}'></td><td> 
-                            ${item[i]['recibidos']}</td><td> 
+                            ${item[i]['recibidos']}</td><td '> 
                             ${item[i]['problema']}</td>
                             </tr>`
                         ));

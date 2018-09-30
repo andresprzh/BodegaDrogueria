@@ -170,20 +170,6 @@ class ControladorPV extends ControladorCajas{
             $i=0;
             foreach ($recibidos as $row) {
 
-                // $origen=str_replace("BD","",$row["lo_origen"]);
-                // $destino=str_replace("VE","",$row["lo_destino"]);
-                // $origen=$origen.substr($destino,1,-1);
-                // $localicacion=str_replace("-","",$origen.$row["lo_destino"]."C");
-                // $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                // $item=str_pad($row["iditem"],13+12," ",STR_PAD_RIGHT);
-                // $num=$row["recibidos"]*1000;
-                // $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
-                // $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
-                
-                // $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
-                // $busqueda=$busqueda->fetch();
-                // $mensaje=substr($busqueda['nombre'],0,19);
-
                 switch ($row["rec_estado"]) {
                     
                     case 0:
@@ -226,14 +212,9 @@ class ControladorPV extends ControladorCajas{
                     $resultado["estado"]="error0";
                     $resultado["item"][$i]=$row;
                     $resultado["item"][$i]["mensaje"]=$mensajeitem;
-
-                    // $resultado["item"][$i]["descripcion"]=$row["descripcion"];
-                    // $resultado["item"][$i]["iditem"]=$row["iditem"];
-                    // $resultado["item"][$i]["mensaje"]=$mensajeitem;
                     $i++;
                 }
                 
-                // $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\r\n");
             }
         }else {
             $resultado["estado"]="error1";

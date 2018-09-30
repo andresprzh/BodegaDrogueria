@@ -200,19 +200,29 @@ class ModeloCaja extends Conexion{
         $alistados=$items["alistados"];
         $estado=3;//estado de item corregido
         
-
-        $stmt= $this->link->prepare("INSERT INTO pedido(item,no_req,no_caja,disp,pedido,alistado,estado) 
-        VALUES(:iditem,:no_req,:no_caja,:alistados,:alistados,:alistados,:estado)
-        ON DUPLICATE KEY UPDATE
-        alistado=:alistados,
-        estado=:estado;
-        ");
-       
-
+        // si no fue alistado en ninguna caja se hace un update del item para que quede en la caja
+        if (($items["estado"]==3) &&
+            ($items["cajar"]==1 || !(is_numeric($items["cajar"])) ) ) {
+            $stmt= $this->link->prepare("UPDATE  pedido 
+            SET alistado=:alistados,
+            estado=:estado
+            WHERE iditem=:iditem
+            AND no_req=:noreq;
+            ");
+        // de lo contrario se agrega el item a la caja, si el item ya estaba en la caja solo se modifica el estado y la cantidad alistada
+        }else {
+            $stmt= $this->link->prepare("INSERT INTO pedido(item,no_req,no_caja,disp,pedido,alistado,estado) 
+            VALUES(:iditem,:no_req,:no_caja,:alistados,:alistados,:alistados,:estado)
+            ON DUPLICATE KEY UPDATE
+            alistado=:alistados,
+            estado=:estado;
+            ");
+            $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        }
+        
         $stmt->bindParam(":iditem",$iditem,PDO::PARAM_STR);
         $stmt->bindParam(":alistados",$alistados,PDO::PARAM_INT);
         $stmt->bindParam(":estado",$estado,PDO::PARAM_INT);
-        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $res=$stmt->execute();
@@ -248,45 +258,47 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
-    public function mdlCerrarCaja($numcaja){
+    // public function mdlCerrarCaja($numcaja){
 
-        $no_req=$this->req[0];$alistador=$this->req[1];
+    //     $no_req=$this->req[0];$alistador=$this->req[1];
         
-        $stmt= $this->link->prepare('UPDATE caja
-		SET estado=4
-		WHERE no_caja=:numcaja;
-        ');
+    //     $stmt= $this->link->prepare('UPDATE caja
+	// 	SET estado=4
+	// 	WHERE no_caja=:numcaja;
+    //     ');
 
-        $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_INT);
+    //     $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_INT);
 
-        $res=$stmt->execute();
-        $stmt->closeCursor();  
-        // retorna el resultado de la sentencia
-	    return $res;
+    //     $res=$stmt->execute();
+    //     $stmt->closeCursor();  
+    //     // retorna el resultado de la sentencia
+	//     return $res;
 
-        // cierra la conexion
-        $stmt=null;
-    }
+    //     // cierra la conexion
+    //     $stmt=null;
+    // }
 
     public function mdlVerificarCaja($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
         
-        $stmt= $this->link->prepare('SELECT COUNT(item) AS cantidad
-        FROM recibido
-        WHERE no_caja=:no_caja
-        AND no_req=:no_req
-        AND estado <>4;
-        ');
+        // $stmt= $this->link->prepare('SELECT COUNT(item) AS cantidad
+        // FROM recibido
+        // WHERE no_caja=:no_caja
+        // AND no_req=:no_req
+        // AND estado <>4;
+        // ');
+
+        $stmt= $this->link->prepare('SELECT VerificarCaja(:no_caja,:no_req) AS verificar ');
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $res=$stmt->execute();
-        
-        // retorna el resultado de la sentencia
-	    return $stmt;
         $stmt->closeCursor();  
+        // retorna el resultado de la sentencia
+	    return $res;
+        // $stmt->closeCursor();  
         // cierra la conexion
         $stmt=null;
     }
