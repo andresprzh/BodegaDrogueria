@@ -17,7 +17,7 @@ $(document).ready(function () {
         data: { 'valor': 2 },
         dataType: "json",
         success: function (res) {
-            
+
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -224,7 +224,7 @@ $(document).ready(function () {
                         data: { "caja": caja, "req": req, "items": items },//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
-
+                            console.log(res);
                             if (res["estado"] == true) {
                                 // crea el documento si no hay errores en los items recibidos
                                 if (res["contenido"]["estado"] == true) {

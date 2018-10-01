@@ -229,6 +229,7 @@ $(document).ready(function () {
 
     });
 
+    // ELIMINA LA CAJA SI HAY SELECCIONADA
     $('#eliminar').click(function (e) {
         //consigue el numero de requerido
         let requeridos = $('.requeridos').val();
@@ -280,6 +281,7 @@ $(document).ready(function () {
             });
     });
 
+    // ASIGNA LAS CAJAS A UN TRANSPORTADOR PARA SER ENVIADAS AL PUNTO
     $('#despachar').click(function (e) {
 
         let datos = $("#TablaC").DataTable().data().toArray();
@@ -354,6 +356,7 @@ $(document).ready(function () {
 
     });
 
+    // IMPRIMI LISTA DE ITEMS PARA PEGAR EN LA CAJA A ENVIAR
     $('#imprimir').click(function (e) {
 
         //consigue el numero de requerido
@@ -363,12 +366,13 @@ $(document).ready(function () {
 
         let datos = $('#TablaM').DataTable().data().toArray();
 
-        let imprmir = `<table style="width:100%;" class="centered">
+        let imprmir = `<h2 style="text-align: Center;" >Caja No: ${numcaja}<h2>
+                        <table style="width:100%;" class="centered">
                         <thead>
                             <tr>
-                                <th>item</th>
-                                <th>Cod_barras</th>
-                                <th>Cant</th>
+                                <th style="text-align: left;">Item</th>
+                                <th style="text-align: left;">Cod_barras</th>
+                                <th style="text-align: left;">Cant</th>
                             </tr>
                         </thead>
                         <tbody>`;
@@ -376,6 +380,7 @@ $(document).ready(function () {
         //     ('Cod_barras' + ' '.repeat(15)).slice(0, 15) +
         //     ('Cant' + ' '.repeat(5)).slice(0, 5) + '\r\n';
         // string += '_'.repeat(60) + '\r\n';
+        let total = 0;
         for (var i in datos) {
             // string += (datos[i][3] + ' '.repeat(40)).slice(0, 40);
             // string += (datos[i][0] + ' '.repeat(15)).slice(0, 15);
@@ -385,9 +390,16 @@ $(document).ready(function () {
                                     <td>${datos[i][0]}</td>
                                     <td>${datos[i][6]}</td>
                                 </tr>`;
+            total += parseInt(datos[i][6]);
         }
+        imprmir += `<tr>
+                        <th style="text-align: left;">Total</th>
+                        <th style="text-align: left;"></th>
+                        <th style="text-align: left;">${total}</th>
+                    </tr>
+                    </tbody>
+                    </table>`;
 
-        imprmir += '</tbody></table>';
         let win = window.open()
         win.document.write(imprmir);
         win.print()
@@ -500,7 +512,7 @@ function mostrarCajas() {
                                         <td>${caja["abrir"]}</td>
                                         <td class="cierres">${caja["cerrar"]}</td><td>
                                         <button  
-                                        onclick="mostrarItemsCaja(0,${caja["estado"]},"${tablatarget}")"  
+                                        onclick="mostrarItemsCaja(0,${caja["estado"]},'${tablatarget}')"  
                                         title="Revisar"  
                                         data-target="${modal_target}"
                                         class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
@@ -578,13 +590,15 @@ function mostrarCajas() {
 
                     // si todas las cajas estan en estado 1(cerradas), se activa boton de despachar pedido
 
-                    if (estado_despacho) {
 
-                        $("#despachar").removeAttr("disabled", "disabled");
-                    } else {
+                }
 
-                        $("#despachar").attr("disabled", "disabled");
-                    }
+                if (estado_despacho) {
+
+                    $("#despachar").removeAttr("disabled", "disabled");
+                } else {
+
+                    $("#despachar").attr("disabled", "disabled");
                 }
 
                 // $("#TablaCajas").removeClass("hide");
@@ -629,6 +643,7 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
 
     // solo se permite crear doumento cajas recibidas sin errores
     // solo se pueden eliminar cajas que no se han recibido en el pv
+
     switch (estado) {
 
         case 0:
@@ -637,43 +652,29 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
             $("#Documento").attr("disabled", "disabled");
             break;
         case 1:
+            $("#imprimir").removeAttr("disabled");
             $("#eliminar").removeAttr("disabled");
-            $("#imprimit").removeAttr("disabled");
             $("#Documento").attr("disabled", "disabled");
             break;
         case 2:
-            $("#eliminar").attr("disabled", "disabled");
             $("#imprimit").removeAttr("disabled");
+            $("#eliminar").attr("disabled", "disabled");
             $("#Documento").attr("disabled", "disabled");
             break;
         case 3:
-            $("#eliminar").attr("disabled", "disabled");
             $("#imprimit").attr("disabled", "disabled");
+            $("#eliminar").attr("disabled", "disabled");
             $("#Documento").attr("disabled", "disabled");
             break;
         case 4:
-            $("#eliminar").attr("disabled", "disabled");
             $("#imprimir").attr("disabled", "disabled");
+            $("#eliminar").attr("disabled", "disabled");
             $("#Documento").removeAttr("disabled");
             break;
 
         default:
             break;
     }
-    // if (estado == 4) {
-    //     $("#Documento").removeAttr("disabled");
-    //     $("#imprimir").removeAttr("disabled");
-    // } else {
-    //     $("#Documento").attr("disabled", "disabled");
-    //     if ([0, 1].includes(estado)) {
-    //         $("#eliminar").removeAttr("disabled", "disabled");
-    //         if (estado==0) {
-    //             $("#imprimir").attr("disabled", "disabled");
-    //         }
-    //     } else {
-    //         $("#eliminar").attr("disabled", "disabled");
-    //     }
-    // }
 
     // destruye la datatable (tabla del modal)
     $('#TablaM tbody').html('');

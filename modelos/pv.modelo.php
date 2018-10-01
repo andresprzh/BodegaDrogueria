@@ -47,9 +47,10 @@ class ModeloPV extends Conexion{
             $datos.="(:item$i,:no_req,:no_caja,:recibidos$i),";
         }
 
-        $datos=substr($datos, 0, -1).';';
+        $datos=substr($datos, 0, -1).' ';
 
         $sql='REPLACE INTO recibido(item,no_req,no_caja,recibidos) VALUES'. $datos;
+        
 
         $stmt= $this->link->prepare($sql);
 
@@ -162,5 +163,30 @@ class ModeloPV extends Conexion{
         $stmt->execute();
 
         return ($stmt);  
+    }
+
+    public function mdlVerificarCaja($numcaja)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        
+        // $stmt= $this->link->prepare('SELECT COUNT(item) AS cantidad
+        // FROM recibido
+        // WHERE no_caja=:no_caja
+        // AND no_req=:no_req
+        // AND estado <>4;
+        // ');
+
+        $stmt= $this->link->prepare('SELECT VerificarCaja(:no_caja,:no_req) AS verificar ');
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();  
+        // retorna el resultado de la sentencia
+	    return $res;
+        // $stmt->closeCursor();  
+        // cierra la conexion
+        $stmt=null;
     }
 }

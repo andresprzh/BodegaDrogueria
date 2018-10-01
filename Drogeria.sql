@@ -303,7 +303,6 @@ DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS AutoIncrementG;
 DROP TRIGGER IF EXISTS EstadoRecibido;
-DROP TRIGGER IF EXISTS EstadoRecibido2;
 DROP TRIGGER IF EXISTS ReqEnviado;
 DROP TRIGGER IF EXISTS ReqEnviado2;
 
@@ -499,77 +498,9 @@ DELIMITER $$
 
 $$
 
--- DROP TRIGGER IF EXISTS  EstadoRecibido;
--- trigger que modifica el estado del Item recibido  
+
 DELIMITER $$
 	CREATE TRIGGER EstadoRecibido 
-	BEFORE INSERT ON recibido
-	FOR EACH ROW 
-	BEGIN
-	
-		DECLARE cja INT(10);
-		DECLARE numalistado INT(5);
-		DECLARE ubc VARCHAR(6);
-		DECLARE numpedido INT(5);
-		DECLARE ider INT(5);
-		DECLARE num INT(1);
-		DECLARE estado INT(1);
-		
-		-- busca si el item está mas de 1  vez en la requisicions
-		SELECT COUNT(no_caja) INTO num
-		FROM pedido
-		WHERE pedido.item = new.item
-		AND pedido.no_req = new.no_req;
-
-		--	si está se busca si dicha caja coincide con la que se recibio
-		IF num>1 THEN
-
-			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
-			FROM pedido
-			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-			WHERE ITEMS.ID_Item = new.item
-			AND pedido.no_req=new.no_req
-			AND pedido.no_caja=new.no_caja;
-			
-		-- si no se busca normalmente en pedido
-		ELSE
-			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
-			FROM pedido
-			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-			WHERE ITEMS.ID_Item = new.item
-			AND pedido.no_req=new.no_req;
-	
-		END IF;
-
-		IF cja IS NULL THEN
-			SET new.estado=2;
-			SET cja=1;
-		ELSEIF cja<>new.no_caja THEN
-			SET new.estado=3;
-		ELSEIF new.recibidos<numalistado THEN
-			SET new.estado=0;
-		ELSEIF new.recibidos>numalistado THEN
-			SET new.estado=1;
-		ELSE 
-			SET new.estado=4;
-		END IF;
-
-		IF ubc IS NULL THEN
-			SET ubc='----';
-			SET numpedido=0;
-			SET numalistado=0;
-		END IF;
-		
-		IF new.estado<>4 THEN
-			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
-			VALUES(new.item,new.no_req,cja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
-		END IF;
-
-	END 	
-$$
-
-DELIMITER $$
-	CREATE TRIGGER EstadoRecibido2 
 	BEFORE UPDATE ON recibido
 	FOR EACH ROW 
 	BEGIN
@@ -627,7 +558,7 @@ DELIMITER $$
 			SET numalistado=0;
 		END IF;
 		
-		IF new.estado<>4 THEN
+		IF new.estado<>4  THEN
 			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
 			VALUES(new.item,new.no_req,cja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
 		END IF;

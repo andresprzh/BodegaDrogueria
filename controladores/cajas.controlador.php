@@ -289,13 +289,6 @@ class ControladorCajas extends ControladorAlistar {
 
             $resultado =$this->modelo->mdlVerificarCaja($numcaja);
             
-            // // verifica el estado de  la caja
-            // $busqueda=$this->modelo->mdlVerificarCaja($numcaja);
-            // $row = $busqueda->fetch();
-            // // si todos los items recibidos coinciden con los enviados cambia el estado de la caja a recibida
-            // if ($row['cantidad']==0) {
-            //     $resultado=$this->modelo->mdlCerrarCaja($numcaja);
-            // }
            
         }
       

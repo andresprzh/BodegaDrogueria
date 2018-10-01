@@ -258,26 +258,7 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
-    // public function mdlCerrarCaja($numcaja){
-
-    //     $no_req=$this->req[0];$alistador=$this->req[1];
-        
-    //     $stmt= $this->link->prepare('UPDATE caja
-	// 	SET estado=4
-	// 	WHERE no_caja=:numcaja;
-    //     ');
-
-    //     $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_INT);
-
-    //     $res=$stmt->execute();
-    //     $stmt->closeCursor();  
-    //     // retorna el resultado de la sentencia
-	//     return $res;
-
-    //     // cierra la conexion
-    //     $stmt=null;
-    // }
-
+    
     public function mdlVerificarCaja($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];

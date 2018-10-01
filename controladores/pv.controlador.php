@@ -46,7 +46,6 @@ class ControladorPV extends ControladorCajas{
         return $item;
     }
 
-
     // busca cajas visibles para el punto de venta
     public function ctrBuscarCajaPV($numcaja){
         $busqueda=$this->modelo->mdlMostrarCajaPV($numcaja);
@@ -113,7 +112,7 @@ class ControladorPV extends ControladorCajas{
     public function ctrRegistrarItems($items,$numcaja){   
         
         
-        // agrega los datos en la datbla de recibidos
+        // agrega los datos en la tabla de recibidos
         $resultado["estado"]=$this->modelo->mdlRegistrarItems($items,$numcaja);
 
         
@@ -121,6 +120,7 @@ class ControladorPV extends ControladorCajas{
         if ($resultado==true) {
             $resultado["estado"]=$this->modelo->mdlModCaja($numcaja);
             if($resultado["estado"]==true){
+                
                 $resultado["contenido"]=$this->ctrVerificarRegistro($numcaja);
                 //si hay errores en los items recibido en la caja se cambia el estado de la caja
                 if ($resultado["contenido"]["estado"]!="ok" ) {
@@ -162,65 +162,69 @@ class ControladorPV extends ControladorCajas{
 
     // crea archivo plano de la caja recibida
     private function ctrVerificarRegistro($numcaja){
-        $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
+        
+        if ($this->modelo->mdlVerificarCaja($numcaja)) {             
 
-        $resultado["estado"]="ok";
-        if ($busqueda->rowCount()>0) {
-            $recibidos=$busqueda->fetchAll();
-            $i=0;
-            foreach ($recibidos as $row) {
+            $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
 
-                switch ($row["rec_estado"]) {
-                    
-                    case 0:
+            $resultado["estado"]="ok";
+            if ($busqueda->rowCount()>0) {
+                $recibidos=$busqueda->fetchAll();
+                $i=0;
+                foreach ($recibidos as $row) {
+
+                    switch ($row["rec_estado"]) {
                         
-                        if ($row["recibidos"]==0) {
-
-                            $mensajeitem="item no recibido";
-                        }else {
+                        case 0:
                             
-                            $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
-                        }
-                        break;
+                            if ($row["recibidos"]==0) {
 
-                    case 1:
-                        
-                        $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];                        
-                        break;
+                                $mensajeitem="item no recibido";
+                            }else {
+                                
+                                $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
+                            }
+                            break;
 
-                    case 2:
-                        
-                        $mensajeitem="El item  recibido no estaba en la requisicion";
-                        break;
+                        case 1:
+                            
+                            $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];                        
+                            break;
 
-                    case 3:
+                        case 2:
+                            
+                            $mensajeitem="El item  recibido no estaba en la requisicion";
+                            break;
+
+                        case 3:
+                            
+                            if ($row["cajap"]==1) {
+                                $mensajeitem="El item recibido no está alistado en niguna caja";
+                            }else{
+                                $mensajeitem="El item recibido fue alistado en la caja ".$row["cajap"]." y recibido en la caja ".$row["cajar"];
+                            }
+                            break;
                         
-                        if ($row["cajap"]==1) {
-                            $mensajeitem="El item recibido no está alistado en niguna caja";
-                        }else{
-                            $mensajeitem="El item recibido fue alistado en la caja ".$row["cajap"]." y recibido en la caja ".$row["cajar"];
-                        }
-                        break;
+                        default:
+                            // $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
+                            // $resultado["item"][$i]["iditem"]=$row["item"];
+                            // $i++;
+                            break;
+                    }
+                    if ($row["rec_estado"] != 4) {
+                        $resultado["estado"]="error0";
+                        $resultado["item"][$i]=$row;
+                        $resultado["item"][$i]["mensaje"]=$mensajeitem;
+                        $i++;
+                    }
                     
-                    default:
-                        // $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
-                        // $resultado["item"][$i]["iditem"]=$row["item"];
-                        // $i++;
-                        break;
                 }
-                if ($row["rec_estado"] != 4) {
-                    $resultado["estado"]="error0";
-                    $resultado["item"][$i]=$row;
-                    $resultado["item"][$i]["mensaje"]=$mensajeitem;
-                    $i++;
-                }
-                
+            }else {
+                $resultado["estado"]="error1";
             }
-        }else {
-            $resultado["estado"]="error1";
         }
-
         return $resultado;
+        
     }
 
     public function ctrBuscarItemrec($numcaja)
