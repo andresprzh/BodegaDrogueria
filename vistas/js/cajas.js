@@ -354,6 +354,48 @@ $(document).ready(function () {
 
     });
 
+    $('#imprimir').click(function (e) {
+
+        //consigue el numero de requerido
+        let requeridos = $('.requeridos').val();
+
+        let numcaja = $('.NumeroCaja').html();
+
+        let datos = $('#TablaM').DataTable().data().toArray();
+
+        let imprmir = `<table style="width:100%;" class="centered">
+                        <thead>
+                            <tr>
+                                <th>item</th>
+                                <th>Cod_barras</th>
+                                <th>Cant</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+        // let string = ('Item' + ' '.repeat(40)).slice(0, 40) +
+        //     ('Cod_barras' + ' '.repeat(15)).slice(0, 15) +
+        //     ('Cant' + ' '.repeat(5)).slice(0, 5) + '\r\n';
+        // string += '_'.repeat(60) + '\r\n';
+        for (var i in datos) {
+            // string += (datos[i][3] + ' '.repeat(40)).slice(0, 40);
+            // string += (datos[i][0] + ' '.repeat(15)).slice(0, 15);
+            // string += ('0'.repeat(5) + datos[i][6]).slice(-5) + '\r\n';
+            imprmir += `<tr>
+                                    <td>${datos[i][3]}</td>
+                                    <td>${datos[i][0]}</td>
+                                    <td>${datos[i][6]}</td>
+                                </tr>`;
+        }
+
+        imprmir += '</tbody></table>';
+        let win = window.open()
+        win.document.write(imprmir);
+        win.print()
+        win.close()
+
+
+    });
+
 });
 
 /* ============================================================================================================================

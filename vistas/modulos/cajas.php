@@ -146,6 +146,9 @@
             <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s12 m12 l8" >
                 <i class="fas fa-file-alt"></i>
             </button>
+            <button id="imprimir" title="Impriir Lista de items" class="btn right waves-effect green darken-4 col s12 m12 l8" >
+                <i class="fas fa-print"></i>
+            </button>
             <button id="eliminar" title="Eliminar Caja" class="btn left waves-effect red darken-4 col s12 m12 l8" >
                 <i class="fas fa-ban"></i>
             </button>
