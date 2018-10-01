@@ -629,16 +629,51 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
 
     // solo se permite crear doumento cajas recibidas sin errores
     // solo se pueden eliminar cajas que no se han recibido en el pv
-    if (estado == 4) {
-        $("#Documento").removeAttr("disabled");
-    } else {
-        $("#Documento").attr("disabled", "disabled");
-        if ([0, 1].includes(estado)) {
-            $("#eliminar").removeAttr("disabled", "disabled");
-        } else {
+    switch (estado) {
+
+        case 0:
+            $("#eliminar").removeAttr("disabled");
+            $("#imprimir").attr("disabled", "disabled");
+            $("#Documento").attr("disabled", "disabled");
+            break;
+        case 1:
+            $("#eliminar").removeAttr("disabled");
+            $("#imprimit").removeAttr("disabled");
+            $("#Documento").attr("disabled", "disabled");
+            break;
+        case 2:
             $("#eliminar").attr("disabled", "disabled");
-        }
+            $("#imprimit").removeAttr("disabled");
+            $("#Documento").attr("disabled", "disabled");
+            break;
+        case 3:
+            $("#eliminar").attr("disabled", "disabled");
+            $("#imprimit").attr("disabled", "disabled");
+            $("#Documento").attr("disabled", "disabled");
+            break;
+        case 4:
+            $("#eliminar").attr("disabled", "disabled");
+            $("#imprimir").attr("disabled", "disabled");
+            $("#Documento").removeAttr("disabled");
+            break;
+
+        default:
+            break;
     }
+    // if (estado == 4) {
+    //     $("#Documento").removeAttr("disabled");
+    //     $("#imprimir").removeAttr("disabled");
+    // } else {
+    //     $("#Documento").attr("disabled", "disabled");
+    //     if ([0, 1].includes(estado)) {
+    //         $("#eliminar").removeAttr("disabled", "disabled");
+    //         if (estado==0) {
+    //             $("#imprimir").attr("disabled", "disabled");
+    //         }
+    //     } else {
+    //         $("#eliminar").attr("disabled", "disabled");
+    //     }
+    // }
 
     // destruye la datatable (tabla del modal)
     $('#TablaM tbody').html('');
