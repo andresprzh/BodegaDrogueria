@@ -6,6 +6,7 @@ class ControladorRequerir{
     private $cabecera;
     private $items;
     public $Estado;
+    private $itemsarray;
 
    function __construct($doc_req){
         //se asigna el documento a la variable doc_req
@@ -60,8 +61,8 @@ class ControladorRequerir{
                 //busca los datos de los items y los guarda en items
                 $this->ctrSetItems();
                 
-                
                 $resultado=$this->ctrSubirReq();
+                
                 // echo $this->Items;
                 
                 if ($resultado) {
@@ -81,7 +82,6 @@ class ControladorRequerir{
                             <th>Referencia</th> 
                             <th>Disponibilidad</th>
                             <th>Solicitados</th>              
-                            <th>Alistados</th>
                             <th>Ubicacion</th>
                             
                         </tr>
@@ -98,7 +98,6 @@ class ControladorRequerir{
                                     <td>'.$row["ID_REFERENCIA"].'</td>
                                     <td>'.$row["disp"].'</td>
                                     <td>'.$row["pedido"].'</td>
-                                    <td>'.$row["alistado"].'</td>
                                     <th class="black-text">'.$row["ubicacion"].'</th>
                                 </tr>';
     
@@ -215,37 +214,38 @@ class ControladorRequerir{
             if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10 && $linea[0]==' '){
                 
                 //obtienen los datos de cada item por linea
-                $items[0]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
-                $items[1]=$this->cabecera[0];//se obtiene el numero de requisicion
+                $item["id"]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
+                $item["no_req"]=$this->cabecera[0];//se obtiene el numero de requisicion
                 //se cambian las comas del dato por espacios en blanco
-                $items[2]=substr($linea,109,6);//ubiacion item
-                $items[3]=str_replace(',','',substr($linea,71,5));//cantidad items disponibles
-                $items[4]=substr($linea,86,5);//cantidad items pedidos
-                $items[5]=intval(str_replace('_','',substr($linea,95,8)));//cantidad items alistados
+                $item["ubicacion"]=substr($linea,109,6);//ubiacion item
+                $item["disp"]=str_replace(',','',substr($linea,71,5));//cantidad item disponibles
+                $item["pedidos"]=substr($linea,86,5);//cantidad item pedidos
+                
                
-                if (!(is_numeric($items[0]) && strlen($items[0])==6)) {
+                if (!(is_numeric($item["id"]) && strlen($item["id"])==6)) {
                     
                      //se busca el id de los item usando la referencia en el documento subido
                     $modelo=new ModeloRequierir();
-                    $item='ID_REFERENCIA';
-                    $valor=$items[0];
+                    $item="ID_REFERENCIA";
+                    $valor=$item["id"];
                     $id_item=$modelo->mdlMostrarItem($item,$valor);
                     $id_item=$id_item->fetch();           
                     //se reemplaza la referencia del item por su id
-                    $items[0]=$id_item["ID_ITEM"];
+                    $item["id"]=$id_item["ID_ITEM"];
                     
                 }
                
                 
-                // echo ($items[0]."  ".$items[1]."  ".$items[2]."  ".$items[3]." ".$items[4]."  ".$items[5]."<br>");
+                // echo ($item[0]."  ".$item[1]."  ".$item[2]."  ".$item[3]." ".$item[4]."  ".$item[5]."<br>");
 
                 //pone los datos del item en un String
-                $stringItem.='(';
-                for ($i=0; $i <count($items) ; $i++) { 
-                    $stringItem.='"'.$items[$i].'",';
+                $stringItem.="(";
+                foreach ($item as $value) {
+                    $stringItem.="'$value',";
                 }
                 $stringItem=substr($stringItem, 0, -1).'),';
                 
+                $this->itemsarray[]=$item;
              
             //busca el numero de requisicion solo si no se ha encontrado
             }
