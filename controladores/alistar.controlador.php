@@ -173,6 +173,7 @@ class ControladorAlistar {
         $resultado=$this->modelo->mdlAgregarIE($items);
         return $resultado;
     }
+    
     public function ctrCrearCaja(){
         
         $busqueda=$this->modelo->mdlMostrarNumCaja();

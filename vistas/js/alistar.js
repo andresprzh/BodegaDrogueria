@@ -1,17 +1,17 @@
 $(document).ready(function () {
 
-/* ============================================================================================================================
-                                                    INICIALIZACION   
-============================================================================================================================*/
+    /* ============================================================================================================================
+                                                        INICIALIZACION   
+    ============================================================================================================================*/
     // INICIA DATATABLE
 
     table = iniciar_tabla();
-    
-    
+
+
     // INICIAR TABS
     $('.tabs').tabs({ 'swipeable': true });
-    
-    
+
+
     // $('.tabs').tabs({ 'swipeable': false });
     // pone requisiciones en el input select
     $.ajax({
@@ -26,7 +26,7 @@ $(document).ready(function () {
             for (var i in res) {
 
                 $("#requeridos").append($('<option value="' + res[i]["no_req"] + '">' + res[i]["no_req"] + '</option>'));
-                
+
             }
 
             // INICIA MENU DE SELECCION
@@ -34,13 +34,13 @@ $(document).ready(function () {
 
         }
     });
-    
 
 
 
-/* ============================================================================================================================
-                                                    EVENTOS   
-============================================================================================================================*/
+
+    /* ============================================================================================================================
+                                                        EVENTOS   
+    ============================================================================================================================*/
 
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
@@ -48,25 +48,25 @@ $(document).ready(function () {
         //destruye datatabel para reiniciarla
         //espera a que la funcion termine para reiniciar las tablas
         $.when(MostrarItems()).done(function () {
-            
-            $.when( MostrarCaja()).done(function () {
+
+            $.when(MostrarCaja()).done(function () {
                 $(".input_barras").removeClass("hide");
                 // $('.tabs').tabs({ 'swipeable': true });//reinicia el tabs
-                
-                
-                var ubicaciones=table.columns(7).data().eq(0).sort().unique().toArray();
-                
+
+
+                var ubicaciones = table.columns(7).data().eq(0).sort().unique().toArray();
+
                 for (let i in ubicaciones) {
-                    
-                    $("#ubicacion").append($('<option value="' + ubicaciones[i]+ '">' + ubicaciones[i]+ '</option>'));
+
+                    $("#ubicacion").append($('<option value="' + ubicaciones[i] + '">' + ubicaciones[i] + '</option>'));
 
                 }
                 //no muestra datos en la tabla
                 $('#ubicacion').val("");
                 cambiarUbicacion();
-                $( "#codbarras" ).focus();
+                $("#codbarras").focus();
 
-            });   
+            });
         });
 
     });
@@ -76,11 +76,11 @@ $(document).ready(function () {
 
         //si se presiona enter busca el item y lo pone en la pagina
         if (e.which == 13) {
-            
+
             BuscarCodBar();
             MostrarItems();
             cambiarUbicacion();
-            $( "#codbarras" ).focus();
+            $("#codbarras").focus();
         }
 
     });
@@ -92,7 +92,7 @@ $(document).ready(function () {
         BuscarCodBar();
         MostrarItems();
         cambiarUbicacion();
-        $( "#codbarras" ).focus();
+        $("#codbarras").focus();
 
     });
 
@@ -146,12 +146,12 @@ $(document).ready(function () {
     // EVENTO SI SE PRESIONA 1 BOTON EN LA TABLA EDITABLE(ELIMINAR ITEM)
     $('#tablaeditable').on('click', 'button', function (e) {
         //consigue el numero de requerido
-        
+
         var requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
-        
-        var tabla = $("#TablaEd").DataTable();       
+
+        var tabla = $("#TablaEd").DataTable();
 
         celda = table.cell(this);
 
@@ -165,7 +165,7 @@ $(document).ready(function () {
                 fila = fila.prev();
             }
         } else {
-            fila=this;
+            fila = this;
         }
         let iditem = tabla.row(fila).cell(fila, 4).data();
         const nomitem = tabla.row(fila).cell(fila, 0).data();
@@ -175,30 +175,30 @@ $(document).ready(function () {
             icon: "warning",
             buttons: ['Cancelar', 'Quitar']
         })
-        .then((Quitar) => {   
+            .then((Quitar) => {
 
-            if(Quitar) {
+                if (Quitar) {
 
-                $.ajax({
-                    type: "POST",
-                    url: "api/alistar/eliminaritem",
-                    data: { "iditem": iditem,"req":req},
-                    dataType: "JSON",
-                    success: function (res) {
-                        
-                        if (res!=false) {
-                            
-                            tabla.row(fila).remove().draw('false');
-                        }else{
-                            var toastHTML = '<p class="truncate">No se pudo eliminar el item</span></p>';
-                            M.toast({ html: toastHTML, classes: "red darken-4" });
+                    $.ajax({
+                        type: "POST",
+                        url: "api/alistar/eliminaritem",
+                        data: { "iditem": iditem, "req": req },
+                        dataType: "JSON",
+                        success: function (res) {
+
+                            if (res != false) {
+
+                                tabla.row(fila).remove().draw('false');
+                            } else {
+                                var toastHTML = '<p class="truncate">No se pudo eliminar el item</span></p>';
+                                M.toast({ html: toastHTML, classes: "red darken-4" });
+                            }
                         }
-                    }
-                });
+                    });
 
-            }
+                }
 
-        });
+            });
     });
 
     // EVENTO SI SE PRESIONA EL BOTON CERRAR
@@ -223,7 +223,7 @@ $(document).ready(function () {
 
                     var datos = $("#TablaEd").DataTable().data().toArray();
 
-                    
+
                     var items = new Array();
                     for (var i in datos) {
 
@@ -233,7 +233,7 @@ $(document).ready(function () {
                         }
 
                     }
-                    
+
                     //guarda el tipo de caja en una variable
                     var tipocaja = $("#caja").val();
 
@@ -243,7 +243,7 @@ $(document).ready(function () {
                         method: 'post',//metodo post para mandar datos
                         data: { 'req': req, "tipocaja": tipocaja, "items": items },//datos que se enviaran          
                         success: function (res) {
-  
+
                             if (res) {
 
                                 swal("¡Caja cerrada exitosamente!", {
@@ -252,7 +252,7 @@ $(document).ready(function () {
                                     .then((event) => {
 
                                         location.reload(true);
-                                        
+
                                     });
 
                             } else {
@@ -271,7 +271,7 @@ $(document).ready(function () {
     });
 
     // FUNCION QUE FILTRA ITEMS POR UBICACION
-    $("#ubicacion").change(function (e) { 
+    $("#ubicacion").change(function (e) {
 
         cambiarUbicacion();
 
@@ -293,7 +293,7 @@ function BuscarCodBar() {
     let requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     let req = [requeridos, id_usuario];
-    
+
     // ajax para ejecutar un script php mandando los datos
     return $.ajax({
         url: 'api/alistar/items',//url de la funcion
@@ -304,7 +304,7 @@ function BuscarCodBar() {
             AgregarItem(res);
 
             $('#codbarras').val("");
-            
+
         }
 
     });
@@ -318,51 +318,51 @@ function AgregarItem(res) {
     //busca el estado de del resultado
     //si encontro el codigo de barras muestar el contenido de la busqueda
     if (res['estado'] == 'encontrado') {
-        
+
         var items = res['contenido'];
         // si se ecnuetra el item 2 o mas veces en alguna otra caja
         if (items) {
-    
-            swal(`${items['descripcion']}` ,`disponibilidad: ${items['disponibilidad']}\t pedidos: ${items['pedidos']} `, {
+
+            swal(`${items['descripcion']}`, `disponibilidad: ${items['disponibilidad']}\t pedidos: ${items['pedidos']} `, {
                 content: {
                     element: "input",
                     attributes: {
-                    placeholder: "Cantidad a alistar",
-                    type: "number",
+                        placeholder: "Cantidad a alistar",
+                        type: "number",
                     },
                 },
             })
-            .then((value) => {
-                if (!value) {
-                    value=1;
-                }
-                var tabla = $('#TablaEd').DataTable();
-                tabla.row.add( [
-                    items['descripcion'],  
-                    `<input type= 'number' min='1' class='alistados eliminaritem' value='${value}'>`,
-                    items['pedidos'],
-                    items['codigo'],
-                    items['iditem'],
-                    items['referencia'],
-                    items['disponibilidad'],    
-                    items['ubicacion'],  
-                    `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
+                .then((value) => {
+                    if (!value) {
+                        value = 1;
+                    }
+                    var tabla = $('#TablaEd').DataTable();
+                    tabla.row.add([
+                        items['descripcion'],
+                        `<input type= 'number' min='1' class='alistados eliminaritem' value='${value}'>`,
+                        items['pedidos'],
+                        items['codigo'],
+                        items['iditem'],
+                        items['referencia'],
+                        items['disponibilidad'],
+                        items['ubicacion'],
+                        `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
                     <i class='fas fa-times'></i>" 
                     </button></tr>`,
-                ] ).draw(false);
+                    ]).draw(false);
 
-                $("#TablaE").removeClass("hide");
+                    $("#TablaE").removeClass("hide");
 
-                // se muestra un mensaje con el item agregado
-                var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">' + items['descripcion'] + '</span></p>';
-                M.toast({ html: toastHTML, classes: "light-green darken-4 rounded",displayLength: 500 });
-                $( "#codbarras" ).focus();
-            });
-        }else{
+                    // se muestra un mensaje con el item agregado
+                    var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">' + items['descripcion'] + '</span></p>';
+                    M.toast({ html: toastHTML, classes: "light-green darken-4 rounded", displayLength: 500 });
+                    $("#codbarras").focus();
+                });
+        } else {
             swal('Item ya fue alistado en otra caja', {
                 icon: "warning",
             });
-            $( "#codbarras" ).focus();
+            $("#codbarras").focus();
         }
         //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
     } else {
@@ -388,27 +388,27 @@ function MostrarItems() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-            
+
             //si ecnuentra el item mostrarlo en la tabla
             if (res['estado'] != "error") {
-                let tabla=$("#TablaVi").DataTable();
+                let tabla = $("#TablaVi").DataTable();
                 //refresca las tablas, para volver a cargar los datos
                 tabla.clear();
                 // $('#Rerror').hide(); 
                 var items = res['contenido'];
-                
+
                 for (var i in items) {
-                    
-                    tabla.row.add( [
-                        items[i]['descripcion'], 
-                        items[i]['disponibilidad'], 
-                        items[i]['pedidos'], 
-                        items[i]['codigo'], 
-                        items[i]['iditem'], 
-                        items[i]['referencia'], 
-                        items[i]['alistados'], 
-                        items[i]['ubicacion'], 
-                    ] ).draw();
+
+                    tabla.row.add([
+                        items[i]['descripcion'],
+                        items[i]['disponibilidad'],
+                        items[i]['pedidos'],
+                        items[i]['codigo'],
+                        items[i]['iditem'],
+                        items[i]['referencia'],
+                        items[i]['alistados'],
+                        items[i]['ubicacion'],
+                    ]).draw();
 
                 }
 
@@ -435,7 +435,7 @@ function MostrarCaja() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-            
+
             // si la caja ya esta creada muestra los items en la tabla de alistar
             if (res['estadocaja'] == 'yacreada') {
                 //si encontro el codigo de barras muestar el contenido de la busqueda
@@ -445,27 +445,27 @@ function MostrarCaja() {
                     tabla.clear();
 
                     var items = res['contenido'];
-                    
+
                     for (var i in items) {
-                        tabla.row.add( [
-                            items[i]['descripcion'],  
+                        tabla.row.add([
+                            items[i]['descripcion'],
                             `<input type= 'number' min='1' class='alistados eliminaritem' value='1'>`,
                             items[i]['pedidos'],
                             items[i]['codigo'],
                             items[i]['iditem'],
                             items[i]['referencia'],
-                            items[i]['disponibilidad'],    
-                            items[i]['ubicacion'],  
+                            items[i]['disponibilidad'],
+                            items[i]['ubicacion'],
                             `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
                             <i class='fas fa-times'></i>" 
                             </button></tr>`,
-                        ] ).draw();
+                        ]).draw();
                     }
                     // si hay una caja sin cerrar en otra requisicion muestra mensaje adventencia y recarga la pagina          
                 } else if (res['estado'] == 'error2') {
                     swal({
                         title: "!No se puede generar caja¡",
-                        text: "Caja sin cerrar en la requisicion "+res['contenido'],
+                        text: "Caja sin cerrar en la requisicion " + res['contenido'],
                         icon: "warning",
                     })
                         .then((ok) => {
@@ -480,14 +480,14 @@ function MostrarCaja() {
     });
 }
 
-function cambiarUbicacion(){
-    let ubicacion=$('#ubicacion').val(); //dato de ubicacion del menu de seleccion 
-    
-    let tabla=$("#TablaVi").DataTable();
+function cambiarUbicacion() {
+    let ubicacion = $('#ubicacion').val(); //dato de ubicacion del menu de seleccion 
+
+    let tabla = $("#TablaVi").DataTable();
 
     // evita que alistadores vean todos los items
-    if (perfil==3 &&  ubicacion=='') {
-        ubicacion='---';
+    if (perfil == 3 && ubicacion == '') {
+        ubicacion = '---';
     }
     // tabla.columns(7).search(ubicacion).draw();
     // ubicacion="EB09";
@@ -498,21 +498,21 @@ function cambiarUbicacion(){
 function iniciar_tabla(tabla) {
 
     if (!tabla) {
-        tabla="table.datatable";
+        tabla = "table.datatable";
     }
 
     var tabla = $(tabla).DataTable({
 
-        responsive:true,
+        responsive: true,
 
         "bLengthChange": false,
         "bFilter": true,
         "sDom": '<"top">t<"bottom"irp><"clear">',
-        "pageLength": 5,    
-        "columnDefs": [ {
+        "pageLength": 5,
+        "columnDefs": [{
             "targets": 5,
             "orderable": false
-        } ],
+        }],
         "language": {
             "sProcessing": "Procesando...",
             "sZeroRecords": "No se encontraron resultados",
@@ -535,7 +535,7 @@ function iniciar_tabla(tabla) {
         scrollCollapse: true,
         paging: false,
         order: [[7, 'asc']],
-        
+
         rowGroup: {
             dataSrc: 7
         }

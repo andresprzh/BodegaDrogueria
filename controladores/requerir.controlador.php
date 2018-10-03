@@ -8,13 +8,13 @@ class ControladorRequerir{
     public $Estado;
     private $itemsarray;
 
-   function __construct($doc_req){
+    function __construct($doc_req){
         //se asigna el documento a la variable doc_req
         $this->doc_req=$doc_req;
         
         //busca los datos de cabecera y los guarda en el parametro Cabecera
         $this->ctrSetCabecera();
-    
+
         //busca si ya existe la requisicion en la base de datos
         $modelo=new ModeloRequierir();
         $item='No_Req';
@@ -51,7 +51,7 @@ class ControladorRequerir{
                 </div>';
 
 
-               
+                
                 
                 
                 
@@ -71,7 +71,7 @@ class ControladorRequerir{
                     if ($busqueda->rowCount() > 0) {
                         
                         echo '<table class="tabla "  >
-    
+
                         <thead>
                         
                         <tr class="white-text green darken-3 ">
@@ -90,7 +90,7 @@ class ControladorRequerir{
                         echo '<tbody >';
                         
                         while($row = $busqueda->fetch()){                          
-    
+
                                 echo '<tr>
                                     <td>'.$row["DESCRIPCION"].'</td>
                                     <td>'.$row["ID_CODBAR"].'</td>
@@ -100,16 +100,16 @@ class ControladorRequerir{
                                     <td>'.$row["pedido"].'</td>
                                     <th class="black-text">'.$row["ubicacion"].'</th>
                                 </tr>';
-    
+
                             }
-    
+
                         
                         echo '</table> ';
                     }
                 }
             } 
         }   
-   }
+    }
 
 
     // funcion que asigna la cabecera
@@ -125,7 +125,7 @@ class ControladorRequerir{
                 //busca la fecha 
                 $pos=strpos($linea, 'FECHA :');
                 
-		        if($pos){
+                if($pos){
                     $fecha=str_replace('/','-',substr($linea,$pos+8,10));	
                 }
                 
@@ -200,8 +200,8 @@ class ControladorRequerir{
 
     }
 
-     //funcion que asigna los items
-     private function ctrSetItems(){
+    //funcion que asigna los items
+    private function ctrSetItems(){
 
         $stringItem='';
         $contador=0;
