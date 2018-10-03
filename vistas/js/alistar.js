@@ -3,16 +3,10 @@ $(document).ready(function () {
     /* ============================================================================================================================
                                                         INICIALIZACION   
     ============================================================================================================================*/
-    // INICIA DATATABLE
-
-    table = iniciar_tabla();
-
 
     // INICIAR TABS
-    $('.tabs').tabs({ 'swipeable': true });
+    $('.tabs').tabs({ 'swipeable': false });
 
-
-    // $('.tabs').tabs({ 'swipeable': false });
     // pone requisiciones en el input select
     $.ajax({
         url: "api/alistar/requisiciones",
@@ -20,23 +14,18 @@ $(document).ready(function () {
         data: '',
         contentType: false,
         processData: false,
-        dataType: "JSON",
+        dataType: "json",
         success: function (res) {
+
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
-                $("#requeridos").append($('<option value="' + res[i]["no_req"] + '">' + res[i]["no_req"] + '</option>'));
+                $("#requeridos").append($('<option value="' + res[i] + '">' + res[i] + '</option>'));
 
             }
 
-            // INICIA MENU DE SELECCION
-            $('select').formSelect();
-
         }
     });
-
-
-
 
     /* ============================================================================================================================
                                                         EVENTOS   
@@ -45,84 +34,33 @@ $(document).ready(function () {
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
 
-        //destruye datatabel para reiniciarla
-        //espera a que la funcion termine para reiniciar las tablas
-        $.when(MostrarItems()).done(function () {
+        $.when(mostrarItems()).done(function () {
 
-            $.when(MostrarCaja()).done(function () {
-                $(".input_barras").removeClass("hide");
-                // $('.tabs').tabs({ 'swipeable': true });//reinicia el tabs
-
-
-                var ubicaciones = table.columns(7).data().eq(0).sort().unique().toArray();
-
-                for (let i in ubicaciones) {
-
-                    $("#ubicacion").append($('<option value="' + ubicaciones[i] + '">' + ubicaciones[i] + '</option>'));
-
-                }
-                //no muestra datos en la tabla
-                $('#ubicacion').val("");
-                cambiarUbicacion();
+            $.when(mostrarCaja()).done(function () {
                 $("#codbarras").focus();
-
             });
         });
 
     });
 
+    // FUNCION QUE FILTRA ITEMS POR UBICACION
+    $("#ubicacion").change(function (e) {
+
+        cambiarUbicacion();
+        $("#codbarras").focus();
+    });
+
     // EVENTO INPUT  CODIGO DE BARRAS
-    $("#codbarras").keypress(function (e) {
+    $("#codbarras").keyup(function (e) {
 
         //si se presiona enter busca el item y lo pone en la pagina
         if (e.which == 13) {
-
-            BuscarCodBar();
-            MostrarItems();
-            cambiarUbicacion();
-            $("#codbarras").focus();
+            buscarCodbar();
         }
 
     });
 
 
-    // EVENTO SI SE PRESIONA EL BOTON DE AGREGAR CODIGO DE BARRAS(+)
-    $("#agregar").click(function (e) {
-
-        BuscarCodBar();
-        MostrarItems();
-        cambiarUbicacion();
-        $("#codbarras").focus();
-
-    });
-
-    // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
-    $('#tablaeditable').on('change', 'td', function () {
-
-        var dt = $.fn.dataTable.tables()[1];
-        var tabla = $(dt).DataTable();
-
-        //se obtiene el valor de la variable y se le asigna a datatable para que quede guardado
-        celda = table.cell(this);
-
-        var nuevovalor = $(this).find("input").val();
-        var fila = table.row(this)
-
-        // si la tabla es responsive
-        if (fila.data() == undefined) {
-
-            var fila = $(this).parents('tr');
-            if (fila.hasClass('child')) {
-                fila = fila.prev();
-            }
-            tabla.row(fila).cell(fila, 1).data("<input  type= 'number' min='0' class='alistados'  value='" + nuevovalor + "'></input>");
-
-        } else {
-
-            tabla.cell(this).data("<input  type= 'number' min='0' class='alistados'  value='" + nuevovalor + "'></input>");
-        }
-
-    });
 
     // EVENTO CUANDO SE ESCRIBE EN EL INPUT DE LA TABLA EDITABLE(EVITA QUE SE DIGITEN LETRAS)
     $('#tablaeditable').on('keydown', 'input', function (e) {
@@ -143,33 +81,73 @@ $(document).ready(function () {
         }
     });
 
+    // EVENTO CUANDO SE CAMBIA  EL INPUT DE LA TABLA EDITABLE(EVITA QUE SE DIGITEN LETRAS)
+    $('#tablaeditable').on('change', 'input', function (e) {
+        let alistados = $(this).val();
+        const pedido = $('td:nth(1)', $(this).parents('tr')).text();
+
+        // consigue el valor maximo en decenas que puede valer la cantidad de alistados
+        // EJ: entre 0 y 10 maximo valor=10, entre 11 y 100 maximo valor 100
+        let a = 0;
+        let pot = pedido;
+        do {
+            a++;
+            pot = pot / 10
+        } while (pot > 1);
+        let maxvalue = Math.pow(10, a)
+
+        if (alistados > maxvalue * 10) {
+            var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i> Revisar cantidad alistada</span></p>`;
+            M.toast({
+                html: toastHTML, classes: "red lighten-2'",
+                //  displayLength: 500 
+            });
+            $(this).parents('tr').removeClass('yellow lighten-2');
+            $(this).parents('tr').addClass('red lighten-2');
+
+        } else if (alistados > maxvalue) {
+            var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i> Revisar cantidad alistada</span></p>`;
+            M.toast({
+                html: toastHTML, classes: "yellow lighten-2'",
+                //  displayLength: 500 
+            });
+
+            $(this).parents('tr').removeClass('red lighten-3');
+            $(this).parents('tr').addClass('yellow lighten-2');
+            $(this).parents('tr').attr('title', 'Revisar Cantidad Alistada');
+        } else {
+
+            $(this).parents('tr').removeClass('yellow lighten-2');
+            $(this).parents('tr').removeClass('red lighten-3');
+            $(this).parents('tr').attr('title', '');
+        }
+
+        // console.log(maxvalue);
+    });
+
+    // EVENTO SI SE PRESIONA 1 TECLA EN LA TABLA EDITABLE
+    $('#tablaeditable').on('keydown', 'input', function (e) {
+        //previene enviar formulario si se presiona enter
+        if (e.which == 13) {
+            e.preventDefault();
+        }
+    });
+
     // EVENTO SI SE PRESIONA 1 BOTON EN LA TABLA EDITABLE(ELIMINAR ITEM)
     $('#tablaeditable').on('click', 'button', function (e) {
         //consigue el numero de requerido
-
+        e.preventDefault();
         var requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
 
-        var tabla = $("#TablaEd").DataTable();
+        // se consigue el id del item y el nombre se quita la primera letra del id que representa en que tabla esta
+        let iditem = $(this).closest('tr').attr('id').substr(1);
 
-        celda = table.cell(this);
 
-        var fila = table.row(this)
-        //se otiene el valor del id del item donde esta el boton presionado 
-        // si la tabla es responsive
-        if (fila.data() == undefined) {
+        const nomitem = $('td:first', $(this).parents('tr')).text();;
 
-            fila = $(this).parents('tr');
-            if (fila.hasClass('child')) {
-                fila = fila.prev();
-            }
-        } else {
-            fila = this;
-        }
-        let iditem = tabla.row(fila).cell(fila, 4).data();
-        const nomitem = tabla.row(fila).cell(fila, 0).data();
-
+        // Pregunta si se elimina el item
         swal({
             title: `¿Quitar item ${nomitem}?`,
             icon: "warning",
@@ -179,21 +157,13 @@ $(document).ready(function () {
 
                 if (Quitar) {
 
-                    $.ajax({
-                        type: "POST",
-                        url: "api/alistar/eliminaritem",
-                        data: { "iditem": iditem, "req": req },
-                        dataType: "JSON",
-                        success: function (res) {
-
-                            if (res != false) {
-
-                                tabla.row(fila).remove().draw('false');
-                            } else {
-                                var toastHTML = '<p class="truncate">No se pudo eliminar el item</span></p>';
-                                M.toast({ html: toastHTML, classes: "red darken-4" });
-                            }
-                        }
+                    // elimina el item y vuelve a cargar la tabla de vista
+                    let ubicacion = $('#ubicacion').val();
+                    $.when(eliminarItem(iditem, req)).done(function () {
+                        $.when(mostrarItems()).done(function () {
+                            $('#ubicacion').val(ubicacion);
+                            cambiarUbicacion();
+                        });
                     });
 
                 }
@@ -201,83 +171,76 @@ $(document).ready(function () {
             });
     });
 
-    // EVENTO SI SE PRESIONA EL BOTON CERRAR
-    $("#cerrar").on('click', function (e) {
-
-
+    // EVENTO SI SE ENVIA EL FORMULARIO DE LA TALA EDITABLE
+    $('#formalistados').submit(function (e) {
+        e.preventDefault();
         //consigue el numero de requerido
-        var requeridos = $(".requeridos").val();
+        let requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
-        var req = [requeridos, id_usuario];
+        let req = [requeridos, id_usuario];
+
+
+
 
         //si se presiona aceptar se continua con el proceso
         swal({
             title: "¿Cerrar caja?",
             icon: "warning",
             buttons: ['Cancelar', 'Cerrar']
-        })
-            .then((Cerrar) => {
+        }).then((Cerrar) => {
 
-                //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
-                if (Cerrar) {
+            //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
+            if (Cerrar) {
 
-                    var datos = $("#TablaEd").DataTable().data().toArray();
+                // Busca los datos en la tabla
+                let table = document.getElementById("tablaeditable");
+                let tr = table.getElementsByTagName("tr");
+                let items = new Array;
+
+                for (let i = 0; i < tr.length; i++) {
+
+                    items[i] = {
+                        "iditem": tr[i].id,
+                        "alistados": $(tr[i]).find("input").val(),
+                    };
+                }
+
+                //guarda el tipo de caja en una variable
+                var tipocaja = $("#caja").val();
 
 
-                    var items = new Array();
-                    for (var i in datos) {
+                $.ajax({
+                    url: 'api/alistar/empacar',//url de la funcion
+                    method: 'post',//metodo post para mandar datos
+                    data: { 'req': req, "tipocaja": tipocaja, "items": items },//datos que se enviaran 
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (res) {
 
-                        items[i] = {
-                            "codigo": datos[i][3],
-                            "alistados": $(datos[i][1]).val()
+                            swal("¡Caja cerrada exitosamente!", {
+                                icon: "success",
+                            }).then((event) => {
+
+                                location.reload(true);
+
+                            });
+
+                        } else {
+
+                            swal("¡Error al cerrar la caja!", {
+                                icon: "error",
+                            });
+
                         }
 
                     }
-
-                    //guarda el tipo de caja en una variable
-                    var tipocaja = $("#caja").val();
-
-
-                    $.ajax({
-                        url: 'api/alistar/empacar',//url de la funcion
-                        method: 'post',//metodo post para mandar datos
-                        data: { 'req': req, "tipocaja": tipocaja, "items": items },//datos que se enviaran          
-                        success: function (res) {
-
-                            if (res) {
-
-                                swal("¡Caja cerrada exitosamente!", {
-                                    icon: "success",
-                                })
-                                    .then((event) => {
-
-                                        location.reload(true);
-
-                                    });
-
-                            } else {
-
-                                swal("¡Error al cerrar la caja!", {
-                                    icon: "error",
-                                });
-
-                            }
-
-                        }
-                    });
-                }
-            });
+                });
+            }
+        });
 
     });
-
-    // FUNCION QUE FILTRA ITEMS POR UBICACION
-    $("#ubicacion").change(function (e) {
-
-        cambiarUbicacion();
-
-    });
-
 });
+
 
 
 /* ============================================================================================================================
@@ -285,7 +248,7 @@ $(document).ready(function () {
 ============================================================================================================================*/
 
 // FUNCION QUE BUSCA EL CODIGO DE BARRAS
-function BuscarCodBar() {
+function buscarCodbar() {
 
     //consigue el codigo de barras
     let codigo = $('#codbarras').val();
@@ -296,34 +259,68 @@ function BuscarCodBar() {
 
     // ajax para ejecutar un script php mandando los datos
     return $.ajax({
+        // url: 'ajax/alistar.items.ajax.php',//url de la funcion
         url: 'api/alistar/items',//url de la funcion
-        type: 'POST',//metodo post para mandar datos
+        type: 'GET',//metodo post para mandar datos
         data: { "codigo": codigo, "req": req },//datos que se enviaran
-        dataType: 'json',
+        dataType: 'JSON',
         success: function (res) {
-            AgregarItem(res);
 
+            agregarItem(res, req);
             $('#codbarras').val("");
-
+            $("#codbarras").focus();
         }
-
     });
 
 
 }
 
+
+// FUNCIONQ UE QUITA UN ITEM DE LA CAJA
+function eliminarItem(iditem, req) {
+
+    return $.ajax({
+        type: "POST",
+        // url: "ajax/alistar.eliminar.ajax.php",
+        url: "api/alistar/eliminaritem",
+        data: { "iditem": iditem, "req": req },
+        dataType: "JSON",
+        success: function (res) {
+
+            if (res != false) {
+                $(`#E${iditem}`).remove();
+            } else {
+                var toastHTML = '<p class="truncate">No se pudo eliminar el item</span></p>';
+                M.toast({ html: toastHTML, classes: "red darken-4" });
+            }
+        }
+    });
+
+}
+
+// FUNCION QUE RECARGA LAS TABLAS
+function recargarItems() {
+
+    // se recarga tablas y ubicacion
+    let ubicacion = $('#ubicacion').val();
+    $.when(mostrarItems()).done(function () {
+        $.when(mostrarCaja()).done(function () {
+            $('#ubicacion').val(ubicacion);
+            cambiarUbicacion();
+        });
+    });
+}
+
 //FUNCION QUE AGREGA ITEM A LA TABLA EDITABLE
-function AgregarItem(res) {
+function agregarItem(res, req) {
 
     //busca el estado de del resultado
     //si encontro el codigo de barras muestar el contenido de la busqueda
     if (res['estado'] == 'encontrado') {
 
-        var items = res['contenido'];
-        // si se ecnuetra el item 2 o mas veces en alguna otra caja
-        if (items) {
-
-            swal(`${items['descripcion']}`, `disponibilidad: ${items['disponibilidad']}\t pedidos: ${items['pedidos']} `, {
+        let item = res['contenido'];
+        if (item) {
+            swal(`${item['descripcion']}`, `disponibilidad: ${item['disponibilidad']}\t pedidos: ${item['pedidos']} `, {
                 content: {
                     element: "input",
                     attributes: {
@@ -333,85 +330,132 @@ function AgregarItem(res) {
                 },
             })
                 .then((value) => {
+                    // consigue el valor maximo en decenas que puede valer la cantidad de alistados
+                    // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
+                    let a = 0;
+                    let pot = item['pedidos'];
+                    do {
+                        a++;
+                        pot = pot / 10;
+                    } while (pot > 1);
+                    let maxvalue = Math.pow(10, a);
+
                     if (!value) {
                         value = 1;
                     }
-                    var tabla = $('#TablaEd').DataTable();
-                    tabla.row.add([
-                        items['descripcion'],
-                        `<input type= 'number' min='1' class='alistados eliminaritem' value='${value}'>`,
-                        items['pedidos'],
-                        items['codigo'],
-                        items['iditem'],
-                        items['referencia'],
-                        items['disponibilidad'],
-                        items['ubicacion'],
-                        `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
-                    <i class='fas fa-times'></i>" 
-                    </button></tr>`,
-                    ]).draw(false);
+                    if (value < maxvalue * 10) {
 
-                    $("#TablaE").removeClass("hide");
+                        if (value > maxvalue) {
 
-                    // se muestra un mensaje con el item agregado
-                    var toastHTML = '<p class="truncate">Agregado Item <span class="yellow-text">' + items['descripcion'] + '</span></p>';
-                    M.toast({ html: toastHTML, classes: "light-green darken-4 rounded", displayLength: 500 });
-                    $("#codbarras").focus();
+                            var toastHTML = `<p class='truncate black-text'><i class='fas fa-exclamation-circle'></i> Revisar cantidad alistada</span></p>`;
+                            M.toast({
+                                html: toastHTML, classes: 'yellow lighten-2',
+                            });
+                        }
+
+                    } else {
+
+                        var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Cantidad alistada es muy grande</span></p>`;
+                        M.toast({
+                            html: toastHTML, classes: "red lighten-2'",
+                        });
+                        value = 1;
+
+                    }
+                    item['alistados'] = value;
+
+                    return $.ajax({
+                        // url: 'ajax/alistar.items.ajax.php',//url de la funcion
+                        url: 'api/alistar/items',//url de la funcion
+                        type: 'POST',//metodo post para mandar datos
+                        data: { 'item': item, 'req': req },//datos que se enviaran
+                        dataType: 'JSON',
+                        success: function (res) {
+                            if (res) {
+                                //se recargan los datos en las tablas
+                                recargarItems();
+                            } else {
+                                swal('Error al alistar el item', {
+                                    icon: 'error',
+                                }).then((value) => {
+                                    $('#codbarras').focus();
+                                });
+                            }
+                        }
+                    });
+
+
                 });
+
         } else {
             swal('Item ya fue alistado en otra caja', {
-                icon: "warning",
+                icon: 'warning',
+            }).then((value) => {
+                $('#codbarras').focus();
             });
-            $("#codbarras").focus();
+
         }
         //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
     } else {
         swal(res['contenido'], {
-            icon: "warning",
+            icon: 'warning',
+        }).then((value) => {
+            $('#codbarras').focus();
         });
     }
 
 }
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
-function MostrarItems() {
+function mostrarItems() {
 
     //consigue el numero de requerido
-    var requeridos = $(".requeridos").val();
+    var requeridos = $('.requeridos').val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
 
     return $.ajax({
 
-        url: "api/alistar/items",
-        method: "GET",
-        data: { "req": req },
-        dataType: "JSON",
+        url: 'api/alistar/items',//url de la funcion
+        method: 'GET',
+        data: { 'req': req },
+        dataType: 'JSON',
         success: function (res) {
+            //si encuentra el item mostrarlo en la tabla
+            if (res['estado'] != 'error') {
 
-            //si ecnuentra el item mostrarlo en la tabla
-            if (res['estado'] != "error") {
-                let tabla = $("#TablaVi").DataTable();
-                //refresca las tablas, para volver a cargar los datos
-                tabla.clear();
-                // $('#Rerror').hide(); 
-                var items = res['contenido'];
 
-                for (var i in items) {
+                let items = res['contenido'];
 
-                    tabla.row.add([
-                        items[i]['descripcion'],
-                        items[i]['disponibilidad'],
-                        items[i]['pedidos'],
-                        items[i]['codigo'],
-                        items[i]['iditem'],
-                        items[i]['referencia'],
-                        items[i]['alistados'],
-                        items[i]['ubicacion'],
-                    ]).draw();
+                $('#tablavista').html('');
+
+
+                for (let i in items) {
+
+                    // se guarda el id del item en el id de la fila
+                    $('#tablavista').append($(`<tr id='V${items[i]['iditem']}'>
+                                            <td>${items[i]['descripcion']}</td>
+                                            <td>${items[i]['disponibilidad']}</td>
+                                            <td>${items[i]['pedidos']}</td>
+                                            <td>${items[i]['ubicacion']}</td>
+                                        </tr>`));
 
                 }
 
+                // se carga el menu seleccion de ubicaciones
+                let ubicaciones = res['ubicaciones'];
+                $('#ubicacion').html('');
+                $('#ubicacion').append($(`<option value=''  selected>Ubicacion</option>`));
+                for (let i in ubicaciones) {
+
+                    $('#ubicacion').append($(`<option value="${ubicaciones[i]}"> ${ubicaciones[i]}</option>`));
+
+                }
+                $('.entradas').removeClass('hide');
+
+            } else {
+                //oculta las entradas
+                $('.entradas').addClass('hide');
             }
 
         }
@@ -421,52 +465,74 @@ function MostrarItems() {
 }
 
 // FUNCION QUE CREA O MUESTRA UNA CAJA
-function MostrarCaja() {
+function mostrarCaja() {
 
     //consigue el numero de requerido
-    var requeridos = $(".requeridos").val();
+    var requeridos = $('.requeridos').val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
 
     return $.ajax({
 
-        url: "api/alistar/cajas",
-        method: "POST",
-        data: { "req": req },
-        dataType: "JSON",
+        // url: 'ajax/alistar.cajas.ajax.php',
+        url: 'api/alistar/cajas',
+        method: 'POST',
+        data: { 'req': req },
+        dataType: 'JSON',
         success: function (res) {
 
             // si la caja ya esta creada muestra los items en la tabla de alistar
             if (res['estadocaja'] == 'yacreada') {
                 //si encontro el codigo de barras muestar el contenido de la busqueda
                 if (res['estado'] == 'encontrado') {
-                    let tabla = $('#TablaEd').DataTable();
+
                     //refresca las tablas, para volver a cargar los datos
-                    tabla.clear();
+                    $('#tablaeditable').html('');
 
                     var items = res['contenido'];
-
+                    let maxvalue;
                     for (var i in items) {
-                        tabla.row.add([
-                            items[i]['descripcion'],
-                            `<input type= 'number' min='1' class='alistados eliminaritem' value='1'>`,
-                            items[i]['pedidos'],
-                            items[i]['codigo'],
-                            items[i]['iditem'],
-                            items[i]['referencia'],
-                            items[i]['disponibilidad'],
-                            items[i]['ubicacion'],
-                            `<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
-                            <i class='fas fa-times'></i>" 
-                            </button></tr>`,
-                        ]).draw();
+                        // consigue el valor maximo en decenas que puede valer la cantidad de alistados
+                        // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
+                        let a = 0;
+                        let pot = items[i]['pedido'];
+                        do {
+                            a++;
+                            pot = pot / 10
+                        } while (pot > 1);
+                        maxvalue = Math.pow(10, a);
+                        colorwarning = '';
+                        titlewarning = '';
+                        console.log(maxvalue);
+                        console.log(items[i]['alistado']);
+                        console.log('--------------------------------');
+                        if (items[i]['alistado'] > maxvalue) {
+                            colorwarning = 'yellow lighten-2';
+                            titlewarning = 'Revisar cantidad alistada';
+                        }
+                        // se guerda el id del item en el id de la fila 
+                        $('#tablaeditable').append($(`<tr
+                                                       id='E${items[i]['iditem']}'
+                                                       class='${colorwarning}'
+                                                       title='${titlewarning}'
+                                                      >
+                                                        <td>${items[i]['descripcion']}</td>
+                                                        <td>${items[i]['pedido']}</td>
+                                                        <td><input type= 'number' min='1' class='alistados eliminaritem' min=1 max=${maxvalue * 10} required value='${items[i]['alistado']}'></td>
+                                                        <td><button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
+                                                            <i class='fas fa-times'></i>
+                                                        </button></tr></td>
+                                                      </tr>`));
+
                     }
+
+                    $('#TablaE').removeClass('hide');
                     // si hay una caja sin cerrar en otra requisicion muestra mensaje adventencia y recarga la pagina          
                 } else if (res['estado'] == 'error2') {
                     swal({
-                        title: "!No se puede generar caja¡",
-                        text: "Caja sin cerrar en la requisicion " + res['contenido'],
-                        icon: "warning",
+                        title: '!No se puede generar caja¡',
+                        text: `Caja sin cerrar en la requisicion ${res['contenido']}`,
+                        icon: 'warning',
                     })
                         .then((ok) => {
                             location.reload();
@@ -483,65 +549,26 @@ function MostrarCaja() {
 function cambiarUbicacion() {
     let ubicacion = $('#ubicacion').val(); //dato de ubicacion del menu de seleccion 
 
-    let tabla = $("#TablaVi").DataTable();
-
+    $('#TablaVi').removeClass('hide');
     // evita que alistadores vean todos los items
-    if (perfil == 3 && ubicacion == '') {
+    if (perfil == 3 && (ubicacion == '' || !ubicacion)) {
         ubicacion = '---';
     }
-    // tabla.columns(7).search(ubicacion).draw();
-    // ubicacion="EB09";
-    tabla.columns(7).search(ubicacion).draw();
-}
 
-// FUNCION QUE INICIA DATATABLE
-function iniciar_tabla(tabla) {
+    var filter, table, tr, td, i;
 
-    if (!tabla) {
-        tabla = "table.datatable";
-    }
-
-    var tabla = $(tabla).DataTable({
-
-        responsive: true,
-
-        "bLengthChange": false,
-        "bFilter": true,
-        "sDom": '<"top">t<"bottom"irp><"clear">',
-        "pageLength": 5,
-        "columnDefs": [{
-            "targets": 5,
-            "orderable": false
-        }],
-        "language": {
-            "sProcessing": "Procesando...",
-            "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "Ningún dato disponible en esta tabla",
-            "sInfo": "_TOTAL_ Items",
-            "sInfoEmpty": "",
-            "sInfoFiltered": "(filtrado _MAX_ registros)",
-            "sSearch": "Buscar:",
-            "sUrl": "",
-            "sInfoThousands": ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior"
-            },
-        },
-        scrollY: "400px",
-        scrollCollapse: true,
-        paging: false,
-        order: [[7, 'asc']],
-
-        rowGroup: {
-            dataSrc: 7
+    filter = ubicacion.toUpperCase();
+    table = document.getElementById('tablavista');
+    tr = table.getElementsByTagName('tr');
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[3];
+        if (td) {
+            if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+            } else {
+                tr[i].style.display = 'none';
+            }
         }
-
-    });
-
-    return tabla;
+    }
 
 }

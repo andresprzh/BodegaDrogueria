@@ -1,19 +1,14 @@
 <!-- ============================================================================================================================
                                                     FORMAULARIO    
 ============================================================================================================================ -->
-<div class="container fixed" style="padding-left:15px;" >
+<div class="fixed" style="padding-left:15px;" >
 
     <div class="row">
-
-        <div class="input-field col s10 m10 l12 " >
-
-            <select   list="requeridos" name="requeridos" class="requeridos" id="requeridos">
-                <option value="" disabled selected>Seleccionar</option>
-            </select>
-            <label  style="font-size:12px;">Número requisicion</label>
-
-        </div>
-        
+  
+        <select   list="requeridos" name="requeridos" class="requeridos browser-default col s12 " id="requeridos">
+            <option value="" disabled selected>Número requisicion</option>
+        </select>
+            
     </div>
 
 </div>
@@ -24,65 +19,66 @@
 ============================================================================================================================-->
 
 <div class="row " id="contenido"  >
-    
-    <div class="col s12" id="tabsmenu">
-        
-            <ul class="tabs ">
-                <li class="tab col s6" id="tabsI1">
-                    <a class="black-text"  href="#TablaV">
-                        <i class="fas fa-clipboard-list"></i>
-                        <span style="font-size:100%"> Items por alistar</span>
-                    </a>
-                </li>
-                <li class="tab col s6 " id="tabsI2">
-                    <a class="black-text"  href="#TablaE">
-                        <i class="fas fa-box-open"></i>
-                        <span style="font-size:100%"> Caja en proceso</span>
-                    </a>
-                </li>
-            </ul>
+            
+    <ul class="tabs col s12 " id="tabsmenu" >
+        <li class="tab col s6" id="tabsI1">
+            <a class="black-text"  href="#TablaV">
+                <i class="fas fa-clipboard-list"></i>
+                <span style="font-size:100%"> Items por alistar</span>
+            </a>
+        </li>
+        <li class="tab col s6 " id="tabsI2">
+            <a class="black-text"  href="#TablaE">
+                <i class="fas fa-box-open"></i>
+                <span style="font-size:100%"> Caja en proceso</span>
+            </a>
+        </li>
+    </ul>
 
-    </div>
+    
     <!-- ==============================================================
                             TABLA VISTA O MUESTRA    
     ============================================================== -->
     
-    <div class="col s12 " id="TablaV" >
-        
-        <select  list="ubicacion" name="ubicacion" class="browser-default" id="ubicacion">
-            <option value=""  selected>Ubicacion</option>
-        </select>
-
-        <!-- INPUT PARA AGREGAR ITEMS -->
-        <div class="row ">      
-            <div class="input-field center col s12 m10 l10 hide  input_barras">
+    <div  id="TablaV" >
+        <div class=" entradas hide ">
+            <div class="col s9">
+                <select  list="ubicacion" name="ubicacion" class="browser-default " id="ubicacion">
+                    <option value=""  selected>Ubicacion</option>
+                </select>
+            </div> 
+            <div class="col s3">
+                <button id="refresh" title="Recargar" onclick="recargarItems()" class="btn waves-effect waves-light green darken-3 " >
+                    <i class="fas fa-sync"></i>
+                </button>
+            </div> 
+            <!-- INPUT PARA AGREGAR ITEMS -->
+            <div class="input-field center col s12 m11 l11 input_barras">
 
                 <input  id="codbarras" type="text" class="validate">
                 <label for="codbarras" class="right">Item</label>
 
-            </div>  
-            <div class="input-field col hide-on-small-only m1 l2 hide input_barras">
+            </div> 
+            <div class="input-field col hide-on-small-only m1 l2  input_barras">
 
                 <button id="agregar" title="Buscar Item" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
                     <i class="fas fa-plus"></i>
                 </button>
                 
             </div>
+            
         </div>
 
-        <table class="datatable centered " id="TablaVi" style="width:100%" >
+
+        <table class="highlight centered hide" id="TablaVi"  style="width:100%" >
 
             <thead>
             
-            <tr class="white-text green darken-3 ">
+            <tr class="white-text green darken-3">
 
                 <th>Descripción</th>
-                <th>Disponibilidad</th>
+                <th>Disponibles</th>
                 <th>Solicitados</th>
-                <th>Codigo de barras</th>
-                <th>ID Item</th>
-                <th>Referencia</th>               
-                <th data-priority="2">Alistados</th>
                 <th>Ubicacion</th>
                 
             </tr>
@@ -99,24 +95,25 @@
     <!-- ==============================================================
                 TABLA EDITABLE    
     ============================================================== -->
-    <div class="col s12" id="TablaE" >
+    <div id="TablaE" class="hide" >
 
-
-        <table class="datatable centered " id="TablaEd" style="width:100%">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <form id="formalistados">
+        <table class="striped centered " id="TablaEd"  style="width:100%">
         
             <thead>
 
             <tr  class="white-text green darken-3" >
 
                 <th>Item</th>
-                <th>Alistados</th>
                 <th>Solicitados</th>
-                <th>Codigo de barras</th>
-                <th>ID Item</th>
-                <th>Referencia</th>
-                <th>Disponibilidad</th>
-                <th>Ubicacion</th>
-                <th data-priority="2" class='black-text'>Eliminar</th>
+                <th>Alistados</th>
+                <th class='grey-text'><i class='fas fa-times-circle'></i></th>
+                
 
             </tr>
 
@@ -139,7 +136,7 @@
 
                         <div class="input-field col s8 m7 l4 " >
 
-                            <select   name='caja'  class='carcaja' id='caja'>
+                            <select   name='caja'  class='carcaja browser-default ' id='caja'>
                                 
                                 <option selected value='CRT'>Caja carton</option>
                                 <option value='CPL'>Caja plastica</option>
@@ -149,13 +146,11 @@
 
                             </select>
 
-                            <label  style="font-size:17px;">Caja</label>
-
                         </div>
 
                         <div class="input-field col s4 m2 l2">
 
-                            <button id="cerrar" class="btn waves-effect tea darken-4 col s12 m12 l8" >
+                            <button id="cerrar" type="submit" class="btn waves-effect tea darken-4 col s12 m12 l8" >
                                 Cerrar
                             </button>
                             
@@ -168,6 +163,7 @@
             </div>
 
         </div>
+        </form>
             
     </div>
 
@@ -194,9 +190,7 @@
 </div>  
 
 </div>
-<style scoped>
 
-</style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->

@@ -10,7 +10,7 @@ class ControladorAlistar {
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($req=null) {
+    function __construct($req) {
         
         $this->req=$req;
         $this->modelo=new ModeloAlistar($req);
@@ -21,11 +21,12 @@ class ControladorAlistar {
                                                         FUNCIONES   
     ============================================================================================================================*/
 
+    // busca los o el item en la tabla de alistado
     public function ctrBuscarItems($cod_barras){
         
         $busqueda=$this->modelo->mdlMostrarItems($cod_barras);
         
-        
+
         if ($busqueda->rowCount() > 0) {
 
             if($busqueda->rowCount() == 1){
@@ -47,31 +48,22 @@ class ControladorAlistar {
                                            "origen"=>$row["lo_origen"],
                                            "destino"=>$row["lo_destino"]
                                          ]
-                        ];
+                         ];
                 
                 // en el arreglo se guarda el estado de la consulta         
                 switch ($itembus["estado"]) {
 
                     //0 si encontro algun resultaod en la consulta
                     case 0:
-                        $itembus["estado"]='encontrado';
+                        $itembus["estado"]="encontrado";
                         break;
 
-                    // 1 si el item ya esta siendo alistado por alguien
+                    // 1 si el item ya esta siendo alistado pro alguien
                     case 1:
-                        $itembus["estado"]='error1';
-                        $itembus["contenido"]='Item en alistamiento por '.$itembus['contenido']['alistador'];
+                        $itembus["estado"]="error1";
+                        $itembus["contenido"]="El item ya fue Alistado";
                         break;
 
-                    // 2 si el item ya fue alistado en la caja
-                    case 2:
-                        $itembus["estado"]='error1';
-                        $itembus["contenido"]='Item ya alistado en la caja '.$itembus['contenido']['caja'].' por '.$itembus['contenido']['alistador'];
-                        break;
-                    case 3:
-                        $itembus["estado"]='error1';
-                        $itembus["contenido"]='Item ya alistado en la caja '.$itembus['contenido']['caja'].' por '.$itembus['contenido']['alistador'];
-                        break;
                 }
                 //retorna el item a la funcion
                 return $itembus;
@@ -81,13 +73,13 @@ class ControladorAlistar {
                 $itembus["estado"]=["encontrado"];
 
                 $cont=0;
-                
+
                 while($row = $busqueda->fetch()){
 
                     //solo muestra los items que no estan alistados
-                    if($row['estado']==0){
+                    if($row["estado"]==0){
                         
-                        $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                        $itembus["contenido"][]=["codigo"=>$row["ID_CODBAR"],
                                            "iditem"=>$row["item"],  
                                            "referencia"=>$row["ID_REFERENCIA"],
                                            "descripcion"=>$row["DESCRIPCION"],
@@ -98,11 +90,15 @@ class ControladorAlistar {
                                             ];
                         
                         $cont++;
-
+                        $itembus["ubicaciones"][$cont]=$row["ubicacion"];                          
                     }
 
                 }
-
+                
+                if ($cont>0) {
+                    $itembus["ubicaciones"]=array_unique($itembus["ubicaciones"]);
+                }
+                
                 return $itembus;
 
             }
@@ -116,64 +112,7 @@ class ControladorAlistar {
         }
     }
 
-    public function ctrBuscarIE($item)
-    {
-        $busqueda=$this->modelo->mdlMostrarIE($item);
-        
-        // return $busqueda;
-        if ($busqueda->rowCount() > 0) {
-
-            if($busqueda->rowCount() == 1){
-
-                $row = $busqueda->fetch();
-
-                //guarda los resultados en un arreglo
-                $itembus=["estado"=>"encontrado",
-                           "contenido"=> ["codigo"=>$row["ID_CODBAR"],
-                                           "iditem"=>$row["ID_ITEM"],  
-                                           "referencia"=>$row["ID_REFERENCIA"],
-                                           "descripcion"=>$row["DESCRIPCION"],
-                                         ]
-                         ];
-                
-               
-                return $itembus;
-
-            }else {
-
-                $itembus["estado"]=["encontrado"];
-
-                $cont=0;
-
-                while($row = $busqueda->fetch()){
-                        
-                    $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                        "iditem"=>$row["ID_ITEM"],  
-                                        "referencia"=>$row["ID_REFERENCIA"],
-                                        "descripcion"=>$row["DESCRIPCION"],
-                                        ];
-                    $cont++;
-
-                }
-
-                return $itembus;
-
-            }
-
-        //si no encuentra resultados devuelve "error"
-        }else{
-
-            return ['estado'=>"error",
-                    'contenido'=>"Item no encontrado!"];
-
-        }
-    }
-
-    public function ctrAgregarIE($items){
-        $resultado=$this->modelo->mdlAgregarIE($items);
-        return $resultado;
-    }
-    
+    //crea una caja si no existe
     public function ctrCrearCaja(){
         
         $busqueda=$this->modelo->mdlMostrarNumCaja();
@@ -182,18 +121,16 @@ class ControladorAlistar {
         $row=$busqueda->fetch();
         
         
-
-         //si tiene cajas sin cerrar no crea una nueva
-         if ($row['numcaja']) {
+        //si tiene cajas sin cerrar no crea una nueva
+        if ($row['numcaja']) {
             // libera conexion para hace otra sentencia
             $busqueda->closeCursor();
             //busca los items en la caja
             $resultado=$this->ctrBuscarItemCaja($row['numcaja']);
             $resultado["estadocaja"]="yacreada";
             return $resultado ;
-
-         // si no tiene cajas sin cerrar crea otra caja
-         }else{
+        // si no tiene cajas sin cerrar crea otra caja
+        }else{
 
             // libera conexion para hace otra sentencia
             $busqueda->closeCursor();
@@ -211,47 +148,22 @@ class ControladorAlistar {
                 return $resultado;
 
             }
-            
 
-         }
+        }
 
     }
 
+    // busca los items de 1 caja
     public function ctrBuscarItemCaja($numcaja){
         
-        $busqueda=$this->modelo->mdlMostrarItemsCaja($numcaja);
+        $busqueda=$this->modelo->mslMostrarItemsCaja($numcaja);
 
         if ($busqueda->rowCount() > 0) {
 
             $itembus["estado"]="encontrado";
 
             $cont=0;
-
-            while($row = $busqueda->fetch()){
-                
-                // si hay cajas sin cerrar en otra requisicion
-                if ($row['no_req']!=$this->req[0]) {
-                    $itembus=['estado'=>"error2",
-                    'contenido'=>$row['no_req']];
-                    return $itembus;
-                    break;
-                }
-                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                    "iditem"=>$row["item"],    
-                                    "referencia"=>$row["ID_REFERENCIA"],
-                                    "descripcion"=>$row["DESCRIPCION"],
-                                    "disponibilidad"=>$row["disp"],
-                                    "pedidos"=>$row["pedido"],
-                                    "alistados"=>$row["alistado"],
-                                    'ubicacion'=>$row["ubicacion"],
-                                    'origen'=>$row["lo_origen"],
-                                    'destino'=>$row["lo_destino"]
-                                    ];
-                $cont++;
-
-            }
-
-            
+            $itembus["contenido"]= $busqueda->fetchAll();   
             
             return $itembus;
 
@@ -264,14 +176,14 @@ class ControladorAlistar {
         }
 
     }
-
+    
+    //cierra la caja
     public function ctrCerrarCaja($tipocaja,$items,$req){
+        // busca el numero de la ultima acaja abierta por el usuario
         $busqueda = $this->modelo->mdlMostrarNumCaja();
         $numcaja = ($busqueda->fetch());
         $numcaja = $numcaja['numcaja'];
         for ($i=0; $i <count($items) ; $i++) { 
-            $cod_barras=$items[$i]["codigo"];
-            $alistados=$items[$i]["alistados"];
             $resultado=$this->modelo->mdlAlistarItem($items[$i],$numcaja);
         }
         if ($resultado) {
@@ -281,6 +193,7 @@ class ControladorAlistar {
         return $resultado;
     }
 
+    // elimina 1 item de una caja
     public function ctrEliminarItemCaja($cod_barras,$no_caja=null){
         
         if ($no_caja==null) {
@@ -290,6 +203,19 @@ class ControladorAlistar {
         }
 
         return $this->modelo->mdlEliminarItemCaja($cod_barras,$no_caja);
+
+    }
+
+    // alista 1 solo item en la caja
+    public function ctrAlistarItem($item){
+        // busca el numero de la ultima acaja abierta por el usuario
+        $busqueda = $this->modelo->mdlMostrarNumCaja();
+        $numcaja = ($busqueda->fetch());
+        $numcaja = $numcaja['numcaja'];
+
+        $resultado=$this->modelo->mdlAlistarItem($item,$numcaja);
+
+        return $resultado;   
 
     }
 }
