@@ -420,12 +420,27 @@ DELIMITER $$
 		IF new.pendientes<=0 THEN
 			SET new.pendientes=0;
 			SET new.estado=1;
+		ELSE
+			SET new.estado=0;
 		END IF;
 				
 	END 
 $$
 
+-- item que modifica el estado  de los items pedidos al eliminar item alistado
+DROP TRIGGER IF EXISTS EliminarAlistado;
+DELIMITER $$
+	CREATE TRIGGER EliminarAlistado
+	BEFORE DELETE ON alistado
+	FOR EACH ROW 
+	BEGIN
 
+		UPDATE pedido
+		SET pedido.pendientes=pedido.pendientes+old.alistado
+		WHERE pedido.item=old.item;
+				
+	END 
+$$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
