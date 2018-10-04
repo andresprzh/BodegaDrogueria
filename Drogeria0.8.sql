@@ -370,7 +370,8 @@ DELIMITER $$
 			
 		ELSE 
 		
-			SELECT pedido.item as iditem,ITEMS.DESCRIPCION AS descripcion ,pedido.pendientes,pedido.pedido,alistado.alistado
+			SELECT pedido.item as iditem,pedido.no_req,ITEMS.DESCRIPCION AS descripcion ,
+			pedido.pendientes,pedido.pedido,alistado.alistado
 			FROM alistado
 			INNER JOIN pedido ON pedido.item=alistado.item
 			INNER JOIN ITEMS ON ID_ITEM=pedido.item
