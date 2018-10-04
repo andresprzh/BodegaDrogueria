@@ -212,7 +212,7 @@ class ControladorRequerir{
             //busca si la linea tiene datos de los items
             // es un item si la linea no tiene | de primer caracter, no tiene una sucecion de -, no tiene : y si no es salto de linea(ascii=10)
             if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10 && $linea[0]==' '){
-                
+                                
                 //obtienen los datos de cada item por linea
                 $item["id"]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
                 $item["no_req"]=$this->cabecera[0];//se obtiene el numero de requisicion
@@ -226,13 +226,15 @@ class ControladorRequerir{
                     
                      //se busca el id de los item usando la referencia en el documento subido
                     $modelo=new ModeloRequierir();
-                    $item="ID_REFERENCIA";
+                    // $item="ID_REFERENCIA";
                     $valor=$item["id"];
-                    $id_item=$modelo->mdlMostrarItem($item,$valor);
-                    $id_item=$id_item->fetch();           
+                    
+                    $id_item=$modelo->mdlMostrarItem('ID_REFERENCIA',$valor);
+                    $id_item=$id_item->fetch(); 
+                              
                     //se reemplaza la referencia del item por su id
                     $item["id"]=$id_item["ID_ITEM"];
-                    
+                   
                 }
                
                 

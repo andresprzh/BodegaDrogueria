@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `ITEMS` (
   
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 -- Volcando estructura para tabla BD_BIABLE01.COD_BARRAS
-
+	
 CREATE TABLE IF NOT EXISTS `COD_BARRAS` (
   `ID_ITEMS` char(6) DEFAULT NULL,
   `ID_CODBAR` char(15) BINARY NOT NULL,
@@ -120,6 +120,7 @@ CREATE TABLE caja(
 	transportador INT(10),
 	tipo_caja CHAR(3) ,
 	estado INT(1) DEFAULT '0' ,
+	peso FLOAT(6,2) DEFAULT 0,
 	abrir DATETIME ,
 	cerrar DATETIME,
 	enviado DATETIME ,
@@ -173,21 +174,21 @@ CREATE TABLE pedido(
 
 CREATE TABLE alistado(
 	item CHAR(6) NOT NULL,
+	no_req CHAR(10) NOT NULL,
 	no_caja INT(10) default 1,
 	alistado INT(5) default 0,
 	estado INT(1) NOT NULL default 1,
 
-
-
 	PRIMARY KEY(item,no_caja),
 
 	CONSTRAINT alistado_pedido
-	FOREIGN KEY(item) 
-	REFERENCES pedido(item),
-
+	FOREIGN KEY(item,no_req) 
+	REFERENCES pedido(item,no_req),
+	
 	CONSTRAINT pedido_caja
 	FOREIGN KEY(no_caja) 
 	REFERENCES caja(no_caja),
+	
 	
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -346,7 +347,7 @@ DELIMITER $$
 		
 		IF(numerocaja IS NULL) THEN
 		
-			SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.ubicacion,alistado.alistado,
+			SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pendientes,pedido.disp,pedido.ubicacion,alistado.alistado,
 			ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
 			alistado.no_caja,usuario.nombre,
 			requisicion.lo_origen,requisicion.lo_destino,MIN(COD_BARRAS.ID_CODBAR) AS ID_CODBAR
@@ -362,14 +363,14 @@ DELIMITER $$
 			OR ID_REFERENCIA LIKE codigo
 			OR LOWER(DESCRIPCION)  LIKE codigo ) 
 			AND pedido.no_req LIKE no_req
-			GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.ubicacion,alistado.alistado,
+			GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pendientes,pedido.disp,pedido.ubicacion,alistado.alistado,
 			ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
 			alistado.no_caja,usuario.nombre,
 			requisicion.lo_origen,requisicion.lo_destino;
 			
 		ELSE 
 		
-			SELECT pedido.item as iditem,ITEMS.DESCRIPCION AS descripcion ,pedido.pedido,alistado.alistado
+			SELECT pedido.item as iditem,ITEMS.DESCRIPCION AS descripcion ,pedido.pendientes,pedido.pedido,alistado.alistado
 			FROM alistado
 			INNER JOIN pedido ON pedido.item=alistado.item
 			INNER JOIN ITEMS ON ID_ITEM=pedido.item
@@ -393,21 +394,6 @@ DELIMITER $$
 	END 
 $$
 
--- trigger que modifica la cantidad alistada al agregar items
-DROP TRIGGER IF EXISTS EstadoAlistado;
-DELIMITER $$
-	CREATE TRIGGER EstadoAlistado
-	AFTER INSERT ON alistado
-	FOR EACH ROW 
-	BEGIN
-
-
-		UPDATE pedido
-		SET pendientes=pedido.pendientes-new.alistado
-		WHERE pedido.item=new.item;
-				
-	END 
-$$
 
 -- item que modifica el estado  de los items pedidos
 DROP TRIGGER IF EXISTS EstadoPedido;
@@ -426,6 +412,37 @@ DELIMITER $$
 				
 	END 
 $$
+-- trigger que modifica la cantidad alistada al agregar items
+DROP TRIGGER IF EXISTS EstadoAlistado;
+DELIMITER $$
+	CREATE TRIGGER EstadoAlistado
+	AFTER INSERT ON alistado
+	FOR EACH ROW 
+	BEGIN
+
+
+		UPDATE pedido
+		SET pendientes=pedido.pendientes-new.alistado
+		WHERE pedido.item=new.item;
+				
+	END 
+$$
+
+-- trigger que modifica la cantidad alistada al modificar items
+DROP TRIGGER IF EXISTS EstadoAlistadoUpd;
+DELIMITER $$
+	CREATE TRIGGER EstadoAlistadoUpd
+	AFTER UPDATE ON alistado
+	FOR EACH ROW 
+	BEGIN
+
+
+		UPDATE pedido
+		SET pendientes=pedido.pendientes+(old.alistado-new.alistado)
+		WHERE pedido.item=new.item;
+				
+	END 
+$$
 
 -- item que modifica el estado  de los items pedidos al eliminar item alistado
 DROP TRIGGER IF EXISTS EliminarAlistado;
@@ -440,6 +457,29 @@ DELIMITER $$
 		WHERE pedido.item=old.item;
 				
 	END 
+$$
+
+-- triger que asigna fecha de inicio cada ves que se crea una caja
+DELIMITER $$
+	CREATE TRIGGER InicioAbrir 
+	BEFORE INSERT ON caja
+	FOR EACH ROW 
+	BEGIN
+		SET new.abrir=now() ;
+	END 
+$$
+
+DELIMITER $$
+
+	CREATE TRIGGER CerrarCaja
+	BEFORE UPDATE ON caja
+	FOR EACH ROW 
+	BEGIN
+		IF new.estado=1 THEN 
+			SET new.cerrar=now() ;
+		END IF;
+	END 
+
 $$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************

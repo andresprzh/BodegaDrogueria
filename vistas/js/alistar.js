@@ -60,8 +60,6 @@ $(document).ready(function () {
 
     });
 
-
-
     // EVENTO CUANDO SE ESCRIBE EN EL INPUT DE LA TABLA EDITABLE(EVITA QUE SE DIGITEN LETRAS)
     $('#tablaeditable').on('keydown', 'input', function (e) {
 
@@ -81,7 +79,7 @@ $(document).ready(function () {
         }
     });
 
-    // EVENTO CUANDO SE CAMBIA  EL INPUT DE LA TABLA EDITABLE(EVITA QUE SE DIGITEN LETRAS)
+    // EVENTO CUANDO SE CAMBIA  EL INPUT DE LA TABLA EDITABLE(VALIDA EL VALOR DIGITADO)
     $('#tablaeditable').on('change', 'input', function (e) {
         let alistados = $(this).val();
         const pedido = $('td:nth(1)', $(this).parents('tr')).text();
@@ -175,17 +173,15 @@ $(document).ready(function () {
     $('#formalistados').submit(function (e) {
         e.preventDefault();
         //consigue el numero de requerido
-        let requeridos = $(".requeridos").val();
+        let requeridos = $('.requeridos').val();
         //id usuario es obtenida de las variables de sesion
         let req = [requeridos, id_usuario];
 
 
-
-
         //si se presiona aceptar se continua con el proceso
         swal({
-            title: "¿Cerrar caja?",
-            icon: "warning",
+            title: '¿Cerrar caja?',
+            icon: 'warning',
             buttons: ['Cancelar', 'Cerrar']
         }).then((Cerrar) => {
 
@@ -193,35 +189,38 @@ $(document).ready(function () {
             if (Cerrar) {
 
                 // Busca los datos en la tabla
-                let table = document.getElementById("tablaeditable");
-                let tr = table.getElementsByTagName("tr");
+                let table = document.getElementById('tablaeditable');
+                let tr = table.getElementsByTagName('tr');
                 let items = new Array;
 
                 for (let i = 0; i < tr.length; i++) {
 
                     items[i] = {
-                        "iditem": tr[i].id,
-                        "alistados": $(tr[i]).find("input").val(),
+                        'iditem': tr[i].id.substr(1),
+                        'alistados': $(tr[i]).find('input').val(),
                     };
                 }
 
                 //guarda el tipo de caja en una variable
-                var tipocaja = $("#caja").val();
+                let tipocaja = $('#caja').val();
+                let pesocaja = $('#peso').val();
 
 
                 $.ajax({
                     url: 'api/alistar/empacar',//url de la funcion
                     method: 'post',//metodo post para mandar datos
-                    data: { 'req': req, "tipocaja": tipocaja, "items": items },//datos que se enviaran 
-                    dataType: 'JSON',
+                    data: { 'req': req, 'tipocaja': tipocaja, 'pesocaja': pesocaja, 'items': items },//datos que se enviaran 
+                    // dataType: 'JSON',
                     success: function (res) {
                         if (res) {
 
-                            swal("¡Caja cerrada exitosamente!", {
-                                icon: "success",
+                            swal('¡Caja cerrada exitosamente!', {
+                                icon: 'success',
                             }).then((event) => {
 
-                                location.reload(true);
+                                // location.reload(true);
+                                // vuelve a cargar las tablas
+                                recargarItems();
 
                             });
 
@@ -269,12 +268,12 @@ function buscarCodbar() {
             agregarItem(res, req);
             $('#codbarras').val("");
             $("#codbarras").focus();
+
         }
     });
 
 
 }
-
 
 // FUNCIONQ UE QUITA UN ITEM DE LA CAJA
 function eliminarItem(iditem, req) {
@@ -319,8 +318,9 @@ function agregarItem(res, req) {
     if (res['estado'] == 'encontrado') {
 
         let item = res['contenido'];
+
         if (item) {
-            swal(`${item['descripcion']}`, `disponibilidad: ${item['disponibilidad']}\t pedidos: ${item['pedidos']} `, {
+            swal(`${item['descripcion']}`, `disponibilidad: ${item['disponibilidad']}\t pendientes: ${item['pendientes']} `, {
                 content: {
                     element: "input",
                     attributes: {
@@ -328,63 +328,68 @@ function agregarItem(res, req) {
                         type: "number",
                     },
                 },
+                buttons: ["Cancelar", "Alistar"],
             })
                 .then((value) => {
-                    // consigue el valor maximo en decenas que puede valer la cantidad de alistados
-                    // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
-                    let a = 0;
-                    let pot = item['pedidos'];
-                    do {
-                        a++;
-                        pot = pot / 10;
-                    } while (pot > 1);
-                    let maxvalue = Math.pow(10, a);
 
-                    if (!value) {
-                        value = 1;
-                    }
-                    if (value < maxvalue * 10) {
+                    // alista el item si se presiona en alistar o se da en enter
+                    if (value != null) {
+                        // consigue el valor maximo en decenas que puede valer la cantidad de alistados
+                        // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
+                        let a = 0;
+                        let pot = item['pedido'];
+                        do {
+                            a++;
+                            pot = pot / 10;
+                        } while (pot > 1);
+                        let maxvalue = Math.pow(10, a);
 
-                        if (value > maxvalue) {
-
-                            var toastHTML = `<p class='truncate black-text'><i class='fas fa-exclamation-circle'></i> Revisar cantidad alistada</span></p>`;
-                            M.toast({
-                                html: toastHTML, classes: 'yellow lighten-2',
-                            });
+                        if (value === '') {
+                            value = 1;
                         }
 
-                    } else {
+                        if (value < maxvalue * 10) {
 
-                        var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Cantidad alistada es muy grande</span></p>`;
-                        M.toast({
-                            html: toastHTML, classes: "red lighten-2'",
-                        });
-                        value = 1;
+                            if (value > maxvalue) {
 
-                    }
-                    item['alistados'] = value;
-
-                    return $.ajax({
-                        // url: 'ajax/alistar.items.ajax.php',//url de la funcion
-                        url: 'api/alistar/items',//url de la funcion
-                        type: 'POST',//metodo post para mandar datos
-                        data: { 'item': item, 'req': req },//datos que se enviaran
-                        dataType: 'JSON',
-                        success: function (res) {
-                            if (res) {
-                                //se recargan los datos en las tablas
-                                recargarItems();
-                            } else {
-                                swal('Error al alistar el item', {
-                                    icon: 'error',
-                                }).then((value) => {
-                                    $('#codbarras').focus();
+                                var toastHTML = `<p class='truncate black-text'><i class='fas fa-exclamation-circle'></i> Revisar cantidad alistada</span></p>`;
+                                M.toast({
+                                    html: toastHTML, classes: 'yellow lighten-2',
                                 });
                             }
+
+                        } else {
+
+                            var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Cantidad alistada es muy grande</span></p>`;
+                            M.toast({
+                                html: toastHTML, classes: "red lighten-2'",
+                            });
+                            value = 1;
+
                         }
-                    });
+                        item['alistados'] = value;
 
+                        return $.ajax({
+                            // url: 'ajax/alistar.items.ajax.php',//url de la funcion
+                            url: 'api/alistar/items',//url de la funcion
+                            type: 'POST',//metodo post para mandar datos
+                            data: { 'item': item, 'req': req },//datos que se enviaran
+                            dataType: 'JSON',
+                            success: function (res) {
+                                if (res) {
+                                    //se recargan los datos en las tablas
+                                    recargarItems();
+                                } else {
+                                    swal('Error al alistar el item', {
+                                        icon: 'error',
+                                    }).then((value) => {
+                                        $('#codbarras').focus();
+                                    });
+                                }
+                            }
+                        });
 
+                    }
                 });
 
         } else {
@@ -421,6 +426,7 @@ function mostrarItems() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
+
             //si encuentra el item mostrarlo en la tabla
             if (res['estado'] != 'error') {
 
@@ -433,10 +439,10 @@ function mostrarItems() {
                 for (let i in items) {
 
                     // se guarda el id del item en el id de la fila
-                    $('#tablavista').append($(`<tr id='V${items[i]['iditem']}'>
+                    $('#tablavista').append($(`<tr id='V${i}'>
                                             <td>${items[i]['descripcion']}</td>
                                             <td>${items[i]['disponibilidad']}</td>
-                                            <td>${items[i]['pedidos']}</td>
+                                            <td>${items[i]['pendientes']}</td>
                                             <td>${items[i]['ubicacion']}</td>
                                         </tr>`));
 
@@ -480,7 +486,9 @@ function mostrarCaja() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-
+            //refresca las tablas, para volver a cargar los datos
+            $('#tablaeditable').html('');
+            $('#TablaE').addClass('hide');
             // si la caja ya esta creada muestra los items en la tabla de alistar
             if (res['estadocaja'] == 'yacreada') {
                 //si encontro el codigo de barras muestar el contenido de la busqueda
@@ -489,9 +497,10 @@ function mostrarCaja() {
                     //refresca las tablas, para volver a cargar los datos
                     $('#tablaeditable').html('');
 
-                    var items = res['contenido'];
+                    let items = res['contenido'];
+
                     let maxvalue;
-                    for (var i in items) {
+                    for (let i in items) {
                         // consigue el valor maximo en decenas que puede valer la cantidad de alistados
                         // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
                         let a = 0;
@@ -503,9 +512,6 @@ function mostrarCaja() {
                         maxvalue = Math.pow(10, a);
                         colorwarning = '';
                         titlewarning = '';
-                        console.log(maxvalue);
-                        console.log(items[i]['alistado']);
-                        console.log('--------------------------------');
                         if (items[i]['alistado'] > maxvalue) {
                             colorwarning = 'yellow lighten-2';
                             titlewarning = 'Revisar cantidad alistada';

@@ -2,13 +2,18 @@
                                                     FORMAULARIO    
 ============================================================================================================================ -->
 <div class="fixed" style="padding-left:15px;" >
-
+    <br>
     <div class="row">
-  
-        <select   list="requeridos" name="requeridos" class="requeridos browser-default col s12 " id="requeridos">
-            <option value="" disabled selected>Número requisicion</option>
-        </select>
-            
+        <div class="col s9 m9 l9">
+            <select   list="requeridos" name="requeridos" class="requeridos browser-default col s12 " id="requeridos">
+                <option value="" disabled selected>Número requisicion</option>
+            </select>
+        </div>
+        <div class="col s3 m3 l3">
+            <button id="refresh" title="Recargar" onclick="recargarItems()" class="btn waves-effect waves-light green darken-3 " >
+                <i class="fas fa-sync"></i>
+            </button>
+        </div>     
     </div>
 
 </div>
@@ -42,35 +47,23 @@
     
     <div  id="TablaV" >
         <div class=" entradas hide ">
-            <div class="col s9">
+            <div class="col s12">
                 <select  list="ubicacion" name="ubicacion" class="browser-default " id="ubicacion">
                     <option value=""  selected>Ubicacion</option>
                 </select>
             </div> 
-            <div class="col s3">
-                <button id="refresh" title="Recargar" onclick="recargarItems()" class="btn waves-effect waves-light green darken-3 " >
-                    <i class="fas fa-sync"></i>
-                </button>
-            </div> 
+            
             <!-- INPUT PARA AGREGAR ITEMS -->
-            <div class="input-field center col s12 m11 l11 input_barras">
+            <div class="input-field center col s12  input_barras">
 
                 <input  id="codbarras" type="text" class="validate">
                 <label for="codbarras" class="right">Item</label>
 
             </div> 
-            <div class="input-field col hide-on-small-only m1 l2  input_barras">
-
-                <button id="agregar" title="Buscar Item" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
-                    <i class="fas fa-plus"></i>
-                </button>
-                
-            </div>
-            
         </div>
 
 
-        <table class="highlight centered hide" id="TablaVi"  style="width:100%" >
+        <table class=" tabla highlight centered hide" id="TablaVi"  style="width:100%" >
 
             <thead>
             
@@ -103,7 +96,7 @@
         <br>
         <br>
         <form id="formalistados">
-        <table class="striped centered " id="TablaEd"  style="width:100%">
+        <table class="tabla striped centered " id="TablaEd"  style="width:100%">
         
             <thead>
 
@@ -134,7 +127,7 @@
 
                     <div class="row">
 
-                        <div class="input-field col s8 m7 l4 " >
+                        <div class="input-field col s4 m6 l4 " >
 
                             <select   name='caja'  class='carcaja browser-default ' id='caja'>
                                 
@@ -147,6 +140,13 @@
                             </select>
 
                         </div>
+
+                        <div class="input-field center col s4 m6 l4 input_barras">
+
+                            <input  id="peso" type="number" class="validate" required>
+                            <label for="peso" class="right">Peso en gr</label>
+
+                        </div> 
 
                         <div class="input-field col s4 m2 l2">
 
