@@ -169,7 +169,7 @@ $(document).ready(function () {
             });
     });
 
-    // EVENTO SI SE ENVIA EL FORMULARIO DE LA TALA EDITABLE
+    // EVENTO SI SE ENVIA EL FORMULARIO DE LA TABLA EDITABLE
     $('#formalistados').submit(function (e) {
         e.preventDefault();
         //consigue el numero de requerido

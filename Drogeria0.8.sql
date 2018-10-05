@@ -308,21 +308,17 @@ INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direc
 /* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP PROCEDURE IF EXISTS BuscarCod;
-DROP PROCEDURE IF EXISTS BuscarRecibido;
-DROP PROCEDURE IF EXISTS Buscarcaja;
-DROP PROCEDURE IF EXISTS BuscarItemsCaja;
-DROP PROCEDURE IF EXISTS BuscarIE;
-DROP FUNCTION IF EXISTS VerificarCaja;
+
 
 /* ELIMINA TRIGGER SI EXISTEN */
+DROP TRIGGER IF EXISTS SetPendientes;
+DROP TRIGGER IF EXISTS EstadoPedido;
+DROP TRIGGER IF EXISTS EstadoAlistado;
+DROP TRIGGER IF EXISTS EstadoAlistadoUpd;
+DROP TRIGGER IF EXISTS EliminarAlistado;
 DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
-DROP TRIGGER IF EXISTS AutoIncrementG;
-DROP TRIGGER IF EXISTS EstadoRecibido;
-DROP TRIGGER IF EXISTS ReqEnviado;
-DROP TRIGGER IF EXISTS ReqEnviado2;
 
-DROP FUNCTION IF EXISTS NumeroCaja;
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
 	CREATE  FUNCTION NumeroCaja(pers INT(10) )
@@ -340,7 +336,7 @@ DELIMITER $$
 	END 
 $$
 
-DROP PROCEDURE IF EXISTS BuscarCod;
+
 -- procedimiento que busca un Item con el codigo de barras en la la lista de rquerido especificada
 -- el procedimiento tambien cambia el estado del Item a 1 que significa que esta siendo alistado
 DELIMITER $$
@@ -388,7 +384,6 @@ DELIMITER $$
 $$
 
 -- trigger que inicializa pendientes
-DROP TRIGGER IF EXISTS SetPendientes;
 DELIMITER $$
 	CREATE TRIGGER SetPendientes
 	BEFORE INSERT ON pedido
@@ -402,7 +397,7 @@ $$
 
 
 -- item que modifica el estado  de los items pedidos
-DROP TRIGGER IF EXISTS EstadoPedido;
+
 DELIMITER $$
 	CREATE TRIGGER EstadoPedido
 	BEFORE UPDATE ON pedido
@@ -420,7 +415,6 @@ DELIMITER $$
 $$
 
 -- trigger que modifica la cantidad alistada al agregar items
-DROP TRIGGER IF EXISTS EstadoAlistado;
 DELIMITER $$
 	CREATE TRIGGER EstadoAlistado
 	AFTER INSERT ON alistado
@@ -436,7 +430,6 @@ DELIMITER $$
 $$
 
 -- trigger que modifica la cantidad alistada al modificar items
-DROP TRIGGER IF EXISTS EstadoAlistadoUpd;
 DELIMITER $$
 	CREATE TRIGGER EstadoAlistadoUpd
 	AFTER UPDATE ON alistado
@@ -452,7 +445,6 @@ DELIMITER $$
 $$
 
 -- item que modifica el estado  de los items pedidos al eliminar item alistado
-DROP TRIGGER IF EXISTS EliminarAlistado;
 DELIMITER $$
 	CREATE TRIGGER EliminarAlistado
 	BEFORE DELETE ON alistado
@@ -478,7 +470,7 @@ DELIMITER $$
 $$
 
 
-DROP TRIGGER IF EXISTS CerrarCaja;
+
 -- trigger que cierra caja y alista items cuando se cambia de estado a creddada (estado = 1)
 DELIMITER $$
 
@@ -502,300 +494,3 @@ $$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
--- *********************************************************************************************************************************************************************************************
--- *********************************************************************************************************************************************************************************************
-
-DELIMITER $$
-	CREATE PROCEDURE BuscarRecibido(IN codigo CHAR(15))
-	BEGIN
-
-		SELECT ITEMS.ID_CODBAR,id_referencia, descripcion,no_caja,alistado
-		FROM pedido
-		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-		WHERE COD_BARRAS.ID_CODBAR = codigo;
-
-	END 
-$$
-
-
--- procedimiento que busca las cajas por el numero de caja y la requisicion
-DELIMITER $$
-	CREATE PROCEDURE BuscarCaja(IN numcaja CHAR(10),IN req CHAR(10), IN est CHAR(2))
-	BEGIN
-		SELECT caja.no_caja, usuario.nombre,tipo_caja,abrir,cerrar,recibido
-		FROM caja 
-		INNER JOIN pedido ON pedido.no_caja=caja.no_caja
-		INNER JOIN usuario ON usuario.id_usuario=Alistador
-		WHERE caja.no_caja LIKE numcaja 
-		AND pedido.no_req=req
-		AND caja.no_caja <> 1
-		AND caja.estado like est 
-		GROUP BY caja.no_caja ;
-	END 
-$$
-
-
-
-
--- procedimiento que busca ITEMS de 1 caja
-DELIMITER $$
-	CREATE PROCEDURE BuscarItemsCaja(IN numcaja CHAR(10))
-	BEGIN
-
-		SELECT *
-		FROM caja 
-		INNER JOIN pedido ON pedido.no_caja=caja.no_caja
-		INNER JOIN usuario ON usuario.id_usuario=Alistador
-		WHERE caja.no_caja = numcaja 
-		AND caja.no_caja <> 1;
-
-	END 
-$$
-
-
--- procedimiento que busca cualquier Item con el parametro buscar que no este en los requeridos
-DELIMITER $$
-	CREATE PROCEDURE BuscarIE(IN buscar CHAR(40))
-	BEGIN
-		SELECT COD_BARRAS.ID_CODBAR, ITEMS.id_referencia,ITEMS.descripcion
-		FROM COD_BARRAS 
-		INNER JOIN ITEMS ON ITEMS.ID_CODBAR=COD_BARRAS.ID_CODBAR
-		LEFT JOIN pedido ON pedido.Item=ITEMS.ID_Item
-		WHERE (COD_BARRAS.ID_CODBAR =buscar
-		OR ITEMS.ID_REFERENCIA=buscar
-		OR ITEMS.DESCRIPCION LIKE concat('%',buscar,'%'))
-		AND pedido.Item IS NULL;
-	END 
-$$
-
--- procedimiento que verifica el estado de los items recibidos de una requisicion comparandolos con  los items pedidos o alistados
-DELIMITER $$
-	CREATE FUNCTION VerificarCaja(numcaja INT(10),req CHAR(10))
-	RETURNS TINYINT(1)
-	BEGIN
-		DECLARE cantidad TINYINT;
-		-- actualiza el estado de los items recibidos de una requisicion para recalcular el estado
-		UPDATE recibido
-		SET estado=0
-		WHERE no_req=req;
-		
-		-- cuenta la cantidad de items que tienen errores
-		SELECT COUNT(item) INTO cantidad
-		FROM recibido
-		WHERE no_caja=numcaja
-		AND no_req=req
-		AND estado <>4;
-		
-		-- si no hay errores regreasa verdadero
-		IF cantidad=0 THEN
-		
-			-- elimina los items repetidos fuera de la caja si la caja se verifico correctamente
-			DELETE item1
-			FROM
-			pedido AS item1,
-			pedido AS item2
-			WHERE item1.no_caja =1
-			AND item2.no_caja<>1
-			AND item1.item <=> item2.item
-			AND item1.no_req <=> item2.no_req;
-			
-			-- cambia el estado de la caja a recibida
-			UPDATE caja
-			SET estado=4
-			WHERE no_caja=numcaja;
-			return true;
-			
-		ELSE
-		
-			return false;
-			
-		END IF;
-		
-	END 
-$$
-
--- triger que asigna fecha de inicio cada ves que se crea una caja
-DELIMITER $$
-	CREATE TRIGGER InicioAbrir 
-	BEFORE INSERT ON caja
-	FOR EACH ROW 
-	BEGIN
-		SET new.abrir=now() ;
-	END 
-$$
-
-DELIMITER $$
-
-	CREATE TRIGGER CerrarCaja
-	BEFORE UPDATE ON caja
-	FOR EACH ROW 
-	BEGIN
-		IF new.estado=1 THEN 
-			SET new.cerrar=now() ;
-		END IF;
-	END 
-
-$$
-
-
-DELIMITER $$
-	CREATE TRIGGER EstadoRecibido 
-	BEFORE UPDATE ON recibido
-	FOR EACH ROW 
-	BEGIN
-	
-		DECLARE cja INT(10);
-		DECLARE numalistado INT(5);
-		DECLARE ubc VARCHAR(6);
-		DECLARE numpedido INT(5);
-		DECLARE ider INT(5);
-		DECLARE num INT(1);
-		DECLARE estado INT(1);
-								
-		-- busca si el item está mas de 1  vez en la requisicions
-		SELECT COUNT(no_caja) INTO num
-		FROM pedido
-		WHERE pedido.item = new.item
-		AND pedido.no_req = new.no_req;
-
-		--	si está se busca si dicha caja coincide con la que se recibio
-		IF num>1 THEN
-
-			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
-			FROM pedido
-			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-			WHERE ITEMS.ID_Item = new.item
-			AND pedido.no_req=new.no_req
-			AND pedido.no_caja=new.no_caja;
-			
-		-- si no se busca normalmente en pedido
-		ELSE
-			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
-			FROM pedido
-			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
-			WHERE ITEMS.ID_Item = new.item
-			AND pedido.no_req=new.no_req;
-	
-		END IF;
-
-		IF cja IS NULL THEN
-			SET new.estado=2;
-			SET cja=1;
-		ELSEIF cja<>new.no_caja THEN
-			SET new.estado=3;
-		ELSEIF new.recibidos<numalistado THEN
-			SET new.estado=0;
-		ELSEIF new.recibidos>numalistado THEN
-			SET new.estado=1;
-		ELSE 
-			SET new.estado=4;
-		END IF;
-
-		IF ubc IS NULL THEN
-			SET ubc='----';
-			SET numpedido=0;
-			SET numalistado=0;
-		END IF;
-		
-		IF new.estado<>4  THEN
-			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
-			VALUES(new.item,new.no_req,cja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
-		END IF;
-
-	END 	
-$$
-
-
--- trigger que modifica el estado de enviado de la requisicion 
--- y agrega los items en recibido con estado 2
-
-DELIMITER $$
-	CREATE TRIGGER ReqEnviado 
-	AFTER UPDATE ON pedido
-	FOR EACH ROW 
-	BEGIN
-		DECLARE numalistados TINYINT;		
-		DECLARE numrecibidos TINYINT;	
-		
-		SELECT count(estado) INTO numalistados
-		FROM pedido
-		WHERE (estado=0
-		OR estado=1)
-		AND no_req=new.no_req;
-		
-		SELECT count(estado) INTO numrecibidos
-		FROM pedido
-		WHERE estado<>4
-		AND estado<>3
-		AND no_req=new.no_req;
-		
-		
-      IF new.estado=2 THEN
-			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
-			VALUES(new.item,new.no_req,new.no_caja,0);
-		-- si el item fue corregido
-      ELSEIF new.estado=3 THEN 
-			-- inserta valores en pedido solo si no exites el registrp
-			INSERT INTO recibido (Item,No_Req,no_caja,recibidos) 
-			SELECT * FROM (SELECT new.item as item, new.no_req as req,new.no_caja as caja ,new.alistado as recibido) as temp
-			WHERE NOT EXISTS (
-				SELECT 1 FROM recibido WHERE item = new.item AND no_req=new.no_req AND no_caja=new.no_caja
-			) LIMIT 1;
-		  
-      ELSEIF new.estado=0 THEN
-      	DELETE FROM recibido
-      	WHERE item=new.item
-      	AND no_caja=new.no_caja;
-		END IF;
-        
-		IF numalistados=0 THEN
-			UPDATE requisicion
-			SET enviado=NOW(),estado=1
-			WHERE requisicion.no_req=new.no_req;
-		ELSE
-			UPDATE requisicion
-			SET estado=0
-			WHERE requisicion.no_req=new.no_req;
-		END IF;
-		
-		IF numrecibidos=0 THEN
-			UPDATE requisicion
-			SET enviado=NOW(),estado=1
-			WHERE requisicion.no_req=new.no_req;
-		END IF;		
-
-			
-	END 
-$$
-
-
-DELIMITER $$
-	CREATE TRIGGER ReqEnviado2
-	AFTER INSERT ON pedido
-	FOR EACH ROW 
-	BEGIN
-				
-
-		IF new.estado=3 THEN      
-			-- inserta valores en pedido solo si no exites el registrp
-			INSERT INTO recibido (Item,No_Req,no_caja,recibidos) 
-			SELECT * FROM (SELECT new.item as item, new.no_req as req,new.no_caja as caja ,new.alistado as recibido) as temp
-			WHERE NOT EXISTS (
-				SELECT 1 FROM recibido WHERE item = new.item AND no_req=new.no_req AND no_caja=new.no_caja
-			) LIMIT 1;
-
-      ELSEIF new.estado=0 THEN
---      IF new.estado=0 THEN
-      	DELETE FROM recibido
-      	WHERE item=new.item
-      	AND no_req=new.no_req
-      	AND no_caja=new.no_caja;
-		END IF;		
-		
-	END 
-$$
--- *********************************************************************************************************************************************************************************************
--- *********************************************************************************************************************************************************************************************
--- *********************************************************************************************************************************************************************************************
-
-

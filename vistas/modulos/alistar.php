@@ -71,7 +71,7 @@
 
                 <th>Descripción</th>
                 <th>Disponibles</th>
-                <th>Solicitados</th>
+                <th>Pendientes</th>
                 <th>Ubicacion</th>
                 
             </tr>

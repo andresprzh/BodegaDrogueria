@@ -120,6 +120,33 @@ class ModeloAlistar extends Conexion{
         $stmt=null;
     }
 
+    // muestra datos necesarios para crear lista de items
+    public function mdlMostrarDocList($numcaja)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+
+        $stmt= $this->link->prepare("SELECT alistado.item,ITEMS.DESCRIPCION AS descripcion,alistado.alistado,ITEMS.UNIMED_INV_1 AS um,caja.peso,
+        caja.no_caja,caja.cerrar,requisicion.no_req,requisicion.lo_destino,sedes.descripcion AS sede,UPPER(usuario.nombre) AS nombre,
+        requisicion.tip_inventario,UPPER(DATE_FORMAT(cerrar, '%Y/%b/%d')) AS fecha ,DATE_FORMAT(cerrar,'%h:%h %p') AS hora 
+        FROM alistado
+        INNER JOIN caja ON caja.no_caja=alistado.no_caja
+        INNER JOIN usuario ON usuario.id_usuario=caja.alistador
+        INNER JOIN ITEMS ON ITEMS.ID_ITEM=alistado.item
+        INNER JOIN requisicion ON requisicion.no_req=alistado.no_req
+        INNER JOIN sedes ON sedes.codigo=requisicion.lo_destino
+        WHERE alistado.no_caja=:no_caja;");
+
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $res=$stmt;
+
+        return $stmt;
+        $stmt->closeCursor();
+        // cierra la conexion
+        $stmt=null;
+    }
     //busca items de la tabla pedido usando el codigo de barras
     public function mdlMostrarItems($cod_barras)
     {
@@ -219,6 +246,7 @@ class ModeloAlistar extends Conexion{
         // libera conexion para hace otra sentencia
         $stmt->closeCursor();
         return ($res); 
+        $stmt=null;
     }
     //muestra el numero de la caja correspondiente a la requisicion
     public function mdlMostrarNumCaja()

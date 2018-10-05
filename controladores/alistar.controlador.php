@@ -6,11 +6,16 @@ class ControladorAlistar {
     ============================================================================================================================*/
     protected $req;
     private $modelo;
+    private $tipo_inventario=[
+        1=>"PRIMA",
+        2=>"QUIMICO",
+        3=>"ETICO"
+    ];
 
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($req) {
+    function __construct($req=null) {
         
         $this->req=$req;
         $this->modelo=new ModeloAlistar($req);
@@ -336,4 +341,119 @@ class ControladorAlistar {
 
     }
 
-}
+    public function ctrDocList($numcaja=null){
+        if ($numcaja==null) {
+            $busqueda = $this->modelo->mdlMostrarNumCaja();
+            $numcaja = ($busqueda->fetch());
+            $numcaja = $numcaja["numcaja"];
+            // libera conexion para hace otra sentencia
+            $busqueda->closeCursor();
+        }
+        $busqueda=$this->modelo->mdlMostrarDocList($numcaja);
+        $datos=$busqueda->fetchAll();
+        
+        // obtiene el numero de caja
+        $caja0=str_pad($datos[0]["no_caja"], 3, "0", STR_PAD_LEFT);
+        $caja=$datos[0]["no_caja"];
+        // se obtiene el numero de requisicion
+        $req=substr($datos[0]["no_req"],-6);
+        //se obtiene el destino de la requisicion
+        $destino=$datos[0]["lo_destino"];
+        $destinodes=trim($datos[0]["sede"]," \t\n\r");
+        // se obtiene fecha y hora en que se cerro la caja
+        $fecha=$datos[0]["fecha"];
+        $hora=$datos[0]["hora"];
+        // se obtiene el nombre de alistador
+        $alistador=substr($datos[0]["nombre"],0,27);
+        // se obtiene el peso de la caja
+        $peso=str_pad($datos[0]["peso"],8," ",STR_PAD_LEFT);
+        // se obtiene el tipo de inventario de la requisicion
+        $observacion=$this->tipo_inventario[$datos[0]["tip_inventario"]];
+        
+        // total de items
+        $total=0;
+        //se obtiene la lista de items de la caja
+        $item="";
+        foreach ($datos as $value) {
+
+            $iditem=$value["item"];
+            $descripcion=substr(trim($value["descripcion"]," \t\n\r"),0,22);
+            $um=$value["um"];
+            $cantidad=str_pad($value["alistado"], 4, " ", STR_PAD_LEFT);
+            $total+=$value["alistado"];
+
+            $item.=str_pad($value["item"], 9, " ", STR_PAD_RIGHT) . str_pad($descripcion, 22, " ", STR_PAD_RIGHT) . str_pad("", 4, " ", STR_PAD_RIGHT) . str_pad($um, 4, " ", STR_PAD_RIGHT)."\r\n";
+            $item.=str_pad("Cantidad: $cantidad", 20, " ", STR_PAD_RIGHT) . str_pad("", 20, " ", STR_PAD_RIGHT)."\r\n";
+
+        }
+
+
+        // cabecera del recibo 
+        $imprimir="\r\n";
+        $imprimir.=str_repeat("\n",6 );
+        
+        $imprimir.=str_pad("FARMACIA DROGUERIA SAN JORGE LTDA DROGUE", 40, " ", STR_PAD_BOTH)."\r\n";
+        $imprimir.=str_pad("NIT.: 805002583-1", 40, " ", STR_PAD_BOTH)."\r\n";
+        $imprimir.=str_pad("CR 2 14 34", 40, " ", STR_PAD_BOTH)."\r\n";
+        $imprimir.=str_pad("Tel: 8801216 Fax: 8801216 EXT 11", 40, " ", STR_PAD_BOTH)."\r\n";
+        $imprimir.=str_pad("CALI - COLOMBIA", 40, " ", STR_PAD_BOTH)."\r\n";
+        $imprimir.=str_pad("REGIMEN COMUN", 40, " ", STR_PAD_BOTH)."\r\n\r\n";
+
+        $imprimir.=str_pad("PEDIDO DE DISTRIBUCION SALIDA DESDE BOD", 40, " ", STR_PAD_BOTH)."\r\n\r\n";
+
+        //datos de la caja
+        $imprimir.=str_pad("C.O      : $caja0", 40, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("Doc. Alt#: CAJA#$caja", 20, " ", STR_PAD_RIGHT) . str_pad("Fecha : $fecha", 20, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("Docto.  #: $req", 20, " ", STR_PAD_RIGHT) . str_pad("Hora  : $hora", 20, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("Loc. Ori.:       ", 20, " ", STR_PAD_RIGHT) . str_pad("Loc. Desct.: $destino", 20, " ", STR_PAD_RIGHT)."\r\n";
+        
+        $imprimir.=str_repeat("-",40 )."\r\n";
+
+        // lista de items en la caja
+        $imprimir.=str_pad("Ref.", 9, " ", STR_PAD_RIGHT) . str_pad("Descripcion", 23, " ", STR_PAD_RIGHT) . str_pad("IVA", 4, " ", STR_PAD_RIGHT) . str_pad("UM", 4, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=$item."\r\n";            
+        $imprimir.=str_repeat("-",40 )."\r\n";
+        $imprimir.=str_pad("TOTAL ......", 20, " ", STR_PAD_RIGHT) . str_pad("$total", 20, " ", STR_PAD_LEFT)."\r\n";
+        $imprimir.=str_repeat("-",40 )."\r\n";
+
+        // datos generales de la caja
+        $imprimir.=str_pad("USUARIO ING. $alistador", 40, " ", STR_PAD_RIGHT)."\r\n\r\n";
+        $imprimir.=str_pad("Obervacion: PEDIDO $observacion CAJA#$caja ", 40, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("          : $destinodes", 40, " ", STR_PAD_RIGHT)."\r\n\r\n";
+        $imprimir.=str_pad("RECIBI CONFORME: ", 40, "_", STR_PAD_RIGHT)."\r\n";
+
+
+        // parte 2 de l resibo de items
+        $imprimir.=str_repeat("\r\n",10 );
+
+        $imprimir.=str_repeat("-",40 )."\r\n";
+
+        $imprimir.=str_repeat("\r\n",3 );
+
+        $imprimir.=str_pad("PEDIDO   #: $req", 40, " ", STR_PAD_BOTH)."\r\n";
+        $imprimir.=str_pad("EMPAQUE  #: CAJA#$caja", 40, " ", STR_PAD_BOTH)."\r\n\r\n";
+
+        $imprimir.=str_pad("FECHA   : $fecha", 40, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("ORIGEN  :            ", 40, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("DESTINO : $destinodes", 40, " ", STR_PAD_RIGHT)."\r\n\r\n";
+
+        $imprimir.=str_pad("PESO TOTAL: $peso kg", 40, " ", STR_PAD_RIGHT)."\r\n";
+
+        $imprimir.=str_repeat("\r\n",5 );
+        
+        
+        // try
+        // {
+        //     $fp=fsockopen("192.168.0.41", 9100);
+        //     fwrite($fp, $imprimir);
+        //     fclose($fp);
+
+        //     echo 'Successfully Printed';
+        // }
+        // catch (Exception $e) 
+        // {
+        //     echo 'Caught exception: ',  $e->getMessage(), "\r\n";
+        // }
+        return $imprimir;
+    }
+}   

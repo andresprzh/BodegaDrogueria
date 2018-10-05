@@ -152,7 +152,16 @@ if (isset($_GET['ruta'])) {
             return 1;
             break;
             
+        case 'listadoc':
+             //crea objeto controlador 
+            $req=['002-003613',1];
+            $controlador=new ControladorAlistar($req);
             
+            $resultado=$controlador->ctrDocList(2);
+            echo $resultado;
+            // print json_encode($resultado);
+            break;    
+        
         default:
             print json_encode("Best REST API :D");
             // termina la ejecucion del api
