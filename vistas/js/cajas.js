@@ -72,13 +72,6 @@ $(document).ready(function () {
 
         for (var i in datos) {
             numcaja[i] = datos[i][0];
-            // {
-            //     'id': datos[i][1],
-            //     'alistados': datos[i][6],
-            //     'mensajes': $(datos[i][8]).val(),
-            //     'origen': $('#origen').html(),
-            //     'destino': $('#destino').html()
-            // }
         }
 
         $.ajax({
@@ -88,13 +81,9 @@ $(document).ready(function () {
             data: { 'req': req, 'numcaja': numcaja },
             dataType: 'JSON',
             success: function (res) {
+                // console.log(res);
+                // return 0;
 
-
-                // obtiene los 3 ultimos caracteres de la requisicion
-                var no_res = req[0].substr(req[0].length - 3);
-                numcaja = ('00' + numcaja).slice(-2);
-                // crea el nombre del documento a partir de la requisicion y la caja
-                var nomdoc = 'C' + numcaja + 'DS' + no_res + '.TR1';
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({
@@ -104,9 +93,15 @@ $(document).ready(function () {
 
                     // si no hay error genera le documento y lo manda a decargar
                 } else {
+                    // obtiene los 3 ultimos caracteres de la requisicion
+                    var no_res = req[0].substr(req[0].length - 3);
+                    let numerodoc = ('00' + res['no_documento']).slice(-2);
+                    // crea el nombre del documento a partir de la requisicion y la caja
+                    // var nomdoc = 'C' + numcaja + 'DS' + no_res + '.TR1';
+                    var nomdoc = 'DS' + no_res + 'D' + numerodoc + '.TR1';
 
                     var element = document.createElement('a');
-                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res));
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['documento']));
                     element.setAttribute('download', nomdoc);
 
                     element.style.display = 'none';

@@ -92,27 +92,32 @@ class ControladorCajas extends ControladorAlistar {
     // public function ctrDocumento($items,$numcaja)
     public function ctrDocumento($numcaja)
     {
-        
-        $busqueda=$this->modelo->mdlMostrarDocumento($numcaja );
-        // return $busqueda->fetchAll();
-        $documento="";
-        while($row = $busqueda->fetch()){
-            $Mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
+        $res=false;
+        if ($this->modelo->mdlRequisicionDoc()) {
+                    
+            $busqueda=$this->modelo->mdlMostrarDocumento($numcaja );
             
-            $origen=str_replace("BD","",$row["lo_origen"]);
-            $destino=str_replace("VE","",$row["lo_destino"]);
-            $destino=$origen.substr($destino,1,-1);
-            $localicacion=str_replace("-","",$row["lo_origen"].$destino."I");
-            $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-            $item=str_pad($row["iditem"],6+12," ",STR_PAD_RIGHT);
-            $num=$row["alistado"]*1000;
-            $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
-            $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+            $documento="";
+            while($row = $busqueda->fetch()){
+                $Mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
+                
+                $origen=str_replace("BD","",$row["lo_origen"]);
+                $destino=str_replace("VE","",$row["lo_destino"]);
+                $destino=$origen.substr($destino,1,-1);
+                $localicacion=str_replace("-","",$row["lo_origen"].$destino."I");
+                $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+                $item=str_pad($row["iditem"],6+12," ",STR_PAD_RIGHT);
+                $num=$row["alistado"]*1000;
+                $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
+                $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+                
+                $documento.=($localicacion.$item.$alistado.$Mensaje."\r\n");
+                $res["no_documento"]=$row["documentos"];
+            }
+            $res["documento"]=$documento;
             
-            $documento.=($localicacion.$item.$alistado.$Mensaje."\r\n");
+
         }
-        $res=$documento;
-        
 
         return $res;
 

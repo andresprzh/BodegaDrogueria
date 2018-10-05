@@ -169,9 +169,11 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
+    // muestra los datos necesarios para crear el archivo plano
     public function mdlMostrarDocumento($caja)
     {   
-        $sql="SELECT alistado.item AS iditem,alistado.alistado,no_caja,lo_origen,lo_destino
+        $sql="SELECT alistado.item AS iditem,alistado.alistado,no_caja,
+        lo_origen,lo_destino,documentos
         FROM alistado
         INNER JOIN pedido ON pedido.item=alistado.item
         INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
@@ -307,6 +309,24 @@ class ModeloCaja extends Conexion{
           
         // cierra la conexion
         $stmt=null;
+    }
+
+    // incrementa el conteo en documentos
+    public function mdlRequisicionDoc()
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        $stmt= $this->link->prepare('UPDATE requisicion SET documentos=documentos+1 WHERE no_req=:no_req');
+        
+        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();  
+        // retorna el resultado de la sentencia
+	    return $res;
+        // $stmt->closeCursor();  
+        // cierra la conexion
+        $stmt=null;
+
     }
 
 }
