@@ -21,6 +21,7 @@ class ControladorCajas extends ControladorAlistar {
     /* ============================================================================================================================
                                                         FUNCIONES   
     ============================================================================================================================*/
+    // busca cajas en la requisicion
     public function ctrBuscarCaja($numcaja,$estado=null)
     {
 
@@ -88,50 +89,47 @@ class ControladorCajas extends ControladorAlistar {
     }
 
     // crea documento de texto
-    public function ctrDocumento($items,$numcaja)
+    // public function ctrDocumento($items,$numcaja)
+    public function ctrDocumento($numcaja)
     {
         
-                 
-            $documento='';
-            foreach($items as $row){
-                $Mensaje=$row['mensajes'];
-                if ($row['mensajes']=='' ){
-                    $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
-                    $busqueda=$busqueda->fetch();
-                    $Mensaje=substr($busqueda['nombre'],0,19);
-                    
-                }
-                $origen=str_replace('BD','',$row["origen"]);
-                $destino=str_replace('VE','',$row["destino"]);
-                $destino=$origen.substr($destino,1,-1);
-                $localicacion=str_replace('-','',$row["origen"].$destino.'I');
-                $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $item=str_pad($row["id"],6+12," ",STR_PAD_RIGHT);
-                $num=$row["alistados"]*1000;
-                $alistado=str_pad($num,12,'0',STR_PAD_LEFT);
-                $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
-                
-                $documento.=($localicacion.$item.$alistado.$Mensaje."\r\n");
-
-            }
-            $res=$documento;
+        $busqueda=$this->modelo->mdlMostrarDocumento($numcaja );
+        // return $busqueda->fetchAll();
+        $documento="";
+        while($row = $busqueda->fetch()){
+            $Mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
+            
+            $origen=str_replace("BD","",$row["lo_origen"]);
+            $destino=str_replace("VE","",$row["lo_destino"]);
+            $destino=$origen.substr($destino,1,-1);
+            $localicacion=str_replace("-","",$row["lo_origen"].$destino."I");
+            $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+            $item=str_pad($row["iditem"],6+12," ",STR_PAD_RIGHT);
+            $num=$row["alistado"]*1000;
+            $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
+            $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+            
+            $documento.=($localicacion.$item.$alistado.$Mensaje."\r\n");
+        }
+        $res=$documento;
         
 
         return $res;
 
     }
 
-    public function ctrCancelar($numcaja){
+    //elimina la caja
+    public function ctrEliminar($numcaja){
         // cambia items de la caja a no alistados
-        $res = $this->modelo->mdlCancelarItems($numcaja);
+        $res = $this->modelo->mdlEliminarItems($numcaja);
         
         // elimina los registros de items resibidos de dicha caja
         if($res){
-            $res = $this->modelo->mdlCancelarRecibidos($numcaja);
+            $res = $this->modelo->mdlEliminarRecibidos($numcaja);
         }
         // elimina los registros de errores de dicha caja
         if($res){
-            $res = $this->modelo->mdlCancelarErrores($numcaja);
+            $res = $this->modelo->mdlEliminarErrores($numcaja);
         }
         // elimina la caja
         if($res){
@@ -141,48 +139,7 @@ class ControladorCajas extends ControladorAlistar {
         
     }
 
-    public function ctrBuscarItemCancelados($numcaja)
-    {
-        $busqueda = $this->modelo->mdlMostrarItemCancelados($numcaja);
-
-        if ($busqueda->rowCount() > 0) {
-
-            $itembus["estado"]="encontrado";
-
-            $cont=0;
-
-            while($row = $busqueda->fetch()){
-                
-                                
-                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                    "iditem"=>$row["item"],    
-                                    "referencia"=>$row["ID_REFERENCIA"],
-                                    "descripcion"=>$row["DESCRIPCION"],
-                                    "disponibilidad"=>"---",
-                                    "pedidos"=>$row["pedido"],
-                                    "alistados"=>$row["alistado"],
-                                    'ubicacion'=>$row["ubicacion"],
-                                    'origen'=>$row["lo_origen"],
-                                    'destino'=>$row["lo_destino"]
-                                    ];
-                $cont++;
-
-            }
-
-            
-            
-            return $itembus;
-
-        //si no encuentra resultados devuelve "error"
-        }else{
-
-            return ['estado'=>"error",
-                    'contenido'=>"Items no encontrados!"];
-
-        }
-
-    }
-
+    //busca items con error al recibirse
     public function ctrBuscarItemError($numcaja)
     {
         $busqueda = $this->modelo->mdlMostrarItemError($numcaja);
@@ -260,6 +217,7 @@ class ControladorCajas extends ControladorAlistar {
 
     }
 
+    //modifica la caja despues de ser resivida en el PV
     public function ctrModificarCaja($numcaja,$items)
     {   
         // $busqueda=$this->modelo->mdlVerificarCaja($numcaja);
@@ -269,8 +227,6 @@ class ControladorCajas extends ControladorAlistar {
         for ($i=0; $i <count($items) ; $i++) {
             //modifica los items
 
-                                     
-            
             // si el se alistan 0 se saca el item de la caja
             if ($items[$i]["alistados"]==0) {
                 $resultado=$this->ctrEliminarItemCaja($items[$i]["iditem"],$numcaja);
@@ -295,6 +251,7 @@ class ControladorCajas extends ControladorAlistar {
         return $resultado;
     }
 
+    // asigna cajas  a un transportador para ser enviada
     public function ctrDespacharCajas($cajas,$transportador)
     {   
         $resultado=true;

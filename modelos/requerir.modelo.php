@@ -13,11 +13,25 @@ class ModeloRequierir extends Conexion{
     
         $tabla='requisicion';
         if ($valor==null) {
-            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = 0");
+            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
+            sedes.descripcion
+            FROM $tabla 
+            INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
+            WHERE $item = 0;");
         }else if($item=='estado') {
-            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item < :$item");
+            
+            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
+            sedes.descripcion
+            FROM $tabla 
+            INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
+            WHERE $item < :$item;");
         }else {
-            $stmt= $this->link-> prepare("SELECT * FROM $tabla WHERE $item = :$item");
+            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
+            sedes.descripcion
+            FROM $tabla 
+            INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
+            WHERE $item = :$item;");
+            
         }
         
         //para evitar sql injection

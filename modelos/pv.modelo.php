@@ -70,6 +70,7 @@ class ModeloPV extends Conexion{
         // libera conexion para hace otra sentencia
         $stmt->closeCursor();
         return ($res);  
+        $stmt=null;
     }
 
     //modifica registro en tabla para agregar la fecha en la que fue recibido

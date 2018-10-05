@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    
-    
-   switch (parseInt(usuario["perfil"])) {
+
+
+    switch (parseInt(usuario["perfil"])) {
 
         // Para Admins
-       case 1:
+        case 1:
             $("#contenido-inicio").append($('<h2 class="header center">Admin</h2>'));
             tablarequeridos();
 
@@ -26,12 +26,12 @@ $(document).ready(function () {
             break;
         default:
             break;
-   }
+    }
 });
 
 
-function tablarequeridos(){
-    
+function tablarequeridos() {
+
     $("#contenido-inicio").append($(`<ul class="collection with-header collapsible expandable" id="listreq">
                 <li class="collection-header"><h4>Requisiciones</h4></li>
             </ul>`));
@@ -39,15 +39,16 @@ function tablarequeridos(){
     $.ajax({
         url: "api/alistar/requisiciones",
         method: "GET",
-        data: {'valor':3},
+        data: { 'valor': 3 },
         dataType: "json",
         success: function (res) {
+
             let color = {
                 0: "grey",
                 1: "orange",
                 2: "green"
             };
-            
+
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION  
             for (var i in res) {
                 $("#listreq").append($(`<li class="white ">
@@ -60,11 +61,11 @@ function tablarequeridos(){
                         <thead>
                             <tr>
                                 <th>Bodega origen: ${res[i]["lo_origen"]}</th>
-                                <th>Destino: ${(res[i]["lo_destino"])}</th>
+                                <th>Destino: ${(res[i]["lo_destino"])} ${(res[i]["descripcion"])}</th>
                             </tr>
                             <tr>
-                                <th>Fecha de subida:`+((res[i]["enviado"]==null) ? "---":res[i]["enviado"])+`</th>
-                                <th>Recibido: `+((res[i]["recibido"]==null) ? "---":res[i]["recibido"])+`</th>
+                                <th>Fecha de subida:`+ ((res[i]["creada"] == null) ? "---" : res[i]["creada"]) + `</th>
+                                <th>Recibido: `+ ((res[i]["recibido"] == null) ? "---" : res[i]["recibido"]) + `</th>
                             </tr>
                         </thead>
                     </table>
@@ -72,9 +73,9 @@ function tablarequeridos(){
                 </li>`));
             }
 
-            $('.collapsible').collapsible({accordion: false});
+            $('.collapsible').collapsible({ accordion: false });
 
-            
+
             // INICIA MENU DE SELECCION
             $('select').formSelect();
 

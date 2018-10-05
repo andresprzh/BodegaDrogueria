@@ -73,9 +73,12 @@
         <div class="row">
 
             <!-- <div class="right input-field col s4 m2 l2"> -->
-
-                <button id="despachar" class="right btn waves-effect tea darken-4 col s12 m2 l2"  disabled>
+                
+                <button id="despachar" class="left btn waves-effect tea darken-4 col s6 m2 l2"  disabled>
                     Despachar cajas
+                </button>
+                <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s6 m2 l2" disabled>
+                    <i class="fas fa-file-alt"></i>
                 </button>
                 
             <!-- </div>   -->
@@ -143,9 +146,7 @@
         </div>
 
         <div class="modal-footer grey lighten-3">
-            <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s12 m12 l8" >
-                <i class="fas fa-file-alt"></i>
-            </button>
+            
             <button id="imprimir" title="Impriir Lista de items" class="btn right waves-effect green darken-4 col s12 m12 l8" >
                 <i class="fas fa-print"></i>
             </button>
@@ -153,32 +154,64 @@
                 <i class="fas fa-ban"></i>
             </button>
         </div>
+        <form id="formmodal">
+            <table class="tablascroll centered " id="TablaM"  >
+                    
+                        <thead>
 
-        <table class="datatable centered " id="TablaM"  >
+                        <tr  class="white-text green darken-3" >
+
+                            <th>Codigo de barras</th>
+                            <th>ID item</th>
+                            <th>Referencia</th>
+                            <th>Descripción</th>
+                            <th>Disponibilidad</th>
+                            <th>Pedidos</th>
+                            <th>Alistados</th>
+                            <th>Ubicacion</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody id="tablamodal"></tbody>
+
+
+            </table> 
+            
+            <div class="row hide" id="inputcerrar">
+
+                <div class="input-field col s4 m6 l4 " >
+
+                    <select   name='caja'  class='carcaja browser-default grey lighten-3' style='border-bottom: 1px solid grey;' id='caja'>
+                        
+                        <option selected value='CRT'>Caja carton</option>
+                        <option value='CPL'>Caja plastica</option>
+                        <option value='CAP'>Canasta plastica</option>
+                        <option value='GLN'>Galon</option>
+                        <option value='GLA'>Galoneta</option>
+
+                    </select>
+
+                </div>
+
+                <div class="input-field center col s4 m6 l4 input_barras">
+
+                    <input  id="peso" type="number" class="validate" required>
+                    <label for="peso" class="right">Peso en gr</label>
+
+                </div> 
+
+                <div class="input-field col s4 m2 l2">
+
+                    <button id="cerrar" type="submit" class="btn waves-effect green darken-4 col s12 m12 l8" >
+                        Cerrar
+                    </button>
+                    
+                </div>  
                 
-                    <thead>
-
-                    <tr  class="white-text green darken-3" >
-
-                        <th>Codigo de barras</th>
-                        <th>ID item</th>
-                        <th>Referencia</th>
-                        <th>Descripción</th>
-                        <th>Disponibilidad</th>
-                        <th>Pedidos</th>
-                        <th>Alistados</th>
-                        <th>Ubicacion</th>
-                        <th>Texto</th>
-
-                    </tr>
-
-                    </thead>
-
-                    <tbody id="tablamodal"></tbody>
-
-        </table> 
-        
-        
+            </div>
+        </form>
         
     </div>
 
@@ -252,7 +285,7 @@
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
-<style scoped>
+<style >
     /* #EditarCaja2{
         width:100%;
     } */
@@ -266,6 +299,20 @@
     .tabla  td:last-child, .tabla  th:last-child{
         width:30%;
         text-align: center;
+    }
+
+    .tablascroll tbody {
+    display:block;
+    max-height:300px;
+    overflow-y:auto;
+    }
+    .tablascroll  thead,.tablascroll tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+    }
+    .tablascroll thead {
+    width: calc( 100% - 0em )
     }
 </style>
 <!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->

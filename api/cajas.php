@@ -34,9 +34,7 @@ if (isset($_GET['ruta'])) {
                 // regresa el resultado de la buqueda como un objeto JSON
                 if (isset($_POST['estado'])) {
                     switch ($_POST['estado']) {
-                        case 9:
-                            $respuesta=$controlador->ctrBuscarItemCancelados($numcaja);
-                            break;
+                        
                         case 5:
                             $respuesta=$controlador->ctrBuscarItemError($numcaja);
                             break;
@@ -59,6 +57,30 @@ if (isset($_GET['ruta'])) {
             // muestra el vector como dato JSON
 
             print json_encode($respuesta);
+            return 1;
+            break;
+        
+        /* ============================================================================================================================
+                                                CIERRA 1 CAJA
+        ============================================================================================================================*/    
+        case "cerrar":
+            // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
+            $req=$_POST['req'];
+
+            //crea objeto controlador 
+            $controlador=new ControladorCajas($req);
+
+            // si se pasa el numeor de la caja se busca dicha caja 
+            
+            $caja=$_POST['caja'];
+            $items=$_POST['items'];
+            // print json_encode($items);
+            // return 0;
+            $respuesta=$controlador->ctrCerrarCaja($items,$req,$caja['tipocaja'],$caja['pesocaja'],$caja['no_caja']);            
+            
+            // muestra el vector como dato JSON
+            print json_encode($respuesta);
+            return 1;
             break;
 
         /* ============================================================================================================================
@@ -97,7 +119,7 @@ if (isset($_GET['ruta'])) {
             $controlador=new ControladorCajas();
             $busqueda=$controlador->ctrDespacharCajas($cajas,$transportador);
             print json_encode($busqueda);
-            return 0;
+            return 1;
             break;
         
         /* ============================================================================================================================
@@ -105,23 +127,25 @@ if (isset($_GET['ruta'])) {
         ============================================================================================================================*/
         case "documento":
            // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
-            $req=$_POST["req"];
-            $numcaja=$_POST['numcaja'];
+            $req=$_GET["req"];
+            $numcaja=$_GET['numcaja'];
             
-
-            // documento items alistados
-            if (isset($_POST['items'])) {
-                $controlador=new ControladorCajas($req);
-                $items=$_POST['items'];
-                $resultado=$controlador->ctrDocumento($items,$numcaja);
-            // documento items srecibidos
-            }else {
-                $controlador=new ControladorPV($req);
-                $resultado=$controlador->ctrDocumentoR($numcaja);
-            }
+            $controlador=new ControladorCajas($req);
             
-
+            $resultado=$controlador->ctrDocumento($numcaja);
             print json_encode($resultado);
+            
+            // // documento items alistados
+            // if (isset($_POST['items'])) {
+            //     $controlador=new ControladorCajas($req);
+            //     $items=$_POST['items'];
+            //     $resultado=$controlador->ctrDocumento($items,$numcaja);
+            // // documento items srecibidos
+            // }else {
+            //     $controlador=new ControladorPV($req);
+            //     $resultado=$controlador->ctrDocumentoR($numcaja);
+            // }
+            return  1;
             break;
 
         /* ============================================================================================================================
@@ -136,7 +160,7 @@ if (isset($_GET['ruta'])) {
             //crea objeto controlador 
             $controlador=new ControladorCajas($req);
 
-            $resultado=$controlador->ctrCancelar($numcaja);
+            $resultado=$controlador->ctrEliminar($numcaja);
 
 
             print json_encode($resultado);
@@ -156,6 +180,7 @@ if (isset($_GET['ruta'])) {
             $resultado=$controlador->ctrModificarCaja($numcaja,$items);
 
             print json_encode($resultado);
+            return 1;
             break;
         
         /* ============================================================================================================================
@@ -192,6 +217,8 @@ if (isset($_GET['ruta'])) {
             // muestra el vector como dato JSON
 
             print json_encode($respuesta);
+            return 1;
+            break;
 
     }
     

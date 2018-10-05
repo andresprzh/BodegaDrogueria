@@ -92,6 +92,7 @@ CREATE TABLE requisicion(
 	solicitante VARCHAR(40) COLLATE ucs2_spanish_ci,
 	enviado DATETIME,
 	recibido DATETIME,
+	documentos INT(3) DEFAULT 0,
 	estado INT(1) DEFAULT 0,
 
 	PRIMARY KEY(no_req),
@@ -321,6 +322,7 @@ DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS ReqEnviado;
 DROP TRIGGER IF EXISTS ReqEnviado2;
 
+DROP FUNCTION IF EXISTS NumeroCaja;
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
 	CREATE  FUNCTION NumeroCaja(pers INT(10) )
@@ -348,7 +350,7 @@ DELIMITER $$
 		IF(numerocaja IS NULL) THEN
 		
 			SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pendientes,pedido.disp,pedido.ubicacion,alistado.alistado,
-			ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
+			ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
 			alistado.no_caja,usuario.nombre,
 			requisicion.lo_origen,requisicion.lo_destino,MIN(COD_BARRAS.ID_CODBAR) AS ID_CODBAR
 			FROM COD_BARRAS
@@ -364,18 +366,21 @@ DELIMITER $$
 			OR LOWER(DESCRIPCION)  LIKE codigo ) 
 			AND pedido.no_req LIKE no_req
 			GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pendientes,pedido.disp,pedido.ubicacion,alistado.alistado,
-			ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
+			ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
 			alistado.no_caja,usuario.nombre,
 			requisicion.lo_origen,requisicion.lo_destino;
 			
 		ELSE 
 		
-			SELECT pedido.item as iditem,pedido.no_req,ITEMS.DESCRIPCION AS descripcion ,
-			pedido.pendientes,pedido.pedido,alistado.alistado
+			SELECT pedido.item AS iditem,pedido.no_req,pedido.pendientes,pedido.pedido,alistado.alistado,disp,ubicacion,
+			ITEMS.DESCRIPCION AS descripcion ,ITEMS.ID_REFERENCIA AS referencia,MIN(COD_BARRAS.ID_CODBAR) AS codigo
 			FROM alistado
 			INNER JOIN pedido ON pedido.item=alistado.item
 			INNER JOIN ITEMS ON ID_ITEM=pedido.item
-			WHERE alistado.no_caja=numerocaja;
+			INNER JOIN cod_barras ON ID_ITEMS=ID_ITEM
+			WHERE alistado.no_caja=numerocaja
+			GROUP BY pedido.item,pedido.no_req,pedido.pendientes,pedido.pedido,alistado.alistado,disp,ubicacion,
+			ITEMS.DESCRIPCION ,ITEMS.ID_REFERENCIA;
 			
 		END IF;
 		
@@ -413,6 +418,7 @@ DELIMITER $$
 				
 	END 
 $$
+
 -- trigger que modifica la cantidad alistada al agregar items
 DROP TRIGGER IF EXISTS EstadoAlistado;
 DELIMITER $$
@@ -460,6 +466,7 @@ DELIMITER $$
 	END 
 $$
 
+DROP TRIGGER IF EXISTS InicioAbrir;
 -- triger que asigna fecha de inicio cada ves que se crea una caja
 DELIMITER $$
 	CREATE TRIGGER InicioAbrir 
@@ -470,6 +477,9 @@ DELIMITER $$
 	END 
 $$
 
+
+DROP TRIGGER IF EXISTS CerrarCaja;
+-- trigger que cierra caja y alista items cuando se cambia de estado a creddada (estado = 1)
 DELIMITER $$
 
 	CREATE TRIGGER CerrarCaja
@@ -477,7 +487,10 @@ DELIMITER $$
 	FOR EACH ROW 
 	BEGIN
 		IF new.estado=1 THEN 
-			SET new.cerrar=now() ;
+			SET new.cerrar=now();
+			UPDATE alistado
+			SET estado=2
+			WHERE alistado.no_caja=new.no_caja;
 		END IF;
 	END 
 

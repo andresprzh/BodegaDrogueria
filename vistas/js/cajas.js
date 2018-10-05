@@ -25,7 +25,7 @@ $(document).ready(function () {
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
-                $("#requeridos").append($('<option value="' + res[i]["no_req"] + '">' + res[i]["no_req"] + '</option>'));
+                $("#requeridos").append($('<option value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
 
             }
 
@@ -58,30 +58,6 @@ $(document).ready(function () {
 
     });
 
-    // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
-    $('#tablamodal').on('change', 'td', function () {
-
-        var tabla = $('#TablaM').DataTable();
-
-        var mensaje = $(this).find("input").val();
-        var fila = table.row(this);
-
-        // si la tabla es responsive
-        if (fila.data() == undefined) {
-
-            var fila = $(this).parents('tr');
-            if (fila.hasClass('child')) {
-                fila = fila.prev();
-            }
-            tabla.row(fila).cell(fila, 8).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="' + mensaje + '">').draw()
-
-        } else {
-
-            table.cell(this).data('<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20" value="' + mensaje + '">').draw()
-        }
-
-
-    });
 
     // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
     $('#Documento').click(function (e) {
@@ -90,32 +66,30 @@ $(document).ready(function () {
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
 
-        var numcaja = $('.NumeroCaja').html();
+        var datos = $('#TablaC').DataTable().data().toArray();
 
-        var datos = $('#TablaM').DataTable().data().toArray();
-
-        var items = new Array();
+        var numcaja = new Array();
 
         for (var i in datos) {
-            items[i] = {
-                'id': datos[i][1],
-                'alistados': datos[i][6],
-                'mensajes': $(datos[i][8]).val(),
-                'origen': $('#origen').html(),
-                'destino': $('#destino').html()
-            }
+            numcaja[i] = datos[i][0];
+            // {
+            //     'id': datos[i][1],
+            //     'alistados': datos[i][6],
+            //     'mensajes': $(datos[i][8]).val(),
+            //     'origen': $('#origen').html(),
+            //     'destino': $('#destino').html()
+            // }
         }
-
 
         $.ajax({
 
             url: 'api/cajas/documento',
-            method: 'POST',
-            data: { 'req': req, 'items': items, 'numcaja': numcaja },
+            method: 'GET',
+            data: { 'req': req, 'numcaja': numcaja },
             dataType: 'JSON',
             success: function (res) {
 
-                // var numcaja = $('#NumeroCaja').html();
+
                 // obtiene los 3 ultimos caracteres de la requisicion
                 var no_res = req[0].substr(req[0].length - 3);
                 numcaja = ('00' + numcaja).slice(-2);
@@ -260,7 +234,7 @@ $(document).ready(function () {
 
                             if (res) {
                                 swal({
-                                    title: `Caja ${caja} cancelada`,
+                                    title: `Caja ${caja} eliminada`,
                                     type: 'success',
                                 })
                                     .then(() => {
@@ -269,7 +243,7 @@ $(document).ready(function () {
                                     });
                             } else {
                                 swal({
-                                    title: `No se pudo cancelar la caja ${caja} `,
+                                    title: `No se pudo eliminar la caja ${caja} `,
                                     type: 'error',
                                 })
                             }
@@ -293,6 +267,7 @@ $(document).ready(function () {
             cajas[i] = datos[i][0];
 
         }
+
         let resultado;
         ajax('api/cajas/conductor', 'GET').done(function (res) {
 
@@ -405,6 +380,95 @@ $(document).ready(function () {
         win.print()
         win.close()
 
+
+    });
+
+    // EVENTO SI SE PRESIONA 1 TECLA EN LA TABLA EDITABLE (EVITA ENVIAR FORMULARIO CON ENTER)
+    $('#tablamodal').on('keydown', 'input', function (e) {
+        //previene enviar formulario si se presiona enter
+        if (e.which == 13) {
+            e.preventDefault();
+        }
+    });
+
+    // EVENTO PARA CERRAR  1 CAJA
+    $('#formmodal').submit(function (e) {
+        e.preventDefault();
+
+        //consigue el numero de requerido
+        let requeridos = $('.requeridos').val();
+        //id usuario es obtenida de las variables de sesion
+        let req = [requeridos, id_usuario];
+
+
+        //si se presiona aceptar se continua con el proceso
+        swal({
+            title: '¿Cerrar caja?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#4caf50',
+            confirmButtonText: 'Cerrar',
+            cancelButtonText: 'Cancelar'
+        }).then((res) => {
+
+            //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
+            if (res.value) {
+
+                // Busca los datos en la tabla
+                let table = document.getElementById('tablamodal');
+                let tr = table.getElementsByTagName('tr');
+                let items = new Array;
+
+                for (let i = 0; i < tr.length; i++) {
+
+                    items[i] = {
+                        'iditem': tr[i].id.substr(1),
+                        'alistados': $(tr[i]).find('input').val(),
+                    };
+                }
+
+                //guarda el datos de la caja
+
+                let caja = new Array;
+                caja = {
+                    'no_caja': $('.NumeroCaja').html(),
+                    'tipocaja': $('#caja').val(),
+                    'pesocaja': $('#peso').val(),
+                }
+
+
+                $.ajax({
+                    url: 'api/cajas/cerrar',//url de la funcion
+                    method: 'post',//metodo post para mandar datos
+                    data: { 'req': req, 'caja': caja, 'items': items },//datos que se enviaran 
+                    dataType: 'JSON',
+                    success: function (res) {
+                        console.log(res);
+
+                        if (res) {
+
+                            swal({
+                                title: '¡Caja cerrada exitosamente!',
+                                type: 'success',
+                            }).then((res) => {
+
+                                $('.modal').modal('close');
+                                recargarCajas();
+                            });
+
+                        } else {
+
+                            swal({
+                                title: "¡Error al cerrar la caja!",
+                                type: "error",
+                            });
+
+                        }
+
+                    }
+                });
+            }
+        });
 
     });
 
@@ -596,9 +660,10 @@ function mostrarCajas() {
                 if (estado_despacho) {
 
                     $("#despachar").removeAttr("disabled", "disabled");
+                    $("#Documento").removeAttr("disabled", "disabled");
                 } else {
-
                     $("#despachar").attr("disabled", "disabled");
+                    $("#Documento").attr("disabled", "disabled");
                 }
 
                 // $("#TablaCajas").removeClass("hide");
@@ -649,27 +714,27 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
         case 0:
             $("#eliminar").removeAttr("disabled");
             $("#imprimir").attr("disabled", "disabled");
-            $("#Documento").attr("disabled", "disabled");
+            $("#inputcerrar").removeClass("hide");
             break;
         case 1:
             $("#imprimir").removeAttr("disabled");
             $("#eliminar").removeAttr("disabled");
-            $("#Documento").attr("disabled", "disabled");
+            $("#inputcerrar").addClass("hide");
             break;
         case 2:
             $("#imprimit").removeAttr("disabled");
             $("#eliminar").attr("disabled", "disabled");
-            $("#Documento").attr("disabled", "disabled");
+            $("#inputcerrar").addClass("hide");
             break;
         case 3:
             $("#imprimit").attr("disabled", "disabled");
             $("#eliminar").attr("disabled", "disabled");
-            $("#Documento").attr("disabled", "disabled");
+            $("#inputcerrar").addClass("hide");
             break;
         case 4:
             $("#imprimir").attr("disabled", "disabled");
             $("#eliminar").attr("disabled", "disabled");
-            $("#Documento").removeAttr("disabled");
+            $("#inputcerrar").addClass("hide");
             break;
 
         default:
@@ -686,7 +751,7 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
     //espera a que la funcion termine para reiniciar las tablas
     $.when(mostrarItems(numcaja, estado)).done(function () {
         //Reinicia Tabla
-        table[2] = iniciarTabla("#TablaM");
+        // table[2] = iniciarTabla("#TablaM");
     });
 }
 
@@ -721,14 +786,43 @@ function mostrarItems(numcaja, estado = null) {
             else {
 
                 var item = res["contenido"];
-                let cajar;
-                if (estado == 5) {
-                    for (var i in item) {
-                        if (item[i]['no_caja'] == 1) {
-                            item[i]['no_caja'] = '---';
+
+                // muestra items con errores o eventualidades
+                switch (estado) {
+
+                    case 0:
+                        for (var i in item) {
+                            // consigue el valor maximo en decenas que puede valer la cantidad de alistados
+                            // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
+                            let a = 0;
+                            let pot = item[i]['pedido'];
+                            do {
+                                a++;
+                                pot = pot / 10;
+                            } while (pot > 1);
+                            maxvalue = Math.pow(10, a);
+
+                            $("#tablamodal").append($(`<tr id='M${item[i]['iditem']}'><td>
+                                ${item[i]['codigo']}</td><td>
+                                ${item[i]['iditem']}</td><td>
+                                ${item[i]['referencia']}</td><td>
+                                ${item[i]['descripcion']}</td><td>
+                                ${item[i]['disp']}</td><td>
+                                ${item[i]['pedido']}</td><td>
+                                <input type= 'number' min='1' class='alistados ' min=1 max=${maxvalue * 10} required value='${item[i]['alistado']}'></td><td>
+                                ${item[i]['ubicacion']}</td></tr>`
+                            ));
                         }
-                        // guarda el id del item en el id de la fila y el estaod en el nombre de la fila
-                        $("#tablaerror").append($(`<tr id='${item[i]['iditem']}' name='${item[i]['estado']}'><td> 
+
+                        break;
+
+                    case 5:
+                        for (var i in item) {
+                            if (item[i]['no_caja'] == 1) {
+                                item[i]['no_caja'] = '---';
+                            }
+                            // guarda el id del item en el id de la fila y el estaod en el nombre de la fila
+                            $("#tablaerror").append($(`<tr id='${item[i]['iditem']}' name='${item[i]['estado']}'><td> 
                             ${item[i]['descripcion']}</td><td> 
                             ${item[i]['no_caja']}</td><td> 
                             ${item[i]['no_cajaR']}</td><td> 
@@ -736,25 +830,26 @@ function mostrarItems(numcaja, estado = null) {
                             ${item[i]['recibidos']}</td><td '> 
                             ${item[i]['problema']}</td>
                             </tr>`
-                        ));
+                            ));
 
-                    }
-                } else {
-                    for (var i in item) {
-                        $("#tablamodal").append($("<tr><td>" +
-                            item[i]['codigo'] + "</td><td>" +
-                            item[i]['iditem'] + "</td><td>" +
-                            item[i]['referencia'] + "</td><td>" +
-                            item[i]['descripcion'] + "</td><td>" +
-                            item[i]['disponibilidad'] + "</td><td>" +
-                            item[i]['pedidos'] + "</td><td>" +
-                            item[i]['alistados'] + "</td><td>" +
-                            item[i]['ubicacion'] + "</td><td>" +
-                            '<input  type="text" placeholder="texto de maximo 20 caracteres" class="mensajes validate" maxlength="20"></input></td></tr>'));
+                        }
+                        break;
 
-                    }
+                    default:
+                        for (var i in item) {
+                            $("#tablamodal").append($(`<tr id='M${item[i]['iditem']}'><td>  
+                                ${item[i]['codigo']}</td><td>
+                                ${item[i]['iditem']}</td><td>
+                                ${item[i]['referencia']}</td><td>
+                                ${item[i]['descripcion']}</td><td>
+                                ${item[i]['disp']}</td><td>
+                                ${item[i]['pedido']}</td><td>
+                                ${item[i]['alistado']}</td><td>
+                                ${item[i]['ubicacion']}</td></tr>`
+                            ));
+                        }
+                        break;
                 }
-
             }
 
         }

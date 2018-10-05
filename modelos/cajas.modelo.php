@@ -30,23 +30,21 @@ class ModeloCaja extends Conexion{
         if ($estado==null) {
             $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
             FROM caja 
-            LEFT JOIN pedido ON pedido.no_caja=caja.no_caja
+            LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
             LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
             INNER JOIN usuario ON usuario.id_usuario=Alistador
             WHERE caja.no_caja LIKE :numcaja 
-            AND (pedido.no_req=:no_req OR errores.no_req=:no_req)
-            AND caja.no_caja <> 1
+            AND (alistado.no_req=:no_req OR errores.no_req=:no_req)
             GROUP BY caja.no_caja,caja.estado;';
             $stmt= $this->link->prepare($sql);
         }else {
             $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
             FROM caja 
-            LEFT JOIN pedido ON pedido.no_caja=caja.no_caja
+            LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
             LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
             INNER JOIN usuario ON usuario.id_usuario=Alistador
             WHERE caja.no_caja LIKE :numcaja 
-            AND (pedido.no_req=:no_req OR errores.no_req=:no_req)
-            AND caja.no_caja <> 1
+            AND (alistado.no_req=:no_req OR errores.no_req=:no_req)
             AND caja.estado >= :estado
             AND caja.encargado_punto=:persona
             GROUP BY caja.no_caja,caja.estado;';
@@ -85,6 +83,7 @@ class ModeloCaja extends Conexion{
 
     }
 
+    // elimina una caja
     public function mdlEliminarCaja($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
@@ -100,23 +99,23 @@ class ModeloCaja extends Conexion{
         // cierra la conexion
         $stmt=null;
     }
-
-    public function mdlCancelarItems($numcaja)
+    // elimina items de la tabla alistado
+    public function mdlEliminarItems($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
 
-        $stmt= $this->link->prepare("UPDATE pedido SET no_caja=1,alistado=0,estado=0 WHERE no_caja=:no_caja");
+        $stmt= $this->link->prepare("DELETE FROM alistado WHERE no_caja=:no_caja");
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
 
         $res=$stmt->execute();
         $stmt->closeCursor();
-        return $res;;
+        return $res;
         // cierra la conexion
         $stmt=null;
     }
-
-    public function mdlCancelarRecibidos($numcaja)
+    // elimina items de la tabla recibido
+    public function mdlEliminarRecibidos($numcaja)
     {
 
         $stmt= $this->link->prepare("DELETE FROM recibido WHERE no_caja=:no_caja");
@@ -129,8 +128,8 @@ class ModeloCaja extends Conexion{
         // cierra la conexion
         $stmt=null;
     }
-
-    public function mdlCancelarErrores($numcaja)
+    // elimina item de la tabla errores
+    public function mdlEliminarErrores($numcaja)
     {
 
         $stmt= $this->link->prepare("DELETE FROM errores WHERE no_caja_recibido=:no_caja");
@@ -144,30 +143,7 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
-    public function mdlMostrarItemCancelados($numcaja)
-    {
-        
-        $sql="SELECT item,errores.no_req,no_caja,errores.estado,errores.ubicacion,errores.recibidos,errores.alistado,errores.pedido,
-        MIN(ID_CODBAR) AS ID_CODBAR,ID_REFERENCIA,DESCRIPCION,
-        lo_origen,lo_destino
-        FROM errores
-        INNER JOIN requisicion ON requisicion.no_req=errores.no_req
-        INNER JOIN ITEMS ON ID_ITEM=ITEM
-        INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
-        WHERE errores.no_caja_recibido = :no_caja
-        GROUP BY item,no_req,no_caja,estado;";
-
-        $stmt= $this->link->prepare($sql);
-
-        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return $stmt;
-        // cierra la conexion
-        $stmt=null;
-    }
-
+    // muestra items que tuvieron errores al resivirse
     public function mdlMostrarItemError($numcaja)
     {
         
@@ -193,6 +169,37 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
+    public function mdlMostrarDocumento($caja)
+    {   
+        $sql="SELECT alistado.item AS iditem,alistado.alistado,no_caja,lo_origen,lo_destino
+        FROM alistado
+        INNER JOIN pedido ON pedido.item=alistado.item
+        INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
+        WHERE";
+        for($i=0;$i<count($caja);$i++) {
+
+            $sql.=" no_caja=:no_caja$i OR";
+        }
+        
+        $sql=substr($sql, 0, -2).";";
+        
+        $stmt= $this->link->prepare($sql);
+        
+        
+        
+        foreach ($caja as $i => &$numcaja) {
+            $stmt->bindParam(":no_caja$i",$numcaja,PDO::PARAM_INT);   
+        }  
+        $stmt->execute();
+        
+        return $stmt;  
+        
+        // cierra la conexion
+        $stmt->closeCursor();
+        $stmt=null;
+    }
+
+    // modifica los items despues de recibidos en el punto de venta
     public function mdlModificarItem($items,$numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
@@ -237,6 +244,7 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
+    // elimina items recibidos
     public function mdlEliminarItemPedido($item,$numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
@@ -258,7 +266,7 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
-    
+    //verifica el estado de la caja
     public function mdlVerificarCaja($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
@@ -284,6 +292,7 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
+    //aasigna cajas a un tranposrtador
     public function mdlDespachar($numcaja,$transportador)
     {
         
