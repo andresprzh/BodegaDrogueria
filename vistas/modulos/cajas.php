@@ -149,7 +149,7 @@
                         <th>Fecha cierre: <span id="cierre"></span></th>
                     </tr>
                     <tr>
-                        <th>Origen: <span id="origen"></span></th>
+                        <th>Origen: <span id="origen">001-BD CENTRO</span></th>
                         <th>destino: <span id="destino"></span></th>
                     </tr>
                 </thead>

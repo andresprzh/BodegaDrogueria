@@ -24,7 +24,7 @@ $(document).ready(function () {
 ============================================================================================================================*/
 
 function entregar(cajas) {
-    
+    console.log(cajas);
     $.ajax({
         url: 'api/transporte/entregar',
         method: 'POST',
@@ -56,7 +56,7 @@ function cargarpedidos() {
         data: { 'usuario': id_usuario },
         dataType: 'JSON',
         success: function (res) {
-
+            console.log(res);
             // borra datos de la lista para recargarla
             $("#pedidos").html("");
 

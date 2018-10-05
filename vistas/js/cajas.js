@@ -25,7 +25,11 @@ $(document).ready(function () {
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
-                $("#requeridos").append($('<option value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
+                $("#requeridos").append($(`<option 
+                                            value='${res[i]['no_req']}'
+                                            name='${res[i]['descripcion']}'>` +
+                    res[i]['no_req'].substr(4) + res[i]['descripcion'] +
+                    '</option>'));
 
             }
 
@@ -42,7 +46,9 @@ $(document).ready(function () {
 
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
-
+        let requeridos = $(this).val();
+        let destino = $(this).find('option:selected').attr("name");
+        $("#destino").html(requeridos.substr(0, 4) + "VE " + destino);
         //muestra la tabla y la reinicia
         $("#Cajas").removeClass("hide");
 
@@ -489,9 +495,9 @@ function mostrarCajas() {
     $("#TablaCE").DataTable().destroy();
 
     //consigue el numero de requerido
-    var requeridos = $(".requeridos").val();
+    let requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
-    var req = [requeridos, id_usuario];
+    let req = [requeridos, id_usuario];
 
     return $.ajax({
 
@@ -745,8 +751,6 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
     // destruye la datatable (tabla del modal)
     $('#TablaM tbody').html('');
     $('#TablaEr tbody').html('');
-    $("#TablaM").DataTable().clear();
-    $("#TablaM").DataTable().destroy();
 
 
     //espera a que la funcion termine para reiniciar las tablas

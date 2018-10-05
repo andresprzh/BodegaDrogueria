@@ -48,8 +48,8 @@ class ModeloTransportador extends Conexion{
         $stmt= $this->link-> prepare("SELECT requisicion.lo_origen,requisicion.lo_destino,
         sedes.descripcion,sedes.direccion1 as direccion,tipo_caja.descripcion as tipo_caja,caja.no_caja
         FROM caja
-        INNER JOIN pedido ON caja.no_caja=pedido.no_caja
-        INNER JOIN requisicion ON pedido.no_req=requisicion.no_req
+        INNER JOIN alistado ON alistado.no_caja=caja.no_caja
+        INNER JOIN requisicion ON alistado.no_req=requisicion.no_req
         INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
         INNER JOIN tipo_caja on caja.tipo_caja=tipo_caja.tipo_caja
         WHERE DATE(caja.enviado)=DATE(NOW())
