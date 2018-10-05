@@ -77,7 +77,7 @@
                 <button id="despachar" class="left btn waves-effect tea darken-4 col s6 m2 l2"  disabled>
                     Despachar cajas
                 </button>
-                <button id="Documento" title="GenerarDocumento" class="btn right waves-effect green darken-4 col s6 m2 l2" disabled>
+                <button id="Documento" title="GenerarDocumento" class="Documento btn right waves-effect green darken-4 col s6 m2 l2" disabled>
                     <i class="fas fa-file-alt"></i>
                 </button>
                 
@@ -112,6 +112,18 @@
                 <tbody id="tablacajas"></tbody>
                 
         </table>
+        <div class="row">
+
+            <!-- <div class="right input-field col s4 m2 l2"> -->
+                
+                
+                <button id="Documento2" title="GenerarDocumento" class=" Documento btn right waves-effect green darken-4 col s6 m2 l2" disabled>
+                    <i class="fas fa-file-alt"></i>
+                </button>
+                
+            <!-- </div>   -->
+            
+        </div>
 
     </div>
     

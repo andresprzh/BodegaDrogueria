@@ -46,7 +46,8 @@ $(document).ready(function () {
         //muestra la tabla y la reinicia
         $("#Cajas").removeClass("hide");
 
-
+        // desabilita los botones de generar documento
+        $(".Documento").attr("disabled", "disabled");
         //espera a que la funcion termine para reiniciar las tablas
         $.when(mostrarCajas()).done(function () {
 
@@ -60,16 +61,20 @@ $(document).ready(function () {
 
 
     // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
-    $('#Documento').click(function (e) {
+    $('.Documento').click(function (e) {
+        // consigue la id de la tabla seleccionada
+        const tabla = $($(this).parent().parent().find('table')[1]).attr('id');
+
         //consigue el numero de requerido
         var requeridos = $('.requeridos').val();
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
 
-        var datos = $('#TablaC').DataTable().data().toArray();
 
+        var datos = $(`#${tabla}`).DataTable().data().toArray();
+
+        // obtiene los numeros de las cajas de la tabla seleccionada
         var numcaja = new Array();
-
         for (var i in datos) {
             numcaja[i] = datos[i][0];
         }
@@ -81,8 +86,6 @@ $(document).ready(function () {
             data: { 'req': req, 'numcaja': numcaja },
             dataType: 'JSON',
             success: function (res) {
-                // console.log(res);
-                // return 0;
 
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
@@ -97,7 +100,6 @@ $(document).ready(function () {
                     var no_res = req[0].substr(req[0].length - 3);
                     let numerodoc = ('00' + res['no_documento']).slice(-2);
                     // crea el nombre del documento a partir de la requisicion y la caja
-                    // var nomdoc = 'C' + numcaja + 'DS' + no_res + '.TR1';
                     var nomdoc = 'DS' + no_res + 'D' + numerodoc + '.TR1';
 
                     var element = document.createElement('a');
@@ -614,7 +616,10 @@ function mostrarCajas() {
 
                         } else {
 
+
                             tablatarget = "#TablaCE";
+                            // si hay items en la tabla de enviados se activa el boton de generar documento para esta tabla
+                            $("#Documento2").removeAttr("disabled", "disabled");
 
                             cont = cont_tablace;
                             cont_tablace++;
@@ -672,6 +677,7 @@ function mostrarCajas() {
 
 }
 
+// RECARGA LOS DATOS DE  LAS TABLAS 
 function recargarCajas() {
     //espera a que la funcion termine para reiniciar las tablas
     $.when(mostrarCajas()).done(function () {
