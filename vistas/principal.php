@@ -84,7 +84,8 @@
         "Nitem",
         "salir",
         "pvcajas",
-        "transportador"
+        "transportador",
+        "requisiciones"
         ];
     $jefe=[
       "inicio",
@@ -92,6 +93,7 @@
       "cajas",
       "usuarios",
       "Nitem",
+      "requisiciones",
       "salir"
     ];
     
@@ -111,6 +113,7 @@
       "requerir",
       "cajas",
       "Nitem",
+      "requisiciones",
       "salir"
     ];
 

@@ -36,7 +36,7 @@ class ControladorRequerir{
             $no_req=$modelo->mdlMostrarReq($item,$valor);
             $no_req=$no_req->fetch();
             
-            //si la requisicion no existe busca los items y sube el archivo a la base de datos  
+            //si la requisicion no existe no busca los items y sube el archivo a la base de datos  
             if($no_req["no_req"]==$valor){
                 
                 echo '<script>
@@ -63,11 +63,12 @@ class ControladorRequerir{
                 
                 $resultado=$this->ctrSubirReq();
                 
-                // echo $this->Items;
+                // echo $this->items;
                 
                 if ($resultado) {
                     
                     $busqueda=$modelo->mdlMostrarItems($this->cabecera[0]);
+                   
                     if ($busqueda->rowCount() > 0) {
                         
                         echo '<table class="tabla "  >
@@ -214,26 +215,26 @@ class ControladorRequerir{
             if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10 && $linea[0]==' '){
                                 
                 //obtienen los datos de cada item por linea
-                $item["id"]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
+                $item["iditem"]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
                 $item["no_req"]=$this->cabecera[0];//se obtiene el numero de requisicion
                 //se cambian las comas del dato por espacios en blanco
                 $item["ubicacion"]=substr($linea,109,6);//ubiacion item
                 $item["disp"]=str_replace(',','',substr($linea,71,5));//cantidad item disponibles
-                $item["pedidos"]=substr($linea,86,5);//cantidad item pedidos
+                $item["pedido"]=substr($linea,86,5);//cantidad item pedidos
                 
                
-                if (!(is_numeric($item["id"]) && strlen($item["id"])==6)) {
+                if (!(is_numeric($item["iditem"]) && strlen($item["iditem"])==6)) {
                     
                      //se busca el id de los item usando la referencia en el documento subido
                     $modelo=new ModeloRequierir();
                     // $item="ID_REFERENCIA";
-                    $valor=$item["id"];
+                    $valor=$item["iditem"];
                     
                     $id_item=$modelo->mdlMostrarItem('ID_REFERENCIA',$valor);
                     $id_item=$id_item->fetch(); 
                               
                     //se reemplaza la referencia del item por su id
-                    $item["id"]=$id_item["ID_ITEM"];
+                    $item["iditem"]=$id_item["ID_ITEM"];
                    
                 }
                
@@ -266,19 +267,37 @@ class ControladorRequerir{
     private function ctrSubirReq(){
         $modelo=new ModeloRequierir();
 
-        $resultado=$modelo->mdlSubirReq($this->cabecera,$this->items);
-        
+        // $resultado=$modelo->mdlSubirReq($this->cabecera,$this->items);
+        $resultado=$modelo->mdlSubirReq($this->cabecera);
+       
         if ($resultado==true) {
-            echo '<script>
+            foreach ($this->itemsarray as  $i=> $item) {
+                
+                $resultado=$modelo->mdlSubirItem($item);
+                
+            }
+            if ($resultado==true) {
+                echo '<script>
                             swal({
                                 title: "¡Archivo Subido exitosamente¡",
                                 icon: "success"
                             });
                     </script>';
 
-            echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                    <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
-                </div>';
+                echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
+                        <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
+                    </div>';
+            }else {
+                echo '<script>
+                            swal({
+                                title: "¡Error al subir el archivo¡",
+                                icon: "error"
+                            });
+                    </script>';
+                echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
+                        <p class="red-text text-darken-2">Error al subir la requisición</p> 
+                    </div>';
+            }
             
             return $resultado;
 

@@ -14,20 +14,20 @@ class ModeloRequierir extends Conexion{
         $tabla='requisicion';
         if ($valor==null) {
             $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion
+            sedes.descripcion,tip_inventario
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
             WHERE $item = 0;");
         }else if($item=='estado') {
             
             $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion
+            sedes.descripcion,tip_inventario
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
             WHERE $item < :$item;");
         }else {
             $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion
+            sedes.descripcion,tip_inventario
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
             WHERE $item = :$item;");
@@ -95,7 +95,9 @@ class ModeloRequierir extends Conexion{
         $stmt=null;
     }
 
-    public function mdlSubirReq($cabecera,$items){
+    // public function mdlSubirReq($cabecera,$items)
+    public function mdlSubirReq($cabecera)
+    {
         $tabla="requisicion";
         
         $stmt= $this->link->prepare("INSERT INTO $tabla(no_req,creada,lo_origen,lo_destino,tip_inventario,solicitante) VALUES(:no_req,:fecha,:lo_origen,:lo_destino,:tip_inventario,:solicitante)");
@@ -109,20 +111,21 @@ class ModeloRequierir extends Conexion{
         $stmt->bindParam(":solicitante",$cabecera[5],PDO::PARAM_STR);
         
         
-        $stmt->execute();
+        $res=$stmt->execute();
         
-        $tabla="pedido";
+        // $tabla="pedido";
 
-        $sql='INSERT INTO '.$tabla.'(item,no_req,ubicacion,disp,pedido) VALUES'. $items;
+        // $sql='INSERT INTO '.$tabla.'(item,no_req,ubicacion,disp,pedido) VALUES'. $items;
         
-        $stmt= $this->link->prepare($sql);
+        // $stmt= $this->link->prepare($sql);
         
-        $res= $stmt->execute();
+        // $res= $stmt->execute();
         $stmt->closeCursor();
         return $res;
     }
 
-    public function mdlSubirPedido($item,$no_req){
+    public function mdlSubirPedido($item,$no_req)
+    {
 
         $stmt= $this->link->prepare("INSERT INTO (item,no_req,ubicacion,disp,pedido) VALUES(:item,:no_req,:ubicacion,:disp,:pedido)");
 
@@ -140,6 +143,23 @@ class ModeloRequierir extends Conexion{
         $stmt->bindParam(":no_req",$req,PDO::PARAM_STR);
 
         $res= $stmt->execute();
+        $stmt->closeCursor();
+        return $res;
+    }
+
+    public function mdlSubirItem($item)
+    {
+        $tabla="pedido";
+        $stmt= $this->link->prepare("INSERT INTO $tabla(item,no_req,ubicacion,disp,pedido) VALUES(:item,:no_req,:ubicacion,:disp,:pedido);");
+
+        $stmt->bindParam(":item",$item["iditem"],PDO::PARAM_STR);
+        $stmt->bindParam(":no_req",$item["no_req"],PDO::PARAM_STR);
+        $stmt->bindParam(":ubicacion",$item["ubicacion"],PDO::PARAM_STR);
+        $stmt->bindParam(":disp",$item["disp"],PDO::PARAM_INT);
+        $stmt->bindParam(":pedido",$item["pedido"],PDO::PARAM_INT);
+
+        $res= $stmt->execute();
+        
         $stmt->closeCursor();
         return $res;
     }

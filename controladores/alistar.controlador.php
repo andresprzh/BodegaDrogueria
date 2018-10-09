@@ -101,8 +101,9 @@ class ControladorAlistar {
     }
 
     // busca todos los items de la tabla pedido de una requisicion
-    public function ctrBuscarItemsReq()
+    public function ctrBuscarItemsReq($estado=0)
     {
+        
         $busqueda=$this->modelo->mdlMostrarItems('%%');
         if ($busqueda->rowCount() > 0) {
 
@@ -111,11 +112,12 @@ class ControladorAlistar {
 
             $cont=0;
 
-            while($row = $busqueda->fetch()){
+            // muestra todos los items de la requisicion
+            if ($estado=='all') {
 
-                //solo muestra los items que no estan alistados
-                if($row["estado"]==0){
+                  while($row = $busqueda->fetch()){
                     
+                        
                     // se usa el id del item como el index en el arreglo
                     // si se encuentra 2 veces el mismo item este se remplaza
                     $itembus["contenido"][$row["item"]]=["codigo"=>$row["ID_CODBAR"],
@@ -129,10 +131,34 @@ class ControladorAlistar {
                     
                     $cont++;
                     $itembus["ubicaciones"][$cont]=$row["ubicacion"];                          
+                    
+
                 }
 
+            }else {
+    
+                while($row = $busqueda->fetch()){
+                    
+                    //solo muestra los items que no estan alistados
+                    if($row["estado"]==$estado){
+                        
+                        // se usa el id del item como el index en el arreglo
+                        // si se encuentra 2 veces el mismo item este se remplaza
+                        $itembus["contenido"][$row["item"]]=["codigo"=>$row["ID_CODBAR"],
+                                            "referencia"=>$row["ID_REFERENCIA"],
+                                            "descripcion"=>$row["DESCRIPCION"],
+                                            "disponibilidad"=>$row["disp"],
+                                            "pendientes"=>$row["pendientes"],
+                                            "alistados"=>$row["alistado"],
+                                            'ubicacion'=>$row["ubicacion"]
+                                            ];
+                        
+                        $cont++;
+                        $itembus["ubicaciones"][$cont]=$row["ubicacion"];                          
+                    }
+
+                }
             }
-            
             if ($cont>0) {
                 $itembus["ubicaciones"]=array_unique($itembus["ubicaciones"]);
             }
@@ -342,6 +368,7 @@ class ControladorAlistar {
     }
 
     public function ctrDocList($numcaja=null){
+
         if ($numcaja==null) {
             $busqueda = $this->modelo->mdlMostrarNumCaja();
             $numcaja = ($busqueda->fetch());

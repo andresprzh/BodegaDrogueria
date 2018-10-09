@@ -75,7 +75,7 @@ if (isset($_GET['ruta'])) {
             break;
 
         /* ============================================================================================================================
-                                                MUESTRA LOS ITEMS DELA reqUISICION 
+                                                MUESTRA LOS ITEMS DELA REQUISICION 
         ============================================================================================================================*/
         case 'items':
             
@@ -95,7 +95,14 @@ if (isset($_GET['ruta'])) {
                     $respuesta=$controlador->ctrBuscarItem($cod_barras);
                 // de lo contrario se muestran todos los items de la requisicion
                 }else {
-                    $respuesta=$controlador->ctrBuscarItemsReq();
+                    // si busca un estado de item especifico 
+                    if (isset($_GET['estado'])) {
+                        $respuesta=$controlador->ctrBuscarItemsReq(true);
+                    }else {
+                        // de lo contratio solo buscan los items no alistados
+                        $respuesta=$controlador->ctrBuscarItemsReq();
+                    }
+                    
                 }
                 // regresa el resultado de la busqueda como un objeto JSON
                 print json_encode( $respuesta);
@@ -152,6 +159,9 @@ if (isset($_GET['ruta'])) {
             return 1;
             break;
             
+        /* ============================================================================================================================
+                                                CREA DOCUMENTO LISTA DE ITEMS Y LO MANDA A IMPRIMIR
+        ============================================================================================================================*/  
         case 'listadoc':
              //crea objeto controlador 
             $req=['002-003613',1];
