@@ -102,11 +102,12 @@ $(document).ready(function () {
 
                     // si no hay error genera le documento y lo manda a decargar
                 } else {
-                    // obtiene los 3 ultimos caracteres de la requisicion
-                    var no_res = req[0].substr(req[0].length - 3);
-                    let numerodoc = ('00' + res['no_documento']).slice(-2);
-                    // crea el nombre del documento a partir de la requisicion y la caja
-                    var nomdoc = 'DS' + no_res + 'D' + numerodoc + '.TR1';
+                    // // OBTIENE LOS 3 ULTIMOS CARACTERES DE LA REQUISICION
+                    // var no_res = req[0].substr(req[0].length - 3);
+                    // let numerodoc = ('00' + res['no_documento']).slice(-2);
+                    // // CREA EL NOMBRE DEL DOCUMENTO A PARTIR DE LA REQUISICION Y LA CAJA
+                    // var nomdoc = 'DS' + no_res + 'D' + numerodoc + '.TR1';
+                    var nomdoc=req[0]+'.TR'+res['no_documento'];
 
                     var element = document.createElement('a');
                     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['documento']));
