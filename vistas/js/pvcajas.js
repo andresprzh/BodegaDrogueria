@@ -55,6 +55,7 @@ $(document).ready(function () {
     // evento si se da click en generar documento
     $("#Documento").click(function (e) {
         let numcaja = $('.modal .NumeroCaja').html();
+        
         documento(numcaja);
     });
 
@@ -109,9 +110,9 @@ function mostrarCajas() {
                 if (caja[0] === undefined) {
 
                     
-                    if (caja["estado"] != 4) {
-                        botonestado = 'disabled';
-                    }
+                    // if (caja["estado"] != 4) {   
+                    //     botonestado = 'disabled';
+                    // }
 
                     // reemplaza varoles nul por ---
                     if (caja["tipocaja"] === null) {
@@ -148,9 +149,10 @@ function mostrarCajas() {
                     for (var i in caja) {
 
                         botonestado = '';
-                        if (caja[i]["estado"] != 4) {
-                            botonestado = 'disabled';
-                        }
+                        // if (caja[i]["estado"] != 4) {
+                        // if (caja[i]["estado"]) {
+                        //     botonestado = 'disabled';
+                        // }
 
                         // reemplaza varoles nul por ---
                         if (caja[i]["tipocaja"] === null) {
@@ -202,11 +204,11 @@ function mostrarItemsCaja(numcaja, estado, recibido) {
     $(".NumeroCaja").html(numcaja);
 
     if (estado == 4) {
-        $("#Documento").removeAttr("disabled");
+        // $("#Documento").removeAttr("disabled");
         $("#TablaM thead tr").addClass("green darken-3");
         $("#TablaM thead tr").removeClass("red darken-3");
     } else {
-        $("#Documento").attr("disabled", "disabled");
+        // $("#Documento").attr("disabled", "disabled");
         $("#TablaM thead tr").addClass("red darken-3");
         $("#TablaM thead tr").removeClass("green darken-3");
     }
@@ -264,19 +266,20 @@ function mostrarItems(numcaja, estado = null) {
 }
 
 function documento(numcaja) {
-
+    
     //consigue el numero de requerido
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-
+    
     return $.ajax({
         url: "api/cajas/documento",
         method: "POST",
         data: { "req": req, "numcaja": numcaja },
-        dataType: "JSON",
+        // dataType: "JSON",
         success: function (res) {
-            
+            console.log(res);
+            return 0;
             if (res["estado"] == true) {
 
                 // let numcaja = $("#cajas").val();

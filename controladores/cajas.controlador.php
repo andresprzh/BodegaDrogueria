@@ -148,7 +148,7 @@ class ControladorCajas extends ControladorAlistar {
     public function ctrBuscarItemError($numcaja)
     {
         $busqueda = $this->modelo->mdlMostrarItemError($numcaja);
-
+        
         if ($busqueda->rowCount() > 0) {
 
             $itembus["estado"]="encontrado";

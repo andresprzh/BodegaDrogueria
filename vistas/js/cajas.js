@@ -824,7 +824,7 @@ function mostrarItems(numcaja, estado = null) {
 
                     case 5:
                         for (var i in item) {
-                            if (item[i]['no_caja'] == 1) {
+                            if (item[i]['no_caja'] == 0) {
                                 item[i]['no_caja'] = '---';
                             }
                             // guarda el id del item en el id de la fila y el estaod en el nombre de la fila

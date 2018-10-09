@@ -18,7 +18,7 @@ $(document).ready(function () {
         dataType: "json",
         success: function (res) {
 
-            // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
+            // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
                 $("#requeridos").append($('<option value="' + res[i]["no_req"] + '">' + res[i]["no_req"] + '</option>'));
@@ -38,7 +38,7 @@ $(document).ready(function () {
                                                         EVENTOS   
     ============================================================================================================================*/
 
-    //EVENTO AL CAMBIAR ENTRADA reqUERIDOS
+    //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
         // oculta los datos de la requisicion
         $("#infreq").addClass("hide");
@@ -60,7 +60,7 @@ $(document).ready(function () {
             data: { "req": req },//datos que se enviaran
             dataType: "JSON",
             success: function (res) {
-
+                
                 if (res !== false) {
                     // SE MUESTRAN LAS CAJAS EN EL MENU DE SELECCION
 
@@ -224,7 +224,7 @@ $(document).ready(function () {
                         data: { "caja": caja, "req": req, "items": items },//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
-                            console.log(res);
+                                                        
                             if (res["estado"] == true) {
                                 // crea el documento si no hay errores en los items recibidos
                                 if (res["contenido"]["estado"] == true) {

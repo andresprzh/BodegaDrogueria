@@ -101,7 +101,7 @@ class ControladorAlistar {
     }
 
     // busca todos los items de la tabla pedido de una requisicion
-    public function ctrBuscarItemsReq($estado=0)
+    public function ctrBuscarItemsReq($estado=null)
     {
         
         $busqueda=$this->modelo->mdlMostrarItems('%%');
@@ -113,7 +113,7 @@ class ControladorAlistar {
             $cont=0;
 
             // muestra todos los items de la requisicion
-            if ($estado=='all') {
+            if ($estado!=null) {
 
                   while($row = $busqueda->fetch()){
                     
@@ -136,11 +136,11 @@ class ControladorAlistar {
                 }
 
             }else {
-    
+                
                 while($row = $busqueda->fetch()){
                     
                     //solo muestra los items que no estan alistados
-                    if($row["estado"]==$estado){
+                    if($row["estado"]==0){
                         
                         // se usa el id del item como el index en el arreglo
                         // si se encuentra 2 veces el mismo item este se remplaza

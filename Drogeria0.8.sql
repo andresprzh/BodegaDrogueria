@@ -261,6 +261,11 @@ INSERT INTO tipo_caja  VALUES
 ('GLN','Galon'),
 ('GLA','Galoneta');
 
+-- se llena un primer registro a caja que define las cajas no asignadas
+INSERT INTO caja(no_caja) VALUES(1);
+UPDATE caja SET no_caja=0 WHERE no_caja=1;
+ALTER TABLE CAJA AUTO_INCREMENT=0;
+
 
 INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador");
 UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
@@ -308,6 +313,7 @@ INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direc
 /* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP PROCEDURE IF EXISTS BuscarCod;
+DROP PROCEDURE IF EXISTS VerificarCaja;
 
 
 /* ELIMINA TRIGGER SI EXISTEN */
@@ -318,6 +324,7 @@ DROP TRIGGER IF EXISTS EstadoAlistadoUpd;
 DROP TRIGGER IF EXISTS EliminarAlistado;
 DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
+DROP TRIGGER IF EXISTS EstadoRecibido;
 
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
@@ -336,6 +343,41 @@ DELIMITER $$
 	END 
 $$
 
+-- procedimiento que verifica el estado de los items recibidos de una requisicion comparandolos con  los items pedidos o alistados
+DELIMITER $$
+	CREATE FUNCTION VerificarCaja(numcaja INT(10),req CHAR(10))
+	RETURNS TINYINT(1)
+	BEGIN
+		DECLARE cantidad TINYINT;
+		-- actualiza el estado de los items recibidos de una requisicion para recalcular el estado
+		UPDATE recibido
+		SET estado=0
+		WHERE no_req=req;
+		
+		-- cuenta la cantidad de items que tienen errores
+		SELECT COUNT(item) INTO cantidad
+		FROM recibido
+		WHERE no_caja=numcaja
+		AND no_req=req
+		AND estado <>4;
+		
+		-- si no hay errores regreasa verdadero
+		IF cantidad=0 THEN
+			
+			-- cambia el estado de la caja a recibida
+			UPDATE caja
+			SET estado=4
+			WHERE no_caja=numcaja;
+			return true;
+			
+		ELSE
+		
+			return false;
+			
+		END IF;
+		
+	END 
+$$
 
 -- procedimiento que busca un Item con el codigo de barras en la la lista de rquerido especificada
 -- el procedimiento tambien cambia el estado del Item a 1 que significa que esta siendo alistado
@@ -458,7 +500,7 @@ DELIMITER $$
 	END 
 $$
 
-DROP TRIGGER IF EXISTS InicioAbrir;
+
 -- triger que asigna fecha de inicio cada ves que se crea una caja
 DELIMITER $$
 	CREATE TRIGGER InicioAbrir 
@@ -486,6 +528,79 @@ DELIMITER $$
 		END IF;
 	END 
 
+$$
+
+
+
+-- DROP TRIGGER IF EXISTS EstadoRecibido;
+DELIMITER $$
+	CREATE TRIGGER EstadoRecibido 
+	BEFORE UPDATE ON recibido
+	FOR EACH ROW 
+	BEGIN
+	
+		DECLARE cja INT(10);
+		DECLARE numalistado INT(5);
+		DECLARE ubc VARCHAR(6);
+		DECLARE numpedido INT(5);
+		DECLARE req CHAR(10);
+		DECLARE ider INT(5);
+		DECLARE num INT(1);
+		DECLARE estado INT(1);
+								
+		-- busca si el item está mas de 1  vez en la requisicions
+		SELECT COUNT(no_caja) INTO num
+		FROM alistado
+		WHERE alistado.item = new.item
+		AND alistado.no_req = new.no_req;
+
+		--	si está se busca si dicha caja coincide con la que se recibio
+		IF num>1 THEN
+
+			SELECT no_caja,alistado,ubicacion,pedido,pedido.no_req INTO cja, numalistado,ubc,numpedido,req
+			FROM alistado
+			RIGHT JOIN pedido ON pedido.item=alistado.item
+			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+			WHERE ITEMS.ID_Item = new.item
+			AND pedido.no_req=new.no_req
+			AND alistado.no_caja=new.no_caja;
+			
+		-- si no se busca normalmente en pedido
+		ELSE
+			SELECT no_caja,alistado,ubicacion,pedido,pedido.no_req INTO cja, numalistado,ubc,numpedido,req
+			FROM alistado
+			RIGHT JOIN pedido ON pedido.item=alistado.item
+			RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido.Item
+			WHERE ITEMS.ID_Item = new.item
+			AND pedido.no_req=new.no_req;
+	
+		END IF;
+
+		IF req IS NULL THEN
+			SET new.estado=2;
+			SET cja=0;
+		ELSEIF cja<>new.no_caja THEN
+			SET new.estado=3;
+		ELSEIF new.recibidos<numalistado THEN
+			SET new.estado=0;
+		ELSEIF new.recibidos>numalistado THEN
+			SET new.estado=1;
+		ELSE 
+			SET new.estado=4;
+		END IF;
+
+		IF ubc IS NULL THEN
+			SET ubc='----';
+			SET numpedido=0;
+			SET numalistado=0;
+		END IF;
+		
+		IF new.estado<>4  THEN
+			REPLACE INTO errores(item,no_req,no_caja,no_caja_recibido,recibidos,estado,ubicacion,pedido,alistado) 
+			VALUES(new.item,new.no_req,cja,new.no_caja,new.recibidos,new.estado,ubc,numpedido,numalistado);
+		END IF;
+
+	END 	
 $$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************

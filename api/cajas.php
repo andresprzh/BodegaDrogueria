@@ -127,8 +127,8 @@ if (isset($_GET['ruta'])) {
         ============================================================================================================================*/
         case "documento":
            // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
-            $req=$_GET["req"];
-            $numcaja=$_GET['numcaja'];
+            $req=$_REQUEST["req"];
+            $numcaja=$_REQUEST['numcaja'];
             
             $controlador=new ControladorCajas($req);
             

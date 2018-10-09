@@ -144,7 +144,7 @@
                         <div class="input-field center col s4 m6 l4 input_barras">
 
                             <input  id="peso" type="number" class="validate" required>
-                            <label for="peso" class="right">Peso en gr</label>
+                            <label for="peso" class="right">Peso en kg</label>
 
                         </div> 
 

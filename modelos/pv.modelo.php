@@ -116,13 +116,13 @@ class ModeloPV extends Conexion{
         // WHERE recibido.no_caja=:no_caja
         // GROUP BY recibido.item,DESCRIPCION ,pedido.no_caja ,recibido.no_caja ,pedido.alistado,
         // recibido.recibidos,pedido.estado,recibido.estado,lo_origen,lo_destino;";
-        $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,pedido.alistado,
-        pedido.no_caja AS cajap,recibido.no_caja AS cajar,
+        $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,alistado.alistado,
+        alistado.no_caja AS cajap,recibido.no_caja AS cajar,
         recibido.recibidos,recibido.estado AS rec_estado
         FROM recibido
         INNER JOIN ITEMS ON ITEMS.ID_ITEM=recibido.item
         INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
-        LEFT JOIN  bodegadrogueria.pedido ON pedido.item=recibido.item
+        LEFT JOIN  alistado ON alistado.item=recibido.item
         WHERE recibido.no_caja=:no_caja";
 
         $stmt= $this->link->prepare($sql );
@@ -134,13 +134,22 @@ class ModeloPV extends Conexion{
     }
 
     // muestra las cajas enviadas
-    public function mdlMostrarCajaPV($NumCaja){
+    public function mdlMostrarCajaPV($numcaja){
         $no_req=$this->req[0];$alistador=$this->req[1];
         
 
-        $stmt= $this->link->prepare("CALL buscarcaja(:NumCaja,:no_req,3);");
+        // $stmt= $this->link->prepare("CALL buscarcaja(:numcaja,:no_req,3);");
+        $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
+        FROM caja 
+        LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
+        INNER JOIN usuario ON usuario.id_usuario=Alistador
+        WHERE caja.no_caja LIKE :numcaja 
+        AND (alistado.no_req=:no_req)
+        AND caja.estado = 3
+        GROUP BY caja.no_caja,caja.estado;';
+        $stmt= $this->link->prepare($sql);
 
-        $stmt->bindParam(":NumCaja",$NumCaja,PDO::PARAM_STR);
+        $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_STR);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
         $stmt->execute();

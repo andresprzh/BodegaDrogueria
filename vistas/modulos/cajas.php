@@ -210,7 +210,7 @@
                 <div class="input-field center col s4 m6 l4 input_barras">
 
                     <input  id="peso" type="number" class="validate" required>
-                    <label for="peso" class="right">Peso en gr</label>
+                    <label for="peso" class="right">Peso en kg</label>
 
                 </div> 
 
@@ -280,7 +280,7 @@
                     
                     <div class="input-field col s4 m3 l3">
 
-                        <button id="modificar" class="btn waves-effect green darken-4 " >
+                        <button id="modificar" class="btn waves-effect green darken-4 " disabled>
                             Modificar
                         </button>
                         
