@@ -12,7 +12,7 @@ if (isset($_GET['ruta'])) {
     switch ($_GET['ruta']) {
         
         /* ============================================================================================================================
-                                                MUESTRA LOS ITEMS DELA reqUISICION 
+                                                AGREGA LOS ITEMS A LA REQUISICION 
         ============================================================================================================================*/
         case "agregar":
             // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
@@ -29,10 +29,10 @@ if (isset($_GET['ruta'])) {
             // muestra el vector como dato JSON
             print json_encode( $respuesta);
             break;
-            /* ============================================================================================================================
-                                                MUESTRA LOS ITEMS DELA reqUISICION 
-            ============================================================================================================================*/  
 
+        /* ============================================================================================================================
+                                            MUESTRA LOS ITEMS DE LA REQUISICION 
+        ============================================================================================================================*/  
         case "items":
             // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
             $req = $_POST["req"];

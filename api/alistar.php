@@ -158,6 +158,18 @@ if (isset($_GET['ruta'])) {
             }
             return 1;
             break;
+
+        /* ============================================================================================================================
+                                                CAMBIA ESTADO DE LA REQUISICION
+        ============================================================================================================================*/
+        case 'terminarreq':
+            $req=$_POST['req'];
+            $controlador=new ControladorAlistar();
+            $resultado=$controlador->ctrTerminarreq($req);
+            print json_encode($resultado);
+            return 1;
+            break;
+        
             
         /* ============================================================================================================================
                                                 CREA DOCUMENTO LISTA DE ITEMS Y LO MANDA A IMPRIMIR
@@ -171,7 +183,9 @@ if (isset($_GET['ruta'])) {
             echo $resultado;
             // print json_encode($resultado);
             break;    
-        
+        /* ============================================================================================================================
+                                                                    DEFAULT
+        ============================================================================================================================*/  
         default:
             print json_encode("Best REST API :D");
             // termina la ejecucion del api

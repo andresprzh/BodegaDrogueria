@@ -7,7 +7,7 @@
 
     <div class="input-field col s3 m1 l1  input_refresh">
 
-        <button id="refresh" title="Recargar"  onclick="cargarpedidos()" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
+        <button id="refresh" title="Recargar"  onclick="mostrarReq()" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
             <i class="fas fa-sync"></i>
         </button>
         
@@ -81,7 +81,7 @@
                     
                     <div class="input-field col s4 m3 l3">
 
-                        <button id="cerrar" class="btn waves-effect red darken-4 " >
+                        <button id="cerrar"  class="btn waves-effect red darken-4 " >
                             Cerrar
                         </button>
                         

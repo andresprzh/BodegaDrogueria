@@ -367,6 +367,12 @@ class ControladorAlistar {
 
     }
 
+    public function ctrTerminarreq($req)
+    {
+        $resultado=$this->modelo->mdlTerminarreq($req);
+        return $resultado;
+    }
+    // CREA LISTA DE ITEMS Y LO MANDA AIMPRIMIR
     public function ctrDocList($numcaja=null){
 
         if ($numcaja==null) {

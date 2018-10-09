@@ -221,13 +221,13 @@ class ModeloAlistar extends Conexion{
         $no_req=$this->req[0];$persona=$this->req[1];
         $datos="";
         for($i=0;$i<count($items);$i++) {
-            $datos.="(:item$i,:no_req,1,'----',:pedido$i,:pedido$i,0,0),";
+            $datos.="(:item$i,:no_req,'----',:pedido$i,:pedido$i),";
         }
 
         $datos=substr($datos, 0, -1).';';
 
-        $sql='INSERT INTO pedido VALUES'. $datos;
-
+        $sql='INSERT INTO pedido(item,no_req,ubicacion,disp,pedido) VALUES'. $datos;
+        
         $stmt= $this->link->prepare($sql);
 
         $i=0;
@@ -242,7 +242,7 @@ class ModeloAlistar extends Conexion{
         
         
         $res= $stmt->execute();
-        
+        // return $stmt->errorInfo();
         // libera conexion para hace otra sentencia
         $stmt->closeCursor();
         return ($res); 
@@ -268,4 +268,26 @@ class ModeloAlistar extends Conexion{
  
     }
 
+    //modifica la requisicion
+    public function mdlTerminarreq($req)
+    {
+                
+        $stmt= $this->link->prepare('UPDATE requisicion
+		SET estado=1,
+        enviado=NOW()
+		WHERE no_req=:no_req;
+        ');
+
+        $stmt->bindParam(":no_req",$req,PDO::PARAM_STR);
+        
+
+        $res=$stmt->execute();
+        // return $stmt->errorInfo();    
+        $stmt->closeCursor();  
+        // retorna el resultado de la sentencia
+	    return $res;
+
+        // cierra la conexion
+        $stmt=null;
+    }
 }

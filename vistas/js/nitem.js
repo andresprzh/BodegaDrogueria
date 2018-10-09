@@ -104,8 +104,10 @@ $(document).ready(function () {
                         type: "POST",
                         url: "api/nitem/agregar",
                         data: { "items": items, "req": req },
-                        dataType: "JSON",
+                        // dataType: "JSON",
                         success: function (res) {
+                            console.log(res);
+                            return 0;
                             if (res) {
                                 swal({
                                     title: `Items agregados exitosamente a la requisición ${requeridos}`,

@@ -210,7 +210,7 @@ $(document).ready(function () {
                     url: 'api/alistar/empacar',//url de la funcion
                     method: 'post',//metodo post para mandar datos
                     data: { 'req': req, 'tipocaja': tipocaja, 'pesocaja': pesocaja, 'items': items },//datos que se enviaran 
-                    // dataType: 'JSON',
+                    dataType: 'JSON',
                     success: function (res) {
                         if (res) {
 
