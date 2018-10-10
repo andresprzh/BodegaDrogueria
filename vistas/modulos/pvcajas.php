@@ -20,10 +20,23 @@
     
 </div>
 
-<div>
+<div id="contenido" class="hide">
     <ul class="collection" id="cajas">
         
     </ul>
+    <div class="row">
+           
+            
+            <button 
+             id="DocumentoAll" 
+             title="Generar Documento todas las cajas" 
+             class=" DocumentoAll btn right waves-effect green darken-4 col s6 m2 l2" 
+             onclick="documentoAll()"
+            >
+                <i class="fas fa-file-alt"></i> Documento
+            </button>
+        
+    </div>
 </div>
 <!-- ============================================================================================================================
                                                     MODAL VER CAJA
@@ -66,13 +79,13 @@
     </div>
 </div>
 
-<style scope>
+<style >
     #cajas .modal-trigger:hover{
         cursor: pointer;
     }
-    /* .modal{
+    .modal{
         width:100%;
-    } */
+    }
     .tabla  td:first-child, .tabla  th:first-child{
         width:30%;
         text-align: center;

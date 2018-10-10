@@ -123,7 +123,7 @@ if (isset($_GET['ruta'])) {
             break;
         
         /* ============================================================================================================================
-                                                CREA DOCUMENTO PLANO DE LA CAJA
+                                                CREA DOCUMENTO PLANO 
         ============================================================================================================================*/
         case "documento":
            // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
@@ -131,23 +131,37 @@ if (isset($_GET['ruta'])) {
             $numcaja=$_REQUEST['numcaja'];
             
             $controlador=new ControladorCajas($req);
+
+            // si el documento creaodo corresponde al de salida de bodega
+            if (!isset($_POST['recibido'])) {
+                $resultado=$controlador->ctrDocumento($numcaja);
             
-            $resultado=$controlador->ctrDocumento($numcaja);
-            print json_encode($resultado);
-            
-            // // documento items alistados
-            // if (isset($_POST['items'])) {
-            //     $controlador=new ControladorCajas($req);
-            //     $items=$_POST['items'];
-            //     $resultado=$controlador->ctrDocumento($items,$numcaja);
-            // // documento items srecibidos
-            // }else {
-            //     $controlador=new ControladorPV($req);
-            //     $resultado=$controlador->ctrDocumentoR($numcaja);
-            // }
+            // si el documento creado corresponde al del punto de venta
+            }else{
+                $controlador=new ControladorPV($req);
+                // print json_encode("recibido");
+                // return  0;
+                $resultado=$controlador->ctrDocumentoR($numcaja);
+            }
+            print json_encode($resultado); 
             return  1;
             break;
-
+        /* ============================================================================================================================
+                                                CREA DOCUMENTO PLANO ITEMS RECIBIDOS
+        ============================================================================================================================*/
+        case "documentoR":
+           // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
+            $req=$_REQUEST["req"];
+            $numcaja=$_REQUEST['numcaja'];
+            
+            $controlador=new ControladorPV($req);
+            // print json_encode("recibido");
+            // return  0;
+            $resultado=$controlador->ctrDocumentoRR($numcaja);
+        
+            print json_encode($resultado); 
+            return  1;
+            break;
         /* ============================================================================================================================
                                                 CREA DOCUMENTO PLANO DE LA CAJA
         ============================================================================================================================*/

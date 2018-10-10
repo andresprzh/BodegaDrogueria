@@ -161,15 +161,35 @@ class ModeloPV extends Conexion{
         $stmt=null;
     }
 
-    public function mdlMostrarrecibidos($numcaja){
-
+    public function mdlMostrarrecibidos($caja){
+        
         $sql="SELECT item as iditem,recibido.no_req,no_caja,recibidos,recibido.estado,requisicion.lo_origen,requisicion.lo_destino
         FROM recibido
         INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
-        WHERE no_caja=:no_caja;";
-        $stmt= $this->link->prepare($sql );
+        WHERE ";
 
-        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        // si caja es un array concatena todos los numeros de caja en la condicion
+        if (is_array($caja)) {
+
+            for($i=0;$i<count($caja);$i++) {
+
+            $sql.=" no_caja=:no_caja$i OR";
+            }
+            
+            $sql=substr($sql, 0, -2)."ORDER BY no_caja ASC;";
+            $stmt= $this->link->prepare($sql);
+    
+            foreach ($caja as $i => &$numcaja) {
+                $stmt->bindParam(":no_caja$i",$numcaja,PDO::PARAM_INT);   
+            } 
+        
+        // si es solo una caja
+        }else {
+            $sql.="no_caja=:no_caja;";
+            $stmt= $this->link->prepare($sql );
+            $stmt->bindParam(":no_caja",$caja,PDO::PARAM_INT);
+        }
+    
         $stmt->execute();
 
         return ($stmt);  

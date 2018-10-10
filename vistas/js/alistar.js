@@ -16,7 +16,7 @@ $(document).ready(function () {
         processData: false,
         dataType: "JSON",
         success: function (res) {
-            
+
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -221,7 +221,7 @@ $(document).ready(function () {
                                 // location.reload(true);
                                 // vuelve a cargar las tablas
                                 recargarItems();
-
+                                $('.tabs').tabs('select', 'TablaV');
                             });
 
                         } else {
@@ -427,7 +427,7 @@ function mostrarItems() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-            console.log(res);
+
             //si encuentra el item mostrarlo en la tabla
             if (res['estado'] != 'error') {
 

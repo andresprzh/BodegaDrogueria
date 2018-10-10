@@ -78,7 +78,7 @@
                     Despachar cajas
                 </button>
                 <button id="Documento" title="GenerarDocumento" class="Documento btn right waves-effect green darken-4 col s6 m2 l2" disabled>
-                    <i class="fas fa-file-alt"></i>
+                    <i class="fas fa-file-alt"></i> Documento
                 </button>
                 
             <!-- </div>   -->
@@ -118,7 +118,7 @@
                 
                 
                 <button id="Documento2" title="GenerarDocumento" class=" Documento btn right waves-effect green darken-4 col s6 m2 l2" disabled>
-                    <i class="fas fa-file-alt"></i>
+                    <i class="fas fa-file-alt"></i> Documento
                 </button>
                 
             <!-- </div>   -->

@@ -278,6 +278,7 @@ class ControladorPV extends ControladorCajas{
             $i=0;
             $resultado["string"]="";
             foreach ($recibidos as $row) {
+                $mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
 
                 $origen=str_replace("BD","",$row["lo_origen"]);
                 $destino=str_replace("VE","",$row["lo_destino"]);
@@ -289,17 +290,19 @@ class ControladorPV extends ControladorCajas{
                 $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
                 
-                $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
-                $busqueda=$busqueda->fetch();
-                $mensaje=substr($busqueda['nombre'],0,19);
+                // $busqueda=$this->modelo->buscaritem('usuario','id_usuario',$this->req[1]);
+                // $busqueda=$busqueda->fetch();
+                // $mensaje=substr($busqueda['nombre'],0,19);
                 
                 $resultado["string"].=($localicacion.$item.$alistado.$mensaje."\r\n");
             }
         }else {
             $resultado["estado"]=false;
         }
-
+        
         return $resultado;
     }
+
+    
     
 }

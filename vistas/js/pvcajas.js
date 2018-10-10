@@ -18,7 +18,7 @@ $(document).ready(function () {
         data: { 'valor': 3 },
         dataType: "JSON",
         success: function (res) {
-            
+
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -55,7 +55,7 @@ $(document).ready(function () {
     // evento si se da click en generar documento
     $("#Documento").click(function (e) {
         let numcaja = $('.modal .NumeroCaja').html();
-        
+
         documento(numcaja);
     });
 
@@ -76,32 +76,34 @@ function mostrarCajas() {
 
     return $.ajax({
 
-        url: "api/cajas/pvcajas",
-        method: "POST",
-        data: { "req": req },
-        dataType: "JSON",
+        url: 'api/cajas/pvcajas',
+        method: 'POST',
+        data: { 'req': req },
+        dataType: 'JSON',
         success: function (res) {
 
-            var caja = res["contenido"];
+            var caja = res['contenido'];
 
             //si no encuentra la caja muestra en pantalla que no se encontro
-            if (res["estado"] == "error") {
-                $("#refresh").prop("disabled", true);
+            if (res['estado'] == 'error') {
+                $('#contenido').addClass('hide');
+                $('#refresh').prop('disabled', true);
             }
             //en caso de contrar el item mostrarlo en la tabla
             else {
-                $("#refresh").prop("disabled", false);
-                var caja = res["contenido"];
-                // console.log(caja);
-                // return 0;
+
+                $('#contenido').removeClass('hide');
+                $('#refresh').prop('disabled', false);
+                var caja = res['contenido'];
+
                 let color = {
-                    0: "yellow",
-                    1: "green",
-                    2: "orange",
-                    3: "orange",
-                    4: "green",
-                    5: "red",
-                    9: "black"
+                    0: 'yellow',
+                    1: 'green',
+                    2: 'orange',
+                    3: 'orange',
+                    4: 'green',
+                    5: 'red',
+                    9: 'black'
                 };
 
                 let botonestado = '';
@@ -109,17 +111,17 @@ function mostrarCajas() {
                 // si solo hay 1 resultado no hace el ciclo for
                 if (caja[0] === undefined) {
 
-                    
+
                     // if (caja["estado"] != 4) {   
                     //     botonestado = 'disabled';
                     // }
 
                     // reemplaza varoles nul por ---
-                    if (caja["tipocaja"] === null) {
-                        caja["tipocaja"] = "---"
+                    if (caja['tipocaja'] === null) {
+                        caja['tipocaja'] = '---'
                     }
 
-                    $("#cajas").append($(`<li 
+                    $('#cajas').append($(`<li 
                                           class="collection-item avatar"
                                           id="${caja["no_caja"]}"
                                           >
@@ -155,12 +157,12 @@ function mostrarCajas() {
                         // }
 
                         // reemplaza varoles nul por ---
-                        if (caja[i]["tipocaja"] === null) {
-                            caja[i]["tipocaja"] = "---"
+                        if (caja[i]['tipocaja'] === null) {
+                            caja[i]['tipocaja'] = '---'
                         }
-                        
 
-                        $("#cajas").append($(`<li
+
+                        $('#cajas').append($(`<li
                                               class="collection-item avatar" 
                                               id="${caja[i]["no_caja"]}"
                                               >
@@ -188,7 +190,7 @@ function mostrarCajas() {
                     }
                 }
 
-                $("#TablaCajas").removeClass("hide");
+                $('#TablaCajas').removeClass('hide');
 
 
             }
@@ -266,35 +268,88 @@ function mostrarItems(numcaja, estado = null) {
 }
 
 function documento(numcaja) {
-    
+
     //consigue el numero de requerido
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-    
-    return $.ajax({
-        url: "api/cajas/documento",
-        method: "POST",
-        data: { "req": req, "numcaja": numcaja },
-        // dataType: "JSON",
-        success: function (res) {
-            console.log(res);
-            return 0;
-            if (res["estado"] == true) {
 
-                // let numcaja = $("#cajas").val();
+    return $.ajax({
+        url: 'api/cajas/documento',
+        method: 'POST',
+        data: { 'req': req, 'numcaja': numcaja, 'recibido': true },
+        dataType: 'JSON',
+        success: function (res) {
+            // console.log(res);
+            if (res['estado'] == true) {
+
+                // let numcaja = $('#cajas').val();
                 // obtiene los 3 ultimos caracteres de la requisicion
                 let no_req = req[0].substr(req[0].length - 3);
-                numcaja = ("00" + numcaja).slice(-2);
+                numcaja = ('00' + numcaja).slice(-2);
 
                 // crea el nombre del documento a partir de la requisicion y la caja
-                let nomdoc = "C" + numcaja + "DE" + no_req + ".TR1";
+                let nomdoc = 'C' + numcaja + 'DE' + no_req + '.TR1';
 
-                let element = document.createElement("a");
-                element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(res["string"]));
-                element.setAttribute("download", nomdoc);
+                let element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['string']));
+                element.setAttribute('download', nomdoc);
 
-                element.style.display = "none";
+                element.style.display = 'none';
+                document.body.appendChild(element);
+
+                element.click();
+
+                document.body.removeChild(element);
+
+            }
+        }
+
+    });
+
+}
+
+function documentoAll() {
+
+    //consigue el numero de requerido
+    var requeridos = $(".requeridos").val();
+    //id usuario es obtenida de las variables de sesion
+    var req = [requeridos, id_usuario];
+    // Busca los datos en la tabla
+
+    let lista = document.getElementById('cajas');
+    let li = lista.getElementsByTagName('li');
+    let numcaja = new Array;
+
+    for (let i = 0; i < li.length; i++) {
+
+        numcaja[i] = li[i].id;
+    }
+    // console.log(numcaja);
+    // return 0;
+
+    return $.ajax({
+        url: 'api/cajas/documento',
+        method: 'POST',
+        data: { 'req': req, 'numcaja': numcaja, 'recibido': true },
+        dataType: 'JSON',
+        success: function (res) {
+            // console.log(res);
+            if (res['estado'] == true) {
+
+                // let numcaja = $('#cajas').val();
+                // obtiene los 3 ultimos caracteres de la requisicion
+                // let no_req = req[0].substr(req[0].length - 3);
+                // numcaja = ('00' + numcaja).slice(-2);
+
+                // crea el nombre del documento a partir de la requisicion y la caja
+                let nomdoc = req[0] + '.TR1';
+
+                let element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['string']));
+                element.setAttribute('download', nomdoc);
+
+                element.style.display = 'none';
                 document.body.appendChild(element);
 
                 element.click();

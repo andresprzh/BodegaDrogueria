@@ -183,7 +183,7 @@ class ModeloCaja extends Conexion{
             $sql.=" no_caja=:no_caja$i OR";
         }
         
-        $sql=substr($sql, 0, -2).";";
+        $sql=substr($sql, 0, -2)."ORDER BY no_caja ASC;";
         
         $stmt= $this->link->prepare($sql);
         
