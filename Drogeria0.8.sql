@@ -312,8 +312,9 @@ INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direc
 
 /* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
+DROP FUNCTION IF EXISTS VerificarCaja;
 DROP PROCEDURE IF EXISTS BuscarCod;
-DROP PROCEDURE IF EXISTS VerificarCaja;
+
 
 
 /* ELIMINA TRIGGER SI EXISTEN */

@@ -33,7 +33,7 @@ $(document).ready(function () {
 
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
-
+        
         $.when(mostrarItems()).done(function () {
 
             $.when(mostrarCaja()).done(function () {
@@ -212,6 +212,7 @@ $(document).ready(function () {
                     data: { 'req': req, 'tipocaja': tipocaja, 'pesocaja': pesocaja, 'items': items },//datos que se enviaran 
                     dataType: 'JSON',
                     success: function (res) {
+                        
                         if (res) {
 
                             swal('¡Caja cerrada exitosamente!', {
@@ -427,7 +428,7 @@ function mostrarItems() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-
+            
             //si encuentra el item mostrarlo en la tabla
             if (res['estado'] != 'error') {
 

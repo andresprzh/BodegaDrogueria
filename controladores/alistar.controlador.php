@@ -1,4 +1,8 @@
 <?php
+// llibreria conectar impresora 
+require __DIR__ . '/../lib/impresora_mike42/autoload.php';
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 class ControladorAlistar {
     /* ============================================================================================================================
@@ -336,6 +340,10 @@ class ControladorAlistar {
             $resultado=$this->modelo->mdlCerrarCaja($tipocaja,$pesocaja,$numcaja);
         }
 
+        if ($resultado) {
+            $resultado=$this->ctrDocList($numcaja);
+        }
+
         return $resultado;
     }
 
@@ -372,7 +380,7 @@ class ControladorAlistar {
         $resultado=$this->modelo->mdlTerminarreq($req);
         return $resultado;
     }
-    // CREA LISTA DE ITEMS Y LO MANDA AIMPRIMIR
+    // CREA LISTA DE ITEMS Y LO MANDA A IMPRIMIR
     public function ctrDocList($numcaja=null){
 
         if ($numcaja==null) {
@@ -487,6 +495,22 @@ class ControladorAlistar {
         // {
         //     echo 'Caught exception: ',  $e->getMessage(), "\r\n";
         // }
-        return $imprimir;
+        
+        
+        // // imprime string en la impresora
+        // try {
+        //     $connector = new WindowsPrintConnector("LPT1");
+            
+        //     $printer = new Printer($connector);
+        //     $printer -> text("$imprimir");
+        //     $printer -> cut();
+        //     /* Close printer */
+        //     $printer -> close();
+        //         return true;
+        // } catch (Exception $e) {
+        //     echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
+        // }
+        
+        return true;
     }
 }   
