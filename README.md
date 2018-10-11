@@ -15,6 +15,9 @@ Proyecto para automatizar el proceso de packing en drogueria usando PHP, JAVASCR
   * Jquery
   * Sweetalert
 
+## Plugins y librerias de PHP usados:
+
+  * <a href='https://github.com/mike42/escpos-php'>ESC/POS Print Driver for PHP</a>
 
 ## Sistema de gestion de base de datos usado:
 
