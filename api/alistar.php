@@ -176,12 +176,15 @@ if (isset($_GET['ruta'])) {
         ============================================================================================================================*/  
         case 'listadoc':
              //crea objeto controlador 
-            $req=['002-003613',1];
+            $req=$_GET['req'];
+            $numcaja=$_GET['numcaja'];
+            
+            // $req=['002-003613',1];
             $controlador=new ControladorAlistar($req);
             
-            $resultado=$controlador->ctrDocList(2);
-            echo $resultado;
-            // print json_encode($resultado);
+            $resultado=$controlador->ctrDocList($numcaja);
+            // echo $resultado;
+            print json_encode($resultado);
             break;    
         /* ============================================================================================================================
                                                                     DEFAULT

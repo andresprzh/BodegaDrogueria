@@ -65,7 +65,6 @@ $(document).ready(function () {
 
     });
 
-
     // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
     $('.Documento').click(function (e) {
         // consigue la id de la tabla seleccionada
@@ -339,50 +338,94 @@ $(document).ready(function () {
     $('#imprimir').click(function (e) {
 
         //consigue el numero de requerido
-        let requeridos = $('.requeridos').val();
+        let requeridos = $(".requeridos").val();
+        //id usuario es obtenida de las variables de sesion
+        let req = [requeridos, id_usuario];
+        
+        // numero de la caja
+        let numcaja=$(".NumeroCaja").html();
+        
+        return $.ajax({
+            type: 'GET',
+            url: 'api/alistar/listadoc',
+            data: { 'numcaja': numcaja, 'req': req },
+            dataType: 'JSON',
+            success: function (res) {
+                
+                 // si hay un error al buscar los archivos no genera el documento
+                 if (!res) {
+                    swal({
+                        title: '!Error al generar el documento¡',
+                        type: 'error',
+                    });
 
-        let numcaja = $('.NumeroCaja').html();
+                    // si no hay error genera le documento y lo manda a decargar
+                } else {
+                    
+                    var nomdoc=numcaja+'.txt';
+                    var element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));
+                    element.setAttribute('download', nomdoc);
 
-        let datos = $('#TablaM').DataTable().data().toArray();
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
 
-        let imprmir = `<h2 style="text-align: Center;" >Caja No: ${numcaja}<h2>
-                        <table style="width:100%;" class="centered">
-                        <thead>
-                            <tr>
-                                <th style="text-align: left;">Item</th>
-                                <th style="text-align: left;">Cod_barras</th>
-                                <th style="text-align: left;">Cant</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-        // let string = ('Item' + ' '.repeat(40)).slice(0, 40) +
-        //     ('Cod_barras' + ' '.repeat(15)).slice(0, 15) +
-        //     ('Cant' + ' '.repeat(5)).slice(0, 5) + '\r\n';
-        // string += '_'.repeat(60) + '\r\n';
-        let total = 0;
-        for (var i in datos) {
-            // string += (datos[i][3] + ' '.repeat(40)).slice(0, 40);
-            // string += (datos[i][0] + ' '.repeat(15)).slice(0, 15);
-            // string += ('0'.repeat(5) + datos[i][6]).slice(-5) + '\r\n';
-            imprmir += `<tr>
-                                    <td>${datos[i][3]}</td>
-                                    <td>${datos[i][0]}</td>
-                                    <td>${datos[i][6]}</td>
-                                </tr>`;
-            total += parseInt(datos[i][6]);
-        }
-        imprmir += `<tr>
-                        <th style="text-align: left;">Total</th>
-                        <th style="text-align: left;"></th>
-                        <th style="text-align: left;">${total}</th>
-                    </tr>
-                    </tbody>
-                    </table>`;
+                    element.click();
 
-        let win = window.open()
-        win.document.write(imprmir);
-        win.print()
-        win.close()
+                    document.body.removeChild(element);
+
+                    $('.modal').modal('close');
+                    recargarCajas();
+
+                }
+            }
+        });
+
+        // //consigue el numero de requerido
+        // let requeridos = $('.requeridos').val();
+
+        // let numcaja = $('.NumeroCaja').html();
+
+        // let datos = $('#TablaM').DataTable().data().toArray();
+
+        // let imprmir = `<h2 style="text-align: Center;" >Caja No: ${numcaja}<h2>
+        //                 <table style="width:100%;" class="centered">
+        //                 <thead>
+        //                     <tr>
+        //                         <th style="text-align: left;">Item</th>
+        //                         <th style="text-align: left;">Cod_barras</th>
+        //                         <th style="text-align: left;">Cant</th>
+        //                     </tr>
+        //                 </thead>
+        //                 <tbody>`;
+        // // let string = ('Item' + ' '.repeat(40)).slice(0, 40) +
+        // //     ('Cod_barras' + ' '.repeat(15)).slice(0, 15) +
+        // //     ('Cant' + ' '.repeat(5)).slice(0, 5) + '\r\n';
+        // // string += '_'.repeat(60) + '\r\n';
+        // let total = 0;
+        // for (var i in datos) {
+        //     // string += (datos[i][3] + ' '.repeat(40)).slice(0, 40);
+        //     // string += (datos[i][0] + ' '.repeat(15)).slice(0, 15);
+        //     // string += ('0'.repeat(5) + datos[i][6]).slice(-5) + '\r\n';
+        //     imprmir += `<tr>
+        //                             <td>${datos[i][3]}</td>
+        //                             <td>${datos[i][0]}</td>
+        //                             <td>${datos[i][6]}</td>
+        //                         </tr>`;
+        //     total += parseInt(datos[i][6]);
+        // }
+        // imprmir += `<tr>
+        //                 <th style="text-align: left;">Total</th>
+        //                 <th style="text-align: left;"></th>
+        //                 <th style="text-align: left;">${total}</th>
+        //             </tr>
+        //             </tbody>
+        //             </table>`;
+
+        // let win = window.open()
+        // win.document.write(imprmir);
+        // win.print()
+        // win.close()
 
 
     });
@@ -561,7 +604,7 @@ function mostrarCajas() {
                         if (caja["estado"] != 1) {
                             estado_despacho = false;
                         }
-
+                        modal_target = "EditarCaja";
                     } else {
                         tablatarget = "#TablaCE";
 
@@ -620,7 +663,7 @@ function mostrarCajas() {
                             if (caja[i]["estado"] != 1) {
                                 estado_despacho = false;
                             }
-
+                            modal_target = "EditarCaja";
                         } else {
 
 
@@ -632,13 +675,12 @@ function mostrarCajas() {
                             cont_tablace++;
 
                             // si la caja ya fue enviada y presenta errores da la opcion de corregirla
-                            if (caja[i]["estado"] == '5') {
+                            if (caja[i]["estado"] == 5) {
                                 modal_target = "EditarCaja2";
                             } else {
                                 modal_target = "EditarCaja";
                             }
                         }
-
                         $(tablatarget + ' tbody').append($(`<tr>
                                             <td class="numcaja">${caja[i]["no_caja"]}</td>
                                             <td class="alistadores">${caja[i]["alistador"]}</td>

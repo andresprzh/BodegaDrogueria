@@ -342,6 +342,7 @@ class ControladorAlistar {
 
         if ($resultado) {
             $resultado=$this->ctrDocList($numcaja);
+            return $resultado['estado'];
         }
 
         return $resultado;
@@ -496,7 +497,7 @@ class ControladorAlistar {
         //     echo 'Caught exception: ',  $e->getMessage(), "\r\n";
         // }
         
-        
+        $resultado["contenido"]=$imprimir;
         // // imprime string en la impresora
         // try {
         //     $connector = new WindowsPrintConnector("LPT1");
@@ -506,11 +507,15 @@ class ControladorAlistar {
         //     $printer -> cut();
         //     /* Close printer */
         //     $printer -> close();
-        //         return true;
+        //         $resultado["estado"]=true   
         // } catch (Exception $e) {
+        //     $resultado["estado"]=false;
         //     echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
         // }
+
+
+        $resultado["estado"]=true;
+        return $resultado;
         
-        return true;
     }
 }   
