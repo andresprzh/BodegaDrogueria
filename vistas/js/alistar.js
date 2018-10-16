@@ -52,11 +52,13 @@ $(document).ready(function () {
 
     // EVENTO INPUT  CODIGO DE BARRAS
     $("#codbarras").keyup(function (e) {
-
+        
+        
         //si se presiona enter busca el item y lo pone en la pagina
         if (e.which == 13) {
             buscarCodbar();
         }
+        
 
     });
 
@@ -332,7 +334,7 @@ function agregarItem(res, req) {
                 buttons: ["Cancelar", "Alistar"],
             })
                 .then((value) => {
-
+                    console.log(value);
                     // alista el item si se presiona en alistar o se da en enter
                     if (value != null) {
                         // consigue el valor maximo en decenas que puede valer la cantidad de alistados
@@ -346,7 +348,7 @@ function agregarItem(res, req) {
                         let maxvalue = Math.pow(10, a);
 
                         if (value === '') {
-                            value = 1;
+                            value = item['pendientes'];
                         }
 
                         if (value < maxvalue * 10) {
@@ -365,7 +367,9 @@ function agregarItem(res, req) {
                             M.toast({
                                 html: toastHTML, classes: "red lighten-2'",
                             });
-                            value = 1;
+                            
+                            value = item['pendientes'];
+                            console.log(value);
 
                         }
                         item['alistados'] = value;

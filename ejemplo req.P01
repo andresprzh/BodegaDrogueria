@@ -1,0 +1,78 @@
++---------------------------------------------------------------------------------------------------------------------------------------+
+| UNO - VER 8.5.                                  FARMACIA DROGUERIA SAN JORGE LTDA                                  FECHA : 2018/10/16 |
+| UCIN2028.P01                                     CANTIDAD A PEDIR - REQUISICION                                    HORA  :  9:01 AM   |
+|                                                          ** POR LINEA **                                           PAGINA:   1 de   3 |
+| Local. Origen  : 001-BD CENTRO BODEGA GENERAL DE DISTRIBUCION     Nro Req: 018-000196  Fecha: 20181016                                |
+| Local. Destino : 018-VE ELITE BODEGA VENTAS                                                                                           |
+| Tipo Inventario: 3      MERCANCIA NO FABRICADA POR LA EMPRESA     Solicit: LLANOS LOPEZ KELLY VANESSA              *   ALFABETICO   * |
++---------------------------------------------------------------------------------------------------------------------------------------+
+|ITEM               D E S C R I P C I O N                    U.M      DISPONIBLE     PEDIDO    ALISTADO     UBICACION      PESO ITEM    |
+|                                                                      001-BD                                                           |
++---------------------------------------------------------------------------------------------------------------------------------------+
+ D51303             GUANTE CIRUGIA T/M 100 UNI CLAY          CJA          28              1    ________      EM1              688.000
+ D3845              LANCETAS MEDIPOINT 200 UNI               FRA         600             12    ________      HOSPIT             0.000
+ D7643              MICROPOROSO PIEL 1/2x10 CJ x24 CUREBAND  FRA         270              8    ________      ZZZZZZ             0.000
+ D5123              MICROPOROSO PIEL 1X10 CJx12 CUREBAND     FRA         173             12    ________      ZZZZZZ             0.000+---------------------------------------------------------------------------------------------------------------------------------------+
+| UNO - VER 8.5.                                  FARMACIA DROGUERIA SAN JORGE LTDA                                  FECHA : 2018/10/16 |
+| UCIN2028.P01                                     CANTIDAD A PEDIR - REQUISICION                                    HORA  :  9:01 AM   |
+|                                                          ** POR LINEA **                                           PAGINA:   2 de   3 |
+| Local. Origen  : 001-BD CENTRO BODEGA GENERAL DE DISTRIBUCION     Nro Req: 018-000196  Fecha: 20181016                                |
+| Local. Destino : 018-VE ELITE BODEGA VENTAS                                                                                           |
+| Tipo Inventario: 3      MERCANCIA NO FABRICADA POR LA EMPRESA     Solicit: LLANOS LOPEZ KELLY VANESSA              *   ALFABETICO   * |
++---------------------------------------------------------------------------------------------------------------------------------------+
+|ITEM               D E S C R I P C I O N                    U.M      DISPONIBLE     PEDIDO    ALISTADO     UBICACION      PESO ITEM    |
+|                                                                      001-BD                                                           |
++---------------------------------------------------------------------------------------------------------------------------------------+
+03         ASEO PERSONAL03         ASEO PERSONAL
+ D3202I             TONICO NEVEROLD 230 ML                   CJA         195             10    ________      CAJAS              0.000
+ D15641             CR P.PEINAR PROD VIDA 260GR              CJA          21              2    ________      ZZZZZZ             0.000
+04         CUIDADO CORPORAL04         CUIDADO CORPORAL
+05         CUIDADO FACIAL05         CUIDADO FACIAL
+ D18465             ALOE VERA + E 60 APLICADORES SYSTEMS     FRA         360            240    ________      ZZZZZZ             0.000
+ D21032             CR COLAGENO 30GR MEDICK                  CJA          11              1    ________      ZZZZZZ             0.000
+ D18707             CR COLAGENO ELASTINA 224GR SYSTEMS       CJA          44              1    ________      ZZZZZZ             0.000
+ D4611              CR PIEL ARMINO 60 GR                     CJA           1              1    ________      ZZZZZZ             0.000
+ D21151             JABON PIEL ARMINO LIQ FACIAL AZUFRE 100G CJA           1              1    ________      ZZZZZZ             0.000
+06         PRODUCTOS NATURALES06         PRODUCTOS NATURALES
+ D18695             MORINGA POLVO 4SOB 25GR C/U KUXTAL       CJA          32              2    ________      KUXTAL             0.000
+ D51628             PROPOMIEL PLUS JBE 120ML MEDICK          CJA          18              1    ________      MEDICK             0.000
+ D19664             CLORURO MAGNESIO FORTE 60CAPS NATURCOL   CJA          32              1    ________      NATURC             0.000
+ D1920              GINSENG + GINKGO BILOBA 60PERL SYSTEMS   CJA          23              1    ________      SYSTEM             0.000
+ D51867             GLUCOSAMINA CONDRO.750/600MG 100CAP SYST CJA          73              2    ________      SYSTEM             0.000
+ D5479              KOREAN GINSENG 820MG 60PER SYSTEMS       CJA           9              1    ________      SYSTEM             0.000
+ D5819              ZINC GLUCONATE 120MG 100PER SYSTEMS      CJA          57              2    ________      SYSTEM             0.000
+ D5007              YURE 12 SOBRES                           CJA          23              5    ________      VARIOS             0.000
+ D15860             MAMITOLINA SPORT 50GR                    CJA          22              2    ________      VELOX              0.000
+ D21958             ALOEMINT 240ML MEDICK                    CJA          18              1    ________      ZZZZZZ             0.000
+ D21197             BIOTIN 900MCG 100 SOFTGELS SYSTEMS       CJA          14             11    ________      ZZZZZZ             0.000
+ D19344             BRONQUISAN DISPENSADOR 60 SOBRES         FRA         420             28    ________      ZZZZZZ             0.000
+ D21200             CALCIUM 600+VITAM D 100PER SYSTEMS       CJA          40              1    ________      ZZZZZZ             0.000
+ D20193             COLLAGEN PLUS VIT C 60 PER SYSTEM        CJA         118             12    ________      ZZZZZZ             0.000
+ D20184             MAGNESIUM 400MG 100 PERLAS SYSTEMS       CJA         142             12    ________      ZZZZZZ             0.000
+ D21980             MIX SEMILLAS 450GR MEDICK                CJA          26              1    ________      ZZZZZZ             0.000
+ D20207             POTASSIUM 120MG 100 PERLAS SYSTEMS       CJA          68              1    ________      ZZZZZZ             0.000
+ D7447              SAW PALMETTO 320 MG 60PER SYSTEMS        CJA           7              1    ________      ZZZZZZ             0.000
+ D21897             SORERELIEF CREMA 96GR SYSTEMS            CJA          22              1    ________      ZZZZZZ             0.000
+ 100001859          TESEIS JARABE 120 ML TRADICIONAL         CJA           3              1    ________      ZZZZZZ             0.000
+ D17544             VALERIANA + PASIFLORA GOTAS 60ML MEDICK  FCO         192             11    ________      ZZZZZZ             0.000
+ D20484             VITAMINA E 400 UI ZINC 100 PER SYSTEMS   CJA          68              2    ________      ZZZZZZ             0.000
+ 100015470          ZARZAPARRILLA SOLUCION 240ML NATURCOL    CJA         285              5    ________      ZZZZZZ             0.000
+07         DERMATOLOGICOS07         DERMATOLOGICOS
+ D19545             PHOTODERM MAX AQUAFLUIDO SPF50+ 40ML     CJA           4              1    ________      ZZZZZZ             0.000
+ D9090              PHOTODERM MAX FLUIDO SPF100 40ML         CJA          14              1    ________      ZZZZZZ             0.000
+08         OTC08         OTC
+09         VARIOS09         VARIOS
+ D3472              NARCISO  NEGRO 375 CC                    CJA           1              1    ________      CAJAS              0.000
+ D4977              UNG INDIOXEMA 6 GRS                      CJA          53              1    ________      ZZZZZZ             0.000
+10         SUPLEMENTOS NUTRICIONALES10         SUPLEMENTOS NUTRICIONALES
+ 100001421          COMPLEJO B 250 TAB ECAR                  FRA       3,000             80    ________      ECAR             127.000
+ 100007771          TIAMINA 300MG 250TBS  ECAR               FRA         250            220    ________      ECAR             231.000
+11         MEDICAMENTOS RX11         MEDICAMENTOS RX
+-------------------------------------------------------------- FIN LISTADO --------------------------------------------------------------
+
+  ALISTADO POR : ____________________________________                           REMISIONADO POR : _____________________________________
+
+  HORA INICIO  : ____________________________________                           HORA INICIO     : _____________________________________
+
+  HORA FIN     : ____________________________________                           HORA FIN        : _____________________________________
+-------------------------------------------------------------- FIN LISTADO --------------------------------------------------------------
