@@ -66,8 +66,12 @@ if (isset($_GET["ruta"])) {
                                                         REALIZA EL LOGIN EN LA PAGINA
         ============================================================================================================================*/
         case "login":
-            $dato=$_POST["username"];
-            print json_encode("hay conexion ".$dato);
+            $username=$_POST["username"];
+            $password=$_POST["password"];
+
+            $controlador = new ControladorUsuarios();
+            $resultado=$controlador->ctrIngresoUsuario($username,$password);
+            print json_encode($resultado);
             break;
     }
 }
