@@ -278,7 +278,7 @@ function buscarCodbar() {
 
 // FUNCIONQ UE QUITA UN ITEM DE LA CAJA
 function eliminarItem(iditem, req) {
-
+    Keyboard.shrinkView(true);
     return $.ajax({
         type: "POST",
         // url: "ajax/alistar.eliminar.ajax.php",

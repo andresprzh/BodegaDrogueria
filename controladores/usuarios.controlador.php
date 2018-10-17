@@ -47,7 +47,8 @@ class ControladorUsuarios {
                     // echo '<script>
                     //         window.location="inicio";
                     //       </script>';
-                    return true;
+                    return $_SESSION["usuario"];
+                    // return true;
                     
                 //de lo contrario muestra un mensaje de alerta
                 }else {
@@ -195,4 +196,5 @@ class ControladorUsuarios {
         }
 
     }
+
 }

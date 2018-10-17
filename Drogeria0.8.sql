@@ -264,7 +264,7 @@ INSERT INTO tipo_caja  VALUES
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
 UPDATE caja SET no_caja=0 WHERE no_caja=1;
-ALTER TABLE CAJA AUTO_INCREMENT=0;
+ALTER TABLE caja AUTO_INCREMENT=0;
 
 
 INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador");
@@ -416,7 +416,7 @@ DELIMITER $$
 			FROM alistado
 			INNER JOIN pedido ON pedido.item=alistado.item
 			INNER JOIN ITEMS ON ID_ITEM=pedido.item
-			INNER JOIN cod_barras ON ID_ITEMS=ID_ITEM
+			INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
 			WHERE alistado.no_caja=numerocaja
 			GROUP BY pedido.item,pedido.no_req,pedido.pendientes,pedido.pedido,alistado.alistado,disp,ubicacion,
 			ITEMS.DESCRIPCION ,ITEMS.ID_REFERENCIA;
