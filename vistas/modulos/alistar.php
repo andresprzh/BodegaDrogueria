@@ -69,10 +69,10 @@
             
             <tr class="white-text green darken-3">
 
-                <th>Descripción</th>
-                <th>Disponibles</th>
-                <th>Pendientes</th>
-                <th>Ubicacion</th>
+                <th ><span class="truncate">Descripción</span></th>
+                <th ><span class="truncate">Disponibles</span></th>
+                <th ><span class="truncate">Pendientes</span></th>
+                <th ><span class="truncate">Ubicacion</span></th>
                 
             </tr>
 
@@ -190,7 +190,22 @@
 </div>  
 
 </div>
-
+<style scoped>
+    /* #EditarCaja2{
+        width:100%;
+    } */
+    .modal{
+        width:100%;
+    }
+    .tabla  td:first-child, .tabla  th:first-child{
+        width:40%;
+        text-align: center;
+    }
+    .tabla  td:last-child, .tabla  th:last-child{
+        width:20%;
+        text-align: center;
+    }
+</style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->
