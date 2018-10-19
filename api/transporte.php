@@ -3,7 +3,7 @@
 // include "../controladores/alistar.controlador.php";
 include "../controladores/transportador.controlador.php";
 
-
+require "cors.php";
 require "../modelos/conexion.php";
 require "../modelos/transportador.modelo.php";
 
