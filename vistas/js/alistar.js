@@ -20,7 +20,8 @@ $(document).ready(function () {
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
-                $("#requeridos").append($('<option value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
+                // $("#requeridos").append($('<option id= value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
+                $("#requeridos").append($(`<option  value="${res[i]['no_req']}">${res[i]['no_req'].substr(4)} ${res[i]['descripcion']}</option>`));
 
             }
 
@@ -33,9 +34,7 @@ $(document).ready(function () {
 
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
-        
         $.when(mostrarItems()).done(function () {
-
             $.when(mostrarCaja()).done(function () {
                 $("#codbarras").focus();
             });
@@ -45,7 +44,7 @@ $(document).ready(function () {
 
     // FUNCION QUE FILTRA ITEMS POR UBICACION
     $("#ubicacion").change(function (e) {
-
+        
         cambiarUbicacion();
         $("#codbarras").focus();
     });
@@ -223,7 +222,18 @@ $(document).ready(function () {
 
                                 // location.reload(true);
                                 // vuelve a cargar las tablas
+                                
                                 recargarItems();
+                                let table = document.getElementById('tablavista');
+                                let tr = table.getElementsByTagName('tr');
+                                
+                                if (tr.length<1) {
+                                    swal('¡Requisicion Terminada!', {
+                                        icon: 'warning',
+                                    }).then((event) => {
+                                        location.reload();
+                                    })
+                                }
                                 $('.tabs').tabs('select', 'TablaV');
                             });
 
@@ -280,7 +290,7 @@ function buscarCodbar() {
 
 // FUNCIONQ UE QUITA UN ITEM DE LA CAJA
 function eliminarItem(iditem, req) {
-    Keyboard.shrinkView(true);
+    
     return $.ajax({
         type: "POST",
         // url: "ajax/alistar.eliminar.ajax.php",
@@ -305,9 +315,24 @@ function recargarItems() {
 
     // se recarga tablas y ubicacion
     let ubicacion = $('#ubicacion').val();
+    
+    // console.log(index);
     $.when(mostrarItems()).done(function () {
         $.when(mostrarCaja()).done(function () {
+
+            // obtiene las ubicaciones al recargar tabla
+            var options = $('#ubicacion option');
+            
+            var values = $.map(options ,function(option) {
+                return option.value;
+            });
+
+            // si la ubicacion en la que se estaba trabajando no tiene items , se cambia a otra ubicacion
+            if (!values.includes(ubicacion)) {
+                ubicacion=$('#ubicacion option').eq(1).val();
+            }
             $('#ubicacion').val(ubicacion);
+            
             cambiarUbicacion();
         });
     });
@@ -483,7 +508,7 @@ function mostrarCaja() {
     var requeridos = $('.requeridos').val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-
+    
     return $.ajax({
 
         // url: 'ajax/alistar.cajas.ajax.php',
@@ -492,6 +517,7 @@ function mostrarCaja() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
+            
             //refresca las tablas, para volver a cargar los datos
             $('#tablaeditable').html('');
             $('#TablaE').addClass('hide');

@@ -320,6 +320,7 @@ DROP PROCEDURE IF EXISTS BuscarCod;
 /* ELIMINA TRIGGER SI EXISTEN */
 DROP TRIGGER IF EXISTS SetPendientes;
 DROP TRIGGER IF EXISTS EstadoPedido;
+DROP TRIGGER IF EXISTS EstadoReq;
 DROP TRIGGER IF EXISTS EstadoAlistado;
 DROP TRIGGER IF EXISTS EstadoAlistadoUpd;
 DROP TRIGGER IF EXISTS EliminarAlistado;
@@ -414,7 +415,7 @@ DELIMITER $$
 			SELECT pedido.item AS iditem,pedido.no_req,pedido.pendientes,pedido.pedido,alistado.alistado,disp,ubicacion,
 			ITEMS.DESCRIPCION AS descripcion ,ITEMS.ID_REFERENCIA AS referencia,MIN(COD_BARRAS.ID_CODBAR) AS codigo
 			FROM alistado
-			INNER JOIN pedido ON pedido.item=alistado.item
+			INNER JOIN pedido ON (pedido.item=alistado.item AND pedido.no_req=alistado.no_req)
 			INNER JOIN ITEMS ON ID_ITEM=pedido.item
 			INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
 			WHERE alistado.no_caja=numerocaja
@@ -446,16 +447,50 @@ DELIMITER $$
 	BEFORE UPDATE ON pedido
 	FOR EACH ROW 
 	BEGIN
-
+		
+		DECLARE numalistados TINYINT;		
+		
+		-- solo modifica si los items no han sido enviados
 		IF new.pendientes<=0 THEN
 			SET new.pendientes=0;
-			SET new.estado=1;
+			IF new.estado<2 THEN
+				SET new.estado=1;
+			END IF;
 		ELSE
 			SET new.estado=0;
 		END IF;
-				
+		
 	END 
 $$
+-- MODIFICA ESTADO DE LA REQUISICION
+DELIMITER $$
+	CREATE TRIGGER EstadoReq
+	AFTER UPDATE ON pedido
+	FOR EACH ROW 
+	BEGIN
+		
+		DECLARE numalistados TINYINT;		
+		
+		SELECT count(estado) INTO numalistados
+		FROM pedido
+		WHERE (estado=0
+		OR estado=1)
+		AND no_req=new.no_req;
+	
+		IF numalistados=0 THEN
+			UPDATE requisicion
+			SET enviado=NOW(),estado=1
+			WHERE requisicion.no_req=new.no_req;
+		ELSE
+			UPDATE requisicion
+			SET estado=0
+			WHERE requisicion.no_req=new.no_req;
+		END IF;
+	
+	END 
+$$
+
+
 
 -- trigger que modifica la cantidad alistada al agregar items
 DELIMITER $$
@@ -464,7 +499,7 @@ DELIMITER $$
 	FOR EACH ROW 
 	BEGIN
 
-
+		
 		UPDATE pedido
 		SET pendientes=pedido.pendientes-new.alistado
 		WHERE pedido.item=new.item;
@@ -478,11 +513,24 @@ DELIMITER $$
 	AFTER UPDATE ON alistado
 	FOR EACH ROW 
 	BEGIN
-
-
+		
+		DECLARE alistados INT(5);
+		
 		UPDATE pedido
 		SET pendientes=pedido.pendientes+(old.alistado-new.alistado)
 		WHERE pedido.item=new.item;
+		
+		SELECT SUM(alistado) INTO alistados 
+		FROM alistado
+		WHERE (estado=2)
+		AND no_req=new.no_req
+		AND item=new.item;
+		
+		UPDATE pedido
+		SET estado=2
+		WHERE 
+		pedido.pedido <= alistados AND
+		pedido.item=new.item;
 				
 	END 
 $$
@@ -514,7 +562,7 @@ $$
 
 
 
--- trigger que cierra caja y alista items cuando se cambia de estado a creddada (estado = 1)
+-- trigger que cierra caja y alista items cuando se cambia de estado a creada (estado = 1)
 DELIMITER $$
 
 	CREATE TRIGGER CerrarCaja

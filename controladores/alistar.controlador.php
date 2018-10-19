@@ -287,7 +287,7 @@ class ControladorAlistar {
     {
         
         $busqueda=$this->modelo->mdlMostrarItemsCaja($numcaja);
-
+        
         if ($busqueda->rowCount() > 0) {
 
             $itembus["estado"]="encontrado";

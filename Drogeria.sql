@@ -519,7 +519,7 @@ DELIMITER $$
 		WHERE pedido.item = new.item
 		AND pedido.no_req = new.no_req;
 
-		--	si está se busca si dicha caja coincide con la que se recibio
+		-- si está se busca si dicha caja coincide con la que se recibio
 		IF num>1 THEN
 
 			SELECT no_caja,alistado,ubicacion,pedido INTO cja, numalistado,ubc,numpedido
