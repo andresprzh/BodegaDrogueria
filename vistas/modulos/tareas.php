@@ -60,8 +60,11 @@
 
             <ul class="collection with-header" id="listtareas">
                 <li class="collection-header"><h4 class="center-align">Ubicaciones</h4></li>
-                <li class="collection-item " style="padding:0;">
-                    <button  id="agregarubicacion" class="btn green col s12" style="font-style: oblique;">Agregar Ubicacion <i class="fas fa-plus" style="font-style: oblique;"></i></button   >
+                <li 
+                 id="agregarubicacion"  
+                 class="collection-item center-align green btn waves-effect waves-light col s12" 
+                 style="padding:0; ">
+                    Agregar Ubicacion<i class="fas fa-plus" style="font-style: oblique;"></i>
                 </li>
                 <div id="ubicaciones"></div>
             </ul>
@@ -73,6 +76,21 @@
     </div>
 
 </div>
+<!-- ============================================================================================================================
+                                                        ESTILOS 
+============================================================================================================================ -->
+<style>
+#ubicaciones
+{
+    height:200px; 
+    width:100%;
+}
+#ubicaciones 
+{
+    overflow:hidden; 
+    overflow-y:scroll;
+}
+</style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->

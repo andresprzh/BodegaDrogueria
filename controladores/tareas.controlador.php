@@ -19,13 +19,6 @@ class ControladorTareas {
                                                         FUNCIONES   
     ============================================================================================================================*/
 
-    function ctrCrearTareas($usuario){
-        
-        $res=$this->modelo->mdlCrearTarea($usuario);
-
-        return $res;
-    }
-
     function ctrAsignarUbicacion($ubicacion,$usuario,$tarea=null){
         // busca la ultima tarea creada para el usuario
         if ($tarea==null) {
@@ -38,6 +31,7 @@ class ControladorTareas {
         $res=$this->modelo->mdlAsignarTarea($tarea,$ubicacion);
         return $res;
     }   
+
 
     function ctrBuscarUbicaciones($usuario=null,$tarea=null){
         
@@ -55,7 +49,7 @@ class ControladorTareas {
 
         if ($busqueda->rowCount()> 0) {
             while($row = $busqueda->fetch()){
-                $res[$row["ubicacion"]]=$row["ubicacion"];
+                $res[trim($row["ubicacion"])]=trim($row["ubicacion"]);
             }
         }else{
             $res=false;
@@ -63,5 +57,26 @@ class ControladorTareas {
         
         return $res;
     }
+
+    function ctrCrearTareas($usuario){
+        
+        $res=$this->modelo->mdlCrearTarea($usuario);
+
+        return $res;
+    }
+
+
+    function ctrEliminarUbicacion($ubicacion,$usuario,$tarea=null){
+        // busca la ultima tarea creada para el usuario
+        if ($tarea==null) {
+            $tarea=$this->modelo->mdlBuscarUltimaTarea($usuario);
+            if ($tarea->rowCount()) {
+                $tarea=$tarea->fetch()["tarea"];
+            }
+        }
+        
+        $res=$this->modelo->mdlEliminarUbicacion($tarea,$ubicacion);
+        return $res;
+    } 
 
 }

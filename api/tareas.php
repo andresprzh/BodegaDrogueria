@@ -13,27 +13,49 @@ if (isset($_GET["ruta"])) {
 
     switch ($_GET["ruta"]) {
         
-
         /* ============================================================================================================================
-                                                BUSCA USUARIOS DE PERFIL ALISTADOR
-        ============================================================================================================================*/
-        case "usuarios":
+                                        ASIGNA O BUSCA DETALLE DE TAREA(UBICACION) DE UNA TAREA O USUARIO
+        ============================================================================================================================*/    
+        case "dettarea":
+            
+            $usuario=$_REQUEST['usuario'];
+            
+            $controlador=new ControladorTareas();
+            
+            // muestra ubicaciones
+            if ($_SERVER['REQUEST_METHOD']==='GET') {
+                
+                $resultado=$controlador->ctrBuscarUbicaciones($usuario);
+            // asigna ubicacion
+            }else {
 
-            $modelo=new Conexion();
+                $ubicacion=$_POST['ubicacion'];
 
-            $res=$modelo->buscaritem("usuario","perfil",3);
-            $resultado["estado"]=false;
-            if ($res->rowCount() >0) {
-                $resultado["contenido"]=$res->fetchAll();
-                $resultado["estado"]="encontrado";
+                if (isset($_POST['eliminar'])) {
+                    
+                    if ($_POST['eliminar']==true) {
+
+                        $resultado=$controlador->ctrEliminarUbicacion($ubicacion,$usuario);
+
+                    }else {
+
+                        $resultado=$controlador->ctrAsignarUbicacion($ubicacion,$usuario);
+
+                    }
+
+                }else {
+
+                    $resultado=$controlador->ctrAsignarUbicacion($ubicacion,$usuario);
+
+                }
+                
             }
             
             
             print json_encode($resultado);
-
-            break;
+            break;  
         /* ============================================================================================================================
-                                                BUSCA  O AISGNA LAS TAREAS 
+                                                        BUSCA  O AISGNA LAS TAREAS 
         ============================================================================================================================*/
         case "tareas":
             // busca tareas
@@ -63,33 +85,9 @@ if (isset($_GET["ruta"])) {
             
             print json_encode($resultado);
             break;
-        
-        /* ============================================================================================================================
-                                                ASIGNA O BUSCA DETALLE DE TAREA(UBICACION) DE UNA TAREA O USUARIO
-        ============================================================================================================================*/    
-        case "dettarea":
-            
-            $usuario=$_REQUEST['usuario'];
-            
-            $controlador=new ControladorTareas();
-            
-            // muestra ubicaciones
-            if ($_SERVER['REQUEST_METHOD']==='GET') {
-                
-                $resultado=$controlador->ctrBuscarUbicaciones($usuario);
-            // asigna ubicacion
-            }else {
-
-                $ubicacion=$_POST['ubicacion'];
-                $resultado=$controlador->ctrAsignarUbicacion($ubicacion,$usuario);
-            }
-            
-            
-            print json_encode($resultado);
-            break;
 
         /* ============================================================================================================================
-                                                BUSCA TODAS LAS UBICACIONES
+                                                        BUSCA TODAS LAS UBICACIONES
         ============================================================================================================================*/    
         case "ubicaciones":
             
@@ -101,6 +99,29 @@ if (isset($_GET["ruta"])) {
             
             print json_encode($resultado);
             break;
+
+        /* ============================================================================================================================
+                                                    BUSCA USUARIOS DE PERFIL ALISTADOR
+        ============================================================================================================================*/
+        case "usuarios":
+
+            $modelo=new Conexion();
+
+            $res=$modelo->buscaritem("usuario","perfil",3);
+            $resultado["estado"]=false;
+            if ($res->rowCount() >0) {
+                $resultado["contenido"]=$res->fetchAll();
+                $resultado["estado"]="encontrado";
+            }
+            
+            
+            print json_encode($resultado);
+
+            break;
+
+        /* ============================================================================================================================
+                                                                DEFAULT
+        ============================================================================================================================*/
         default:
             print json_encode("Tareas");
             break;

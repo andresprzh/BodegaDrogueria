@@ -95,11 +95,26 @@ $(document).ready(function () {
 
     // si se da click en el boton de ver o asignar ubicacion
     $('#agregarubicacion').on('click', function () {
-
+        // Busca los datos en la tabla
+        let lista = document.getElementById('ubicaciones');
+        let li = lista.getElementsByTagName('li');
+        let items = new Array;
+        
+        // var ubicacioneslista = li.map(function(x) {
+        //     return x.id.substr(1)
+        //  });
+        let ubicacioneslista=new Array;
+        for (let i = 0; i < li.length; i++) {
+            ubicacioneslista[li[i].id] = li[i].id;
+        }
+        
+        // solo muestra ubicaciones que no estan asignadas
+        newubicaciones=diff(ubicaciones,ubicacioneslista);
+        
         swal({
             title: 'Seleccionar ubicacion',
             input: 'select',
-            inputOptions: ubicaciones,
+            inputOptions: newubicaciones,
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Asignar',
@@ -124,31 +139,52 @@ $(document).ready(function () {
                     type: 'POST',
                     url: 'api/tareas/dettarea',
                     data: {'usuario':iduser,'ubicacion':ubicacion},
-                    // dataType: 'JSON',
+                    dataType: 'JSON',
                     success: function (res) {
-                        console.log(res);
+                        
                         if (res) {
                             
                             agregarUbicaciones(iduser);
 
                         } else {
-                            swal({
-                                type: 'error',
-                                html: 'No se pudo agregar ubicacion'
+                            var toastHTML = `<span class="truncate">No se pudo agregar ubicación</span>`;
+                            M.toast({ html: toastHTML, 
+                                classes: "red darken-4",
+                                displayLength:1500 
                             });
                         }
                     }
                 });
             }
         });
-        // buscaubicaciones().done(function (res) {
-            
-        // });
         
+    });
 
+    $('#listtareas').on('click','a', function () {
+        let ubicacion = $(this).closest('li').attr('id');
+        const iduser=$('#iduser').html();
 
-        // agregarUbicaciones(iduser);
-        
+        $.ajax({
+            type: 'POST',
+            url: 'api/tareas/dettarea',
+            data: {'usuario':iduser,'ubicacion':ubicacion,'eliminar':true},
+            dataType: 'JSON',
+            success: function (res) {
+                
+                if (res) {
+                    
+                    agregarUbicaciones(iduser);
+
+                } else {
+                    
+                    var toastHTML = `<span class="truncate">No se pudo eliminar ubicación</span>`;
+                    M.toast({ html: toastHTML, 
+                        classes: "red darken-4",
+                        displayLength:1500 
+                    });
+                }
+            }
+        });
     });
     
 });
@@ -171,7 +207,11 @@ function agregarUbicaciones(iduser) {
             if (res) {
 
                 for (let i in res) {
-                    $('#ubicaciones').append(`<li class="collection-item">${res[i]}</li>`);
+                    
+                    $('#ubicaciones').append(`
+                    <li class="collection-item" id="${i}">
+                        <div>${res[i]}<a href="#!" class="secondary-content red-text"><i class="fas fa-times"></i></a></div>
+                    </li>`);
                 }
                 
             }else{
@@ -185,12 +225,23 @@ function agregarUbicaciones(iduser) {
 
 }
 
-function buscaubicaciones(){
 
-    return $.ajax({
-        type: 'GET',
-        url: 'api/tareas/ubicaciones',
-        data: 'data',
-        dataType: 'JSON'
-    });
+// obtiene conjunto diferencia entre 2 arreglos u objetos
+function diff(a,b) {
+    c=new Array();
+    
+    for (var i in a) {
+        
+        for(var j in b){
+            var include=true;
+            if (a[i]==b[j]) {
+                include=false;
+                break;
+            }
+        }
+        if (include) {
+            c[i]=a[i];
+        }
+    }
+    return c;
 }
