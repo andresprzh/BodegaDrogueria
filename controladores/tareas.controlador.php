@@ -41,16 +41,21 @@ class ControladorTareas {
             
             if ($tarea->rowCount()>0) {
                 $tarea=$tarea->fetch()["tarea"];
+                
+            }else{
+                return false;
             }
+            
     
         }
         
         $busqueda=$this->modelo->mdlBuscarUbicaciones($tarea);
-
+        
         if ($busqueda->rowCount()> 0) {
             while($row = $busqueda->fetch()){
                 $res[trim($row["ubicacion"])]=trim($row["ubicacion"]);
             }
+            $busqueda->closeCursor();
         }else{
             $res=false;
         }

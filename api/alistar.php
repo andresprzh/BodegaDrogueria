@@ -2,10 +2,13 @@
 
 include "../controladores/alistar.controlador.php";
 
+
 require "cors.php";
 require "../modelos/conexion.php";
 require "../modelos/alistar.modelo.php";
 require "../modelos/requerir.modelo.php";
+require "../modelos/tareas.modelo.php";
+
 
 if (isset($_GET['ruta'])) {
     
@@ -27,9 +30,9 @@ if (isset($_GET['ruta'])) {
             $respuesta=$controlador->ctrCrearCaja();
 
 
-            // muestra el vector como dato JSON
+            
             print json_encode( $respuesta);
-            // termina la ejecucion del api
+            
             return 1;
 
             break;
@@ -48,7 +51,7 @@ if (isset($_GET['ruta'])) {
             $resultado=$controlador->ctrEliminarItemCaja($cod_barras);
             
             print json_encode($resultado);
-            // termina la ejecucion del api
+            
             return 1;
 
             break;
@@ -69,7 +72,7 @@ if (isset($_GET['ruta'])) {
             $respuesta=$controlador->ctrCerrarCaja($items,$req,$tipocaja,$pesocaja);
 
             print json_encode($respuesta);
-            // termina la ejecucion del api
+            
             return 1;
             
             break;
@@ -85,10 +88,10 @@ if (isset($_GET['ruta'])) {
             // BUSCA TODOS LOS ITEMS DE LA REQUISICION
             if ($_SERVER['REQUEST_METHOD']==='GET') {
                 
-                //crea objeto controlador 
+                
                 $controlador=new ControladorAlistar($req);
 
-                //si se buca un item en epsecifico
+                //si se buca un item en especifico
                 if (isset($_GET['codigo'])) {
 
                     $cod_barras=$_GET['codigo'];
@@ -104,27 +107,27 @@ if (isset($_GET['ruta'])) {
                     }
                     
                 }
-                // regresa el resultado de la busqueda como un objeto JSON
+                
                 print json_encode( $respuesta);
 
-                // termina la ejecucion del api
+                
                 return 1;
 
             // BUSCA UN ITEM ESPECIFICO DE LA REQUISICION
             }else{
-                //crea objeto controlador 
+                
                 $controlador=new ControladorAlistar($req);
 
 
                 $item=$_POST['item'];
 
-                // regresa el resultado de la buqueda como un objeto JSON
+                
                 $respuesta=$controlador->ctrAlistarItem($item);
 
-                // muestra el vector como dato JSON
+                
                 print json_encode( $respuesta);
 
-                // termina la ejecucion del api
+                
                 return 1;
             }
             break;
@@ -139,6 +142,7 @@ if (isset($_GET['ruta'])) {
                 $res=$modelo->mdlMostrarReq($item,$_REQUEST['valor']);
             }else{
                 $res=$modelo->mdlMostrarReq($item);
+                
             }
 
 
@@ -175,15 +179,15 @@ if (isset($_GET['ruta'])) {
                                                 CREA DOCUMENTO LISTA DE ITEMS Y LO MANDA A IMPRIMIR
         ============================================================================================================================*/  
         case 'listadoc':
-             //crea objeto controlador 
+             
             $req=$_GET['req'];
             $numcaja=$_GET['numcaja'];
             
-            // $req=['002-003613',1];
+            
             $controlador=new ControladorAlistar($req);
             
             $resultado=$controlador->ctrDocList($numcaja);
-            // echo $resultado;
+            
             print json_encode($resultado);
             break;    
         /* ============================================================================================================================
@@ -191,7 +195,7 @@ if (isset($_GET['ruta'])) {
         ============================================================================================================================*/  
         default:
             print json_encode("Best REST API :D");
-            // termina la ejecucion del api
+            
             return 1;
             break;
     }

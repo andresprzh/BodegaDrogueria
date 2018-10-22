@@ -17,7 +17,7 @@ $(document).ready(function () {
         dataType: "JSON",
         success: function (res) {
 
-            // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
+            // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
                 // $("#requeridos").append($('<option id= value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
@@ -457,7 +457,8 @@ function mostrarItems() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-            
+            console.log(res);
+            // return 0;
             //si encuentra el item mostrarlo en la tabla
             if (res['estado'] != 'error') {
 

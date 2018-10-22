@@ -290,4 +290,29 @@ class ModeloAlistar extends Conexion{
         // cierra la conexion
         $stmt=null;
     }
+
+
+    public function mdlBuscarUbicacion()
+    {
+        
+        $alistador=$this->req[1];
+         
+        $stmt= $this->link->prepare(
+        "SELECT ubicacion 
+        FROM tareas_det
+        INNER JOIN tareas ON tareas.id_tarea=tareas_det.id_tarea
+        WHERE usuario=:alistador
+        ORDER BY ubicacion ASC;");
+
+        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
+
+        $res=$stmt->execute();
+
+        
+        return $stmt;
+
+        // cierra la conexion
+        $stmt=null;
+
+    }
 }

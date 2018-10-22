@@ -42,7 +42,7 @@ class ModeloTareas extends Conexion{
 
     // BUSCA UBICACIONES 
     public function mdlBuscarUbicaciones($tarea=null){
-
+        
         if ($tarea!=null) {
 
             $stmt= $this->link->prepare(

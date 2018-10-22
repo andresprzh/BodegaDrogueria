@@ -1,10 +1,12 @@
 <?php
+include "../controladores/tareas.controlador.php";
+
 // llibreria conectar impresora 
 require __DIR__ . '/../lib/impresora_mike42/autoload.php';
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
-class ControladorAlistar {
+class ControladorAlistar extends ControladorTareas{
     /* ============================================================================================================================
                                                         ATRIBUTOS   
     ============================================================================================================================*/
@@ -21,6 +23,7 @@ class ControladorAlistar {
     ============================================================================================================================*/
     function __construct($req=null) {
         
+        parent::__construct();
         $this->req=$req;
         $this->modelo=new ModeloAlistar($req);
 
@@ -106,12 +109,15 @@ class ControladorAlistar {
 
     // busca todos los items de la tabla pedido de una requisicion
     public function ctrBuscarItemsReq($estado=null)
-    {
+    {   
+        $alistador=$this->req[1];
+        // busca ubicaciones
+        $ubicaciones=$this->ctrBuscarUbicaciones($alistador);
         
         $busqueda=$this->modelo->mdlMostrarItems('%%');
+
         if ($busqueda->rowCount() > 0) {
 
-            
             $itembus["estado"]="encontrado";
 
             $cont=0;
@@ -129,7 +135,6 @@ class ControladorAlistar {
                                         "descripcion"=>$row["DESCRIPCION"],
                                         "disponibilidad"=>$row["disp"],
                                         "pendientes"=>$row["pendientes"],
-                                        "alistados"=>$row["alistado"],
                                         'ubicacion'=>$row["ubicacion"]
                                         ];
                     
@@ -138,30 +143,52 @@ class ControladorAlistar {
                     
 
                 }
-
+            //solo muestra los items que no estan alistados
             }else {
-                
-                while($row = $busqueda->fetch()){
+                // si el alistador tiene ubiaciones asignadas
+                if ($ubicaciones) {
+                    // $itembus["ubicaciones"]=$ubicaciones;
+                    while($row = $busqueda->fetch()){
                     
-                    //solo muestra los items que no estan alistados
-                    if($row["estado"]==0){
                         
-                        // se usa el id del item como el index en el arreglo
-                        // si se encuentra 2 veces el mismo item este se remplaza
-                        $itembus["contenido"][$row["item"]]=["codigo"=>$row["ID_CODBAR"],
-                                            "referencia"=>$row["ID_REFERENCIA"],
-                                            "descripcion"=>$row["DESCRIPCION"],
-                                            "disponibilidad"=>$row["disp"],
-                                            "pendientes"=>$row["pendientes"],
-                                            "alistados"=>$row["alistado"],
-                                            'ubicacion'=>$row["ubicacion"]
-                                            ];
-                        
-                        $cont++;
-                        $itembus["ubicaciones"][$cont]=$row["ubicacion"];                          
-                    }
+                        if($row["estado"]==0 && in_array($row['ubicacion'],$ubicaciones)){
+                                
+                            // se usa el id del item como el index en el arreglo
+                            $itembus["contenido"][$row["item"]]=["codigo"=>$row["ID_CODBAR"],
+                            "referencia"=>$row["ID_REFERENCIA"],
+                            "descripcion"=>$row["DESCRIPCION"],
+                            "disponibilidad"=>$row["disp"],
+                            "pendientes"=>$row["pendientes"],
+                            'ubicacion'=>$row["ubicacion"]
+                            ];
 
+                            // almacena ubicaciones
+                            $cont++;
+                            $itembus["ubicaciones"][$cont]=$row["ubicacion"];   
+                                                    
+                        }
+                    }
+                }else {
+                    while($row = $busqueda->fetch()){
+
+                        if($row["estado"]==0 ){
+
+                            $itembus["contenido"][$row["item"]]=["codigo"=>$row["ID_CODBAR"],
+                            "referencia"=>$row["ID_REFERENCIA"],
+                            "descripcion"=>$row["DESCRIPCION"],
+                            "disponibilidad"=>$row["disp"],
+                            "pendientes"=>$row["pendientes"],
+                            'ubicacion'=>$row["ubicacion"]
+                            ];
+
+                            // almacena ubicaciones
+                            $cont++;
+                            $itembus["ubicaciones"][$cont]=$row["ubicacion"];                          
+                        }
+                    }
                 }
+                    
+                    
             }
             if ($cont>0) {
                 $itembus["ubicaciones"]=array_unique($itembus["ubicaciones"]);
