@@ -5,7 +5,7 @@ $(document).ready(function () {
         const username = $('#usuario').val();
         const passowrd = $('#password').val();
 
-        console.log(passowrd);
+        
         // return 0;
         $.ajax({
             type: 'POST',
@@ -13,14 +13,17 @@ $(document).ready(function () {
             dataType: 'JSON',
             data: { 'username': username, 'password': passowrd },
             success: function (res) {
-                console.log(res);
+                
                 if (res) {
                     window.location = 'inicio';
                 } else {
-                    console.log("es falso");
+                    
                     $('#error').removeClass('hide');
                 }
 
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert('Error conexion ' + XMLHttpRequest.readyState);
             }
         });
     });

@@ -1,4 +1,4 @@
-# php_flag display_errors off
+php_flag display_errors on
 
 Options All -Indexes
 
@@ -13,3 +13,4 @@ RewriteRule ^api/nitem/([-a-zA-Z0-9/]+)$ api/nitem.php?ruta=$1 [QSA,NC,L]
 RewriteRule ^api/transporte/([-a-zA-Z0-9/]+)$ api/transporte.php?ruta=$1 [QSA,NC,L]
 RewriteRule ^api/pv/([-a-zA-Z0-9/]+)$ api/pv.php?ruta=$1 [QSA,NC,L]
 RewriteRule ^api/usuarios/([-a-zA-Z0-9/]+)$ api/usuarios.php?ruta=$1 [QSA,NC,L]
+RewriteRule ^api/tareas/([-a-zA-Z0-9/]+)$ api/tareas.php?ruta=$1 [QSA,NC,L]

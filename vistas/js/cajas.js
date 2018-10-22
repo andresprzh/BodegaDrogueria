@@ -292,7 +292,7 @@ $(document).ready(function () {
                                 if (value !== '') {
                                     resolve();
                                 } else {
-                                    reject('You need to select a Tier');
+                                    reject('Por favor seleccione un tranportador');
                                 }
                             });
                         }

@@ -1,3 +1,4 @@
+<!-- USA SWEETALERT2 -->
 <script src="vistas/plugins/sweetalert2/sweetalert2.all.js"></script>
 <h2 class="header center ">Pedido</h2>
 <!-- ============================================================================================================================

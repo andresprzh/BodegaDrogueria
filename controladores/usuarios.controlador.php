@@ -10,7 +10,10 @@ class ControladorUsuarios {
     }
    
     /*==================================================
-                    INGREOS DE USUARIO
+                    INGREO O LOGIN DE USUARIO
+    *username: nombre usuario.
+    *passwrod: contraseña dle usuario
+    *regresa variables de usuario  si realiza la conexion o falso si no
     ================================================*/
     public function ctrIngresoUsuario($username,$password){
         if (isset($username)) {
@@ -59,7 +62,13 @@ class ControladorUsuarios {
             }
         }
     }
-
+    /*==================================================
+                    BUSCA UN USUARIO
+    *$perfil: perfil usuario
+    *$item: variable con la que se busca el usuario.
+    *$valor: valor de la variable con la que se busca el usuario
+    *regresa un objeto json con un estado si encontro  o no resultados y un contenido donde esta el resultado de la busqueda
+    ================================================*/
     public function ctrBuscarUsuarios($perfil=null,$item=null,$valor=null){
         
         $busqueda=$this->modelo->mdlMostrarUsuarios($perfil,$item,$valor);
@@ -115,7 +124,11 @@ class ControladorUsuarios {
         }
         
     }
-
+    /*==================================================
+                    BUSCA PERFILES
+    *$perfil: perfil usuario que esta usando la fucnion
+    *regresa un objeto json con un estado si encontro  o no resultados y un contenido donde esta el resultado de la busqueda
+    ================================================*/
     public function ctrBuscarPerfiles($perfil){
         $busqueda=$this->modelo->mdlMostrarPerfiles($perfil);
 
@@ -168,7 +181,11 @@ class ControladorUsuarios {
 
         }
     }
-
+    /*==================================================
+                    CREA UN NUEVO USUARIO
+    *$datosusuario: arreglo con todos los datos del usuario
+    *regresa si el usuario ya existe o falso o verdadero si pudo o no crear el nuevo usuario
+    ================================================*/
     public function ctrCrearUsuario($datosusario){
         // busca si el usuario ya existe
         $item = ['usuario','cedula'];
@@ -182,7 +199,11 @@ class ControladorUsuarios {
         }
 
     }
-
+    /*==================================================
+                    MODIFICA UN USUARIO
+    *$datosusuario: arreglo con todos los datos del usuario
+    *regresa verdadero o falso dependiendo si pudo o no crear usuario, ambien regresa un mensaje si hay conflicto en la modificacion de  los datos
+    ================================================*/
     public function ctrModificarUsuario($datosusario){
         // busca si la cedula o usuario estan disponibles
         $item = ['usuario','cedula'];

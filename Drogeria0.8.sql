@@ -253,6 +253,32 @@ CREATE TABLE errores(
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS tareas(
+	id_tarea INT(10) AUTO_INCREMENT,
+	usuario INT(10),
+	creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+	terminacion DATETIME,
+	
+	PRIMARY KEY(id_tarea),
+	
+	CONSTRAINT tareas_usuario
+	FOREIGN KEY(usuario)
+	REFERENCES usuario(id_usuario)
+	
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS tareas_det(
+	id_tareadet INT(10),
+	id_tarea INT(10),
+	ubicacion VARCHAR(6) NOT NULL,
+	
+	PRIMARY KEY(id_tareadet,id_tarea),
+	
+	CONSTRAINT det_tareas_tareas
+	FOREIGN KEY(id_tarea)
+	REFERENCES tareas(id_tarea)
+	
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO tipo_caja  VALUES 
 ('CRT','Caja de cartón'),
@@ -318,6 +344,7 @@ DROP PROCEDURE IF EXISTS BuscarCod;
 
 
 /* ELIMINA TRIGGER SI EXISTEN */
+DROP TRIGGER IF EXISTS CrearTarea;
 DROP TRIGGER IF EXISTS SetPendientes;
 DROP TRIGGER IF EXISTS EstadoPedido;
 DROP TRIGGER IF EXISTS EstadoReq;
@@ -327,6 +354,7 @@ DROP TRIGGER IF EXISTS EliminarAlistado;
 DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS EstadoRecibido;
+DROP TRIGGER IF EXISTS AutoincTareas;
 
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
@@ -423,6 +451,19 @@ DELIMITER $$
 			ITEMS.DESCRIPCION ,ITEMS.ID_REFERENCIA;
 			
 		END IF;
+		
+	END 
+$$
+
+
+-- trigger que crea tarea la crear usuario
+DELIMITER $$
+	CREATE TRIGGER CrearTarea
+	BEFORE INSERT ON usuario
+	FOR EACH ROW 
+	BEGIN
+
+		INSERT INTO tareas(usuario) VALUES(new.id_usuario);			
 		
 	END 
 $$
@@ -650,6 +691,27 @@ DELIMITER $$
 		END IF;
 
 	END 	
+$$
+
+
+-- autoincrementa id de tabla tareas_det
+DELIMITER $$
+	CREATE TRIGGER AutoincTareas
+	BEFORE INSERT ON tareas_det
+	FOR EACH ROW 
+	BEGIN
+
+		DECLARE id INT(10) UNSIGNED DEFAULT 1;
+		
+		SELECT id_tareadet+1 INTO id
+		FROM tareas_det
+		WHERE id_tarea=new.id_tarea
+		ORDER BY id_tareadet DESC
+		LIMIT 1;
+		
+		SET new.id_tareadet=id;	
+			
+	END 
 $$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
