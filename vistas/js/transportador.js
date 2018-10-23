@@ -71,7 +71,7 @@ function cargarpedidos() {
 
                     let lista = `<li>
                                 <div class="collapsible-header">
-                                    <i class="fas fa-truck collapsible-primary" ></i>${destinos[i]["descripcion"]}
+                                    <i class="fas fa-truck collapsible-primary" ></i>${destinos[i]["descripcion"]}       
                                     <button 
                                      class="collapsible-secondary not-collapse btn green"
                                      onclick="entregar(${cajas})"

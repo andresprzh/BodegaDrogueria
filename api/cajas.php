@@ -10,6 +10,7 @@ require "../modelos/alistar.modelo.php";
 require "../modelos/requerir.modelo.php";
 require "../modelos/cajas.modelo.php";
 require "../modelos/pv.modelo.php";
+require "../modelos/tareas.modelo.php";
 
 if (isset($_GET['ruta'])) {
     

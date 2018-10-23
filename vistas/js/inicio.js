@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    
 
     switch (parseInt(usuario["perfil"])) {
 
@@ -16,6 +16,7 @@ $(document).ready(function () {
             break;
         case 3:
             $("#contenido-inicio").append($('<h2 class="header center">Alistador</h2>'));
+            tablaubicaciones();
             break;
         case 4:
             $("#contenido-inicio").append($('<h2 class="header center">Encargado punto de venta</h2>'));
@@ -31,7 +32,7 @@ $(document).ready(function () {
 
 
 function tablarequeridos() {
-
+    $("#contenido-inicio").html('');
     $("#contenido-inicio").append($(`<ul class="collection with-header collapsible expandable" id="listreq">
                 <li class="collection-header"><h4>Requisiciones</h4></li>
             </ul>`));
@@ -79,6 +80,49 @@ function tablarequeridos() {
             // INICIA MENU DE SELECCION
             $('select').formSelect();
 
+        }
+    });
+}
+
+function tablaubicaciones(){
+    console.log(usuario["id"]);
+    let iduser=usuario["id"];
+    
+    var lista=(`
+    <ul class="collection with-header" id="listtareas">
+        <li class="collection-header">
+            <h4 class="center-align">Ubicaciones Asignadas</h4>
+        </li>
+        <div id="ubicaciones">
+    `);
+
+    $.ajax({
+        type: 'GET',
+        url: 'api/tareas/dettarea',
+        data: {'usuario':iduser},
+        dataType: 'JSON',
+        success: function (res) {
+            console.log(res);
+            // refresca ubicaciones
+            
+            if (res) {
+
+                for (let i in res) {
+                    
+                    lista+=(`
+                        <li class="collection-item" id="${i}">
+                            <div>${res[i]}</div>
+                        </li>
+                    `);
+                }
+                
+            }else{
+                
+                lista+=(`<li class="collection-item">No hay ubicaciones asignadas</li>`);
+            }
+            lista+=`</div></ul>`;
+            $('#contenido-inicio').append(lista);
+            // $('#contenido-inicio').html(`);
         }
     });
 }

@@ -26,12 +26,13 @@
 .collapsible-secondary { 
     position: absolute; 
     right: 0; 
-    height:60%;
-    /* padding-bottom:10px; */
+    /* height:60%; */
+    height:30px;
+    padding-bottom:0px;
 }
 .collapsible-header{
     position: relative;
-    /* padding:0; */
+    padding:15px;
 }
 .collapsible-primary{
     padding:0px;

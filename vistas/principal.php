@@ -93,6 +93,7 @@
       "cajas",
       "usuarios",
       "Nitem",
+      "tareas",
       "requisiciones",
       "salir"
     ];

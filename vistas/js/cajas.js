@@ -550,7 +550,7 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-
+            console.log(res);
             let estado_despacho = false;
             let caja = res["contenido"];
 
