@@ -151,8 +151,8 @@ class ControladorAlistar extends ControladorTareas{
                     while($row = $busqueda->fetch()){
                     
                         
-                        if($row["estado"]==0 && in_array($row['ubicacion'],$ubicaciones)){
-                                
+                        if($row["estado"]==0 && in_array(trim($row['ubicacion']),$ubicaciones)){
+                            return $row['ubicacion']; 
                             // se usa el id del item como el index en el arreglo
                             $itembus["contenido"][$row["item"]]=["codigo"=>$row["ID_CODBAR"],
                             "referencia"=>$row["ID_REFERENCIA"],
@@ -524,24 +524,24 @@ class ControladorAlistar extends ControladorTareas{
         //     echo 'Caught exception: ',  $e->getMessage(), "\r\n";
         // }
         
-        $resultado["contenido"]=$imprimir;
-        // // imprime string en la impresora
-        // try {
-        //     $connector = new WindowsPrintConnector("LPT1");
+        // $resultado["contenido"]=$imprimir;
+        // imprime string en la impresora
+        try {
+            $connector = new WindowsPrintConnector("LPT1");
             
-        //     $printer = new Printer($connector);
-        //     $printer -> text("$imprimir");
-        //     $printer -> cut();
-        //     /* Close printer */
-        //     $printer -> close();
-        //         $resultado["estado"]=true   
-        // } catch (Exception $e) {
-        //     $resultado["estado"]=false;
-        //     echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
-        // }
+            $printer = new Printer($connector);
+            $printer -> text("$imprimir");
+            $printer -> cut();
+            /* Close printer */
+            $printer -> close();
+                $resultado["estado"]=true;
+        } catch (Exception $e) {
+            $resultado["estado"]=false;
+            echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
+        }
 
 
-        $resultado["estado"]=true;
+        // $resultado["estado"]=true;
         return $resultado;
         
     }

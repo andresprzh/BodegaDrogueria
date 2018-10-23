@@ -50,8 +50,6 @@ CREATE TABLE  perfiles(
 	PRIMARY KEY(id_perfil)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-
 -- tabla de usuarios
 CREATE TABLE usuario(
 	id_usuario INT(10) NOT NULL AUTO_INCREMENT,
@@ -436,7 +434,8 @@ DELIMITER $$
 			GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pendientes,pedido.disp,pedido.ubicacion,alistado.alistado,
 			ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
 			alistado.no_caja,usuario.nombre,
-			requisicion.lo_origen,requisicion.lo_destino;
+			requisicion.lo_origen,requisicion.lo_destino
+			ORDER BY pedido.ubicacion ASC;
 			
 		ELSE 
 		
@@ -459,7 +458,7 @@ $$
 -- trigger que crea tarea la crear usuario
 DELIMITER $$
 	CREATE TRIGGER CrearTarea
-	BEFORE INSERT ON usuario
+	AFTER INSERT ON usuario
 	FOR EACH ROW 
 	BEGIN
 
