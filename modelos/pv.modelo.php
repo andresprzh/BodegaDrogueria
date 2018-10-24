@@ -10,7 +10,7 @@ class ModeloPV extends Conexion{
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($req) {
+    function __construct($req=null) {
 
         $this->req=$req;
         parent::__construct();
@@ -216,6 +216,26 @@ class ModeloPV extends Conexion{
         // retorna el resultado de la sentencia
 	    return $res;
         // $stmt->closeCursor();  
+        // cierra la conexion
+        $stmt=null;
+    }
+
+    // muestra ubicacion 
+    public function mdlMostrarUbicacion($sede)
+    {
+        $stmt= $this->link->prepare(
+        'SELECT descripcion
+        FROM sedes
+        WHERE codigo=:codigo;
+        ');
+
+        $stmt->bindParam(":codigo",$sede,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+         
+        // retorna el resultado de la sentencia
+	    return $stmt;
+        $stmt->closeCursor();  
         // cierra la conexion
         $stmt=null;
     }

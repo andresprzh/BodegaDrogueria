@@ -50,25 +50,6 @@ CREATE TABLE  perfiles(
 	PRIMARY KEY(id_perfil)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- tabla de usuarios
-CREATE TABLE usuario(
-	id_usuario INT(10) NOT NULL AUTO_INCREMENT,
-	nombre VARCHAR(40) COLLATE ucs2_spanish_ci,
-	cedula CHAR(10),
-	usuario CHAR(20),
-	password VARCHAR(60) NOT NULL,
-	perfil INT(1),
-
-	PRIMARY KEY(id_usuario),
-	UNIQUE(cedula),
-	UNIQUE(usuario),
-
-	CONSTRAINT usuario_perfil
-	FOREIGN KEY(perfil)
-	REFERENCES perfiles(id_perfil),
-	
-	INDEX (id_usuario)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `sedes` (
   `codigo` char(6) NOT NULL,
@@ -79,6 +60,33 @@ CREATE TABLE IF NOT EXISTS `sedes` (
   `grupo_co` char(2) DEFAULT NULL,
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- tabla de usuarios
+CREATE TABLE usuario(
+	id_usuario INT(10) NOT NULL AUTO_INCREMENT,
+	nombre VARCHAR(40) COLLATE ucs2_spanish_ci,
+	cedula CHAR(10),
+	usuario CHAR(20),
+	password VARCHAR(60) NOT NULL,
+	perfil INT(1),
+	sede CHAR(6) NOT NULL DEFAULT "001-BD", 
+
+	PRIMARY KEY(id_usuario),
+	UNIQUE(cedula),
+	UNIQUE(usuario),
+	
+	CONSTRAINT usuario_perfil
+	FOREIGN KEY(perfil)
+	REFERENCES perfiles(id_perfil),
+	
+	CONSTRAINT usuario_sedes
+	FOREIGN KEY(sede)
+	REFERENCES sedes(codigo),	
+	
+	INDEX (id_usuario)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 
 /*tabla de la requisicion a bodega*/
 CREATE TABLE requisicion(
@@ -291,10 +299,6 @@ UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 
 
-INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador");
-UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
-
-INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
 INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
 	('001-BD', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
@@ -331,9 +335,13 @@ INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direc
 	('102-VE', ' BOGOTA AUTONORTE', ' LOCAL #1 AV CR 45 #97 80', '', '', '\r'),
 	('110-VE', ' GASTOS ADMINISTRATIVOS POR DISTRIBUIR', ' CLL 7 30A12', '', '', '\r'),
 	('900-VE', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
-	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r');
+	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r'
+);
 	
+INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador");
+UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
+INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 /* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP FUNCTION IF EXISTS VerificarCaja;

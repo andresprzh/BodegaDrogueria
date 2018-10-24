@@ -8,6 +8,7 @@ require "../modelos/conexion.php";
 require "../modelos/pv.modelo.php";
 require "../modelos/cajas.modelo.php";
 require "../modelos/alistar.modelo.php";
+require "../modelos/tareas.modelo.php";
 
 if (isset($_GET['ruta'])) {
     
@@ -54,8 +55,12 @@ if (isset($_GET['ruta'])) {
         ============================================================================================================================*/
         case "items":
             // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
-            $req=$_POST["req"];
-            $controlador=new ControladorPV($req);
+            if (isset($_POST["req"])) {
+                $controlador=new ControladorPV($_POST["req"]);
+            }else {
+                $controlador=new ControladorPV();
+            }
+
             $codigo=$_POST["codigo"];
 
 
@@ -68,16 +73,23 @@ if (isset($_GET['ruta'])) {
                                                 REGISTRA LOS ITEMS DE LA CAJA Y HACE EL INFORME
         ============================================================================================================================*/
         case "registrar":
-
-            $req=$_POST['req'];
-            $items=$_POST['items'];
-            $numcaja=$_POST['caja'];
+            if ($_SERVER["REQUEST_METHOD"]==="POST") {
+                $req=$_POST["req"];
+                $items=$_POST["items"];
+                $numcaja=$_POST["caja"];
+                
+                $controlador=new ControladorPV($req);
+                $resultado=$controlador->ctrRegistrarItems($items,$numcaja);
+            }else {
+                $items=$_GET["items"];
+                $sede=$_GET["sede"];
+                $controlador=new ControladorPV();
+                $resultado=$controlador->ctrDocumentoProducto($items,$sede);
+            }
             
-            $controlador=new ControladorPV($req);
             
-            $resultado=$controlador->ctrRegistrarItems($items,$numcaja);
-            
-            print json_encode($resultado);
+            // print json_encode($resultado);
+            // print($resultado);
 
             break;
             

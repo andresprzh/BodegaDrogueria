@@ -48,6 +48,7 @@
                 echo '<li><a href="cajas" ><i class="fas fa-boxes"></i>Ver cajas alistadas</a></li>';
                 echo '<li><a href="Nitem" ><i class="fas fa-plus-square"></i>Agregar items a requisición</a></li>';
                 echo '<li><a href="pv" ><i class="fas fa-clipboard-check"></i>Registrar cajas</a></li>';
+                echo '<li><a href="pdv" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
                 echo '<li><a href="pvcajas" ><i class="fas fa-boxes"></i>Ver cajas registradas</a></li>';
                 echo '<li><a href="tareas" ><i class="fas fa-tasks"></i>Tareas</a></li>';
                 echo '<li><a href="usuarios" ><i class="fas fa-users"></i>Administrar usuarios</a></li>';
@@ -74,6 +75,7 @@
             }
             if ($_SESSION["usuario"]["perfil"]==4) {
                 echo '<li><a href="pv"><i class="fas fa-clipboard-check"></i>Registrar cajas</a></li>';
+                echo '<li><a href="pdv" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
                 echo '<li><a href="pvcajas" ><i class="fas fa-boxes"></i>Ver cajas registradas</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==6) {

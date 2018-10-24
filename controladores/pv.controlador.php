@@ -12,7 +12,7 @@ class ControladorPV extends ControladorCajas{
     /* ============================================================================================================================
                                                         CONSTRUCTOR   
     ============================================================================================================================*/
-    function __construct($req) {
+    function __construct($req=null) {
         
         parent::__construct($req);
         $this->modelo=new ModeloPV($req);
@@ -300,6 +300,72 @@ class ControladorPV extends ControladorCajas{
             $resultado["estado"]=false;
         }
         
+        return $resultado;
+    }
+
+    public function ctrDocumentoProducto($items,$sede)
+    {      
+        // busca la descripcion dela sede
+        $sededesc=$this->modelo->mdlMostrarUbicacion($sede);
+        $sededesc=$sededesc->fetch()[0];
+
+        $hoy = getdate();
+        $fecha=$hoy["year"]."/".$hoy["month"]."/".$hoy["mday"]." ".$hoy["hours"].":".$hoy["minutes"];
+        
+        $sede=substr($sede,0,-3).$sededesc;
+    
+        $resultado="";
+
+        $resultado.=str_repeat("-",92 )."\r\n";
+        $resultado.="|".str_pad("Fecha: $fecha" ,90/2," ",STR_PAD_RIGHT).str_pad("Sede: $sede" ,90/2," ",STR_PAD_RIGHT)."|\r\n";
+        $resultado.=str_repeat("-",92 )."\r\n";
+
+
+        $descripcion=str_pad("DESCRIPCION ITEM",40+2," ",STR_PAD_RIGHT);
+        $item=str_pad("IDITEM",6+2," ",STR_PAD_RIGHT);
+        $ref=str_pad("REFERENCIA",15+2," ",STR_PAD_RIGHT);
+        $cod_bar=str_pad("CODIGO BARRAS",15+2," ",STR_PAD_RIGHT);
+        $recibidos=str_pad("CANTIDAD",8," ",STR_PAD_RIGHT);
+        $resultado.=($descripcion.$item.$ref.$cod_bar.$recibidos."\r\n");
+        $resultado.=str_repeat("-",92 )."\r\n";
+
+        $total=0;
+        foreach ($items as $row) {
+
+            $descripcion=str_pad($row["descripcion"],40+2," ",STR_PAD_RIGHT);
+
+            $item=str_pad($row["item"],6+2," ",STR_PAD_RIGHT);
+            $ref=str_pad($row["referencia"],15+2," ",STR_PAD_RIGHT);
+            $cod_bar=str_pad($row["codbarras"],15+2," ",STR_PAD_RIGHT);
+            $num=$row["recibidos"];
+            $recibidos=str_pad($num,8,"0",STR_PAD_LEFT);
+            $total+=$num;
+            $resultado.=($descripcion.$item.$ref.$cod_bar.$recibidos."\r\n");
+        }
+        $resultado.=str_repeat("-",92 )."\r\n";
+        
+        $resultado.=str_pad("TOTAL:",92-12 ," ",STR_PAD_LEFT)."    ";
+        $resultado.=str_pad($total,8,"0",STR_PAD_LEFT);
+        // print $resultado;
+
+        $to = "andresprzh@gmail.com";
+        $subject = "Lista";
+        // // $txt = "Hello world!";
+        // $headers = 'Content-type: text/plain; charset=iso-8859-1' . "\r\n";
+
+        // mail($to,$subject,$resultado,$headers);
+
+
+
+      
+        //header 
+        $headers = "MIME-Version: 1.0\r\n"; // Defining the MIME version 
+        $headers .= "Content-Type: multipart/mixed;\r\n"; // Defining Content-Type 
+        // $headers .= "boundary = $boundary\r\n"; //Defining the Boundary 
+    
+        
+        $sentMailResult = mail($to, $subject, $resultado, $headers);
+          
         return $resultado;
     }
 
