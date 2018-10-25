@@ -1,28 +1,19 @@
+<script src="vistas\lib\dropzone.js\dropzone.js"></script>
 <div class="" >
 
     
     <h2 class="header center ">Subir Requisición</h3>
 
     <!-- <form role="form" method="post" enctype="multipart/form-data" style="padding-left:15px;" id="subir"> -->
-    <form>
 <!-- ============================================================================================================================
                                                     INPUTS   
 ============================================================================================================================ -->
-        <div class="file-field input-field row">
+        <div class="row container">
         
-            <div class="btn green darken-2 col s2 m3 l1 offset-l3 offset-m1">
-
-                <span><i class="fas fa-upload"></i>Subir</span>
-                <input type="file" class="archivo" name="archivo" id="archivo" multiple >
-                
-            </div>
-            
-
-            <div class="file-path-wrapper col s9 m7 l5" >
-
-                <input class="file-path validate" type="text" placeholder="Subir archivo .PO1" id="urlarchivo" >
-
-            </div>
+            <form action="/file-upload"
+            class="dropzone col s12"
+            id="my-awesome-dropzone">
+            </form>
             
             
         </div>
@@ -53,19 +44,11 @@
 
         </div>
 
-        <div class="row">
-<!-- ============================================================================================================================
-                                                      SUBIR ARCHIVO
-    ============================================================================================================================ -->
-            
-        </div>
-
-    </form>
 
 <!-- ============================================================================================================================
                                                         EVENTOS PAGINA REQUERIR    
     ============================================================================================================================ -->
-<script src="vistas/js/requerir.js"></script>
+<script src="vistas/js/remisiones.js"></script>
 
 </div>
 
