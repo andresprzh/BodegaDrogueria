@@ -6,6 +6,14 @@ CREATE DATABASE  IF NOT EXISTS bodegadrogueria;
 /*se usa la base de daos*/
 USE bodegadrogueria;
 
+CREATE TABLE IF NOT EXISTS emails(
+	id_correos INT(4) NOT NULL AUTO_INCREMENT,
+	correo VARCHAR(255) NOT NULL,
+	
+	PRIMARY KEY(id_correos)
+);
+
+
 CREATE TABLE IF NOT EXISTS `ITEMS` (
 	`ID_ITEM` char(6) NOT NULL,
 	`ID_REFERENCIA` char(15) DEFAULT NULL,

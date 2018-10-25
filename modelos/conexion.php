@@ -19,7 +19,7 @@ class Conexion{
     }
 
 
-    public function buscaritem($tabla,$item,$valor){
+    public function buscaritem($tabla,$item=null,$valor=null){
          // si item es diferente de nullo se busca con una condicion
         
         if ($item!=null) {

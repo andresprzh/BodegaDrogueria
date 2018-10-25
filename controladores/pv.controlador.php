@@ -354,8 +354,19 @@ class ControladorPV extends ControladorCajas{
 
     public function ctrEnviarMail($data)
     {
+        $busqueda=$this->modelo->buscaritem('emails');
+        // print json_encode($busqueda->fetchall());
+        $to='';
+        if ($busqueda->rowCount(0)) {
+            foreach ($busqueda->fetchAll() as $row) {
+                $to .= $row['correo'].';';
+            }
+        }else {
+            return "Error no destinatario";
+        }
         
-        $to = 'andresprzh@gmail.com;correoautomatico.bodegasj@gmail.com';
+        // return $to;
+        // $to = 'andresprzh@gmail.com;correoautomatico.bodegasj@gmail.com;';
 
         //sender
         $from = 'correoautomatico.bodegasj@gmail.com';
