@@ -80,17 +80,32 @@ if (isset($_GET['ruta'])) {
                 
                 $controlador=new ControladorPV($req);
                 $resultado=$controlador->ctrRegistrarItems($items,$numcaja);
+                
             }else {
                 $items=$_GET["items"];
                 $sede=$_GET["sede"];
                 $controlador=new ControladorPV();
                 $resultado=$controlador->ctrDocumentoProducto($items,$sede);
+                
+
+                // envia correo
+                // $controlador->ctrEnviarMail($resultado); 
+
             }
-            
-            
-            // print json_encode($resultado);
+            print json_encode($resultado);                       
             // print($resultado);
 
+            break;
+        
+        /* ============================================================================================================================
+                                                ENVIA MAIL CN ARCHIVO ADJUNTO
+        ============================================================================================================================*/
+        case "mail":
+            $data=$_GET["data"];
+            $controlador=new ControladorPV();
+            $resultado=$controlador->ctrEnviarMail($data); 
+            print json_encode($resultado);                       
+            
             break;
             
     }

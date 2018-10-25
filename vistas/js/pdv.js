@@ -152,22 +152,13 @@ $(document).ready(function () {
                             "recibidos": $(datos[i][4]).val()
                         }
                     }
-                    // let  D = new Date();
-                    // var fecha=D.getFullYear()+'/'+D.getMonth()+'/'+D.getDate()+' '+D.getHours()+':'+D.getMinutes();
-                    // console.log(fecha);
-                    // let archivo='';
-                    // for (let i in items) {
-                    //     // archivo+=("00" + numcaja).slice(-2);
-                    // }
-                    // return 0;
                     $.ajax({
                         url: 'api/pv/registrar',
                         type: 'GET',//metodo post para mandar datos
                         data: { 'items': items,'sede':sede },//datos que se enviaran
                         dataType: 'JSON',
                         success: function (res) {
-                            console.log(res);
-                           
+                            // console.log(res);
 
                             // crea el nombre del documento a partir de la requisicion y la caja
                             let nomdoc = 'lista.txt';
@@ -182,52 +173,10 @@ $(document).ready(function () {
                             element.click();
 
                             document.body.removeChild(element);
-                            return 0;
-                            if (res['estado'] == true) {
-                                // crea el documento si no hay errores en los items recibidos
-                                if (res['contenido']['estado'] == true) {
-                                    swal({
-                                        title: '¡Items registrados!',
-                                        icon: 'success',
-                                    }).then((ok) => {
-                                        location.reload();
-                                        let numcaja = $('#cajas').val();
-                                        // obtiene los 3 ultimos caracteres de la requisicion
-                                        let no_req = req[0].substr(req[0].length - 3);
-                                        numcaja = ('00' + numcaja).slice(-2);
 
-                                        // crea el nombre del documento a partir de la requisicion y la caja
-                                        let nomdoc = 'C' + numcaja + 'DE' + no_req + '.TR1';
+                            enviarmail(res);
 
-                                        let element = document.createElement('a');
-                                        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']['string']));
-                                        element.setAttribute('download', nomdoc);
-
-                                        element.style.display = 'none';
-                                        document.body.appendChild(element);
-
-                                        element.click();
-
-                                        document.body.removeChild(element);
-                                    });
-                                } else {
-                                    swal({
-                                        title: '¡Error!',
-                                        text: 'Error',
-                                        icon: 'error',
-                                    })
-                                        .then((ok) => {
-                                            location.reload();
-                                        });
-                                }
-
-                            } else {
-                                swal({
-                                    title: '¡Error!',
-                                    text: 'Error',
-                                    icon: 'error',
-                                });
-                            }
+                            location.reload();
 
                         }
                     });
@@ -235,7 +184,7 @@ $(document).ready(function () {
                 }
             });
     });
-
+    
 
 });
 
@@ -269,13 +218,13 @@ function BuscarCodBar() {
             items[1] = datos.map(function (value, index) { return value[1]; });
             items[2] = datos.map(function (value, index) { return value[2]; });
             items[3] = datos.map(function (value, index) { return value[3]; });
+            
             if (res['estado'] == 'encontrado') {
                 var cantr = 1;
 
-                //busca si el item ya esta n la tabla
-
+                //busca si el item ya esta en la tabla
                 for (let index = 0; index < 4; index++) {
-                    var pos = items[index].indexOf(codigo);
+                    var pos = items[index].indexOf(codigo.toUpperCase());
                     if (pos >= 0) {
                         break;
                     }
@@ -320,6 +269,13 @@ function BuscarCodBar() {
     });
 }
 
+function enviarmail(data){
+    $.ajax({
+        type: 'GET',
+        url: 'api/pv/mail',
+        data: {'data':data}
+    });
+}
 // FUNCION QUE INICIA DATATABLE
 function iniciar_tabla(tabla) {
 

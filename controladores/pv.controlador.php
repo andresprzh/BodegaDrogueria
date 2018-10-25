@@ -348,27 +348,57 @@ class ControladorPV extends ControladorCajas{
         $resultado.=str_pad($total,8,"0",STR_PAD_LEFT);
         // print $resultado;
 
-        $to = "andresprzh@gmail.com";
-        $subject = "Lista";
-        // // $txt = "Hello world!";
-        // $headers = 'Content-type: text/plain; charset=iso-8859-1' . "\r\n";
-
-        // mail($to,$subject,$resultado,$headers);
-
-
-
-      
-        //header 
-        $headers = "MIME-Version: 1.0\r\n"; // Defining the MIME version 
-        $headers .= "Content-Type: multipart/mixed;\r\n"; // Defining Content-Type 
-        // $headers .= "boundary = $boundary\r\n"; //Defining the Boundary 
-    
         
-        $sentMailResult = mail($to, $subject, $resultado, $headers);
-          
         return $resultado;
     }
 
-    
+    public function ctrEnviarMail($data)
+    {
+        
+        $to = 'andresprzh@gmail.com;correoautomatico.bodegasj@gmail.com';
+
+        //sender
+        $from = 'correoautomatico.bodegasj@gmail.com';
+        $fromName = 'correoautomatico';
+
+        //email subject
+        $subject = 'Lista de productos'; 
+
+        //email body content
+        $htmlContent = '<h1>Lista de productos</h1>
+            <p>Adjunta lista de items</p>';
+
+        //header for sender info
+        $headers = "From: $fromName"." <".$from.">";
+
+        //boundary 
+        $semi_rand = md5(time()); 
+        $mime_boundary = "==Multipart_Boundary_x{$semi_rand}x"; 
+
+        //headers for attachment 
+        $headers .= "\nMIME-Version: 1.0\n" . "Content-Type: multipart/mixed;\n" . " boundary=\"{$mime_boundary}\""; 
+
+        //multipart boundary 
+        $htmlContent="lista";
+        $message = "--{$mime_boundary}\n" . "Content-Type: text/html; charset=\"UTF-8\"\n" .
+        "Content-Transfer-Encoding: 7bit\n\n" . $htmlContent . "\n\n"; 
+
+        $data = chunk_split(base64_encode($data));
+        $message .= "--{$mime_boundary}\n"; 
+        $message .= "Content-Type: text/html; name=\"lista.txt\"\n" . 
+        "Content-Description: lista.txt\n" .
+        "Content-Disposition: attachment;\n" . " filename=\"lista.txt\";\n" . 
+        "Content-Transfer-Encoding: base64\n\n" . $data . "\n\n";
+
+        $message .= "--{$mime_boundary}--";
+        $returnpath = "-f" . $from;
+
+        //send email
+        $mail = @mail($to, $subject, $message, $headers ,$returnpath); 
+
+        return $mail?"enviado":"error";
+        
+        
+    }
     
 }
