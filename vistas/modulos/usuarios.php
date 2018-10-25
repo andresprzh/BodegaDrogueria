@@ -59,7 +59,7 @@
                 <div class="row">
                     
                     <i class="fas fa-id-card"></i><label class="black-text" for="cedula"> cedula</label>
-                    <input id="cedula" required="required" type="text" class="validate" maxlength="10">
+                    <input id="cedula" required="required" type="text" class="validate" maxlength="12">
                     
 
                 </div>

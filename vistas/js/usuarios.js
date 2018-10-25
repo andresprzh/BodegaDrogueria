@@ -7,7 +7,9 @@ $(document).ready(function () {
     // table=iniciar_tabla();
 
     //inicia modal
-    $('.modal').modal();
+    $('.modal').modal({
+        onCloseEnd: function () {  $('#fran').addClass('hide'); }
+    });
     
      // CARGA DATO AL MENU DE SELECCION DE PERFILES
     $.when(CargarPerfiles()).done(function () {
@@ -113,19 +115,20 @@ $(document).ready(function () {
                         'usuario': $('#usuario').val(),
                         'password': $('#password').val(),
                         'perfil': $('#perfil').val(),
-                        'franquicia': null
+                        'franquicia': 'NFRA'
                     };
                     if ($('#perfil').val()==7) {
                         datosusuario['franquicia']=$('#franquicia').val()
                     }
-                                            
+                    
                     $.ajax({
                         type: "POST",
                         url: "api/usuarios/modificar",
                         data: {"datosusuario":datosusuario,"button":buttonid},
-                        dataType: "JSON",
+                        // dataType: "JSON",
                         success: function (res) {
-                            
+                            console.log(res);
+                            return 0;
                             // si se modifica o inserta el usuario el ajax regresa el id de dicho usuario
                             if (!isNaN(parseFloat(res))) {
                                 $('#iduser').html("");
