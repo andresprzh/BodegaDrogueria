@@ -25,6 +25,14 @@ $(document).ready(function () {
             $("#contenido-inicio").append($('<h2 class="header center">Jefe delegado</h2>'));
             tablarequeridos();
             break;
+        case 6:
+            $("#contenido-inicio").append($('<h2 class="header center">Transportador</h2>'));
+            
+            break;
+        case 7:
+            $("#contenido-inicio").append($('<h2 class="header center">Franquicia</h2>'));
+            
+            break;
         default:
             break;
     }

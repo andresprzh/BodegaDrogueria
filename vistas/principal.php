@@ -75,6 +75,7 @@
     // Posibles vistas en el contenido
     $pages=[
         "inicio",
+        "remisiones",
         "requerir",
         "alistar",
         "cajas",
@@ -110,6 +111,11 @@
       "pdv",
       "salir",
       "pvcajas"
+    ];
+    $franquicia=[
+      "inicio",
+      "pdv",
+      "salir"
     ];
     $jefed=[
       "inicio",
@@ -154,6 +160,10 @@
         include "modulos/".$_GET["ruta"].".php";
 
       }elseif ($_SESSION["usuario"]["perfil"]==6 && in_array($_GET["ruta"],$transportador)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
+
+      }elseif ($_SESSION["usuario"]["perfil"]==7 && in_array($_GET["ruta"],$franquicia)) {
         
         include "modulos/".$_GET["ruta"].".php";
 

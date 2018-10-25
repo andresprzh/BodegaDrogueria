@@ -13,7 +13,9 @@ $(document).ready(function () {
     $.when(CargarPerfiles()).done(function () {
         // espera a que termine de cargar los perfiles
         // INICIA TABLA USUARIOS
+
         CargarUsuarios();
+        cargarfranquicias();
     });
         
 
@@ -110,9 +112,13 @@ $(document).ready(function () {
                         'cedula': $('#cedula').val(),
                         'usuario': $('#usuario').val(),
                         'password': $('#password').val(),
-                        'perfil': $('#perfil').val()
+                        'perfil': $('#perfil').val(),
+                        'franquicia': null
                     };
-                                                
+                    if ($('#perfil').val()==7) {
+                        datosusuario['franquicia']=$('#franquicia').val()
+                    }
+                                            
                     $.ajax({
                         type: "POST",
                         url: "api/usuarios/modificar",
@@ -186,6 +192,18 @@ $(document).ready(function () {
 
                 }
             });
+    });
+
+    // busca si el usuario que se esta agregando es franquicia
+    $('.modal').on('change', '#perfil', function (e) {
+        e.preventDefault();
+        let perfil=$(this).val();
+        
+        if (perfil==7) {
+            $('#fran').removeClass('hide');
+        }else{
+            $('#fran').addClass('hide');
+        }
     });
     
 });
@@ -301,4 +319,23 @@ function modUsuario(datosusuario,buttonid) {
         }
     });
     
+}
+
+function cargarfranquicias() {
+    
+    return $.ajax({
+        type: "GET",
+        url: "api/usuarios/franquicias",
+        dataType: "JSON",
+        success: function (res) {
+            
+            if (res) {
+                
+                for (let i in res) {
+                   $("#franquicia").append($('<option value="'+res[i]['codigo']+'">'+res[i]['descripcion']+'</option>'));
+                }
+                
+            }
+        }
+    });
 }

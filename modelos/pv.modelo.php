@@ -221,15 +221,15 @@ class ModeloPV extends Conexion{
     }
 
     // muestra ubicacion 
-    public function mdlMostrarUbicacion($sede)
+    public function mdlMostrarUbicacion($franquicia)
     {
         $stmt= $this->link->prepare(
         'SELECT descripcion
-        FROM sedes
+        FROM franquicias
         WHERE codigo=:codigo;
         ');
 
-        $stmt->bindParam(":codigo",$sede,PDO::PARAM_STR);
+        $stmt->bindParam(":codigo",$franquicia,PDO::PARAM_STR);
 
         $res=$stmt->execute();
          
@@ -239,4 +239,6 @@ class ModeloPV extends Conexion{
         // cierra la conexion
         $stmt=null;
     }
+
+    
 }

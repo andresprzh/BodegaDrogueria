@@ -45,7 +45,7 @@ class ControladorUsuarios {
                                           "cedula" => $respuesta["cedula"],  
                                           "usuario" => $respuesta["usuario"],
                                           "perfil" => $respuesta["perfil"],
-                                          "sede" => $respuesta["sede"]
+                                          "franquicia" => $respuesta["franquicia"]
                                         ];
                     
                     // echo '<script>

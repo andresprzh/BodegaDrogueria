@@ -10,28 +10,6 @@ $(document).ready(function () {
     $('.modal').modal({
         onCloseEnd: function () { location.reload(); }
     });
-    // pone items en el input select
-    
-    // $.ajax({
-    //     url: "api/alistar/requisiciones",
-    //     method: "GET",
-    //     data: { 'valor': 2 },
-    //     dataType: "json",
-    //     success: function (res) {
-
-    //         // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
-    //         for (var i in res) {
-
-    //             $("#requeridos").append($('<option value="' + res[i]["no_req"] + '">' + res[i]["no_req"] + '</option>'));
-
-    //         }
-
-    //         // INICIA MENU DE SELECCION
-    //         $('select').formSelect();
-
-    //     }
-    // });
-
 
 
 
@@ -155,7 +133,7 @@ $(document).ready(function () {
                     $.ajax({
                         url: 'api/pv/registrar',
                         type: 'GET',//metodo post para mandar datos
-                        data: { 'items': items,'sede':sede },//datos que se enviaran
+                        data: { 'items': items,'franquicia':franquicia },//datos que se enviaran
                         dataType: 'JSON',
                         success: function (res) {
                             // console.log(res);

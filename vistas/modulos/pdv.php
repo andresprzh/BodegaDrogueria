@@ -137,8 +137,7 @@
 <!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->
 <script type="text/javascript">
     var id_usuario='<?php echo $_SESSION["usuario"]["id"];?>';
-    var sede='<?php echo $_SESSION["usuario"]["sede"];?>';
-    
+    var franquicia='<?php echo $_SESSION["usuario"]["franquicia"];?>';
 </script>
 
 <!-- JS QUE MANEJA LOS EVENTOS DE LA PAGINA -->

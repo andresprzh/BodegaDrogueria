@@ -69,15 +69,22 @@ CREATE TABLE IF NOT EXISTS `sedes` (
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS franquicias (
+  `codigo` char(6) NOT NULL,
+  `descripcion` char(40) DEFAULT NULL,
+  `direccion1` char(40) DEFAULT NULL,
+  PRIMARY KEY (`codigo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 -- tabla de usuarios
 CREATE TABLE usuario(
-	id_usuario INT(10) NOT NULL AUTO_INCREMENT,
+	id_usuario INT(10) NOT NULL AUTO_INCREMENT,	
 	nombre VARCHAR(40) COLLATE ucs2_spanish_ci,
-	cedula CHAR(10),
+	cedula CHAR(12),
 	usuario CHAR(20),
 	password VARCHAR(60) NOT NULL,
 	perfil INT(1),
-	sede CHAR(6) NOT NULL DEFAULT "001-BD", 
+	franquicia CHAR(6) NOT NULL DEFAULT "NFRA", 
 
 	PRIMARY KEY(id_usuario),
 	UNIQUE(cedula),
@@ -88,8 +95,8 @@ CREATE TABLE usuario(
 	REFERENCES perfiles(id_perfil),
 	
 	CONSTRAINT usuario_sedes
-	FOREIGN KEY(sede)
-	REFERENCES sedes(codigo),	
+	FOREIGN KEY(franquicia)
+	REFERENCES franquicias(codigo),	
 	
 	INDEX (id_usuario)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -306,7 +313,15 @@ INSERT INTO caja(no_caja) VALUES(1);
 UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 
+INSERT INTO franquicias(codigo,descripcion) VALUES
+('NFRA','NO ES FRANQUICIA'),
+('PAL1','PALMIRA 1'),('PAL2','PALMIRA 2'),('PAL3','PALMIRA 3'),
+('SANT','SANTANDER DE QUILICHAO'),
+('UBBS','CHAPINERO VASQUEZ BARRENECHE');
+INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
+UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
+INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
 INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
 	('001-BD', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
@@ -345,11 +360,7 @@ INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direc
 	('900-VE', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
 	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r'
 );
-	
-INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador");
-UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
-INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 /* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP FUNCTION IF EXISTS VerificarCaja;

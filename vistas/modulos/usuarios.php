@@ -40,7 +40,7 @@
 <div id="editarusuario" class="modal grey lighten-3">
     
     <div class="modal-content grey lighten-3" id="modal">
-        <form action="">
+        <form action="" id='formuser'>
             <div class="modal-header">
                 <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
                 <h3 class='center' >Usuario <span id='iduser'></span> </h3>
@@ -50,7 +50,7 @@
             <div class="modal-body container">
 
                 <div class="row">
-                    <i class="fas fa-pen"></i><label class="black-text" for="cedula">Nombre</label>
+                    <i class="fas fa-pen"></i><label class="black-text" for="cedula"> Nombre</label>
                     <input id="nombre" required="required" type="text" class="validate">
                     
 
@@ -58,15 +58,15 @@
 
                 <div class="row">
                     
-                    <i class="fas fa-id-card"></i><label class="black-text" for="cedula">cedula</label>
-                    <input id="cedula" required="required" type="number" class="validate" maxlength="10">
+                    <i class="fas fa-id-card"></i><label class="black-text" for="cedula"> cedula</label>
+                    <input id="cedula" required="required" type="text" class="validate" maxlength="10">
                     
 
                 </div>
 
                 <div class="row">
                     
-                    <i class="fas fa-users"></i><label class="black-text" for="usuario">Usuario</label>
+                    <i class="fas fa-users"></i><label class="black-text" for="usuario"> Usuario</label>
                     <input id="usuario" required="required" type="text" class="validate">
                     
 
@@ -74,17 +74,21 @@
 
                 <div class="row">
                     
-                    <i class="fas fa-lock"></i><label class="black-text" for="password">Contraseña</label>
+                    <i class="fas fa-lock"></i><label class="black-text" for="password"> Contraseña</label>
                     <input id="password"  required="required" type="password" class="validate">
                     
 
                 </div>
 
                 <div class="row">
-                    <i class="fas fa-users-cog"></i><label class="black-text" for="perfil">Perfil</label>
+                    <i class="fas fa-users-cog"></i><label class="black-text" for="perfil"> Perfil</label>
                     <select   list="perfil" name="perfil" class="perfil" id="perfil">
                     </select>
-                    
+                </div>
+
+                <div class="row hide" id='fran'>
+                    <i class="fas fa-store-alt"></i><label class="black-text" for="franquicia"> Franquicia</label>
+                    <select   list="franquicia" name="franquicia" class="franquicia" id="franquicia"></select>
                 </div>
 
             </div>

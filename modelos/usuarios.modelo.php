@@ -40,13 +40,16 @@ class ModeloUsuarios extends Conexion {
     ========================================*/
     public function mdlRegistrarUsuario($datos){
       $tabla='usuario';
-      $stmt= $this->link->prepare("INSERT INTO $tabla(nombre,cedula,usuario,password,perfil) VALUES(:nombre,:cedula,:usuario,:password,:perfil);");
+      $stmt= $this->link->prepare(
+      "INSERT INTO $tabla(nombre,cedula,usuario,password,perfil,franquicia) 
+      VALUES(:nombre,:cedula,:usuario,:password,:perfil,:franquicia);");
       
       $stmt->bindParam(":nombre",$datos["nombre"],PDO::PARAM_STR);
       $stmt->bindParam(":cedula",$datos["cedula"],PDO::PARAM_STR);
       $stmt->bindParam(":usuario",$datos["usuario"],PDO::PARAM_STR);
       $stmt->bindParam(":password",$datos["password"],PDO::PARAM_STR);
       $stmt->bindParam(":perfil",$datos["perfil"],PDO::PARAM_STR);
+      $stmt->bindParam(":franquicia",$datos["franquicia"],PDO::PARAM_STR);
       
 
       $res=$stmt->execute();
@@ -58,7 +61,9 @@ class ModeloUsuarios extends Conexion {
 
       $stmt=null;
     }
-
+    /*==========================================
+          MOSTRAR PERFILES
+    ========================================*/
     public function mdlMostrarPerfiles($perfil=null,$item=null,$valor=null){
       $tabla='perfiles';
       
@@ -79,10 +84,37 @@ class ModeloUsuarios extends Conexion {
 
       
     }  
+    /*==========================================
+          MOSTRAR FRANQUICIAS
+    ========================================*/
+    public function mdlMostrarFranquicias(){
+      $tabla ='usuario';
+      $stmt = $this->link->prepare(
+      "SELECT * 
+      FROM franquicias 
+      WHERE codigo<>'NFRA'
+      ORDER BY codigo ASC;");
+      
+      
 
+      $res = $stmt->execute();
+      if($res){
+        $res = $stmt;
+      }            
+      return $res;
+      
+      $stmt=null;
+    }  
+    /*==========================================
+          MODIFICA USUARIO
+    ========================================*/
     public function mdlCambiarUsuario($datos){
       $tabla ='usuario';
-      $stmt = $this->link->prepare("UPDATE $tabla SET nombre=:nombre, cedula=:cedula,usuario=:usuario,password=:password,perfil=:perfil WHERE id_usuario=:id_usuario;");
+      $stmt = $this->link->prepare(
+      "UPDATE $tabla 
+      SET nombre=:nombre, cedula=:cedula,usuario=:usuario,
+      password=:password,perfil=:perfil,franquicia=:franquicia 
+      WHERE id_usuario=:id_usuario;");
       
       $stmt->bindParam(":id_usuario",$datos["id"],PDO::PARAM_INT);
       $stmt->bindParam(":nombre",$datos["nombre"],PDO::PARAM_STR);
@@ -90,6 +122,7 @@ class ModeloUsuarios extends Conexion {
       $stmt->bindParam(":usuario",$datos["usuario"],PDO::PARAM_STR);
       $stmt->bindParam(":password",$datos["password"],PDO::PARAM_STR);
       $stmt->bindParam(":perfil",$datos["perfil"],PDO::PARAM_INT);
+      $stmt->bindParam(":franquicia",$datos["franquicia"],PDO::PARAM_STR);
       
 
       $res = $stmt->execute();

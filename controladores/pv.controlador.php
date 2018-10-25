@@ -303,21 +303,21 @@ class ControladorPV extends ControladorCajas{
         return $resultado;
     }
 
-    public function ctrDocumentoProducto($items,$sede)
+    public function ctrDocumentoProducto($items,$franquicia)
     {      
-        // busca la descripcion dela sede
-        $sededesc=$this->modelo->mdlMostrarUbicacion($sede);
-        $sededesc=$sededesc->fetch()[0];
+        // busca la descripcion dela franquicia
+        $franquiciadesc=$this->modelo->mdlMostrarUbicacion($franquicia);
+        $franquiciadesc=$franquiciadesc->fetch()[0];
 
         $hoy = getdate();
         $fecha=$hoy["year"]."/".$hoy["month"]."/".$hoy["mday"]." ".$hoy["hours"].":".$hoy["minutes"];
         
-        $sede=substr($sede,0,-3).$sededesc;
+        $franquicia=$franquiciadesc;
     
         $resultado="";
 
         $resultado.=str_repeat("-",92 )."\r\n";
-        $resultado.="|".str_pad("Fecha: $fecha" ,90/2," ",STR_PAD_RIGHT).str_pad("Sede: $sede" ,90/2," ",STR_PAD_RIGHT)."|\r\n";
+        $resultado.="|".str_pad("Fecha: $fecha" ,90/2," ",STR_PAD_RIGHT).str_pad("franquicia: $franquicia" ,90/2," ",STR_PAD_RIGHT)."|\r\n";
         $resultado.=str_repeat("-",92 )."\r\n";
 
 
