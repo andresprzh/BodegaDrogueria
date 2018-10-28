@@ -1,50 +1,71 @@
 <script src="vistas\lib\dropzone.js\dropzone.js"></script>
-<div class="" >
+
 
     
-    <h2 class="header center ">Subir Requisición</h3>
+<h2 class="header center ">Subir Requisición</h3>
 
-    <!-- <form role="form" method="post" enctype="multipart/form-data" style="padding-left:15px;" id="subir"> -->
+<!-- <form role="form" method="post" enctype="multipart/form-data" style="padding-left:15px;" id="subir"> -->
 <!-- ============================================================================================================================
-                                                    INPUTS   
+                                                INPUTS   
 ============================================================================================================================ -->
-        <div class="row container">
-        
-            <form action="/file-upload"
-            class="dropzone col s12"
-            id="my-awesome-dropzone">
-            </form>
+<div class="row container" >
+
+    <form class="file-upload" id="remisiones">
+        <div class="file-upload-main " >
+            <input type="file" id="archivos" webkitdirectory mozdirectory msdirectory odirectory directory multiple />
+            <!-- <input type="file" id="archivos"/> -->
             
-            
-        </div>
-<!-- ============================================================================================================================
-                                                    ICONO DE CARGA  
-============================================================================================================================ -->
-        <div class="row hide" id="carga"  style="padding-top:15vh;">
-
-            <div class="col offset-s4 offset-l6 offset-m5 " >
-
-                <div class="preloader-wrapper big active ">
-                    <div class="spinner-layer spinner-green-only">
-
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-
-                    </div>
-
-                </div>
+            <div class="file-upload-res" id='contenido'>
+                <p class=""><i class="fas fa-upload"></i>Subir</p>
             </div>
-
         </div>
+        <button class="btn green col s12" type="submit">Subir</button>
+    </form>
+</div>
+    
+<!-- <form class="file-upload">
+  <p class="btnup">Upload a file</p>
+  <input type="file" name="myfile" />
+</form> -->
+<div>
+
+<style>
+
+.file-upload .file-upload-main{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+  min-height: 200px;
+  width:100%;
+  border: 2px dashed green;
+}
+
+.file-upload input[type=file]{
+    
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+.file-upload .file-upload-res{
+    width: 100%;
+    text-align: center;
+    color:gray;
+}
+form button{
+ 
+}
 
 
+</style>
 <!-- ============================================================================================================================
                                                         EVENTOS PAGINA REQUERIR    
     ============================================================================================================================ -->
