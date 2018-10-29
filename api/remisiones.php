@@ -1,10 +1,10 @@
 <?php
 
-include "../controladores/tareas.controlador.php";
+include "../controladores/remision.controlador.php";
 
 require "../modelos/conexion.php";
 
-require "../modelos/tareas.modelo.php";
+require "../modelos/remision.modelo.php";
 
 require "cors.php";
 
