@@ -41,6 +41,7 @@
   min-height: 200px;
   width:100%;
   border: 2px dashed green;
+  
 }
 
 .file-upload input[type=file]{
@@ -51,15 +52,14 @@
   opacity: 0;
   width: 100%;
   height: 100%;
+  cursor: pointer;
 }
 .file-upload .file-upload-res{
     width: 100%;
     text-align: center;
     color:gray;
 }
-form button{
- 
-}
+
 
 
 </style>
