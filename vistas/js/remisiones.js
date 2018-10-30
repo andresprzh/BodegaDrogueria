@@ -3,7 +3,7 @@ $(document).ready(function(){
   
   
   $('#remisiones input').change(function () {
-    // console.log(this.files)
+    console.log(this.files)
     if (this.files.length>0) {
       $('.file-upload-res').css('text-align', 'left');
       
@@ -29,6 +29,7 @@ $(document).ready(function(){
     
     var path = document.getElementById('archivos').files[0].webkitRelativePath;
     var folder = path.split("/")[0];
+
     form_data.append("folder",folder);
     
     for (var x = 0; x < ins; x++) {
@@ -37,7 +38,7 @@ $(document).ready(function(){
     
     $.ajax({
         url: 'api/remisiones/docrem', // point to server-side PHP script 
-        // dataType: 'json', // what to expect back from the PHP script
+        dataType: 'JSON', // what to expect back from the PHP script
         cache: false,
         contentType: false,
         processData: false,

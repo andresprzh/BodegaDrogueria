@@ -1,7 +1,4 @@
-<script src="vistas\lib\dropzone.js\dropzone.js"></script>
-
-
-    
+   
 <h2 class="header center ">Subir Requisición</h3>
 
 <!-- <form role="form" method="post" enctype="multipart/form-data" style="padding-left:15px;" id="subir"> -->

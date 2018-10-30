@@ -106,8 +106,8 @@ class ControladorRemision{
 
         $stringItem="";
         $contador=0;
-        foreach($this->documentos as $documento){
-            foreach ($documento as $i => $row) {
+        foreach($this->documentos as $i => $documento){
+            foreach ($documento as  $row) {
                 
                 // $linea=($linea."<br>");
                 $linea=trim($row);
@@ -122,15 +122,15 @@ class ControladorRemision{
                         // $item["linea"]=$linea;
                         $item["item"]=trim(substr($linea,0,6)); 
                         $item["descripcicon"]=trim(substr($linea,7,37)); 
-                        $item["local"]=substr($linea,44,6);
-                        $item["cantidad"]=str_replace(",","",substr($linea,55,5));
-                        $item["unidad"]=str_replace(",","",substr($linea,63,3));
-                        $item["valor"]=str_replace(",","",substr($linea,70,9));
-                        $item["descuento"]=str_replace(",",".",substr($linea,85,6));
-                        $item["impuesto"]=str_replace(",","",substr($linea,94,9));
-                        $item["total"]=str_replace(",","",substr($linea,107,9));
-                        $item["costo"]=str_replace(",","",substr($linea,119,9));
-                        $item["rent"]=str_replace(",",".",substr($linea,129,6));
+                        $item["local"]=trim(substr($linea,44,6));
+                        $item["cantidad"]=trim(str_replace(",","",substr($linea,55,5)));
+                        $item["unidad"]=trim(str_replace(",","",substr($linea,63,3)));
+                        $item["valor"]=trim(str_replace(",","",substr($linea,70,9)));
+                        $item["descuento"]=trim(str_replace(",","",substr($linea,85,6)));
+                        $item["impuesto"]=trim(str_replace(",","",substr($linea,94,9)));
+                        $item["total"]=trim(str_replace(",","",substr($linea,107,9)));
+                        $item["costo"]=trim(str_replace(",","",substr($linea,119,9)));
+                        $item["rent"]=trim((substr($linea,129,6)));
                         
                         
                     
@@ -159,7 +159,7 @@ class ControladorRemision{
                         }
                         $stringItem=substr($stringItem, 0, -1)."),";
                         
-                        $this->itemsarray[]=$item;
+                        $this->itemsarray[$i][]=$item;
                 
                 //busca el numero de requisicion solo si no se ha encontrado
                 }
@@ -177,30 +177,37 @@ class ControladorRemision{
     }
 
     // funcion que sube los items
-    public function ctrSubirRem(){
+    public function ctrSubirRem($folder){
         $modelo=new ModeloRemision();
+        // return $this->itemsarray;
+        foreach ($this->itemsarray as $array) {
+            // return $array;
+            $folder=substr($folder,0,5);
+            $resultado=$modelo->mdlSubirRem($folder);
+            
+            if ($resultado) {
+                $no_rem2=$modelo->mdlMostrarRem($folder);
+                // $no_rem2=$no_rem2->fetch()["no_rem2"];
+                
+                $no_rem2=$no_rem2->fetch()["no_rem2"];
+                
+                
+                foreach ($array as  $item) {
+                    // return $item;
+                    // $resultado2[]=$modelo->mdlSubirItem($item,$folder,$no_rem2);
+                    $resultado=$modelo->mdlSubirItem($item,$folder,$no_rem2);
+                    if (!$resultado) {
+                        return false;
+                    }
+                }
 
-        // $resultado=$modelo->mdlSubirReq($this->cabecera,$this->items);
-        $resultado=$modelo->mdlSubirRem();
-        // return $resultado;
-        if ($resultado==true) {
-            $no_rem=$modelo->mdlMostrarRem();
-            // $no_rem=$no_rem->fetch()["no_rem"];
-            $no_rem=$no_rem->fetch()["no_rem"];
-            // return $no_rem;
-            foreach ($this->itemsarray as  $i=> $item) {
+            }else {
+                // $resultadoel=$modelo->mdlEliRem($this->cabecera[0]);
                 
-                $resultado=$modelo->mdlSubirItem($item,$no_rem);
-                
+                return $resultado;
             }
-            
-            return $resultado;
-
-        }else {
-            // $resultadoel=$modelo->mdlEliRem($this->cabecera[0]);
-            
-            return $resultado;
         }
+        return $resultado;
     }
 
 }

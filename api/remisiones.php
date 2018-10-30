@@ -49,7 +49,7 @@ if (isset($_GET["ruta"])) {
                     $controlador=new ControladorRemision($archivos);
 
                     $resultado=$controlador->ctrSetItems();
-                    $resultado=$controlador->ctrSubirRem();
+                    $resultado=$controlador->ctrSubirRem($folder);
                     print json_encode($resultado);
                     // foreach($archivos as $archivo){
                     //     foreach($archivo as $linea){
