@@ -8,6 +8,12 @@ CREATE DATABASE  IF NOT EXISTS bodegadrogueria;
 /*se usa la base de daos*/
 USE bodegadrogueria;
 
+
+
+/*******************************************************************************************************************************
+											CREA TABLAS BASE DE DATPS
+********************************************************************************************************************************/
+
 CREATE TABLE IF NOT EXISTS emails(
 	id_correos INT(4) NOT NULL AUTO_INCREMENT,
 	correo VARCHAR(255) NOT NULL,
@@ -15,9 +21,6 @@ CREATE TABLE IF NOT EXISTS emails(
 	PRIMARY KEY(id_correos)
 );
 
-/*******************************************************************************************************************************
-											CREA TABLAS BASE DE DATPS
-********************************************************************************************************************************/
 CREATE TABLE IF NOT EXISTS `ITEMS` (
 	`ID_ITEM` char(6) NOT NULL,
 	`ID_REFERENCIA` char(15) DEFAULT NULL,
@@ -55,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `COD_BARRAS` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- tabla perfiles de usuarios
-CREATE TABLE  perfiles(
+CREATE TABLE IF NOT EXISTS perfiles(
 	id_perfil INT(1) NOT NULL AUTO_INCREMENT,
 	des_perfil CHAR(20),
 
@@ -81,7 +84,7 @@ CREATE TABLE IF NOT EXISTS franquicias (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- tabla de usuarios
-CREATE TABLE usuario(
+CREATE TABLE IF NOT EXISTS usuario(
 	id_usuario INT(10) NOT NULL AUTO_INCREMENT,	
 	nombre VARCHAR(40) COLLATE ucs2_spanish_ci,
 	cedula CHAR(12),
@@ -106,7 +109,7 @@ CREATE TABLE usuario(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*tabla de la requisicion a bodega*/
-CREATE TABLE requisicion(
+CREATE TABLE IF NOT EXISTS requisicion(
 	no_req CHAR(10) NOT NULL,
 	creada DATETIME NOT NULL,
 	lo_origen CHAR(6),
@@ -129,15 +132,16 @@ CREATE TABLE requisicion(
 	REFERENCES sedes(codigo)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE  tipo_caja(
+CREATE TABLE IF NOT EXISTS  tipo_caja(
 	tipo_caja CHAR(3) NOT NULL,
 	descripcion CHAR(20) NOT NULL,
 	
 	PRIMARY KEY(tipo_caja)
 	
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*tabla caja*/
-CREATE TABLE caja(
+CREATE TABLE IF NOT EXISTS caja(
 	no_caja INT(10) NOT NULL AUTO_INCREMENT,
 	alistador INT(10),
 	encargado_punto INT(10),
@@ -172,7 +176,7 @@ CREATE TABLE caja(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Crea la tabla donde se almacenan los productos pedidos en la requisicion*/
-CREATE TABLE pedido(
+CREATE TABLE IF NOT EXISTS pedido(
 	item CHAR(6) NOT NULL,
 	no_req CHAR(10) NOT NULL,
 	ubicacion VARCHAR(6) NOT NULL DEFAULT '----',
@@ -196,7 +200,7 @@ CREATE TABLE pedido(
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE alistado(
+CREATE TABLE IF NOT EXISTS alistado(
 	item CHAR(6) NOT NULL,
 	no_req CHAR(10) NOT NULL,
 	no_caja INT(10) default 1,
@@ -217,7 +221,7 @@ CREATE TABLE alistado(
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE recibido(
+CREATE TABLE IF NOT EXISTS recibido(
 	item CHAR(6) NOT NULL,
 	no_req CHAR(10) NOT NULL,
 	no_caja INT(10) default 1,
@@ -242,7 +246,7 @@ CREATE TABLE recibido(
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE errores(
+CREATE TABLE IF NOT EXISTS errores(
 	item CHAR(6) NOT NULL,
 	no_req CHAR(10) NOT NULL,
 	no_caja INT(10) default 1,
@@ -303,37 +307,38 @@ CREATE TABLE IF NOT EXISTS tareas_det(
 	
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 CREATE TABLE IF NOT EXISTS remisiones(
-	no_rem INT(5) AUTO_INCREMENT,
-	creada DATETIME DEFAULT CURRENT_TIMESTAMP,
+    no_rem1 CHAR(5) NOT NULL,
+	no_rem2 INT(5) NOT NULL,
+	reada DATETIME DEFAULT CURRENT_TIMESTAMP,
 	estado INT(1) DEFAULT 0,
 
-	PRIMARY KEY(no_rem)
+	PRIMARY KEY(no_rem1,no_rem2)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	item CHAR(6) NOT NULL,
-	no_rem INT(5) NOT NULL,
+	no_rem1 CHAR(5) NOT NULL,
+	no_rem2 INT(5) NOT NULL,
 	cantidad  INT(5) NOT NULL,
 	unidad CHAR(5) NOT NULL DEFAULT 'UND',
-	valor FLOAT(6,3) DEFAULT 0,
-	descuento FLOAT(5,3) DEFAULT 0,
+	valor FLOAT(8,3) DEFAULT 0,
+	descuento FLOAT(8,3) DEFAULT 0,
 	impuesto FLOAT(5,3) DEFAULT 0,
-	total FLOAT(6,3) DEFAULT 0,
-	costo FLOAT(6,3) DEFAULT 0,
+	total FLOAT(8,3) DEFAULT 0,
+	costo FLOAT(8,3) DEFAULT 0,
 	rent FLOAT(5,3) DEFAULT 0,
 	estado INT(1) NOT NULL DEFAULT 0,
 
-	PRIMARY KEY(item,no_rem),
+	PRIMARY KEY(item,no_rem1,no_rem2),
 
 	CONSTRAINT pedidorem_Item
 	FOREIGN KEY(item) 
 	REFERENCES `ITEMS`(`ID_ITEM`),
 
 	CONSTRAINT pedido_remision
-	FOREIGN KEY(no_rem) 
-	REFERENCES remisiones(no_rem),
+	FOREIGN KEY(no_rem1,no_rem2) 
+	REFERENCES remisiones(no_rem1,no_rem2 ),
 	
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -342,7 +347,7 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 /*******************************************************************************************************************************
 											INICIALIZA REGISTROS BASE DE DATOS 
 ********************************************************************************************************************************/
-INSERT INTO tipo_caja  VALUES 
+REPLACE INTO tipo_caja  VALUES 
 	('CRT','Caja de cartón'),
 	('CPL','Caja plástica'),
 	('CAP','Canasta plástica'),
@@ -354,19 +359,19 @@ INSERT INTO caja(no_caja) VALUES(1);
 UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 
-INSERT INTO franquicias(codigo,descripcion) VALUES
+REPLACE INTO franquicias(codigo,descripcion) VALUES
 	('NFRA','NO ES FRANQUICIA'),
 	('PAL1','PALMIRA 1'),('PAL2','PALMIRA 2'),('PAL3','PALMIRA 3'),
 	('SANT','SANTANDER DE QUILICHAO'),
 	('UBBS','CHAPINERO VASQUEZ BARRENECHE'
 );
 
-INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
+REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
 UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
-INSERT INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
+REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
-INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
+REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
 	('001-BD', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
 	('001-VE', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
 	('002-VE', ' VERSALLES', ' CL 23BN 3N 100', '', '', ' 0'),
@@ -425,7 +430,7 @@ DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS AutoincTareas;
-
+DROP TRIGGER IF EXISTS AutoincRemisiones;
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
 	CREATE  FUNCTION NumeroCaja(pers INT(10) )
@@ -525,8 +530,6 @@ DELIMITER $$
 		
 	END 
 $$
-
-
 
 -- trigger que crea tarea la crear usuario
 DELIMITER $$
@@ -773,6 +776,26 @@ DELIMITER $$
 		LIMIT 1;
 		
 		SET new.id_tareadet=id;	
+			
+	END 
+$$
+
+-- autoincrementa id de tabla remisiones
+DELIMITER $$
+	CREATE TRIGGER AutoincRemisiones
+	BEFORE INSERT ON remisiones
+	FOR EACH ROW 
+	BEGIN
+
+		DECLARE id INT(10) UNSIGNED DEFAULT 1;
+		
+		SELECT no_rem2+1 INTO id
+		FROM remisiones
+		WHERE no_rem1=new.no_rem1
+		ORDER BY no_rem2 DESC
+		LIMIT 1;
+		
+		SET new.no_rem2=id;	
 			
 	END 
 $$

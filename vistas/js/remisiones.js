@@ -27,10 +27,10 @@ $(document).ready(function(){
     var form_data = new FormData();
     var ins = document.getElementById('archivos').files.length;
     
-    var sourceVal = document.getElementById('archivos').files[0].webkitRelativePath;
-    var folder = sourceVal.split("/")[0];
-    console.log(folder);
-    return 0;
+    var path = document.getElementById('archivos').files[0].webkitRelativePath;
+    var folder = path.split("/")[0];
+    form_data.append("folder",folder);
+    
     for (var x = 0; x < ins; x++) {
         form_data.append("files[]", document.getElementById('archivos').files[x]);
     }
