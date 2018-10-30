@@ -9,33 +9,15 @@ class ModeloRemision extends Conexion{
         
     }
 
-    public function mdlMostrarReq($item=null,$valor=null){
+    public function mdlMostrarRem(){
     
-        $tabla='requisicion';
-        if ($valor==null) {
-            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion,tip_inventario
-            FROM $tabla 
-            INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
-            WHERE $item = 0;");
-        }else if($item=='estado') {
+        $tabla='remisiones';
+        $stmt= $this->link-> prepare(
+        "SELECT no_rem
+        FROM $tabla 
+        ORDER BY creada DESC
+        LIMIT 1;");
             
-            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion,tip_inventario
-            FROM $tabla 
-            INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
-            WHERE $item < :$item;");
-        }else {
-            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion,tip_inventario
-            FROM $tabla 
-            INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
-            WHERE $item = :$item;");
-            
-        }
-        
-        //para evitar sql injection
-        $stmt->bindParam(":".$item,$valor,PDO::PARAM_STR);
         //ejecuta el comando sql
         $stmt->execute();
         //busca las requisiciones
@@ -43,82 +25,19 @@ class ModeloRemision extends Conexion{
         return $stmt;
     }
 
-    public function mdlMostrarItem($item,$valor){
-        
-        $tabla='ITEMS';
-
-        //busca los items
-        return $this->buscaritem($tabla,$item,$valor);
-    }
-
-    public function mdlMostrarItems($req){
-
-        $stmt= $this->link->prepare('SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.ubicacion,
-        ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
-        requisicion.lo_origen,requisicion.lo_destino,
-        MIN(COD_BARRAS.ID_CODBAR) AS ID_CODBAR
-        FROM COD_BARRAS
-        INNER JOIN ITEMS ON ID_ITEM=ID_ITEMS	
-        INNER JOIN pedido ON Item=ID_ITEM	
-        INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
-        WHERE pedido.no_req = :no_req
-        GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.ubicacion,
-        ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
-        requisicion.lo_origen,requisicion.lo_destino;');
-
-        
-        $stmt->bindParam(":no_req",$req,PDO::PARAM_STR);
-        
-
-        $stmt->execute();
-
-        
-        // $stmt->closeCursor();
-        return $stmt;
-
-        // cierra la conexion
-        $stmt=null;
-    }
 
     // public function mdlSubirReq($cabecera,$items)
-    public function mdlSubirReq($cabecera)
+    public function mdlSubirRem()
     {
-        $tabla="requisicion";
+        $tabla="remisiones";
         
-        $stmt= $this->link->prepare("INSERT INTO $tabla(no_req,creada,lo_origen,lo_destino,tip_inventario,solicitante) VALUES(:no_req,:fecha,:lo_origen,:lo_destino,:tip_inventario,:solicitante)");
-        
-        $stmt->bindParam(":no_req",$cabecera[0],PDO::PARAM_STR);
-        $stmt->bindParam(":fecha",$cabecera[1],PDO::PARAM_STR);
-        // $stmt->bindParam(":hora",$cabecera[2],PDO::PARAM_STR);
-        $stmt->bindParam(":lo_origen",$cabecera[2],PDO::PARAM_STR);
-        $stmt->bindParam(":lo_destino",$cabecera[3],PDO::PARAM_STR);
-        $stmt->bindParam(":tip_inventario",$cabecera[4],PDO::PARAM_INT);
-        $stmt->bindParam(":solicitante",$cabecera[5],PDO::PARAM_STR);
-        
+        $stmt= $this->link->prepare("INSERT INTO $tabla(estado) VALUES(0)");
+                
         
         $res=$stmt->execute();
         
-        // $tabla="pedido";
-
-        // $sql='INSERT INTO '.$tabla.'(item,no_req,ubicacion,disp,pedido) VALUES'. $items;
-        
-        // $stmt= $this->link->prepare($sql);
-        
-        // $res= $stmt->execute();
         $stmt->closeCursor();
         return $res;
-    }
-
-    public function mdlSubirPedido($item,$no_req)
-    {
-
-        $stmt= $this->link->prepare("INSERT INTO (item,no_req,ubicacion,disp,pedido) VALUES(:item,:no_req,:ubicacion,:disp,:pedido)");
-
-        $stmt->bindParam(":item",$item["id"],PDO::PARAM_STR);
-        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
-        $stmt->bindParam(":ubicacion",$item["ubicacion"],PDO::PARAM_STR);
-        $stmt->bindParam(":disp",$item["disp"],PDO::PARAM_INT);
-        $stmt->bindParam(":pedido",$item["pedido"],PDO::PARAM_INT);
     }
 
     public function mdlEliReq($req)
@@ -132,19 +51,26 @@ class ModeloRemision extends Conexion{
         return $res;
     }
 
-    public function mdlSubirItem($item)
+    public function mdlSubirItem($item,$no_rem)
     {
-        $tabla="pedido";
-        $stmt= $this->link->prepare("INSERT INTO $tabla(item,no_req,ubicacion,disp,pedido) VALUES(:item,:no_req,:ubicacion,:disp,:pedido);");
+        $tabla="pedido_remisiones";
+        $stmt= $this->link->prepare(
+        "INSERT INTO $tabla(item,no_rem,cantidad,unidad,valor,descuento,impuesto,total,costo,rent) 
+        VALUES(:item,:no_rem,:cantidad,:unidad,:valor,:descuento,:impuesto,:total,:costo,:rent);");
 
-        $stmt->bindParam(":item",$item["iditem"],PDO::PARAM_STR);
-        $stmt->bindParam(":no_req",$item["no_req"],PDO::PARAM_STR);
-        $stmt->bindParam(":ubicacion",$item["ubicacion"],PDO::PARAM_STR);
-        $stmt->bindParam(":disp",$item["disp"],PDO::PARAM_INT);
-        $stmt->bindParam(":pedido",$item["pedido"],PDO::PARAM_INT);
+        $stmt->bindParam(":item",$item["item"],PDO::PARAM_STR);
+        $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT);
+        $stmt->bindParam(":cantidad",$item["cantidad"],PDO::PARAM_INT);
+        $stmt->bindParam(":unidad",$item["unidad"],PDO::PARAM_STR);
+        $stmt->bindParam(":valor",$item["valor"],PDO::PARAM_INT);
+        $stmt->bindParam(":descuento",$item["descuento"],PDO::PARAM_INT);
+        $stmt->bindParam(":impuesto",$item["impuesto"],PDO::PARAM_INT);
+        $stmt->bindParam(":total",$item["total"],PDO::PARAM_INT);
+        $stmt->bindParam(":costo",$item["costo"],PDO::PARAM_INT);
+        $stmt->bindParam(":rent",$item["rent"],PDO::PARAM_INT);
 
         $res= $stmt->execute();
-        
+        return $stmt->errorInfo();
         $stmt->closeCursor();
         return $res;
     }

@@ -1,7 +1,9 @@
 /*Elimina la base de datos si existe*/
 -- drop database if exists drogueria;
 /*se crea la base de datos*/
-
+/*******************************************************************************************************************************
+											CREA BASE DE DATOS
+********************************************************************************************************************************/
 CREATE DATABASE  IF NOT EXISTS bodegadrogueria;
 /*se usa la base de daos*/
 USE bodegadrogueria;
@@ -13,7 +15,9 @@ CREATE TABLE IF NOT EXISTS emails(
 	PRIMARY KEY(id_correos)
 );
 
-
+/*******************************************************************************************************************************
+											CREA TABLAS BASE DE DATPS
+********************************************************************************************************************************/
 CREATE TABLE IF NOT EXISTS `ITEMS` (
 	`ID_ITEM` char(6) NOT NULL,
 	`ID_REFERENCIA` char(15) DEFAULT NULL,
@@ -100,8 +104,6 @@ CREATE TABLE usuario(
 	
 	INDEX (id_usuario)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 
 /*tabla de la requisicion a bodega*/
 CREATE TABLE requisicion(
@@ -301,23 +303,64 @@ CREATE TABLE IF NOT EXISTS tareas_det(
 	
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO tipo_caja  VALUES 
-('CRT','Caja de cartón'),
-('CPL','Caja plástica'),
-('CAP','Canasta plástica'),
-('GLN','Galon'),
-('GLA','Galoneta');
 
+CREATE TABLE IF NOT EXISTS remisiones(
+	no_rem INT(5) AUTO_INCREMENT,
+	creada DATETIME DEFAULT CURRENT_TIMESTAMP,
+	estado INT(1) DEFAULT 0,
+
+	PRIMARY KEY(no_rem)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS pedido_remisiones(
+	item CHAR(6) NOT NULL,
+	no_rem INT(5) NOT NULL,
+	cantidad  INT(5) NOT NULL,
+	unidad CHAR(5) NOT NULL DEFAULT 'UND',
+	valor FLOAT(6,3) DEFAULT 0,
+	descuento FLOAT(5,3) DEFAULT 0,
+	impuesto FLOAT(5,3) DEFAULT 0,
+	total FLOAT(6,3) DEFAULT 0,
+	costo FLOAT(6,3) DEFAULT 0,
+	rent FLOAT(5,3) DEFAULT 0,
+	estado INT(1) NOT NULL DEFAULT 0,
+
+	PRIMARY KEY(item,no_rem),
+
+	CONSTRAINT pedidorem_Item
+	FOREIGN KEY(item) 
+	REFERENCES `ITEMS`(`ID_ITEM`),
+
+	CONSTRAINT pedido_remision
+	FOREIGN KEY(no_rem) 
+	REFERENCES remisiones(no_rem),
+	
+	INDEX (estado)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+/*******************************************************************************************************************************
+											INICIALIZA REGISTROS BASE DE DATOS 
+********************************************************************************************************************************/
+INSERT INTO tipo_caja  VALUES 
+	('CRT','Caja de cartón'),
+	('CPL','Caja plástica'),
+	('CAP','Canasta plástica'),
+	('GLN','Galon'),
+	('GLA','Galoneta'
+);
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
 UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 
 INSERT INTO franquicias(codigo,descripcion) VALUES
-('NFRA','NO ES FRANQUICIA'),
-('PAL1','PALMIRA 1'),('PAL2','PALMIRA 2'),('PAL3','PALMIRA 3'),
-('SANT','SANTANDER DE QUILICHAO'),
-('UBBS','CHAPINERO VASQUEZ BARRENECHE');
+	('NFRA','NO ES FRANQUICIA'),
+	('PAL1','PALMIRA 1'),('PAL2','PALMIRA 2'),('PAL3','PALMIRA 3'),
+	('SANT','SANTANDER DE QUILICHAO'),
+	('UBBS','CHAPINERO VASQUEZ BARRENECHE'
+);
+
 INSERT INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
 UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
@@ -361,11 +404,13 @@ INSERT INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direc
 	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r'
 );
 
+/*******************************************************************************************************************************
+											PROCEDIMIENTOS FUNCIONES Y TRIGGERS BASE DE DATOS
+********************************************************************************************************************************/
 /* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP FUNCTION IF EXISTS VerificarCaja;
 DROP PROCEDURE IF EXISTS BuscarCod;
-
 
 
 /* ELIMINA TRIGGER SI EXISTEN */
@@ -482,6 +527,7 @@ DELIMITER $$
 $$
 
 
+
 -- trigger que crea tarea la crear usuario
 DELIMITER $$
 	CREATE TRIGGER CrearTarea
@@ -506,9 +552,7 @@ DELIMITER $$
 	END 
 $$
 
-
 -- item que modifica el estado  de los items pedidos
-
 DELIMITER $$
 	CREATE TRIGGER EstadoPedido
 	BEFORE UPDATE ON pedido
@@ -556,8 +600,6 @@ DELIMITER $$
 	
 	END 
 $$
-
-
 
 -- trigger que modifica la cantidad alistada al agregar items
 DELIMITER $$
@@ -627,8 +669,6 @@ DELIMITER $$
 	END 
 $$
 
-
-
 -- trigger que cierra caja y alista items cuando se cambia de estado a creada (estado = 1)
 DELIMITER $$
 
@@ -645,8 +685,6 @@ DELIMITER $$
 	END 
 
 $$
-
-
 
 -- DROP TRIGGER IF EXISTS EstadoRecibido;
 DELIMITER $$
@@ -718,7 +756,6 @@ DELIMITER $$
 
 	END 	
 $$
-
 
 -- autoincrementa id de tabla tareas_det
 DELIMITER $$

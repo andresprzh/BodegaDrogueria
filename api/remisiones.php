@@ -5,6 +5,7 @@ include "../controladores/remision.controlador.php";
 require "../modelos/conexion.php";
 
 require "../modelos/remision.modelo.php";
+require "../modelos/requerir.modelo.php";
 
 require "cors.php";
 
@@ -45,11 +46,16 @@ if (isset($_GET["ruta"])) {
                         
                        
                     }
-                    foreach($archivos as $archivo){
-                        foreach($archivo as $linea){
-                            print json_encode($linea);
-                        }
-                    }
+                    $controlador=new ControladorRemision($archivos);
+
+                    $resultado=$controlador->ctrSetItems();
+                    $resultado=$controlador->ctrSubirRem();
+                    print json_encode($resultado);
+                    // foreach($archivos as $archivo){
+                    //     foreach($archivo as $linea){
+                    //         print json_encode($linea);
+                    //     }
+                    // }
                     // print json_encode($archivo[0][1]);
                     
                 // if ($errors) print json_encode($resultado);

@@ -3,9 +3,13 @@
 class ControladorRemision{
 
     private $modelo;
+    private $documentos;
+    private $itemsarray;
 
-    function __construct($doc_req){
-      
+    function __construct($documentos){
+
+      $this->documentos=$documentos;
+
     }
 
 
@@ -98,57 +102,68 @@ class ControladorRemision{
     }
 
     //funcion que asigna los items
-    private function ctrSetItems(){
+    public function ctrSetItems(){
 
-        $stringItem='';
+        $stringItem="";
         $contador=0;
-        foreach($this->doc_req as $linea){
-
-            $linea=($linea.'<br>');
-
-            //busca si la linea tiene datos de los items
-            // es un item si la linea no tiene | de primer caracter, no tiene una sucecion de -, no tiene : y si no es salto de linea(ascii=10)
-            if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10 && $linea[0]==' '){
-                                
-                //obtienen los datos de cada item por linea
-                $item["iditem"]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
-                $item["no_req"]=$this->cabecera[0];//se obtiene el numero de requisicion
-                //se cambian las comas del dato por espacios en blanco
-                $item["ubicacion"]=substr($linea,109,6);//ubiacion item
-                $item["disp"]=str_replace(',','',substr($linea,71,5));//cantidad item disponibles
-                $item["pedido"]=substr($linea,86,5);//cantidad item pedidos
+        foreach($this->documentos as $documento){
+            foreach ($documento as $i => $row) {
                 
-               
-                if (!(is_numeric($item["iditem"]) && strlen($item["iditem"])==6)) {
+                // $linea=($linea."<br>");
+                $linea=trim($row);
+            //    return ($linea[0]);
+                //busca si la linea tiene datos de los items
+                // es un item si la linea no tiene | de primer caracter, no tiene una sucecion de -, no tiene : y si no es salto de linea(ascii=10)
+                if( !empty($linea))
+                    if(!in_array($linea[0],["|","+","-"]) 
+                       && strpos($linea, 'REMISIONES')===false 
+                       && strpos($linea, 'DROGUERIA SAN')===false){
+                                        
+                        // $item["linea"]=$linea;
+                        $item["item"]=trim(substr($linea,0,6)); 
+                        $item["descripcicon"]=trim(substr($linea,7,37)); 
+                        $item["local"]=substr($linea,44,6);
+                        $item["cantidad"]=str_replace(",","",substr($linea,55,5));
+                        $item["unidad"]=str_replace(",","",substr($linea,63,3));
+                        $item["valor"]=str_replace(",","",substr($linea,70,9));
+                        $item["descuento"]=str_replace(",",".",substr($linea,85,6));
+                        $item["impuesto"]=str_replace(",","",substr($linea,94,9));
+                        $item["total"]=str_replace(",","",substr($linea,107,9));
+                        $item["costo"]=str_replace(",","",substr($linea,119,9));
+                        $item["rent"]=str_replace(",",".",substr($linea,129,6));
+                        
+                        
                     
-                     //se busca el id de los item usando la referencia en el documento subido
-                    $modelo=new ModeloRequierir();
-                    // $item="ID_REFERENCIA";
-                    $valor=$item["iditem"];
+                        if (!(is_numeric($item["item"]) && strlen($item["item"])==6)) {
+                            
+                            //se busca el id de los item usando la referencia en el documento subido
+                            $modelo=new ModeloRequierir();
+                            // $item="ID_REFERENCIA";
+                            $valor=$item["item"];
+                            
+                            $id_item=$modelo->mdlMostrarItem("ID_REFERENCIA",$valor);
+                            $id_item=$id_item->fetch(); 
+                                    
+                            //se reemplaza la referencia del item por su id
+                            $item["item"]=$id_item["ID_ITEM"];
+                        
+                        }
                     
-                    $id_item=$modelo->mdlMostrarItem('ID_REFERENCIA',$valor);
-                    $id_item=$id_item->fetch(); 
-                              
-                    //se reemplaza la referencia del item por su id
-                    $item["iditem"]=$id_item["ID_ITEM"];
-                   
-                }
-               
-                
-                // echo ($item[0]."  ".$item[1]."  ".$item[2]."  ".$item[3]." ".$item[4]."  ".$item[5]."<br>");
+                        
+                        // echo ($item[0]."  ".$item[1]."  ".$item[2]."  ".$item[3]." ".$item[4]."  ".$item[5]."<br>");
 
-                //pone los datos del item en un String
-                $stringItem.="(";
-                foreach ($item as $value) {
-                    $stringItem.="'$value',";
-                }
-                $stringItem=substr($stringItem, 0, -1).'),';
+                        //pone los datos del item en un String
+                        $stringItem.="(";
+                        foreach ($item as $value) {
+                            $stringItem.="'$value',";
+                        }
+                        $stringItem=substr($stringItem, 0, -1)."),";
+                        
+                        $this->itemsarray[]=$item;
                 
-                $this->itemsarray[]=$item;
-             
-            //busca el numero de requisicion solo si no se ha encontrado
+                //busca el numero de requisicion solo si no se ha encontrado
+                }
             }
-            
         }
         
         $stringItem = substr($stringItem, 0, -1).';';
@@ -156,59 +171,33 @@ class ControladorRemision{
 
         //asigna al parametro de Items todos lo  items encontrados
         
-        $this->items=$stringItem; 
+        // $this->items=$stringItem; 
+        return $this->itemsarray;
+
     }
 
     // funcion que sube los items
-    private function ctrSubirReq(){
-        $modelo=new ModeloRequierir();
+    public function ctrSubirRem(){
+        $modelo=new ModeloRemision();
 
         // $resultado=$modelo->mdlSubirReq($this->cabecera,$this->items);
-        $resultado=$modelo->mdlSubirReq($this->cabecera);
-       
+        $resultado=$modelo->mdlSubirRem();
+        // return $resultado;
         if ($resultado==true) {
+            $no_rem=$modelo->mdlMostrarRem();
+            // $no_rem=$no_rem->fetch()["no_rem"];
+            $no_rem=$no_rem->fetch()["no_rem"];
+            // return $no_rem;
             foreach ($this->itemsarray as  $i=> $item) {
                 
-                $resultado=$modelo->mdlSubirItem($item);
+                $resultado=$modelo->mdlSubirItem($item,$no_rem);
                 
-            }
-            if ($resultado==true) {
-                echo '<script>
-                            swal({
-                                title: "¡Archivo Subido exitosamente¡",
-                                icon: "success"
-                            });
-                    </script>';
-
-                echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                        <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
-                    </div>';
-            }else {
-                echo '<script>
-                            swal({
-                                title: "¡Error al subir el archivo¡",
-                                icon: "error"
-                            });
-                    </script>';
-                echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                        <p class="red-text text-darken-2">Error al subir la requisición</p> 
-                    </div>';
             }
             
             return $resultado;
 
         }else {
-            $resultadoel=$modelo->mdlEliReq($this->cabecera[0]);
-
-            echo '<script>
-                            swal({
-                                title: "¡Error al subir el archivo¡",
-                                icon: "error"
-                            });
-                    </script>';
-            echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                    <p class="red-text text-darken-2">Error al subir la requisición</p> 
-                </div>';
+            // $resultadoel=$modelo->mdlEliRem($this->cabecera[0]);
             
             return $resultado;
         }

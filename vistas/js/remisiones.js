@@ -3,7 +3,7 @@ $(document).ready(function(){
   
   
   $('#remisiones input').change(function () {
-    console.log(this.files)
+    // console.log(this.files)
     if (this.files.length>0) {
       $('.file-upload-res').css('text-align', 'left');
       
@@ -19,12 +19,18 @@ $(document).ready(function(){
       
       $('.file-upload-res').html('<p class=""><i class="fas fa-upload"></i>Subir</p>');
     }
+
   });
 
   $("#remisiones").submit(function (e) { 
     e.preventDefault();
     var form_data = new FormData();
     var ins = document.getElementById('archivos').files.length;
+    
+    var sourceVal = document.getElementById('archivos').files[0].webkitRelativePath;
+    var folder = sourceVal.split("/")[0];
+    console.log(folder);
+    return 0;
     for (var x = 0; x < ins; x++) {
         form_data.append("files[]", document.getElementById('archivos').files[x]);
     }
