@@ -9,17 +9,18 @@ class ModeloRemision extends Conexion{
         
     }
 
-    public function mdlMostrarRem($folder){
+    public function mdlMostrarRem()
+    {
     
         $tabla='remisiones';
         $stmt= $this->link-> prepare(
-        "SELECT no_rem2
+        "SELECT no_rem
         FROM $tabla
-        WHERE no_rem1=:no_rem 
-        ORDER BY no_rem2 DESC
+        /* WHERE no_rem1=:no_rem  */
+        ORDER BY no_rem DESC
         LIMIT 1;");
 
-        $stmt->bindParam(":no_rem",$folder,PDO::PARAM_STR);
+        // $stmt->bindParam(":no_rem",$folder,PDO::PARAM_STR);
         //ejecuta el comando sql
         $stmt->execute();
         //busca las requisiciones
@@ -28,14 +29,13 @@ class ModeloRemision extends Conexion{
         return $stmt;
     }
 
-
     // public function mdlSubirReq($cabecera,$items)
-    public function mdlSubirRem($folder)
+    public function mdlSubirRem()
     {
         $tabla="remisiones";
         
-        $stmt= $this->link->prepare("INSERT INTO $tabla(no_rem1) VALUES(:no_rem)");
-        $stmt->bindParam(":no_rem",$folder,PDO::PARAM_STR);
+        $stmt= $this->link->prepare("INSERT INTO $tabla(estado) VALUES(0)");
+        // $stmt->bindParam(":no_rem",$folder,PDO::PARAM_STR);
         
         $res=$stmt->execute();
         
@@ -55,16 +55,15 @@ class ModeloRemision extends Conexion{
         return $res;
     }
 
-    public function mdlSubirItem($item,$folder,$no_rem2)
+    public function mdlSubirItem($item,$no_rem)
     {
         $tabla="pedido_remisiones";
         $stmt= $this->link->prepare(
-        "INSERT INTO $tabla(item,no_rem1,no_rem2,cantidad,unidad,valor,descuento,impuesto,total,costo,rent) 
-        VALUES(:item,:no_rem1,:no_rem2,:cantidad,:unidad,:valor,:descuento,:impuesto,:total,:costo,:rent);");
+        "INSERT INTO $tabla(item,no_rem,cantidad,unidad,valor,descuento,impuesto,total,costo,rent) 
+        VALUES(:item,:no_rem,:cantidad,:unidad,:valor,:descuento,:impuesto,:total,:costo,:rent);");
         // return $item["rent  "];
         $stmt->bindParam(":item",$item["item"],PDO::PARAM_STR);
-        $stmt->bindParam(":no_rem1",$folder,PDO::PARAM_STR);
-        $stmt->bindParam(":no_rem2",$no_rem2,PDO::PARAM_INT);
+        $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT);
         $stmt->bindParam(":cantidad",$item["cantidad"],PDO::PARAM_INT);
         $stmt->bindParam(":unidad",$item["unidad"],PDO::PARAM_STR);
         $stmt->bindParam(":valor",$item["valor"],PDO::PARAM_STR);
@@ -75,8 +74,25 @@ class ModeloRemision extends Conexion{
         $stmt->bindParam(":rent",$item["rent"],PDO::PARAM_STR);
 
         $res= $stmt->execute();
-        // return $stmt->errorInfo();
+        
         $stmt->closeCursor();
         return $res;
+    }
+
+    public function mdlMostrarRemDoc($no_rem)
+    {
+        $stmt= $this->link->prepare(
+        "SELECT * 
+        FROM pedido_remisiones
+        INNER JOIN remisiones ON remisiones.no_rem=pedido_remisiones.no_rem
+        WHERE pedido_remisiones.no_rem=:no_rem;");
+
+        $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT); 
+
+        $res= $stmt->execute();
+                
+        return $stmt;
+        $stmt->closeCursor();
+        $stmt=null;
     }
 }

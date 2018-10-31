@@ -18,7 +18,10 @@ if (isset($_GET["ruta"])) {
                                         GENERA DOCUMENTO REMISION
         ============================================================================================================================*/    
         case "docrem":
-            
+            $controlador=new ControladorRemision();
+            $resultado=$controlador->ctrDocRem();
+            print ($resultado);
+            return 0;
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 
@@ -47,9 +50,14 @@ if (isset($_GET["ruta"])) {
                        
                     }
                     $controlador=new ControladorRemision($archivos);
-
+                    
+                    
                     $resultado=$controlador->ctrSetItems();
-                    $resultado=$controlador->ctrSubirRem($folder);
+                    $resultado=$controlador->ctrSubirRem();
+
+                    if ($resultado) {
+                        $resultado=$controlador->ctrDocRem();
+                    }
                     print json_encode($resultado);
                     // foreach($archivos as $archivo){
                     //     foreach($archivo as $linea){

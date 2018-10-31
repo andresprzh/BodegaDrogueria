@@ -308,18 +308,16 @@ CREATE TABLE IF NOT EXISTS tareas_det(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS remisiones(
-   no_rem1 CHAR(5) NOT NULL,
-	no_rem2 INT(5) NOT NULL,
+	no_rem INT(5) NOT NULL AUTO_INCREMENT,
 	creada DATETIME DEFAULT CURRENT_TIMESTAMP,
 	estado INT(1) DEFAULT 0,
 
-	PRIMARY KEY(no_rem1,no_rem2)
+	PRIMARY KEY(no_rem)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	item CHAR(6) NOT NULL,
-	no_rem1 CHAR(5) NOT NULL,
-	no_rem2 INT(5) NOT NULL,
+	no_rem INT(5) NOT NULL,
 	cantidad  INT(5) NOT NULL,
 	unidad CHAR(5) NOT NULL DEFAULT 'UND',
 	valor FLOAT(11,3) DEFAULT 0,
@@ -330,15 +328,15 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	rent FLOAT(5,3) DEFAULT 0,
 	estado INT(1) NOT NULL DEFAULT 0,
 
-	PRIMARY KEY(item,no_rem1,no_rem2),
+	PRIMARY KEY(item,no_rem),
 
 	CONSTRAINT pedidorem_Item
 	FOREIGN KEY(item) 
 	REFERENCES `ITEMS`(`ID_ITEM`),
 
 	CONSTRAINT pedido_remision
-	FOREIGN KEY(no_rem1,no_rem2) 
-	REFERENCES remisiones(no_rem1,no_rem2 ),
+	FOREIGN KEY(no_rem) 
+	REFERENCES remisiones(no_rem),
 	
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -430,7 +428,7 @@ DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS AutoincTareas;
-DROP TRIGGER IF EXISTS AutoincRemisiones;
+
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
 	CREATE  FUNCTION NumeroCaja(pers INT(10) )
@@ -780,25 +778,6 @@ DELIMITER $$
 	END 
 $$
 
--- autoincrementa id de tabla remisiones
-DELIMITER $$
-	CREATE TRIGGER AutoincRemisiones
-	BEFORE INSERT ON remisiones
-	FOR EACH ROW 
-	BEGIN
-
-		DECLARE id INT(10) UNSIGNED DEFAULT 1;
-		
-		SELECT no_rem2+1 INTO id
-		FROM remisiones
-		WHERE no_rem1=new.no_rem1
-		ORDER BY no_rem2 DESC
-		LIMIT 1;
-		
-		SET new.no_rem2=id;	
-			
-	END 
-$$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
