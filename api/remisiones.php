@@ -27,9 +27,7 @@ if (isset($_GET["ruta"])) {
                 
                 
                 if (isset($_FILES['files'])) {
-                    // $errors = [];
-                    // $path = 'uploads/';
-                    // $extensions = ['jpg', 'jpeg', 'png', 'xlsx'];
+                    
                     $folder=$_POST['folder'];
                     $tipos_permitidos = array('text/plain','text/x-Algol68');//tipos permitidos de archivos
                     $fileInfo = finfo_open(FILEINFO_MIME_TYPE);

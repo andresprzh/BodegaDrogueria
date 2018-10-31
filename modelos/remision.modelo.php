@@ -30,16 +30,17 @@ class ModeloRemision extends Conexion{
     }
 
     // public function mdlSubirReq($cabecera,$items)
-    public function mdlSubirRem()
+    public function mdlSubirRem($ubicacion)
     {
         $tabla="remisiones";
         
-        $stmt= $this->link->prepare("INSERT INTO $tabla(estado) VALUES(0)");
-        // $stmt->bindParam(":no_rem",$folder,PDO::PARAM_STR);
+        $stmt= $this->link->prepare("INSERT INTO $tabla(ubicacion) VALUES(:ubicacion)");
+        $stmt->bindParam(":ubicacion",$ubicacion,PDO::PARAM_STR);
         
         $res=$stmt->execute();
         
         $stmt->closeCursor();
+        
         return $res;
     }
 

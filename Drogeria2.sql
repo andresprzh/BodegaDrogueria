@@ -307,12 +307,18 @@ CREATE TABLE IF NOT EXISTS tareas_det(
 	
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
 CREATE TABLE IF NOT EXISTS remisiones(
 	no_rem INT(5) NOT NULL AUTO_INCREMENT,
 	creada DATETIME DEFAULT CURRENT_TIMESTAMP,
 	estado INT(1) DEFAULT 0,
+	ubicacion CHAR(6) DEFAULT '001-BD' ,
 
-	PRIMARY KEY(no_rem)
+	PRIMARY KEY(no_rem),
+
+	CONSTRAINT remisiones_sedes
+	FOREIGN KEY(ubicacion) 
+	REFERENCES sedes(codigo)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS pedido_remisiones(
@@ -320,11 +326,11 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	no_rem INT(5) NOT NULL,
 	cantidad  INT(5) NOT NULL,
 	unidad CHAR(5) NOT NULL DEFAULT 'UND',
-	valor FLOAT(11,3) DEFAULT 0,
-	descuento FLOAT(11,3) DEFAULT 0,
+	valor FLOAT(12,3) DEFAULT 0,
+	descuento FLOAT(12,3) DEFAULT 0,
 	impuesto FLOAT(8,3) DEFAULT 0,
-	total FLOAT(11,3) DEFAULT 0,
-	costo FLOAT(11,3) DEFAULT 0,
+	total FLOAT(12,3) DEFAULT 0,
+	costo FLOAT(12,3) DEFAULT 0,
 	rent FLOAT(5,3) DEFAULT 0,
 	estado INT(1) NOT NULL DEFAULT 0,
 
