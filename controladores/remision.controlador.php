@@ -183,7 +183,8 @@ class ControladorRemision{
         while($row = $busqueda->fetch()){
             $pordesc=$row["descuento"]/$row["valor"]*100;
             $pordesc=round($pordesc,2);
-            // $string.=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_RIGHT);
+            $cantidad=number_format($row["cantidad"],3, '.', '');
+
             // return $string;
             $no_rem=str_pad("$row[no_rem]",3, "0", STR_PAD_LEFT);
 
@@ -199,23 +200,19 @@ class ControladorRemision{
             $string.=str_pad($row["item"], 15, " ", STR_PAD_RIGHT)."|";
             $string.="  "."|";
             $string.=$row["unidad"]."|";
-            $string.=str_pad(str_replace(".","",$row["valor"]), 12, "0", STR_PAD_RIGHT)."+"."|";
+            $string.=str_pad(str_replace(".","",$cantidad), 12, "0", STR_PAD_LEFT)."+"."|";
             $string.="000000000000+"."|";
             $string.="1"."|";
             $string.="13"."|";
             $string.="  "."|";
-            $string.=str_pad(str_replace(".","",$row["valor"]), 12, "0", STR_PAD_RIGHT)."+"."|";
+            $string.=str_pad(str_replace(".","",$row["valor"]), 12, "0", STR_PAD_LEFT)."+"."|";
             $string.=str_repeat(" ",22)."|";
-            $string.=str_pad(str_replace(".","",$row["total"]), 12, "0", STR_PAD_RIGHT)."+"."|";
+            $string.=str_pad(str_replace(".","",$row["total"]), 12, "0", STR_PAD_LEFT)."+"."|";
             $string.="000000000000+"."|";
             $string.=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_RIGHT)."|";
-            $string.=str_pad(str_replace(".","",$row["descuento"]), 12, "0", STR_PAD_RIGHT)."|";
+            $string.=str_pad(str_replace(".","",$row["descuento"]), 12, "0", STR_PAD_LEFT)."|";
             $string.="0000";
             $string.="000000000000";
-
-            
-            
-
 
             $string.="\r\n";
         }
