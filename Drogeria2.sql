@@ -347,6 +347,30 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS alistado_remisiones(
+	item CHAR(6) NOT NULL,
+	no_rem INT(5) NOT NULL,
+	no_caja INT(10) DEFAULT 1,
+	alistado INT(5) DEFAULT 0,
+	estado INT(1) NOT NULL default 1,
+
+	PRIMARY KEY(item,no_rem,no_caja),
+
+	CONSTRAINT alistado_pedido_remisiones
+	FOREIGN KEY(item,no_rem) 
+	REFERENCES pedido_remisiones(item,no_rem),
+	
+	CONSTRAINT pedido_caja_remisiones
+	FOREIGN KEY(no_caja) 
+	REFERENCES caja(no_caja),
+	
+	
+	INDEX (estado)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
 
 /*******************************************************************************************************************************
 											INICIALIZA REGISTROS BASE DE DATOS 

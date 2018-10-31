@@ -177,7 +177,7 @@ class ControladorRemision{
 
         // $busqueda=$this->modelo->mdlMostrarRemDoc($this->no_rem);
         $busqueda=$this->modelo->mdlMostrarRemDoc(1);
-        $string="";
+        $resultado["documento"]="";
         // print json_encode($busqueda->fetchAll());
         // return 0;
         while($row = $busqueda->fetch()){
@@ -185,38 +185,39 @@ class ControladorRemision{
             $pordesc=round($pordesc,2);
             $cantidad=number_format($row["cantidad"],3, '.', '');
 
-            // return $string;
+            // return $resultado["documento"];
             $no_rem=str_pad("$row[no_rem]",3, "0", STR_PAD_LEFT);
 
-            $string.=str_pad("OC$no_rem", 10, " ", STR_PAD_RIGHT)."|";
-            $string.="2"."|";
-            $string.=str_repeat(" ",20)."|";
-            $string.="805002583    "."|";
-            $string.="00"."|";
-            $string.=str_replace("-","",substr($row["creada"],0,10))."|";
-            $string.=str_replace("-","",$row["ubicacion"])."|";
-            $string.="I"."|";
-            $string.=str_repeat(" ",15)."|";
-            $string.=str_pad($row["item"], 15, " ", STR_PAD_RIGHT)."|";
-            $string.="  "."|";
-            $string.=$row["unidad"]."|";
-            $string.=str_pad(str_replace(".","",$cantidad), 12, "0", STR_PAD_LEFT)."+"."|";
-            $string.="000000000000+"."|";
-            $string.="1"."|";
-            $string.="13"."|";
-            $string.="  "."|";
-            $string.=str_pad(str_replace(".","",$row["valor"]), 12, "0", STR_PAD_LEFT)."+"."|";
-            $string.=str_repeat(" ",22)."|";
-            $string.=str_pad(str_replace(".","",$row["total"]), 12, "0", STR_PAD_LEFT)."+"."|";
-            $string.="000000000000+"."|";
-            $string.=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_RIGHT)."|";
-            $string.=str_pad(str_replace(".","",$row["descuento"]), 12, "0", STR_PAD_LEFT)."|";
-            $string.="0000";
-            $string.="000000000000";
+            $resultado["documento"].=str_pad("OC$no_rem", 10, " ", STR_PAD_RIGHT)."|";
+            $resultado['nomdoc']="REMIS$no_rem.RM0";
+            $resultado["documento"].="2"."|";
+            $resultado["documento"].=str_repeat(" ",20)."|";
+            $resultado["documento"].="805002583    "."|";
+            $resultado["documento"].="00"."|";
+            $resultado["documento"].=str_replace("-","",substr($row["creada"],0,10))."|";
+            $resultado["documento"].=str_replace("-","",$row["ubicacion"])."|";
+            $resultado["documento"].="I"."|";
+            $resultado["documento"].=str_repeat(" ",15)."|";
+            $resultado["documento"].=str_pad($row["item"], 15, " ", STR_PAD_RIGHT)."|";
+            $resultado["documento"].="  "."|";
+            $resultado["documento"].=$row["unidad"]."|";
+            $resultado["documento"].=str_pad(str_replace(".","",$cantidad), 12, "0", STR_PAD_LEFT)."+"."|";
+            $resultado["documento"].="000000000000+"."|";
+            $resultado["documento"].="1"."|";
+            $resultado["documento"].="13"."|";
+            $resultado["documento"].="  "."|";
+            $resultado["documento"].=str_pad(str_replace(".","",$row["valor"]), 12, "0", STR_PAD_LEFT)."+"."|";
+            $resultado["documento"].=str_repeat(" ",22)."|";
+            $resultado["documento"].=str_pad(str_replace(".","",$row["total"]), 12, "0", STR_PAD_LEFT)."+"."|";
+            $resultado["documento"].="000000000000+"."|";
+            $resultado["documento"].=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_RIGHT)."|";
+            $resultado["documento"].=str_pad(str_replace(".","",$row["descuento"]), 12, "0", STR_PAD_LEFT)."|";
+            $resultado["documento"].="0000";
+            $resultado["documento"].="000000000000";
 
-            $string.="\r\n";
+            $resultado["documento"].="\r\n";
         }
-        return $string;
+        return $resultado;
     }
 
 }

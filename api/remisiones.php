@@ -18,10 +18,10 @@ if (isset($_GET["ruta"])) {
                                         GENERA DOCUMENTO REMISION
         ============================================================================================================================*/    
         case "docrem":
-            $controlador=new ControladorRemision();
-            $resultado=$controlador->ctrDocRem();
-            print ($resultado);
-            return 0;
+            // $controlador=new ControladorRemision();
+            // $resultado=$controlador->ctrDocRem();
+            // print ($resultado["documento"]);
+            // return 0;
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 

@@ -1,5 +1,5 @@
    
-<h2 class="header center ">Subir Requisición</h3>
+<h2 class="header center ">Remisiones</h3>
 
 <!-- <form role="form" method="post" enctype="multipart/form-data" style="padding-left:15px;" id="subir"> -->
 <!-- ============================================================================================================================
@@ -9,11 +9,11 @@
 
     <form class="file-upload" id="remisiones">
         <div class="file-upload-main " >
-            <input type="file" id="archivos" webkitdirectory mozdirectory msdirectory odirectory directory multiple />
+            <input type="file" id="archivos" webkitdirectory mozdirectory msdirectory odirectory directory multiple required/>
             <!-- <input type="file" id="archivos"/> -->
             
             <div class="file-upload-res" id='contenido'>
-                <p class=""><i class="fas fa-upload"></i>Subir</p>
+                <p class=""><i class="fas fa-upload"></i> Subir</p>
             </div>
         </div>
         <button class="btn green col s12" type="submit">Subir</button>
@@ -43,6 +43,12 @@
   border: 2px dashed green;
   
 }
+.file-upload .file-upload-main:hover p{
+    font-size:20px;
+}
+.file-upload .file-upload-main:hover p{
+    font-size:25px;
+}
 
 .file-upload input[type=file]{
     
@@ -59,6 +65,7 @@
     text-align: center;
     color:gray;
 }
+
 
 
 
