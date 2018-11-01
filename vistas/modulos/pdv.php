@@ -4,17 +4,23 @@
 ============================================================================================================================ -->
 <div class="container fixed" style="padding-left:15px;" >
 
-    
     <div class="row ">
+        <div class="input-field col s12 " >
 
-        <div class="input-field col s12 m10 l11   input_barras">
+            <select   list="remisiones" name="remisiones" class="remisiones" id="remisiones">
+                <option value="" disabled selected>Seleccionar</option>
+            </select>
+            <label  style="font-size:12px;">Remisión</label>
+
+        </div>  
+        <div class="input-field col s12 m10 l11 hide input_barras">
 
             <input  id="codbarras" type="text" class="validate">
             <label for="codbarras" >Item</label>
 
         </div>  
         
-        <div class="input-field col s12 m1 l1  input_barras">
+        <div class="input-field col s12 m1 l1 hide input_barras">
 
             <button id="agregar" title="Buscar Item extra" class="btn waves-effect waves-light green darken-3 col s12 m12 l8" >
                 <i class="fas fa-plus"></i>

@@ -79,7 +79,26 @@ if (isset($_GET["ruta"])) {
                 
             }
                 
+            // print json_encode($resultado);
+            break;  
+        /* ============================================================================================================================
+                                                        BUSCA FRANQUICIAS
+        ============================================================================================================================*/    
+        case "remisiones":
             
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                
+                
+                    
+                $modelo=new ModeloRemision();
+
+                $resultado=$modelo->buscaritem('remisiones');
+
+                print json_encode($resultado->fetchAll());
+                    
+                
+            }
+                
             // print json_encode($resultado);
             break;  
 

@@ -22,18 +22,18 @@ CREATE TABLE IF NOT EXISTS emails(
 );
 
 CREATE TABLE IF NOT EXISTS `ITEMS` (
-	`ID_ITEM` char(6) NOT NULL,
-	`ID_REFERENCIA` char(15) DEFAULT NULL,
-	`DESCRIPCION` char(40) DEFAULT NULL,
-	`ID_LINEA2` char(6) DEFAULT NULL,
-	`ID_GRUPO2` char(6) DEFAULT NULL,
-	`UNIMED_INV_1` char(3) DEFAULT NULL,
-	`UNIMED_EMPAQ` char(3) DEFAULT NULL,
+	`ID_ITEM` CHAR(6) NOT NULL,
+	`ID_REFERENCIA` CHAR(15) DEFAULT NULL,
+	`DESCRIPCION` CHAR(40) DEFAULT NULL,
+	`ID_LINEA2` CHAR(6) DEFAULT NULL,
+	`ID_GRUPO2` CHAR(6) DEFAULT NULL,
+	`UNIMED_INV_1` CHAR(3) DEFAULT NULL,
+	`UNIMED_EMPAQ` CHAR(3) DEFAULT NULL,
 	`FACTOR_EMPAQ` decimal(20,4) DEFAULT NULL,
 	`PESO` decimal(20,4) DEFAULT NULL,
 	`VOLUMEN` decimal(20,4) DEFAULT NULL,
 	`ULTIMO_COSTO_ED` decimal(20,4) DEFAULT NULL,
-	`FECHA_INGRESO` char(8) DEFAULT NULL,
+	`FECHA_INGRESO` CHAR(8) DEFAULT NULL,
 	
 	CONSTRAINT ITEMS_PK 
 	PRIMARY KEY (`ID_ITEM`),
@@ -45,9 +45,9 @@ CREATE TABLE IF NOT EXISTS `ITEMS` (
 -- Volcando estructura para tabla BD_BIABLE01.COD_BARRAS
 	
 CREATE TABLE IF NOT EXISTS `COD_BARRAS` (
-  `ID_ITEMS` char(6) DEFAULT NULL,
-  `ID_CODBAR` char(15) BINARY NOT NULL,
-  `UNIMED_VENTA` char(3) DEFAULT NULL,
+  `ID_ITEMS` CHAR(6) DEFAULT NULL,
+  `ID_CODBAR` CHAR(15) BINARY NOT NULL,
+  `UNIMED_VENTA` CHAR(3) DEFAULT NULL,
   
   CONSTRAINT CODBAR_PK 
   PRIMARY KEY (`ID_CODBAR`),
@@ -67,21 +67,21 @@ CREATE TABLE IF NOT EXISTS perfiles(
 
 
 CREATE TABLE IF NOT EXISTS `sedes` (
-  `codigo` char(6) NOT NULL,
-  `descripcion` char(40) DEFAULT NULL,
-  `direccion1` char(40) DEFAULT NULL,
-  `direccion2` char(40) DEFAULT NULL,
-  `direccion3` char(40) DEFAULT NULL,
-  `grupo_co` char(2) DEFAULT NULL,
+  `codigo` CHAR(6) NOT NULL,
+  `descripcion` CHAR(40) DEFAULT NULL,
+  `direccion1` CHAR(40) DEFAULT NULL,
+  `direccion2` CHAR(40) DEFAULT NULL,
+  `direccion3` CHAR(40) DEFAULT NULL,
+  `grupo_co` CHAR(2) DEFAULT NULL,
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS franquicias (
-  `codigo` char(6) NOT NULL,
-  `descripcion` char(40) DEFAULT NULL,
-  `direccion1` char(40) DEFAULT NULL,
-  `cod_sucursal` char(2) DEFAULT 00,
-  `nit` char(12) DEFAULT '000000000',
+  `codigo` CHAR(6) NOT NULL,
+  `descripcion` CHAR(40) DEFAULT NULL,
+  `direccion1` CHAR(40) DEFAULT NULL,
+  `cod_sucursal` CHAR(2) DEFAULT 00,
+  `nit` CHAR(12) DEFAULT '000000000',
   
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -349,6 +349,46 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS recibido_remisiones(
+	item CHAR(6) NOT NULL,
+	no_rem INT(5) NOT NULL,
+	recibidos INT(5) default 0,
+	estado INT(1) NOT NULL default 0,
+
+	PRIMARY KEY(item,no_rem),
+
+	CONSTRAINT recibido_Item_remisio
+	FOREIGN KEY(item) 
+	REFERENCES ITEMS(ID_ITEM),
+
+	CONSTRAINT recibido_remision
+	FOREIGN KEY(no_rem) 
+	REFERENCES remisiones(no_rem),
+	
+	INDEX (estado)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS errores_remisiones(
+	item CHAR(6) NOT NULL,
+	no_rem INT(5) NOT NULL,
+	recibidos INT(5) default 0,
+	estado INT(1) NOT NULL default 0,
+	pedido INT(5) NOT NULL,
+	alistado INT(5) default 0,
+
+
+	PRIMARY KEY(item,no_rem),
+
+	CONSTRAINT errores_Item_remision
+	FOREIGN KEY(item) 
+	REFERENCES ITEMS(ID_ITEM),
+
+	CONSTRAINT errores_remision
+	FOREIGN KEY(no_rem) 
+	REFERENCES remisiones(no_rem),
+	
+	INDEX (estado)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 
@@ -673,7 +713,6 @@ DELIMITER $$
 	END 
 $$
 
-
 -- triger que asigna fecha de inicio cada ves que se crea una caja
 DELIMITER $$
 	CREATE TRIGGER InicioAbrir 
@@ -772,6 +811,43 @@ DELIMITER $$
 	END 	
 $$
 
+-- DROP TRIGGER IF EXISTS EstadoRecibido;
+DELIMITER $$
+	CREATE TRIGGER EstadoRecibidoRemision 
+	BEFORE UPDATE ON recibido_remisiones
+	FOR EACH ROW 
+	BEGIN
+	
+		DECLARE numalistado INT(5);
+		DECLARE numpedido INT(5);
+		DECLARE rem INT(5);
+		DECLARE ider INT(5);
+		DECLARE estado INT(1);
+								
+		SELECT alistado,pedido,pedido_remisiones.no_rem INTO numalistado,numpedido,rem
+		FROM pedido_remisiones
+		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido_remisiones.Item
+		WHERE ITEMS.ID_Item = new.item
+		AND pedido_remisiones.no_rem=new.no_rem;
+
+		IF rem IS NULL THEN
+			SET new.estado=2;
+		ELSEIF new.recibidos<numalistado THEN
+			SET new.estado=0;
+		ELSEIF new.recibidos>numalistado THEN
+			SET new.estado=1;
+		ELSE 
+			SET new.estado=4;
+		END IF;
+
+		
+		IF new.estado<>4  THEN
+			REPLACE INTO errores_remisiones(item,no_rem,recibidos,estado,pedido,alistado) 
+			VALUES(new.item,new.no_rem,new.recibidos,new.estado,numpedido,numalistado);
+		END IF;
+
+	END 	
+$$
 -- autoincrementa id de tabla tareas_det
 DELIMITER $$
 	CREATE TRIGGER AutoincTareas

@@ -11,6 +11,26 @@ $(document).ready(function () {
         onCloseEnd: function () { location.reload(); }
     });
 
+    // pone items en el input select
+    $.ajax({
+        url: "api/remisiones/remisiones",
+        method: "GET",
+        data: { 'valor': 2 },
+        dataType: "json",
+        success: function (res) {
+
+            // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
+            for (var i in res) {
+
+                $("#remisiones").append($(`<option value="${res[i]["no_rem"]}"> OC${res[i]["no_rem"]}</option>`));
+                
+            }
+
+            // INICIA MENU DE SELECCION
+            $('select').formSelect();
+
+        }
+    });
 
 
     /* ============================================================================================================================
@@ -163,6 +183,12 @@ $(document).ready(function () {
             });
     });
     
+     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
+     $(".remisiones").change(function (e) {
+        $(".input_barras").removeClass("hide");
+        $("#Registrar").addClass("hide");
+        $("#codbarras").focus();
+    });
 
 });
 

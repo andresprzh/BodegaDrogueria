@@ -97,4 +97,29 @@ class ModeloRemision extends Conexion{
         $stmt->closeCursor();
         $stmt=null;
     }
+
+    // public function mdlsubiritemrem()
+    // {
+
+    //     $tabla="recibido_remisiones";
+    //     $stmt= $this->link->prepare(
+    //     "INSERT INTO $tabla(item,no_rem,cantidad,unidad,valor,descuento,impuesto,total,costo,rent) 
+    //     VALUES(:recibido_remisiones,:no_rem,:cantidad,:unidad,:valor,:descuento,:impuesto,:total,:costo,:rent);");
+    //     // return $item["rent  "];
+    //     $stmt->bindParam(":item",$item["item"],PDO::PARAM_STR);
+    //     $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT);
+    //     $stmt->bindParam(":cantidad",$item["cantidad"],PDO::PARAM_INT);
+    //     $stmt->bindParam(":unidad",$item["unidad"],PDO::PARAM_STR);
+    //     $stmt->bindParam(":valor",$item["valor"],PDO::PARAM_STR);
+    //     $stmt->bindParam(":descuento",$item["descuento"],PDO::PARAM_STR);
+    //     $stmt->bindParam(":impuesto",$item["impuesto"],PDO::PARAM_STR);
+    //     $stmt->bindParam(":total",$item["total"],PDO::PARAM_STR);
+    //     $stmt->bindParam(":costo",$item["costo"],PDO::PARAM_STR);
+    //     $stmt->bindParam(":rent",$item["rent"],PDO::PARAM_STR);
+
+    //     $res= $stmt->execute();
+        
+    //     $stmt->closeCursor();
+    //     return $res;
+    // }
 }

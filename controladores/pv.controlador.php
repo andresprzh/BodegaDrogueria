@@ -411,5 +411,10 @@ class ControladorPV extends ControladorCajas{
         
         
     }
+
+    public function ctrRegistrarRemision()
+    {
+
+    }
     
 }
