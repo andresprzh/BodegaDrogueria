@@ -2,23 +2,86 @@
 
 class ControladorRemision{
 
+    /* ============================================================================================================================
+                                                        ATRIBUTOS   
+    ============================================================================================================================*/
     private $modelo;
     private $documentos;
     private $itemsarray;
     private $ubicacion;
     private $no_rem;
+    private $franquicia;
+    private $cabecera;
 
-    function __construct($documentos=null){
+    /* ============================================================================================================================
+                                                        CONSTRUCTOR   
+    ============================================================================================================================*/
+    function __construct($documentos=null,$franquicia=null){
       $this->modelo=new ModeloRemision();
       $this->documentos=$documentos;
-
+      $this->franquicia=$franquicia;
     }
 
-
+    /* ============================================================================================================================
+                                                        FUNCIONES   
+    ============================================================================================================================*/
     // funcion que asigna la cabecera
-    private function ctrSetCabecera()
+    public function ctrSetCabecera()
     {
+        foreach($this->documentos as $i => $documento){
+            foreach ($documento as  $row) {
+                $linea=trim($row);
+           
+                
+                if( !empty($linea))
+                    if(in_array($linea[0],["|","+","-"])){
+                    
+                    //busca la fecha 
+                    $pos=strpos($linea, 'FECHA :');
+                    
+                    if($pos){
+                        $fecha=str_replace('/','-',substr($linea,$pos+8,10));	
+                    }
+                    
+                    //busca la hora y minuto
+                    $pos=strpos($linea, 'HORA  :');
+                    if($pos){
+                        $tiempo=substr($linea,$pos+8,8);	
+                    }
+        
+                    // si ya tiene todos los datos de cabecera los ingresa a la base de datos
+                    if(isset($tiempo) && isset($fecha)){
+                        // se obtiene solo hora
+                        $hora=substr($tiempo,0,2);
+                        // CONVIERTE LA HORA A FORMATO DE 24 HORAS
+                        // si es pm se suma 12 a la hora
+                        if (!strcasecmp(substr($tiempo,-2),'pm')) {
+                            if ($hora!=12) {
+                                $hora+=12;
+                            }
+                        }elseif ($hora==12) {
+                            $hora=0;
+                        }
+                        // guarda el tiempo en formato 24 horas
+                        $tiempo=substr($hora.substr($tiempo,2),0,-3).':00';
+                        // pone fecha y hora en 1 solo string
+                        $fecha.=' '.$tiempo;
+                        
+                        // almacena los datos de cabecera en un vector
+                        $cabecera=["fecha"=>$fecha];;
+                        
+                        
+                        //asigna los dtaos de cabecera al parametro de la clase
+                        $this->cabecera=$cabecera;
+                        
+                        // si ya encontro todos los datos decabecera se sale del ciclo
+                        return $cabecera;
+                        
+                    }
 
+                }
+            }
+        }
     }
 
     //funcion que asigna los items
@@ -32,45 +95,12 @@ class ControladorRemision{
                 
                 // $linea=($linea."<br>");
                 $linea=trim($row);
-            //    return ($linea[0]);
-                //busca si la linea tiene datos de los items
-                // es un item si la linea no tiene | de primer caracter, no tiene una sucecion de -, no tiene : y si no es salto de linea(ascii=10)
+           
+                
                 if( !empty($linea))
                     if(!in_array($linea[0],["|","+","-"]) 
                        && strpos($linea, "REMISIONES")===false 
                        && strpos($linea, "DROGUERIA SAN")===false){
-                                        
-                        // // $item["linea"]=$linea;
-                        // $item["item"]=trim(substr($linea,0,6)); 
-                        // $item["descripcicon"]=trim(substr($linea,6,37)); 
-                        // $item["local"]=trim(substr($linea,44,6));
-                        // $item["cantidad"]=trim(str_replace(",","",substr($linea,55,5)));
-                        // $item["unidad"]=trim(str_replace(",","",substr($linea,63,3)));
-                        // $item["valor"]=trim(str_replace(",","",substr($linea,70,9)));
-                        // $item["descuento"]=trim(str_replace(",","",substr($linea,85,6)));
-                        // $item["impuesto"]=trim(str_replace(",","",substr($linea,94,9)));
-                        // $item["total"]=trim(str_replace(",","",substr($linea,107,9)));
-                        // $item["costo"]=trim(str_replace(",","",substr($linea,119,9)));
-                        // $item["rent"]=trim((substr($linea,129,6)));
-                        
-                    
-                        // if (!(is_numeric($item["item"]) && strlen($item["item"])==6)) {
-                            
-                        //     //se busca el id de los item usando la referencia en el documento subido
-                        //     $modelo=new ModeloRequierir();
-                        //     // $item="ID_REFERENCIA";
-                        //     $valor=$item["item"];
-                            
-                        //     $id_item=$modelo->mdlMostrarItem("ID_REFERENCIA",$valor);
-                        //     $id_item=$id_item->fetch(); 
-                                    
-                        //     //se reemplaza la referencia del item por su id
-                        //     $item["item"]=$id_item["ID_ITEM"];
-                        
-                        // }
-                    
-                        
-                        // $this->itemsarray[$i][]=$item;
                         
                         $iditem=trim(substr($linea,0,6)); 
                         if (!(is_numeric($iditem) && strlen($iditem)==6)) {
@@ -89,19 +119,25 @@ class ControladorRemision{
                         }
                         if (!empty($this->itemsarray[$iditem])) {
                             $this->itemsarray[$iditem]["cantidad"]+=trim(str_replace(",","",substr($linea,55,5)));
+                            $this->itemsarray[$iditem]["valor"]+=trim(str_replace(",","",substr($linea,70,9)));
+                            $this->itemsarray[$iditem]["descuento"]+=trim(str_replace(",","",substr($linea,85,6)));
+                            $this->itemsarray[$iditem]["impuesto"]+=trim(str_replace(",","",substr($linea,94,9)));
+                            $this->itemsarray[$iditem]["total"]+=trim(str_replace(",","",substr($linea,107,9)));
+                            $this->itemsarray[$iditem]["costo"]+=trim(str_replace(",","",substr($linea,119,9)));
                         }else {
                             $this->itemsarray[$iditem]["cantidad"]=trim(str_replace(",","",substr($linea,55,5)));
+                            $this->itemsarray[$iditem]["valor"]=trim(str_replace(",","",substr($linea,70,9)));
+                            $this->itemsarray[$iditem]["valor"]=trim(str_replace(",","",substr($linea,70,9)));
+                            $this->itemsarray[$iditem]["descuento"]=trim(str_replace(",","",substr($linea,85,6)));
+                            $this->itemsarray[$iditem]["impuesto"]=trim(str_replace(",","",substr($linea,94,9)));
+                            $this->itemsarray[$iditem]["total"]=trim(str_replace(",","",substr($linea,107,9)));
+                            $this->itemsarray[$iditem]["costo"]=trim(str_replace(",","",substr($linea,119,9)));
                         }
                         $this->itemsarray[$iditem]["item"]=$iditem; 
                         $this->itemsarray[$iditem]["descripcicon"]=trim(substr($linea,6,37)); 
                         $this->itemsarray[$iditem]["local"]=trim(substr($linea,44,6));
                         $this->ubicacion=trim(substr($linea,44,6));
                         $this->itemsarray[$iditem]["unidad"]=trim(str_replace(",","",substr($linea,63,3)));
-                        $this->itemsarray[$iditem]["valor"]=trim(str_replace(",","",substr($linea,70,9)));
-                        $this->itemsarray[$iditem]["descuento"]=trim(str_replace(",","",substr($linea,85,6)));
-                        $this->itemsarray[$iditem]["impuesto"]=trim(str_replace(",","",substr($linea,94,9)));
-                        $this->itemsarray[$iditem]["total"]=trim(str_replace(",","",substr($linea,107,9)));
-                        $this->itemsarray[$iditem]["costo"]=trim(str_replace(",","",substr($linea,119,9)));
                         $this->itemsarray[$iditem]["rent"]=trim((substr($linea,129,6)));
                         
                     
@@ -117,54 +153,22 @@ class ControladorRemision{
 
     }
 
+    
     // funcion que sube los items
     public function ctrSubirRem()
     {
         
-        // foreach ($this->itemsarray as $array) {
-        //     // return $array;
-        //     $folder=substr($folder,0,5);
-        //     $resultado=$this->modelo->mdlSubirRem($folder);
-            
-        //     if ($resultado) {
-        //         $no_rem2=$this->modelo->mdlMostrarRem($folder);
-        //         // $no_rem2=$no_rem2->fetch()["no_rem2"];
-                
-        //         $no_rem2=$no_rem2->fetch()["no_rem2"];
-                
-                
-        //         foreach ($array as  $item) {
-        //             // return $item;
-        //             // $resultado2[]=$this->modelo->mdlSubirItem($item,$folder,$no_rem2);
-        //             $resultado=$this->modelo->mdlSubirItem($item,$folder,$no_rem2);
-        //             if (!$resultado) {
-        //                 return false;
-        //             }
-        //         }
-
-        //     }else {
-        //         // $resultadoel=$modelo->mdlEliRem($this->cabecera[0]);
-                
-        //         return $resultado;
-        //     }
-        // }
-
-        // $folder=substr($folder,0,5);
+        $this->no_rem=$this->modelo->mdlSubirRem($this->ubicacion,$this->franquicia,$this->cabecera["fecha"]);
         
-        $resultado=$this->modelo->mdlSubirRem($this->ubicacion);
         
         foreach ($this->itemsarray as $item) {
-            // return $array;
-            
-            if ($resultado) {
-                $no_rem=$this->modelo->mdlMostrarRem();
+                        
+            if ($this->no_rem!==false) {
                 
-                $this->no_rem=$no_rem->fetch()["no_rem"];
                 $resultado=$this->modelo->mdlSubirItem($item,$this->no_rem);
 
             }else {
-                // $resultadoel=$modelo->mdlEliRem($this->cabecera[0]);
-                
+                                
                 return $resultado;
             }
         }
@@ -175,11 +179,9 @@ class ControladorRemision{
     public function ctrDocRem()
     {   
 
-        // $busqueda=$this->modelo->mdlMostrarRemDoc($this->no_rem);
         $busqueda=$this->modelo->mdlMostrarRemDoc(1);
         $resultado["documento"]="";
-        // print json_encode($busqueda->fetchAll());
-        // return 0;
+        // return $busqueda->fetchAll();
         while($row = $busqueda->fetch()){
             $pordesc=$row["descuento"]/$row["valor"]*100;
             $pordesc=round($pordesc,2);
@@ -187,13 +189,14 @@ class ControladorRemision{
 
             // return $resultado["documento"];
             $no_rem=str_pad("$row[no_rem]",3, "0", STR_PAD_LEFT);
-
-            $resultado["documento"].=str_pad("OC$no_rem", 10, " ", STR_PAD_RIGHT)."|";
             $resultado['nomdoc']="REMIS$no_rem.RM0";
+
+            
+            $resultado["documento"].=str_pad("OC$no_rem", 10, " ", STR_PAD_RIGHT)."|";
             $resultado["documento"].="2"."|";
             $resultado["documento"].=str_repeat(" ",20)."|";
-            $resultado["documento"].="805002583    "."|";
-            $resultado["documento"].="00"."|";
+            $resultado["documento"].=str_pad($row["nit"], 13, " ", STR_PAD_RIGHT)."|";
+            $resultado["documento"].=$row["cod_sucursal"]."|";
             $resultado["documento"].=str_replace("-","",substr($row["creada"],0,10))."|";
             $resultado["documento"].=str_replace("-","",$row["ubicacion"])."|";
             $resultado["documento"].="I"."|";
@@ -205,15 +208,23 @@ class ControladorRemision{
             $resultado["documento"].="000000000000+"."|";
             $resultado["documento"].="1"."|";
             $resultado["documento"].="13"."|";
-            $resultado["documento"].="  "."|";
+            $resultado["documento"].="03"."|";
             $resultado["documento"].=str_pad(str_replace(".","",$row["valor"]), 12, "0", STR_PAD_LEFT)."+"."|";
-            $resultado["documento"].=str_repeat(" ",22)."|";
+            $resultado["documento"].="  "."|";
+            $resultado["documento"].="02"."|";
+            $resultado["documento"].=str_repeat(" ",8)."|";
+            $resultado["documento"].=str_repeat(" ",10)."|";
             $resultado["documento"].=str_pad(str_replace(".","",$row["total"]), 12, "0", STR_PAD_LEFT)."+"."|";
+            $resultado["documento"].=str_repeat(" ",6)."|";
             $resultado["documento"].="000000000000+"."|";
             $resultado["documento"].=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_RIGHT)."|";
             $resultado["documento"].=str_pad(str_replace(".","",$row["descuento"]), 12, "0", STR_PAD_LEFT)."|";
+            // $resultado["documento"].=str_repeat("0",4)."|";
+            // $resultado["documento"].=str_repeat("0",12)."|";
             $resultado["documento"].="0000";
             $resultado["documento"].="000000000000";
+            $resultado["documento"].="1";
+
 
             $resultado["documento"].="\r\n";
         }

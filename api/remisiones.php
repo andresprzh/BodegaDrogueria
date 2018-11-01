@@ -21,14 +21,12 @@ if (isset($_GET["ruta"])) {
             // $controlador=new ControladorRemision();
             // $resultado=$controlador->ctrDocRem();
             // print ($resultado["documento"]);
-            // return 0;
+            // // print json_encode($resultado);
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                
-                
-                
-                if (isset($_FILES['files'])) {
+                 
+                if (isset($_FILES['files']) && isset($_POST['franquicia'])) {
                     
-                    $folder=$_POST['folder'];
+                    $franquicia=$_POST['franquicia'];
                     $tipos_permitidos = array('text/plain','text/x-Algol68');//tipos permitidos de archivos
                     $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
 
@@ -47,9 +45,9 @@ if (isset($_GET["ruta"])) {
                         
                        
                     }
-                    $controlador=new ControladorRemision($archivos);
+                    $controlador=new ControladorRemision($archivos,$franquicia);
                     
-                    
+                    $resultado=$controlador->ctrSetCabecera();
                     $resultado=$controlador->ctrSetItems();
                     $resultado=$controlador->ctrSubirRem();
 
@@ -57,15 +55,28 @@ if (isset($_GET["ruta"])) {
                         $resultado=$controlador->ctrDocRem();
                     }
                     print json_encode($resultado);
-                    // foreach($archivos as $archivo){
-                    //     foreach($archivo as $linea){
-                    //         print json_encode($linea);
-                    //     }
-                    // }
-                    // print json_encode($archivo[0][1]);
-                    
-                // if ($errors) print json_encode($resultado);
                 }
+            }
+                
+            
+            // print json_encode($resultado);
+            break;  
+        /* ============================================================================================================================
+                                                        BUSCA FRANQUICIAS
+        ============================================================================================================================*/    
+        case "franquicias":
+            
+            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+                
+                
+                    
+                $modelo=new ModeloRemision();
+
+                $resultado=$modelo->mdlMostrarFranquicias();
+
+                print json_encode($resultado->fetchAll());
+                    
+                
             }
                 
             

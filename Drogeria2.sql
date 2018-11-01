@@ -80,6 +80,9 @@ CREATE TABLE IF NOT EXISTS franquicias (
   `codigo` char(6) NOT NULL,
   `descripcion` char(40) DEFAULT NULL,
   `direccion1` char(40) DEFAULT NULL,
+  `cod_sucursal` char(2) DEFAULT 00,
+  `nit` char(12) DEFAULT '000000000',
+  
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -313,13 +316,12 @@ CREATE TABLE IF NOT EXISTS remisiones(
 	creada DATETIME DEFAULT CURRENT_TIMESTAMP,
 	estado INT(1) DEFAULT 0,
 	ubicacion CHAR(6) DEFAULT '001-BD' ,
+	franquicia CHAR(6) NOT NULL,
 
-	PRIMARY KEY(no_rem),
+	PRIMARY KEY(no_rem)
 
-	CONSTRAINT remisiones_sedes
-	FOREIGN KEY(ubicacion) 
-	REFERENCES sedes(codigo)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	item CHAR(6) NOT NULL,
@@ -347,26 +349,6 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	INDEX (estado)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE IF NOT EXISTS alistado_remisiones(
-	item CHAR(6) NOT NULL,
-	no_rem INT(5) NOT NULL,
-	no_caja INT(10) DEFAULT 1,
-	alistado INT(5) DEFAULT 0,
-	estado INT(1) NOT NULL default 1,
-
-	PRIMARY KEY(item,no_rem,no_caja),
-
-	CONSTRAINT alistado_pedido_remisiones
-	FOREIGN KEY(item,no_rem) 
-	REFERENCES pedido_remisiones(item,no_rem),
-	
-	CONSTRAINT pedido_caja_remisiones
-	FOREIGN KEY(no_caja) 
-	REFERENCES caja(no_caja),
-	
-	
-	INDEX (estado)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
 
@@ -383,22 +365,23 @@ REPLACE INTO tipo_caja  VALUES
 	('GLA','Galoneta'
 );
 -- se llena un primer registro a caja que define las cajas no asignadas
-INSERT INTO caja(no_caja) VALUES(1);
-UPDATE caja SET no_caja=0 WHERE no_caja=1;
+-- INSERT INTO caja(no_caja) VALUES(1);
+-- UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 
-REPLACE INTO franquicias(codigo,descripcion) VALUES
-	('NFRA','NO ES FRANQUICIA'),
-	('PAL1','PALMIRA 1'),('PAL2','PALMIRA 2'),('PAL3','PALMIRA 3'),
-	('SANT','SANTANDER DE QUILICHAO'),
-	('UBBS','CHAPINERO VASQUEZ BARRENECHE'
+REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
+	('NFRA','NO ES FRANQUICIA','00','000000000'),
+	('PAL1','PALMIRA 1','01','94506068'),('PAL2','PALMIRA 2','02','94506068'),('PAL3','PALMIRA 3','03','94506068'),
+	('SANT','SANTANDER DE QUILICHAO','00','34611591'),
+	('UBBS','CHAPINERO VASQUEZ BARRENECHE','00','800097434'
 );
 
-REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
-UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
+-- REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
+-- UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
-REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
+-- REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
+/* 
 REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
 	('001-BD', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
 	('001-VE', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
@@ -436,6 +419,7 @@ REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `dire
 	('900-VE', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
 	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r'
 );
+*/
 
 /*******************************************************************************************************************************
 											PROCEDIMIENTOS FUNCIONES Y TRIGGERS BASE DE DATOS

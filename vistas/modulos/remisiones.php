@@ -8,10 +8,13 @@
 <div class="row container" >
 
     <form class="file-upload" id="remisiones">
+        <div class="col s12">
+            <select   list="franquicias" name="franquicias" class="franquicias  " id="franquicias">
+                
+            </select>
+        </div>
         <div class="file-upload-main " >
-            <input type="file" id="archivos" webkitdirectory mozdirectory msdirectory odirectory directory multiple required/>
-            <!-- <input type="file" id="archivos"/> -->
-            
+            <input type="file" id="archivos" webkitdirectory mozdirectory msdirectory odirectory directory multiple required/>           
             <div class="file-upload-res" id='contenido'>
                 <p class=""><i class="fas fa-upload"></i> Subir</p>
             </div>

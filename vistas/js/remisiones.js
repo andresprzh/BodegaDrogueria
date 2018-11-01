@@ -1,8 +1,33 @@
 $(document).ready(function () {
 
+   /* ============================================================================================================================
+                                                        INICIALIZACION   
+    ============================================================================================================================*/
+   // pone requisiciones en el input select
+  $.ajax({
+    url: "api/remisiones/franquicias",
+    method: "GET",
+    data: '',
+    contentType: false,
+    processData: false,
+    dataType: "JSON",
+    success: function (res) {
+      
+        // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
+        for (var i in res) {
+            
+            // $("#requeridos").append($('<option id= value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
+            $("#franquicias").append($(`<option  value="${res[i]['codigo']}"> ${res[i]['descripcion']}</option>`));
 
+        }
+        $('select').formSelect();
 
-  $('#remisiones input').change(function () {
+    }
+  });
+  /* ============================================================================================================================
+                                                        EVENTOS   
+    ============================================================================================================================*/
+  $('#remisiones #archivos').change(function () {
 
     if (this.files.length > 0) {
       $('.file-upload-res').css('text-align', 'left');
@@ -24,18 +49,19 @@ $(document).ready(function () {
 
   $("#remisiones").submit(function (e) {
     e.preventDefault();
-    var form_data = new FormData();
-    var ins = document.getElementById('archivos').files.length;
+    let form_data = new FormData();
+    let ins = document.getElementById('archivos').files.length;
 
-    var path = document.getElementById('archivos').files[0].webkitRelativePath;
-    var folder = path.split("/")[0];
+    let path = document.getElementById('archivos').files[0].webkitRelativePath;
+    let folder = path.split("/")[0];
+    let franquicia=document.getElementById('franquicias').value;
+    
+    form_data.append("franquicia", franquicia);
 
-    form_data.append("folder", folder);
-
-    for (var x = 0; x < ins; x++) {
+    for (let x = 0; x < ins; x++) {
       form_data.append("files[]", document.getElementById('archivos').files[x]);
     }
-
+    
     $.ajax({
       url: 'api/remisiones/docrem', // point to server-side PHP script 
       dataType: 'JSON', // what to expect back from the PHP script
@@ -45,7 +71,8 @@ $(document).ready(function () {
       data: form_data,
       type: 'POST',
       success: function (res) {
-
+        console.log(res);
+        
         // si hay un error al buscar los archivos no genera el documento
         if (!res) {
           swal({
@@ -55,9 +82,9 @@ $(document).ready(function () {
 
           // si no hay error genera le documento y lo manda a decargar
         } else {
-          var nomdoc = res['nomdoc'];
+          let nomdoc = res['nomdoc'];
 
-          var element = document.createElement('a');
+          let element = document.createElement('a');
           element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['documento']));
           element.setAttribute('download', nomdoc);
 

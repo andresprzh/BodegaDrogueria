@@ -2,57 +2,42 @@
 
 class ModeloRemision extends Conexion{
     
-    
+    /* ============================================================================================================================
+                                                        CONSTRUCTOR   
+    ============================================================================================================================*/
     function __construct() {
       
         parent::__construct();
         
     }
-
+     /* ============================================================================================================================
+                                                        FUNCIONES   
+    ============================================================================================================================*/
     public function mdlMostrarRem()
     {
-    
-        $tabla='remisiones';
-        $stmt= $this->link-> prepare(
-        "SELECT no_rem
-        FROM $tabla
-        /* WHERE no_rem1=:no_rem  */
-        ORDER BY no_rem DESC
-        LIMIT 1;");
-
-        // $stmt->bindParam(":no_rem",$folder,PDO::PARAM_STR);
-        //ejecuta el comando sql
-        $stmt->execute();
-        //busca las requisiciones
-        
-        // return $this->buscaritem($tabla,$item,$valor);
-        return $stmt;
     }
 
     // public function mdlSubirReq($cabecera,$items)
-    public function mdlSubirRem($ubicacion)
+    public function mdlSubirRem($ubicacion,$franquicia,$fecha)
     {
         $tabla="remisiones";
         
-        $stmt= $this->link->prepare("INSERT INTO $tabla(ubicacion) VALUES(:ubicacion)");
+        $stmt= $this->link->prepare("INSERT INTO $tabla(ubicacion,franquicia,creada) VALUES(:ubicacion,:franquicia,:fecha)");
         $stmt->bindParam(":ubicacion",$ubicacion,PDO::PARAM_STR);
+        $stmt->bindParam(":franquicia",$franquicia,PDO::PARAM_STR);
+        $stmt->bindParam(":fecha",$fecha,PDO::PARAM_STR);
         
         $res=$stmt->execute();
         
         $stmt->closeCursor();
-        
-        return $res;
-    }
 
-    public function mdlEliRem($folder,$no_rem2)
-    {
-        $tabla="remisiones";
-        $stmt= $this->link->prepare("DELETE FROM $tabla WHERE no_rem1=:no_rem1 AND no_rem2=:no_rem2");
-        $stmt->bindParam(":no_reqm1",$folder,PDO::PARAM_STR);
-        $stmt->bindParam(":no_reqm2",$no_rem2,PDO::PARAM_STR);
-
-        $res= $stmt->execute();
-        $stmt->closeCursor();
+        if ($res) {
+            
+            $stmt= $this->link->prepare("SELECT LAST_INSERT_ID() AS id;");
+            $stmt->execute();
+            $res=$stmt->fetch()['id'];
+            $stmt->closeCursor();
+        }
         return $res;
     }
 
@@ -86,9 +71,25 @@ class ModeloRemision extends Conexion{
         "SELECT * 
         FROM pedido_remisiones
         INNER JOIN remisiones ON remisiones.no_rem=pedido_remisiones.no_rem
+        INNER JOIN franquicias ON franquicias.codigo=remisiones.franquicia
         WHERE pedido_remisiones.no_rem=:no_rem;");
 
         $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT); 
+
+        $res= $stmt->execute();
+                
+        return $stmt;
+        $stmt->closeCursor();
+        $stmt=null;
+    }
+
+    public function mdlMostrarFranquicias()
+    {
+        $stmt= $this->link->prepare(
+        "SELECT codigo,descripcion
+        FROM franquicias
+        WHERE codigo<>'NFRA'
+        ORDER BY descripcion ASC;");
 
         $res= $stmt->execute();
                 
