@@ -76,6 +76,10 @@
 <!-- ============================================================================================================================
                                                         EVENTOS PAGINA REQUERIR    
     ============================================================================================================================ -->
+<!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->
+<script type="text/javascript">
+    var id_usuario='<?php echo $_SESSION["usuario"]["id"];?>';
+</script>
 <script src="vistas/js/remisiones.js"></script>
 
 </div>

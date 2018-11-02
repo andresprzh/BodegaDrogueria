@@ -74,12 +74,23 @@ if (isset($_GET['ruta'])) {
         ============================================================================================================================*/
         case "registrar":
             if ($_SERVER["REQUEST_METHOD"]==="POST") {
-                $req=$_POST["req"];
-                $items=$_POST["items"];
-                $numcaja=$_POST["caja"];
                 
-                $controlador=new ControladorPV($req);
-                $resultado=$controlador->ctrRegistrarItems($items,$numcaja);
+                $items=$_POST["items"];
+                // si no es franquicia
+                if (!isset($_POST["franquicia"])) {
+                    $req=$_POST["req"];
+                
+                    $numcaja=$_POST["caja"];
+                    
+                    $controlador=new ControladorPV($req);
+                    $resultado=$controlador->ctrRegistrarItems($items,$numcaja); 
+                }else {
+                    
+                    $franquicia=$_POST["franquicia"];
+                    $controlador=new ControladorPV();
+                    $resultado=$controlador->ctrDocumentoProducto($items,$franquicia);
+                }
+                
                 
             }else {
                 $items=$_GET["items"];

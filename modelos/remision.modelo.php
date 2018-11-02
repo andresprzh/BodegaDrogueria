@@ -18,11 +18,12 @@ class ModeloRemision extends Conexion{
     }
 
     // public function mdlSubirReq($cabecera,$items)
-    public function mdlSubirRem($ubicacion,$franquicia,$fecha)
+    public function mdlSubirRem($usuario,$ubicacion,$franquicia,$fecha)
     {
         $tabla="remisiones";
         
-        $stmt= $this->link->prepare("INSERT INTO $tabla(ubicacion,franquicia,creada) VALUES(:ubicacion,:franquicia,:fecha)");
+        $stmt= $this->link->prepare("INSERT INTO $tabla(encargado,ubicacion,franquicia,creada) VALUES(:usuario,:ubicacion,:franquicia,:fecha)");
+        $stmt->bindParam(":usuario",$usuario,PDO::PARAM_INT);
         $stmt->bindParam(":ubicacion",$ubicacion,PDO::PARAM_STR);
         $stmt->bindParam(":franquicia",$franquicia,PDO::PARAM_STR);
         $stmt->bindParam(":fecha",$fecha,PDO::PARAM_STR);

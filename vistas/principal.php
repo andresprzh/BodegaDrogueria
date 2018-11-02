@@ -87,7 +87,7 @@
         "pvcajas",
         "transportador",
         "requisiciones",
-        "pdv"
+        "franquicia"
         ];
     $jefe=[
       "inicio",
@@ -108,13 +108,12 @@
     $pv=[
       "inicio",
       "pv",
-      "pdv",
       "salir",
       "pvcajas"
     ];
     $franquicia=[
       "inicio",
-      "pdv",
+      "franquicia",
       "salir"
     ];
     $jefed=[

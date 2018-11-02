@@ -42,19 +42,25 @@
         <?php
 
             if (in_array($_SESSION["usuario"]["perfil"],[1])) {
-                echo '<li><a href="remisiones" ><i class="fas fa-upload"></i>Remisiones</a></li>';
+                
+                echo '<li><a class="subheader">Requisiciones</a></li>';
                 echo '<li><a href="requerir" ><i class="fas fa-file-upload"></i>Subir archivo requisicion</a></li>';
                 echo '<li><a href="requisiciones" ><i class="fas fa-list"></i>Requisiciones</a></li>';
                 echo '<li><a href="alistar" ><i class="fas fa-clipboard-list"></i>Alistar items</a></li>';
                 echo '<li><a href="cajas" ><i class="fas fa-boxes"></i>Ver cajas alistadas</a></li>';
                 echo '<li><a href="Nitem" ><i class="fas fa-plus-square"></i>Agregar items a requisición</a></li>';
                 echo '<li><a href="pv" ><i class="fas fa-clipboard-check"></i>Registrar cajas</a></li>';
-                echo '<li><a href="pdv" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
+                
                 echo '<li><a href="pvcajas" ><i class="fas fa-boxes"></i>Ver cajas registradas</a></li>';
                 echo '<li><a href="tareas" ><i class="fas fa-tasks"></i>Tareas</a></li>';
                 echo '<li><a href="usuarios" ><i class="fas fa-users"></i>Administrar usuarios</a></li>';
                 echo '<li><a href="transportador" ><i class="fas fa-truck"></i>Despachos</a></li>';
                 
+                echo '<li><div class="divider  "></div></li>';
+
+                echo '<li><a class="subheader">Remisiones</a></li>';
+                echo '<li><a href="remisiones" ><i class="fas fa-upload"></i>Remisiones</a></li>';
+                echo '<li><a href="franquicia" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==2) {
                 echo '<li><a href="requerir" ><i class="fas fa-upload"></i>Subir archivo requisicion</a></li>';
@@ -83,7 +89,7 @@
             }
             
             if ($_SESSION["usuario"]["perfil"]==7   ) {
-                echo '<li><a href="pdv" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
+                echo '<li><a href="franquicia" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
             }
             
 

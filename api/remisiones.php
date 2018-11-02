@@ -22,24 +22,27 @@ if (isset($_GET["ruta"])) {
             // $resultado=$controlador->ctrDocRem();
             // print ($resultado["documento"]);
             // // print json_encode($resultado);
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
                  
-                if (isset($_FILES['files']) && isset($_POST['franquicia'])) {
+                if (isset($_FILES["files"]) && isset($_POST["franquicia"])) {
                     
-                    $franquicia=$_POST['franquicia'];
-                    $tipos_permitidos = array('text/plain','text/x-Algol68');//tipos permitidos de archivos
+                    $franquicia=$_POST["franquicia"];
+                    $usuario=$_POST["usuario"];
+                    
+                    $tipos_permitidos = array("text/plain","text/x-Algol68");//tipos permitidos de archivos
                     $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
 
-                    $all_files = count($_FILES['files']['tmp_name']);
+                    $all_files = count($_FILES["files"]["tmp_name"]);
                     $resultado="";
                     
                     
                     for ($i = 0; $i < $all_files; $i++) {  
-                        $tipo = finfo_file($fileInfo, $_FILES['files']['tmp_name'][$i]);
+                        $tipo = finfo_file($fileInfo, $_FILES["files"]["tmp_name"][$i]);
                         // solo permite archivos de texto
                         
                         if (in_array($tipo, $tipos_permitidos)) {
-                            $archivos[]= file($_FILES['files']['tmp_name'][$i]);
+                            
+                            $archivos[]= file($_FILES["files"]["tmp_name"][$i]);
                             
                         }
                         
@@ -49,7 +52,7 @@ if (isset($_GET["ruta"])) {
                     
                     $resultado=$controlador->ctrSetCabecera();
                     $resultado=$controlador->ctrSetItems();
-                    $resultado=$controlador->ctrSubirRem();
+                    $resultado=$controlador->ctrSubirRem($usuario);
 
                     if ($resultado) {
                         $resultado=$controlador->ctrDocRem();
@@ -66,7 +69,7 @@ if (isset($_GET["ruta"])) {
         ============================================================================================================================*/    
         case "franquicias":
             
-            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            if ($_SERVER["REQUEST_METHOD"] === "GET") {
                 
                 
                     
@@ -86,13 +89,13 @@ if (isset($_GET["ruta"])) {
         ============================================================================================================================*/    
         case "remisiones":
             
-            if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            if ($_SERVER["REQUEST_METHOD"] === "GET") {
                 
                 
                     
                 $modelo=new ModeloRemision();
 
-                $resultado=$modelo->buscaritem('remisiones');
+                $resultado=$modelo->buscaritem("remisiones");
 
                 print json_encode($resultado->fetchAll());
                     

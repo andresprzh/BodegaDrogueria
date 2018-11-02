@@ -317,8 +317,18 @@ CREATE TABLE IF NOT EXISTS remisiones(
 	estado INT(1) DEFAULT 0,
 	ubicacion CHAR(6) DEFAULT '001-BD' ,
 	franquicia CHAR(6) NOT NULL,
+	encargado INT(10) NOT NULL,
+	encargado_franquicia INT(10) ,
 
-	PRIMARY KEY(no_rem)
+	PRIMARY KEY(no_rem),
+
+	CONSTRAINT encargado_usuario_remision
+	FOREIGN KEY(encargado) 
+	REFERENCES usuario(id_usuario),	
+
+	CONSTRAINT encargadofranquicia_usuario_remision
+	FOREIGN KEY(encargado_franquicia) 
+	REFERENCES usuario(id_usuario)
 
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -373,7 +383,6 @@ CREATE TABLE IF NOT EXISTS errores_remisiones(
 	no_rem INT(5) NOT NULL,
 	recibidos INT(5) default 0,
 	estado INT(1) NOT NULL default 0,
-	pedido INT(5) NOT NULL,
 	alistado INT(5) default 0,
 
 
@@ -391,13 +400,10 @@ CREATE TABLE IF NOT EXISTS errores_remisiones(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-
-
-
 /*******************************************************************************************************************************
 											INICIALIZA REGISTROS BASE DE DATOS 
 ********************************************************************************************************************************/
-REPLACE INTO tipo_caja  VALUES 
+/* REPLACE INTO tipo_caja  VALUES 
 	('CRT','Caja de cartón'),
 	('CPL','Caja plástica'),
 	('CAP','Canasta plástica'),
@@ -405,8 +411,8 @@ REPLACE INTO tipo_caja  VALUES
 	('GLA','Galoneta'
 );
 -- se llena un primer registro a caja que define las cajas no asignadas
--- INSERT INTO caja(no_caja) VALUES(1);
--- UPDATE caja SET no_caja=0 WHERE no_caja=1;
+INSERT INTO caja(no_caja) VALUES(1);
+UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 
 REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
@@ -416,12 +422,12 @@ REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
 	('UBBS','CHAPINERO VASQUEZ BARRENECHE','00','800097434'
 );
 
--- REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
--- UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
+REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
+UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
--- REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
+REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
-/* 
+
 REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
 	('001-BD', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
 	('001-VE', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
@@ -458,8 +464,8 @@ REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `dire
 	('110-VE', ' GASTOS ADMINISTRATIVOS POR DISTRIBUIR', ' CLL 7 30A12', '', '', '\r'),
 	('900-VE', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
 	('XXX-VE', ' C.O PARA CIERRE', '', '', '', '\r'
-);
-*/
+); */
+
 
 /*******************************************************************************************************************************
 											PROCEDIMIENTOS FUNCIONES Y TRIGGERS BASE DE DATOS
@@ -477,10 +483,12 @@ DROP TRIGGER IF EXISTS EstadoPedido;
 DROP TRIGGER IF EXISTS EstadoReq;
 DROP TRIGGER IF EXISTS EstadoAlistado;
 DROP TRIGGER IF EXISTS EstadoAlistadoUpd;
+DROP TRIGGER IF EXISTS InsertPedidoRemision;
 DROP TRIGGER IF EXISTS EliminarAlistado;
 DROP TRIGGER IF EXISTS InicioAbrir;
 DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS EstadoRecibido;
+DROP TRIGGER IF EXISTS EstadoRecibidoRemision;
 DROP TRIGGER IF EXISTS AutoincTareas;
 
 -- funcion que busca la ultima caja abierta por el alistador pers
@@ -642,7 +650,7 @@ DELIMITER $$
 		WHERE (estado=0
 		OR estado=1)
 		AND no_req=new.no_req;
-	
+
 		IF numalistados=0 THEN
 			UPDATE requisicion
 			SET enviado=NOW(),estado=1
@@ -695,7 +703,36 @@ DELIMITER $$
 		WHERE 
 		pedido.pedido <= alistados AND
 		pedido.item=new.item;
-				
+
+		IF new.estado=2 THEN
+			REPLACE INTO recibido(Item,No_Req,no_caja,recibidos) 
+			VALUES(new.item,new.no_req,new.no_caja,0);
+		-- si el item fue corregido
+      	ELSEIF new.estado=3 THEN 
+			-- inserta valores en pedido solo si no exites el registrp
+			INSERT INTO recibido (Item,No_Req,no_caja,recibidos) 
+			SELECT * FROM (SELECT new.item as item, new.no_req as req,new.no_caja as caja ,new.alistado as recibido) as temp
+			WHERE NOT EXISTS (
+				SELECT 1 FROM recibido WHERE item = new.item AND no_req=new.no_req AND no_caja=new.no_caja
+			) LIMIT 1;
+		END if;
+
+	END 
+$$
+
+-- trigger que agrea items atabla recibido_remisiones
+DELIMITER $$
+	CREATE TRIGGER InsertPedidoRemision
+	AFTER INSERT ON pedido_remisiones
+	FOR EACH ROW 
+	BEGIN
+		
+		INSERT INTO recibido_remisiones (item,no_rem,recibidos) 
+		SELECT * FROM (SELECT new.item as item, new.no_rem as rem,0 as recibido) as temp
+		WHERE NOT EXISTS (
+			SELECT 1 FROM recibido_remisiones WHERE item = new.item AND no_rem=new.no_rem
+		) LIMIT 1;
+
 	END 
 $$
 
@@ -819,12 +856,10 @@ DELIMITER $$
 	BEGIN
 	
 		DECLARE numalistado INT(5);
-		DECLARE numpedido INT(5);
 		DECLARE rem INT(5);
-		DECLARE ider INT(5);
 		DECLARE estado INT(1);
 								
-		SELECT alistado,pedido,pedido_remisiones.no_rem INTO numalistado,numpedido,rem
+		SELECT cantidad,pedido_remisiones.no_rem INTO numalistado,rem
 		FROM pedido_remisiones
 		RIGHT JOIN ITEMS ON ITEMS.ID_Item=pedido_remisiones.Item
 		WHERE ITEMS.ID_Item = new.item
@@ -842,12 +877,13 @@ DELIMITER $$
 
 		
 		IF new.estado<>4  THEN
-			REPLACE INTO errores_remisiones(item,no_rem,recibidos,estado,pedido,alistado) 
-			VALUES(new.item,new.no_rem,new.recibidos,new.estado,numpedido,numalistado);
+			REPLACE INTO errores_remisiones(item,no_rem,recibidos,estado,alistado) 
+			VALUES(new.item,new.no_rem,new.recibidos,new.estado,numalistado);
 		END IF;
 
 	END 	
 $$
+
 -- autoincrementa id de tabla tareas_det
 DELIMITER $$
 	CREATE TRIGGER AutoincTareas

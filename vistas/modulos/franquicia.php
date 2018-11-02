@@ -147,4 +147,4 @@
 </script>
 
 <!-- JS QUE MANEJA LOS EVENTOS DE LA PAGINA -->
-<script src="vistas/js/pdv.js"></script>
+<script src="vistas/js/franquicia.js"></script>

@@ -125,10 +125,9 @@ $(document).ready(function () {
                         type: "POST",
                         url: "api/usuarios/modificar",
                         data: {"datosusuario":datosusuario,"button":buttonid},
-                        // dataType: "JSON",
+                        dataType: "JSON",
                         success: function (res) {
-                            console.log(res);
-                            return 0;
+
                             // si se modifica o inserta el usuario el ajax regresa el id de dicho usuario
                             if (!isNaN(parseFloat(res))) {
                                 $('#iduser').html("");
@@ -288,40 +287,6 @@ function CargarUsuarios() {
             }
         }    
     });
-}
-
-function modUsuario(datosusuario,buttonid) {
-
-    return $.ajax({
-        type: "POST",
-        url: "api/usuarios/modificar",
-        data: {"datosusuario":datosusuario,"button":buttonid},
-        dataType: "JSON",
-        success: function (res) {
-
-            if (res) {
-                if (buttonid=="agregar") {
-                    swal({
-                        title: "Usuario Agregado",
-                        icon: "success",
-                    });
-                }else{
-                    swal({
-                        title: "Usuario modificado",
-                        icon: "success",
-                    });
-                }
-                // cierra el modal
-                $('.modal').modal('close'); 
-            }else{
-                swal({
-                    title: "No se pudo agregar o modificar el usuario",
-                    icon: "error",
-                });
-            }
-        }
-    });
-    
 }
 
 function cargarfranquicias() {

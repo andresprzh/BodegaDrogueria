@@ -57,6 +57,7 @@ $(document).ready(function () {
     let franquicia=document.getElementById('franquicias').value;
     
     form_data.append("franquicia", franquicia);
+    form_data.append("usuario", id_usuario);
 
     for (let x = 0; x < ins; x++) {
       form_data.append("files[]", document.getElementById('archivos').files[x]);
@@ -71,13 +72,12 @@ $(document).ready(function () {
       data: form_data,
       type: 'POST',
       success: function (res) {
-        console.log(res);
         
         // si hay un error al buscar los archivos no genera el documento
         if (!res) {
           swal({
             title: '!Error al generar el documento¡',
-            type: 'error',
+            icon: 'error',
           });
 
           // si no hay error genera le documento y lo manda a decargar
