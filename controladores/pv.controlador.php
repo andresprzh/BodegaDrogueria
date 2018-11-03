@@ -115,7 +115,6 @@ class ControladorPV extends ControladorCajas{
         // agrega los datos en la tabla de recibidos
         $resultado["estado"]=$this->modelo->mdlRegistrarItems($items,$numcaja);
 
-        
         //si registra los items, modifica la tabla de pedido para que la caja aperezca como recibida
         if ($resultado==true) {
             $resultado["estado"]=$this->modelo->mdlModCaja($numcaja);
@@ -163,11 +162,14 @@ class ControladorPV extends ControladorCajas{
     // crea archivo plano de la caja recibida
     private function ctrVerificarRegistro($numcaja){
         
+        $resultado=false;
+
         if ($this->modelo->mdlVerificarCaja($numcaja)) {             
 
             $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
 
             $resultado["estado"]="ok";
+
             if ($busqueda->rowCount()>0) {
                 $recibidos=$busqueda->fetchAll();
                 $i=0;
@@ -227,6 +229,75 @@ class ControladorPV extends ControladorCajas{
         
     }
 
+    private function ctrVerificarRemision($no_rem)
+    {
+
+        $resultado=false;
+
+        if ($this->modelo->mdlVerificarRemision($no_rem)) {
+
+            $busqueda=$this->modelo->mdlMostrarItemsRem($no_rem);
+
+            $resultado["estado"]="ok";
+
+            if ($busqueda->rowCount()>0) {
+                $recibidos=$busqueda->fetchAll();
+                $i=0;
+                foreach ($recibidos as $row) {
+                    if ($row["cantidad"]===null) {
+                        $row["cantidad"]="---";
+                    }
+                    switch ($row["rem_estado"]) {
+                        
+                        case 0:
+                            
+                            if ($row["recibidos"]==0) {
+
+                                $mensajeitem="item no recibido";
+                            }else {
+                                
+                                $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["cantidad"];
+                            }
+                            break;
+
+                        case 1:
+                            
+                            $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["cantidad"];                        
+                            break;
+
+                        case 2:
+                            
+                            $mensajeitem="El item  recibido no estaba en la requisicion";
+                            break;
+
+                        case 3:
+                            
+                           
+                            $mensajeitem="El item  recibido no estaba en la requisicion";
+                            break;
+                        
+                        default:
+                            // $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
+                            // $resultado["item"][$i]["iditem"]=$row["item"];
+                            // $i++;
+                            break;
+                    }
+                    if ($row["rem_estado"] != 4) {
+                        $resultado["estado"]="error0";
+                        $resultado["item"][$i]=$row;
+                        $resultado["item"][$i]["mensaje"]=$mensajeitem;
+                        $i++;
+                    }
+                    
+                }
+            }else {
+                $resultado["estado"]="error1";
+            }
+
+        }
+        return $resultado;
+    }
+    // busca items de una requisicion
     public function ctrBuscarItemrec($numcaja)
     {
          $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
@@ -236,26 +307,7 @@ class ControladorPV extends ControladorCajas{
             $itembus["estado"]="encontrado";
 
             $itembus["contenido"]=$busqueda->fetchAll();
-            // $cont=0;
-
-            // while($row = $busqueda->fetch()){
-
-            //     $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-            //                         "iditem"=>$row["item"],    
-            //                         "referencia"=>$row["ID_REFERENCIA"],
-            //                         "descripcion"=>$row["DESCRIPCION"],
-            //                         "disponibilidad"=>$row["disp"],
-            //                         "pedidos"=>$row["pedido"],
-            //                         "alistados"=>$row["alistado"],
-            //                         'ubicacion'=>$row["ubicacion"],
-            //                         'origen'=>$row["lo_origen"],
-            //                         'destino'=>$row["lo_destino"]
-            //                         ];
-            //     $cont++;
-
-            // }
-
-            
+                       
             
             return $itembus;
 
@@ -268,6 +320,7 @@ class ControladorPV extends ControladorCajas{
         }
     }
     
+    // crea documento de texto de los items recibidos
     public function ctrDocumentoR($numcaja)
     {
         $busqueda=$this->modelo->mdlMostrarrecibidos($numcaja);
@@ -303,7 +356,8 @@ class ControladorPV extends ControladorCajas{
         return $resultado;
     }
 
-    public function ctrDocumentoProducto($items,$franquicia)
+    // crea documento de la remision
+    public function ctrDocumentoRemision($items,$franquicia)
     {      
         // busca la descripcion dela franquicia
         $franquiciadesc=$this->modelo->mdlMostrarUbicacion($franquicia);
@@ -352,69 +406,90 @@ class ControladorPV extends ControladorCajas{
         return $resultado;
     }
 
-    public function ctrEnviarMail($data)
+    public function ctrEnviarMail($enviar)
     {
         $busqueda=$this->modelo->buscaritem('emails');
         // print json_encode($busqueda->fetchall());
         $to='';
         if ($busqueda->rowCount(0)) {
+            // return $busqueda->fetchAll();
             foreach ($busqueda->fetchAll() as $row) {
-                $to .= $row['correo'].';';
+                $to = $row['correo'];
+                // return $to;
+                // $to = 'andresprzh@gmail.com;correoautomatico.bodegasj@gmail.com;';
+                
+                //sender
+                $from = 'correoautomatico.bodegasj@gmail.com';
+                $fromName = 'correoautomatico';
+
+                //email subject
+                $subject = 'Lista de productos'; 
+
+                //email body content
+                $htmlContent = '<h1>Lista de productos</h1>
+                    <p>Adjunta lista de items</p>';
+
+                //header for sender info
+                $headers = "From: $fromName"." <".$from.">";
+
+                //boundary 
+                $semi_rand = md5(time()); 
+                $mime_boundary = "==Multipart_Boundary_x{$semi_rand}x"; 
+
+                //headers for attachment 
+                $headers .= "\nMIME-Version: 1.0\n" . "Content-Type: multipart/mixed;\n" . " boundary=\"{$mime_boundary}\""; 
+
+                //multipart boundary 
+                $htmlContent="lista";
+                $message = "--{$mime_boundary}\n" . "Content-Type: text/html; charset=\"UTF-8\"\n" .
+                "Content-Transfer-Encoding: 7bit\n\n" . $htmlContent . "\n\n"; 
+
+                $data = chunk_split(base64_encode($enviar));
+                $message .= "--{$mime_boundary}\n"; 
+                $message .= "Content-Type: text/html; name=\"lista.txt\"\n" . 
+                "Content-Description: lista.txt\n" .
+                "Content-Disposition: attachment;\n" . " filename=\"lista.txt\";\n" . 
+                "Content-Transfer-Encoding: base64\n\n" . $data . "\n\n";
+
+                $message .= "--{$mime_boundary}--";
+                $returnpath = "-f" . $from;
+                
+                $resultado[]["to"]=$to;
+                //send email
+                $mail = @mail($to, $subject, $message, $headers ,$returnpath); 
+
+                $resultado[]["res"]=$mail?"enviado":"error";
+                
             }
+            return $resultado;
         }else {
             return "Error no destinatario";
         }
         
-        // return $to;
-        // $to = 'andresprzh@gmail.com;correoautomatico.bodegasj@gmail.com;';
-
-        //sender
-        $from = 'correoautomatico.bodegasj@gmail.com';
-        $fromName = 'correoautomatico';
-
-        //email subject
-        $subject = 'Lista de productos'; 
-
-        //email body content
-        $htmlContent = '<h1>Lista de productos</h1>
-            <p>Adjunta lista de items</p>';
-
-        //header for sender info
-        $headers = "From: $fromName"." <".$from.">";
-
-        //boundary 
-        $semi_rand = md5(time()); 
-        $mime_boundary = "==Multipart_Boundary_x{$semi_rand}x"; 
-
-        //headers for attachment 
-        $headers .= "\nMIME-Version: 1.0\n" . "Content-Type: multipart/mixed;\n" . " boundary=\"{$mime_boundary}\""; 
-
-        //multipart boundary 
-        $htmlContent="lista";
-        $message = "--{$mime_boundary}\n" . "Content-Type: text/html; charset=\"UTF-8\"\n" .
-        "Content-Transfer-Encoding: 7bit\n\n" . $htmlContent . "\n\n"; 
-
-        $data = chunk_split(base64_encode($data));
-        $message .= "--{$mime_boundary}\n"; 
-        $message .= "Content-Type: text/html; name=\"lista.txt\"\n" . 
-        "Content-Description: lista.txt\n" .
-        "Content-Disposition: attachment;\n" . " filename=\"lista.txt\";\n" . 
-        "Content-Transfer-Encoding: base64\n\n" . $data . "\n\n";
-
-        $message .= "--{$mime_boundary}--";
-        $returnpath = "-f" . $from;
-
-        //send email
-        $mail = @mail($to, $subject, $message, $headers ,$returnpath); 
-
-        return $mail?"enviado":"error";
+        
         
         
     }
 
-    public function ctrRegistrarRemision()
+    public function ctrRegistrarRemision($items,$rem,$franquicia)
     {
+        
+        $resultado["estado"]=$this->modelo->mdlRegistrarRemision($items,$rem);
 
+        if ($resultado==true) {
+             
+            $resultado["contenido"]=$this->ctrVerificarRemision($rem['no_rem']);
+            return $resultado;
+            
+            if ($resultado["contenido"]["estado"]=="ok" ) {
+
+                $resultado["contenido"]=$this->ctrDocumentoRemision($items,$franquicia);
+                
+            }
+            
+        }
+        
+        return $resultado;
     }
     
 }

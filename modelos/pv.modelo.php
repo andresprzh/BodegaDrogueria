@@ -73,6 +73,41 @@ class ModeloPV extends Conexion{
         $stmt=null;
     }
 
+    // registra el item en la abla de recibidos_remisiones
+    public function mdlRegistrarRemision($items,$rem){   
+        // guarda datos de la requisicion
+        $no_rem=$rem['no_rem'];$persona=$rem['id_usuario'];
+        $datos="";
+        for($i=0;$i<count($items);$i++) {
+            $datos.="(:item$i,:no_rem,:recibidos$i),";
+        }
+
+        $datos=substr($datos, 0, -1).' ';
+
+        $sql='REPLACE INTO recibido_remisiones(item,no_rem,recibidos) VALUES'. $datos;
+        
+
+        $stmt= $this->link->prepare($sql);
+
+        $i=0;
+        foreach ($items as $row) {
+            $stmt->bindParam(":item$i",$row['item'],PDO::PARAM_STR);
+            $stmt->bindParam(":recibidos$i",$row['recibidos'],PDO::PARAM_INT);
+            $i++;
+        }
+
+        $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_STR);
+        
+        
+        
+        $res= $stmt->execute();
+        
+        // libera conexion para hace otra sentencia
+        $stmt->closeCursor();
+        return ($res);  
+        $stmt=null;
+    }
+
     //modifica registro en tabla para agregar la fecha en la que fue recibido
     public function mdlModCaja($NumCaja,$estado=4){
         // $this->link->closeCursor();
@@ -104,7 +139,7 @@ class ModeloPV extends Conexion{
         
     }    
 
-    // muestra los items recibidos
+    // muestra los items recibidos de una requisicion
     public function mdlMostrarItemsRec($numcaja){
         // $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,pedido.no_caja AS cajap,recibido.no_caja AS cajar,pedido.alistado,
         // recibido.recibidos,pedido.estado AS ped_estado,recibido.estado AS rec_estado,lo_origen,lo_destino,MIN(ID_CODBAR) AS codigo
@@ -128,6 +163,26 @@ class ModeloPV extends Conexion{
         $stmt= $this->link->prepare($sql );
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ($stmt);  
+    }
+
+    // muestra los items recibidos de una remision
+    public function mdlMostrarItemsRem($no_rem){
+        $sql=
+        "SELECT recibido_remisiones.item AS iditem,DESCRIPCION AS descripcion,
+        pedido_remisiones.cantidad,recibido_remisiones.recibidos,
+        recibido_remisiones.estado AS rem_estado
+        FROM recibido_remisiones
+        INNER JOIN ITEMS ON ITEMS.ID_ITEM=recibido_remisiones.item
+        INNER JOIN remisiones ON remisiones.no_rem=recibido_remisiones.no_rem
+        LEFT JOIN  pedido_remisiones ON pedido_remisiones.item=recibido_remisiones.item
+        WHERE recibido_remisiones.no_rem=:no_rem";
+
+        $stmt= $this->link->prepare($sql );
+
+        $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT);
         $stmt->execute();
 
         return ($stmt);  
@@ -195,6 +250,7 @@ class ModeloPV extends Conexion{
         return ($stmt);  
     }
 
+    // verificar caja resibida
     public function mdlVerificarCaja($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
@@ -220,6 +276,30 @@ class ModeloPV extends Conexion{
         $stmt=null;
     }
 
+    public function mdlVerificarRemision($no_rem)
+    {
+        $no_req=$this->req[0];$alistador=$this->req[1];
+        
+        // $stmt= $this->link->prepare('SELECT COUNT(item) AS cantidad
+        // FROM recibido
+        // WHERE no_caja=:no_caja
+        // AND no_req=:no_req
+        // AND estado <>4;
+        // ');
+
+        $stmt= $this->link->prepare('SELECT VerificarRemision(:no_rem) AS verificar ');
+
+        
+        $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_STR);
+
+        $res=$stmt->execute();
+        $stmt->closeCursor();  
+        // retorna el resultado de la sentencia
+	    return $res;
+        // $stmt->closeCursor();  
+        // cierra la conexion
+        $stmt=null;
+    }
     // muestra ubicacion 
     public function mdlMostrarUbicacion($franquicia)
     {

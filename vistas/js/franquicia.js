@@ -134,6 +134,9 @@ $(document).ready(function () {
                 //si se le da click en Resgitrar procede a generar e reporte
                 if (registrar) {
 
+                    var remision = $(".remisiones").val();
+                    
+                    var rem ={'no_rem':remision, 'id_usuario':id_usuario};
                     
                     var tabla = $('table.tablas').DataTable();
                     // se obtienen todos los datos de la tabla en una matriz
@@ -152,12 +155,12 @@ $(document).ready(function () {
                     }
                     $.ajax({
                         url: 'api/pv/registrar',
-                        type: 'GET',//metodo post para mandar datos
-                        data: { 'items': items,'franquicia':franquicia },//datos que se enviaran
+                        type: 'POST',//metodo post para mandar datos
+                        data: { 'items': items,'franquicia':franquicia,'rem':rem },//datos que se enviaran
                         dataType: 'JSON',
                         success: function (res) {
-                            // console.log(res);
-
+                            console.log(res);
+                            return 0;
                             // crea el nombre del documento a partir de la requisicion y la caja
                             let nomdoc = 'lista.txt';
 

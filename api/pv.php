@@ -87,8 +87,9 @@ if (isset($_GET['ruta'])) {
                 }else {
                     
                     $franquicia=$_POST["franquicia"];
+                    $rem=$_POST["rem"];
                     $controlador=new ControladorPV();
-                    $resultado=$controlador->ctrDocumentoProducto($items,$franquicia);
+                    $resultado=$controlador->ctrRegistrarRemision($items,$rem,$franquicia);
                 }
                 
                 
@@ -96,7 +97,7 @@ if (isset($_GET['ruta'])) {
                 $items=$_GET["items"];
                 $franquicia=$_GET["franquicia"];
                 $controlador=new ControladorPV();
-                $resultado=$controlador->ctrDocumentoProducto($items,$franquicia);
+                $resultado=$controlador->ctrDocumentoRemision($items,$franquicia);
                 
 
                 // envia correo

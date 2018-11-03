@@ -473,6 +473,7 @@ REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `dire
 /* ELIMINA PROCEDIMIENTOS Y FUNCIONES SI EXISTE */
 DROP FUNCTION IF EXISTS NumeroCaja;
 DROP FUNCTION IF EXISTS VerificarCaja;
+DROP FUNCTION IF EXISTS VerificarRemision;
 DROP PROCEDURE IF EXISTS BuscarCod;
 
 
@@ -544,6 +545,40 @@ DELIMITER $$
 	END 
 $$
 
+-- procedimiento que verifica el estado de los items recibidos de una remision comparandolos con  los items pedidos o alistados
+DELIMITER $$
+	CREATE FUNCTION VerificarRemision(rem INT(10))
+	RETURNS TINYINT(1)
+	BEGIN
+		DECLARE cantidad TINYINT;
+		
+		UPDATE recibido_remisiones
+		SET estado=0
+		WHERE no_rem=rem;
+		
+		
+		SELECT COUNT(item) INTO cantidad
+		FROM recibido_remisiones
+		WHERE no_rem=rem
+		AND estado <>4;
+		
+
+		IF cantidad=0 THEN
+			
+
+			UPDATE remisiones
+			SET estado=4
+			WHERE no_rem=rem;
+			return true;
+			
+		ELSE
+		
+			return false;
+			
+		END IF;
+		
+	END 
+$$
 -- procedimiento que busca un Item con el codigo de barras en la la lista de rquerido especificada
 -- el procedimiento tambien cambia el estado del Item a 1 que significa que esta siendo alistado
 DELIMITER $$
