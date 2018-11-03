@@ -171,7 +171,7 @@ class ModeloPV extends Conexion{
     // muestra los items recibidos de una remision
     public function mdlMostrarItemsRem($no_rem){
         $sql=
-        "SELECT recibido_remisiones.item AS iditem,DESCRIPCION AS descripcion,
+        "SELECT recibido_remisiones.item AS item,DESCRIPCION AS descripcion,
         pedido_remisiones.cantidad,recibido_remisiones.recibidos,
         recibido_remisiones.estado AS rem_estado
         FROM recibido_remisiones

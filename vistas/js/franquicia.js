@@ -156,28 +156,33 @@ $(document).ready(function () {
                     $.ajax({
                         url: 'api/pv/registrar',
                         type: 'POST',//metodo post para mandar datos
+                        // type: 'GET',
                         data: { 'items': items,'franquicia':franquicia,'rem':rem },//datos que se enviaran
                         dataType: 'JSON',
                         success: function (res) {
                             console.log(res);
-                            return 0;
-                            // crea el nombre del documento a partir de la requisicion y la caja
-                            let nomdoc = 'lista.txt';
+                            // return 0;
+                            if (res) {
 
-                            let element = document.createElement('a');
-                            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res));
-                            element.setAttribute('download', nomdoc);
+                                // crea el nombre del documento a partir de la requisicion y la caja
+                                let nomdoc = 'lista.txt';
 
-                            element.style.display = 'none';
-                            document.body.appendChild(element);
+                                let element = document.createElement('a');
+                                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']['documento']));
+                                element.setAttribute('download', nomdoc);
 
-                            element.click();
+                                element.style.display = 'none';
+                                document.body.appendChild(element);
 
-                            document.body.removeChild(element);
+                                element.click();
 
-                            enviarmail(res);
+                                document.body.removeChild(element);
 
-                            location.reload();
+                                enviarmail(res);
+
+                                // location.reload();
+                            }
+                            
 
                         }
                     });
@@ -278,7 +283,7 @@ function BuscarCodBar() {
 
 function enviarmail(data){
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: 'api/pv/mail',
         data: {'data':data}
     });
@@ -314,7 +319,7 @@ function iniciar_tabla(tabla) {
                 "sPrevious": "Anterior"
             },
         },
-        scrollY: "600px",
+        scrollY: "350px",
         scrollCollapse: true,
         paging: false
 

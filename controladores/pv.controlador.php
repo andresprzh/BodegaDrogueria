@@ -234,6 +234,18 @@ class ControladorPV extends ControladorCajas{
 
         $resultado=false;
 
+        $resultado['documento']=str_repeat("-",92 )."\r\n";
+        $resultado['documento'].="|".str_pad("*ERRORES*",90," ",STR_PAD_BOTH)."|\r\n";
+        $resultado['documento'].=str_repeat("-",92 )."\r\n";
+
+        $descripcion=str_pad("DESCRIPCION ITEM",37," ",STR_PAD_RIGHT);        
+        $item=str_pad("IDITEM",6+2," ",STR_PAD_RIGHT);
+        $enviados=str_pad("ENVIADOS",8+2," ",STR_PAD_RIGHT);
+        $recibidos=str_pad("RECIBIDOS",8+2," ",STR_PAD_RIGHT);
+        $mensaje=str_pad("ERROR",27," ",STR_PAD_LEFT);
+        $resultado['documento'].=($descripcion.$item.$enviados.$recibidos.$mensaje."\r\n");
+        $resultado['documento'].=str_repeat("-",92 )."\r\n";
+
         if ($this->modelo->mdlVerificarRemision($no_rem)) {
 
             $busqueda=$this->modelo->mdlMostrarItemsRem($no_rem);
@@ -245,7 +257,7 @@ class ControladorPV extends ControladorCajas{
                 $i=0;
                 foreach ($recibidos as $row) {
                     if ($row["cantidad"]===null) {
-                        $row["cantidad"]="---";
+                        $row["cantidad"]=0;
                     }
                     switch ($row["rem_estado"]) {
                         
@@ -256,45 +268,53 @@ class ControladorPV extends ControladorCajas{
                                 $mensajeitem="item no recibido";
                             }else {
                                 
-                                $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["cantidad"];
+                                $mensajeitem="Se recibieron menos items";
                             }
                             break;
 
                         case 1:
                             
-                            $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["cantidad"];                        
+                            $mensajeitem="Se recibieron mas items";                        
                             break;
 
                         case 2:
                             
-                            $mensajeitem="El item  recibido no estaba en la requisicion";
+                            $mensajeitem="Item fuera de la remision";
                             break;
 
                         case 3:
                             
                            
-                            $mensajeitem="El item  recibido no estaba en la requisicion";
+                            $mensajeitem="Item fuera de la remision";
                             break;
                         
                         default:
-                            // $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
-                            // $resultado["item"][$i]["iditem"]=$row["item"];
-                            // $i++;
+                           
                             break;
                     }
                     if ($row["rem_estado"] != 4) {
                         $resultado["estado"]="error0";
                         $resultado["item"][$i]=$row;
                         $resultado["item"][$i]["mensaje"]=$mensajeitem;
+                        
+                        $descripcion=str_pad(substr($row["descripcion"],0,35),35+2," ",STR_PAD_RIGHT);
+                        $item=str_pad($row["item"],6+2," ",STR_PAD_RIGHT);
+                        $enviados=str_pad($row["cantidad"],8,"0",STR_PAD_LEFT)."  ";
+                        $recibidos=str_pad($row["recibidos"],8,"0",STR_PAD_LEFT)."  ";
+                        $mensaje=str_pad($mensajeitem,27," ",STR_PAD_LEFT);
+                        $resultado['documento'].=($descripcion.$item.$enviados.$recibidos.$mensaje."\r\n");
                         $i++;
                     }
                     
                 }
             }else {
-                $resultado["estado"]="error1";
+                $resultado["estado"]=false;
+
             }
 
         }
+
+        $resultado['documento'].=str_repeat(str_repeat("-",92 )."\r\n",2);
         return $resultado;
     }
     // busca items de una requisicion
@@ -374,6 +394,10 @@ class ControladorPV extends ControladorCajas{
         $resultado.="|".str_pad("Fecha: $fecha" ,90/2," ",STR_PAD_RIGHT).str_pad("franquicia: $franquicia" ,90/2," ",STR_PAD_RIGHT)."|\r\n";
         $resultado.=str_repeat("-",92 )."\r\n";
 
+        
+        $resultado.=str_repeat("-",92 )."\r\n";
+        $resultado.="|".str_pad("*ITEM RECIBIDO*",90," ",STR_PAD_BOTH)."|\r\n";
+        $resultado.=str_repeat("-",92 )."\r\n";
 
         $descripcion=str_pad("DESCRIPCION ITEM",40+2," ",STR_PAD_RIGHT);
         $item=str_pad("IDITEM",6+2," ",STR_PAD_RIGHT);
@@ -398,8 +422,12 @@ class ControladorPV extends ControladorCajas{
         }
         $resultado.=str_repeat("-",92 )."\r\n";
         
+        
         $resultado.=str_pad("TOTAL:",92-12 ," ",STR_PAD_LEFT)."    ";
-        $resultado.=str_pad($total,8,"0",STR_PAD_LEFT);
+        $resultado.=str_pad($total,8,"0",STR_PAD_LEFT)."\r\n";
+        $resultado.=str_repeat(str_repeat("-",92 )."\r\n",2);
+
+        
         // print $resultado;
 
         
@@ -477,15 +505,15 @@ class ControladorPV extends ControladorCajas{
         $resultado["estado"]=$this->modelo->mdlRegistrarRemision($items,$rem);
 
         if ($resultado==true) {
-             
+            $documento=$this->ctrDocumentoRemision($items,$franquicia);
             $resultado["contenido"]=$this->ctrVerificarRemision($rem['no_rem']);
-            return $resultado;
             
-            if ($resultado["contenido"]["estado"]=="ok" ) {
-
-                $resultado["contenido"]=$this->ctrDocumentoRemision($items,$franquicia);
-                
+            if ($resultado["contenido"]["estado"]=="error0") {
+                $resultado["contenido"]["documento"]=$documento.$resultado["contenido"]["documento"];
+            }else {
+                $resultado["contenido"]["documento"]=$documento;
             }
+            
             
         }
         

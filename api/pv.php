@@ -113,7 +113,7 @@ if (isset($_GET['ruta'])) {
                                                 ENVIA MAIL CN ARCHIVO ADJUNTO
         ============================================================================================================================*/
         case "mail":
-            $data=$_GET["data"];
+            $data=$_REQUEST["data"];
             $controlador=new ControladorPV();
             $resultado=$controlador->ctrEnviarMail($data); 
             print json_encode($resultado);                       
