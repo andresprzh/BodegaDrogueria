@@ -169,7 +169,8 @@ class ModeloPV extends Conexion{
     }
 
     // muestra los items recibidos de una remision
-    public function mdlMostrarItemsRem($no_rem){
+    public function mdlMostrarItemsRem($no_rem)
+    {
         $sql=
         "SELECT recibido_remisiones.item AS item,DESCRIPCION AS descripcion,
         pedido_remisiones.cantidad,recibido_remisiones.recibidos,
@@ -188,6 +189,23 @@ class ModeloPV extends Conexion{
         return ($stmt);  
     }
 
+    // muestra items recibidos de una remision
+    public function mdlMostraRecibidoRemision($no_rem)
+    {
+        $stmt= $this->link->prepare(
+        "SELECT item,DESCRIPCION AS descripcion, ID_REFERENCIA AS referencia, recibidos, MIN(ID_CODBAR) AS codbarras
+        FROM recibido_remisiones
+        INNER JOIN ITEMS ON ID_ITEM=item
+        INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
+        WHERE no_rem=:no_rem
+        GROUP BY item,DESCRIPCION,ID_REFERENCIA,recibidos;
+        ");
+
+        $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ($stmt);  
+    }
     // muestra las cajas enviadas
     public function mdlMostrarCajaPV($numcaja){
         $no_req=$this->req[0];$alistador=$this->req[1];
@@ -216,6 +234,7 @@ class ModeloPV extends Conexion{
         $stmt=null;
     }
 
+    // muestra items recibidos de una requisicion
     public function mdlMostrarrecibidos($caja){
         
         $sql="SELECT item as iditem,recibido.no_req,no_caja,recibidos,recibido.estado,requisicion.lo_origen,requisicion.lo_destino
@@ -276,6 +295,7 @@ class ModeloPV extends Conexion{
         $stmt=null;
     }
 
+    // verifica estado de los items recibidos de una remision
     public function mdlVerificarRemision($no_rem)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];

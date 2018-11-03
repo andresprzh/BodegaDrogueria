@@ -97,7 +97,7 @@ if (isset($_GET['ruta'])) {
                 $items=$_GET["items"];
                 $franquicia=$_GET["franquicia"];
                 $controlador=new ControladorPV();
-                $resultado=$controlador->ctrDocumentoRemision($items,$franquicia);
+                $resultado=$controlador->ctrDocumentoRemision($franquicia,$items);
                 
 
                 // envia correo

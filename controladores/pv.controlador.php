@@ -377,11 +377,17 @@ class ControladorPV extends ControladorCajas{
     }
 
     // crea documento de la remision
-    public function ctrDocumentoRemision($items,$franquicia)
+    public function ctrDocumentoRemision($franquicia,$rem)
     {      
         // busca la descripcion dela franquicia
-        $franquiciadesc=$this->modelo->mdlMostrarUbicacion($franquicia);
-        $franquiciadesc=$franquiciadesc->fetch()[0];
+        $busqueda=$this->modelo->mdlMostrarUbicacion($franquicia);
+        $franquiciadesc=$busqueda->fetch()[0];
+        $busqueda->closeCursor();
+
+        // busca los items
+        $busqueda=$this->modelo->mdlMostraRecibidoRemision($rem);
+        $items=$busqueda->fetchAll();
+        
 
         $hoy = getdate();
         $fecha=$hoy["year"]."/".$hoy["month"]."/".$hoy["mday"]." ".$hoy["hours"].":".$hoy["minutes"];
@@ -434,6 +440,7 @@ class ControladorPV extends ControladorCajas{
         return $resultado;
     }
 
+    // envia los archivos planos generados de registrar la remision al correo
     public function ctrEnviarMail($enviar)
     {
         $busqueda=$this->modelo->buscaritem('emails');
@@ -499,13 +506,14 @@ class ControladorPV extends ControladorCajas{
         
     }
 
+    // registra los items recibidos de una remision
     public function ctrRegistrarRemision($items,$rem,$franquicia)
     {
         
         $resultado["estado"]=$this->modelo->mdlRegistrarRemision($items,$rem);
 
         if ($resultado==true) {
-            $documento=$this->ctrDocumentoRemision($items,$franquicia);
+            $documento=$this->ctrDocumentoRemision($franquicia,$rem['no_rem']);
             $resultado["contenido"]=$this->ctrVerificarRemision($rem['no_rem']);
             
             if ($resultado["contenido"]["estado"]=="error0") {

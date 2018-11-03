@@ -152,6 +152,7 @@ $(document).ready(function () {
                             "referencia": datos[i][3],
                             "recibidos": $(datos[i][4]).val()
                         }
+                        
                     }
                     $.ajax({
                         url: 'api/pv/registrar',
@@ -160,7 +161,7 @@ $(document).ready(function () {
                         data: { 'items': items,'franquicia':franquicia,'rem':rem },//datos que se enviaran
                         dataType: 'JSON',
                         success: function (res) {
-                            console.log(res);
+                            // console.log(res);
                             // return 0;
                             if (res) {
 
