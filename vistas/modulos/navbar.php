@@ -61,6 +61,7 @@
                 echo '<li><a class="subheader">Remisiones</a></li>';
                 echo '<li><a href="remisiones" ><i class="fas fa-upload"></i>Remisiones</a></li>';
                 echo '<li><a href="franquicia" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
+                echo '<li><a href="franquiciaremision" ><i class="fas fa-clipboard-list"></i>Remisiones registradas</a></li>';
             }
             if ($_SESSION["usuario"]["perfil"]==2) {
                 echo '<li><a href="requerir" ><i class="fas fa-upload"></i>Subir archivo requisicion</a></li>';
@@ -90,6 +91,7 @@
             
             if ($_SESSION["usuario"]["perfil"]==7   ) {
                 echo '<li><a href="franquicia" ><i class="fas fa-clipboard-check"></i>Registro de productos</a></li>';
+                echo '<li><a href="franquiciaremision" ><i class="fas fa-clipboard-list"></i>Remisiones registradas</a></li>';
             }
             
 

@@ -181,7 +181,7 @@ $(document).ready(function () {
 
                                 enviarmail(res);
 
-                                // location.reload();
+                                location.reload();
                             }
                             
 
