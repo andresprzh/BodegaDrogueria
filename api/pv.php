@@ -51,22 +51,27 @@ if (isset($_GET['ruta'])) {
             break;
 
         /* ============================================================================================================================
-                                                MUESTRA EL ITEM BUSCADO
+                                                            MUESTRA EL ITEM BUSCADO
         ============================================================================================================================*/
         case "items":
-            // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
-            if (isset($_POST["req"])) {
-                $controlador=new ControladorPV($_POST["req"]);
+            // si es franquicia
+            if (isset($_REQUEST["no_rem"])) {
+                
+                $modelo=new ModeloPV();
+                $busqueda=$modelo->mdlMostraRecibidoRemision($_REQUEST["no_rem"]);
+                $resultado=$busqueda->fetchAll();
             }else {
-                $controlador=new ControladorPV();
+
+                if (isset($_POST["req"])) {
+                    $controlador=new ControladorPV($_POST["req"]);
+                }else {
+                    $controlador=new ControladorPV();
+                }
+
+                $codigo=$_POST["codigo"];
+                $resultado=$controlador->ctrBuscarItemPV($codigo);
             }
-
-            $codigo=$_POST["codigo"];
-
-
-            $busqueda=$controlador->ctrBuscarItemPV($codigo);
-
-            print json_encode($busqueda);
+            print json_encode($resultado);
             break;
         
         /* ============================================================================================================================
@@ -110,13 +115,26 @@ if (isset($_GET['ruta'])) {
             break;
         
         /* ============================================================================================================================
-                                                ENVIA MAIL CN ARCHIVO ADJUNTO
+                                                        ENVIA MAIL CN ARCHIVO ADJUNTO
         ============================================================================================================================*/
         case "mail":
             $data=$_REQUEST["data"];
             $controlador=new ControladorPV();
             $resultado=$controlador->ctrEnviarMail($data); 
             print json_encode($resultado);                       
+            
+            break;
+         /* ============================================================================================================================
+                                                                GENERA DOCUMENTO REMISION
+        ============================================================================================================================*/
+        case "documento":
+            $franquicia=$_REQUEST["franquicia"];
+            $no_rem=$_REQUEST["no_rem"];
+            
+            $controlador=new ControladorPV();
+            $resultado=$controlador->ctrDocumentoRemision($franquicia,$no_rem); 
+            print json_encode($resultado);                       
+            
             
             break;
             

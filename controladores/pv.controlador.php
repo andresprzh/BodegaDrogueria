@@ -394,24 +394,24 @@ class ControladorPV extends ControladorCajas{
         
         $franquicia=$franquiciadesc;
     
-        $resultado="";
+        $documento="";
 
-        $resultado.=str_repeat("-",92 )."\r\n";
-        $resultado.="|".str_pad("Fecha: $fecha" ,90/2," ",STR_PAD_RIGHT).str_pad("franquicia: $franquicia" ,90/2," ",STR_PAD_RIGHT)."|\r\n";
-        $resultado.=str_repeat("-",92 )."\r\n";
+        $documento.=str_repeat("-",92 )."\r\n";
+        $documento.="|".str_pad("Fecha: $fecha" ,90/2," ",STR_PAD_RIGHT).str_pad("franquicia: $franquicia" ,90/2," ",STR_PAD_RIGHT)."|\r\n";
+        $documento.=str_repeat("-",92 )."\r\n";
 
         
-        $resultado.=str_repeat("-",92 )."\r\n";
-        $resultado.="|".str_pad("*ITEM RECIBIDO*",90," ",STR_PAD_BOTH)."|\r\n";
-        $resultado.=str_repeat("-",92 )."\r\n";
+        $documento.=str_repeat("-",92 )."\r\n";
+        $documento.="|".str_pad("*ITEM RECIBIDO*",90," ",STR_PAD_BOTH)."|\r\n";
+        $documento.=str_repeat("-",92 )."\r\n";
 
         $descripcion=str_pad("DESCRIPCION ITEM",40+2," ",STR_PAD_RIGHT);
         $item=str_pad("IDITEM",6+2," ",STR_PAD_RIGHT);
         $ref=str_pad("REFERENCIA",15+2," ",STR_PAD_RIGHT);
         $cod_bar=str_pad("CODIGO BARRAS",15+2," ",STR_PAD_RIGHT);
         $recibidos=str_pad("CANTIDAD",8," ",STR_PAD_RIGHT);
-        $resultado.=($descripcion.$item.$ref.$cod_bar.$recibidos."\r\n");
-        $resultado.=str_repeat("-",92 )."\r\n";
+        $documento.=($descripcion.$item.$ref.$cod_bar.$recibidos."\r\n");
+        $documento.=str_repeat("-",92 )."\r\n";
 
         $total=0;
         foreach ($items as $row) {
@@ -424,18 +424,26 @@ class ControladorPV extends ControladorCajas{
             $num=$row["recibidos"];
             $recibidos=str_pad($num,8,"0",STR_PAD_LEFT);
             $total+=$num;
-            $resultado.=($descripcion.$item.$ref.$cod_bar.$recibidos."\r\n");
+            $documento.=($descripcion.$item.$ref.$cod_bar.$recibidos."\r\n");
         }
-        $resultado.=str_repeat("-",92 )."\r\n";
+        $documento.=str_repeat("-",92 )."\r\n";
         
         
-        $resultado.=str_pad("TOTAL:",92-12 ," ",STR_PAD_LEFT)."    ";
-        $resultado.=str_pad($total,8,"0",STR_PAD_LEFT)."\r\n";
-        $resultado.=str_repeat(str_repeat("-",92 )."\r\n",2);
+        $documento.=str_pad("TOTAL:",92-12 ," ",STR_PAD_LEFT)."    ";
+        $documento.=str_pad($total,8,"0",STR_PAD_LEFT)."\r\n";
+        $documento.=str_repeat(str_repeat("-",92 )."\r\n",2);
 
         
-        // print $resultado;
-
+        
+        // valida la remision
+        $resultado=$this->ctrVerificarRemision($rem);
+        
+        // hay problema en la recepcion de la remision
+        if ($resultado["estado"]=="error0") {
+            $resultado["documento"]=$documento.$resultado["documento"];
+        }else {
+            $resultado["documento"]=$documento;
+        }
         
         return $resultado;
     }
@@ -513,14 +521,15 @@ class ControladorPV extends ControladorCajas{
         $resultado["estado"]=$this->modelo->mdlRegistrarRemision($items,$rem);
 
         if ($resultado==true) {
-            $documento=$this->ctrDocumentoRemision($franquicia,$rem['no_rem']);
-            $resultado["contenido"]=$this->ctrVerificarRemision($rem['no_rem']);
+            $resultado["contenido"]=$this->ctrDocumentoRemision($franquicia,$rem['no_rem']);
+            // $documento=$this->ctrDocumentoRemision($franquicia,$rem['no_rem']);
+            // $resultado["contenido"]=$this->ctrVerificarRemision($rem['no_rem']);
             
-            if ($resultado["contenido"]["estado"]=="error0") {
-                $resultado["contenido"]["documento"]=$documento.$resultado["contenido"]["documento"];
-            }else {
-                $resultado["contenido"]["documento"]=$documento;
-            }
+            // if ($resultado["contenido"]["estado"]=="error0") {
+            //     $resultado["contenido"]["documento"]=$documento.$resultado["contenido"]["documento"];
+            // }else {
+            //     $resultado["contenido"]["documento"]=$documento;
+            // }
             
             
         }
