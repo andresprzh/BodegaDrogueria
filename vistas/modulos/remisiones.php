@@ -18,8 +18,9 @@
             <div class="file-upload-res" id='contenido'>
                 <p class=""><i class="fas fa-upload"></i> Subir</p>
             </div>
+            
         </div>
-        <button class="btn green col s12" type="submit">Subir</button>
+        <button class="btn green col s12" type="submit" id="submitbutton">Subir</button>
     </form>
 </div>
     

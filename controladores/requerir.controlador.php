@@ -139,13 +139,13 @@ class ControladorRequerir{
                 //busca la localizacion deorigen
                 $pos=strpos($linea, 'Local. Origen  :');
                 if($pos){
-                    $lo=substr($linea,$pos+17,6);	
+                    $lo=substr($linea,$pos+17,3);	
                 }
 
                 //busca la localzacion de destino
                 $pos=strpos($linea, 'Local. Destino :');
                 if($pos){
-                    $ld=substr($linea,$pos+17,6);	
+                    $ld=substr($linea,$pos+17,3);	
                 }
 
                 //busca el tipo de inventario
@@ -266,10 +266,10 @@ class ControladorRequerir{
     // funcion que sube los items
     private function ctrSubirReq(){
         $modelo=new ModeloRequierir();
-
+        
         // $resultado=$modelo->mdlSubirReq($this->cabecera,$this->items);
         $resultado=$modelo->mdlSubirReq($this->cabecera);
-       
+
         if ($resultado==true) {
             foreach ($this->itemsarray as  $i=> $item) {
                 

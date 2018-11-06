@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+  
    /* ============================================================================================================================
                                                         INICIALIZACION   
     ============================================================================================================================*/
@@ -49,6 +49,24 @@ $(document).ready(function () {
 
   $("#remisiones").submit(function (e) {
     e.preventDefault();
+
+    // muestra que se estan cargando los archivos
+    $("#submitbutton").attr("disabled", "disabled");//evita que se de doble click en el boton
+    $('#remisiones #archivos').attr('disabled', 'disabled');
+    $('.file-upload-res').css('text-align', 'center');
+    $('.file-upload-res').html(`
+    <div class="preloader-wrapper active">
+      <div class="spinner-layer spinner-green-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>`);
+
     let form_data = new FormData();
     let ins = document.getElementById('archivos').files.length;
 
@@ -62,7 +80,7 @@ $(document).ready(function () {
     for (let x = 0; x < ins; x++) {
       form_data.append("files[]", document.getElementById('archivos').files[x]);
     }
-    
+
     $.ajax({
       url: 'api/remisiones/docrem', // point to server-side PHP script 
       dataType: 'JSON', // what to expect back from the PHP script
@@ -99,6 +117,10 @@ $(document).ready(function () {
           $('.file-upload-res').css('text-align', 'center');
 
           $('.file-upload-res').html('<p class=""><i class="fas fa-upload"></i>Subir</p>');
+
+          // habilita nuevamente input
+          $("#submitbutton").removeAttr("disabled");
+          $("#remisiones #archivos").removeAttr("disabled");
         }
       }
     });

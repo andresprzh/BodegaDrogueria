@@ -159,8 +159,7 @@ class ControladorRemision{
     {
         $resultado=false;
         
-        $this->no_rem=$this->modelo->mdlSubirRem($usuario,$this->ubicacion,$this->franquicia,$this->cabecera["fecha"]);
-
+        $this->no_rem=$this->modelo->mdlSubirRem($usuario,$this->franquicia,$this->cabecera["fecha"]);
         if ($this->no_rem!==false) {
             
             foreach ($this->itemsarray as $item) {

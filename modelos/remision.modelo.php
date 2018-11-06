@@ -39,13 +39,12 @@ class ModeloRemision extends Conexion{
     }
 
     // public function mdlSubirReq($cabecera,$items)
-    public function mdlSubirRem($usuario,$ubicacion,$franquicia,$fecha)
+    public function mdlSubirRem($usuario,$franquicia,$fecha)
     {
         $tabla="remisiones";
         
-        $stmt= $this->link->prepare("INSERT INTO $tabla(encargado,ubicacion,franquicia,creada,estado) VALUES(:usuario,:ubicacion,:franquicia,:fecha,2)");
+        $stmt= $this->link->prepare("INSERT INTO $tabla(encargado,franquicia,creada,estado) VALUES(:usuario,:franquicia,:fecha,2)");
         $stmt->bindParam(":usuario",$usuario,PDO::PARAM_INT);
-        $stmt->bindParam(":ubicacion",$ubicacion,PDO::PARAM_STR);
         $stmt->bindParam(":franquicia",$franquicia,PDO::PARAM_STR);
         $stmt->bindParam(":fecha",$fecha,PDO::PARAM_STR);
         
@@ -67,8 +66,8 @@ class ModeloRemision extends Conexion{
     {
         $tabla="pedido_remisiones";
         $stmt= $this->link->prepare(
-        "INSERT INTO $tabla(item,no_rem,cantidad,unidad,valor,descuento,impuesto,total,costo,rent) 
-        VALUES(:item,:no_rem,:cantidad,:unidad,:valor,:descuento,:impuesto,:total,:costo,:rent);");
+        "INSERT INTO $tabla(item,no_rem,cantidad,unidad,valor,descuento,impuesto,total,costo,rent,ubicacion) 
+        VALUES(:item,:no_rem,:cantidad,:unidad,:valor,:descuento,:impuesto,:total,:costo,:rent,:ubicacion);");
         // return $item["rent  "];
         $stmt->bindParam(":item",$item["item"],PDO::PARAM_STR);
         $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT);
@@ -80,6 +79,7 @@ class ModeloRemision extends Conexion{
         $stmt->bindParam(":total",$item["total"],PDO::PARAM_STR);
         $stmt->bindParam(":costo",$item["costo"],PDO::PARAM_STR);
         $stmt->bindParam(":rent",$item["rent"],PDO::PARAM_STR);
+        $stmt->bindParam(":ubicacion",$item["local"],PDO::PARAM_STR);
 
         $res= $stmt->execute();
         
