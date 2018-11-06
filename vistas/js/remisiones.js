@@ -118,10 +118,11 @@ $(document).ready(function () {
 
           $('.file-upload-res').html('<p class=""><i class="fas fa-upload"></i>Subir</p>');
 
-          // habilita nuevamente input
-          $("#submitbutton").removeAttr("disabled");
-          $("#remisiones #archivos").removeAttr("disabled");
+          
         }
+        // habilita nuevamente input
+        $("#submitbutton").removeAttr("disabled");
+        $("#remisiones #archivos").removeAttr("disabled");
       }
     });
   });
