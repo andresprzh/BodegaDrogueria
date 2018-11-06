@@ -179,7 +179,7 @@ $(document).ready(function () {
 
                                 document.body.removeChild(element);
 
-                                enviarmail(res);
+                                enviarmail(res['contenido']['documento']);
 
                                 location.reload();
                             }
