@@ -338,11 +338,11 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	no_rem INT(5) NOT NULL,
 	cantidad  INT(5) NOT NULL,
 	unidad CHAR(5) NOT NULL DEFAULT 'UND',
-	valor FLOAT(12,3) DEFAULT 0,
-	descuento FLOAT(12,3) DEFAULT 0,
+	valor FLOAT(11,2) DEFAULT 0,
+	descuento FLOAT(11,2) DEFAULT 0,
 	impuesto FLOAT(8,3) DEFAULT 0,
-	total FLOAT(12,3) DEFAULT 0,
-	costo FLOAT(12,3) DEFAULT 0,
+	total FLOAT(14,3) DEFAULT 0,
+	costo FLOAT(11,2) DEFAULT 0,
 	rent FLOAT(5,3) DEFAULT 0,
 	estado INT(1) NOT NULL DEFAULT 0,
 
@@ -422,7 +422,7 @@ REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
 	('UBBS','CHAPINERO VASQUEZ BARRENECHE','00','800097434'
 );
 
-REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe"),(3,"Alistador"),(4,"PVenta"),(5,"JefeD"),(6,"Transportador"),(7,"Franquicia");
+REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe Bodega"),(3,"Alistador"),(4,"Punto de Venta"),(5,"Jefe Bodega Delegado"),(6,"Transportador"),(7,"Franquicia"),(8,"Jefe Logistica");
 UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
 REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);

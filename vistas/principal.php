@@ -118,6 +118,12 @@
       "franquiciaremision",
       "salir"
     ];
+
+    $logistica=[
+      "inicio",
+      "remisiones",
+      "salir"
+    ];
     $jefed=[
       "inicio",
       "requerir",
@@ -165,6 +171,10 @@
         include "modulos/".$_GET["ruta"].".php";
 
       }elseif ($_SESSION["usuario"]["perfil"]==7 && in_array($_GET["ruta"],$franquicia)) {
+        
+        include "modulos/".$_GET["ruta"].".php";
+
+      }elseif ($_SESSION["usuario"]["perfil"]==8 && in_array($_GET["ruta"],$logistica)) {
         
         include "modulos/".$_GET["ruta"].".php";
 
