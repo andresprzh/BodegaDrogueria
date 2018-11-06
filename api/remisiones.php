@@ -92,11 +92,18 @@ if (isset($_GET["ruta"])) {
             if ($_SERVER["REQUEST_METHOD"] === "GET") {
                 
                 
-                    
+                 
                 $modelo=new ModeloRemision();
-
-                $resultado=$modelo->buscaritem("remisiones");
-
+                if (isset($_GET["franquicia"])) {
+                    $estado=null;
+                    if (isset($_GET["estado"])) {
+                        $estado=$_GET["estado"];
+                    } 
+                    $resultado=$modelo->mdlMostrarRem($_GET["franquicia"],$estado);
+                }else {
+                    $resultado=$modelo->buscaritem("remisiones");
+                }
+                
                 print json_encode($resultado->fetchAll());
                     
                 

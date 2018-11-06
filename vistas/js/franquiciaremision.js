@@ -42,12 +42,12 @@ function mostrarRemisiones() {
     var req = [requeridos, id_usuario];
 
     return $.ajax({
-    url: "api/remisiones/remisiones",
-    method: "GET",
-    data: { 'valor': 2 },
-    dataType: "JSON",
+    url: 'api/remisiones/remisiones',
+    method: 'GET',
+    data: { 'franquicia': franquicia },
+    dataType: 'JSON',
     success: function (res) {
-        // console.log(res);
+        console.log(res);
         // return 0;
         var remisiones = res;
 
@@ -67,8 +67,8 @@ function mostrarRemisiones() {
                 0: 'yellow',
                 1: 'green',
                 2: 'orange',
-                3: 'orange',
-                4: 'green',
+                3: 'green',
+                4: 'red',
                 5: 'red',
                 9: 'black'
             };
@@ -118,7 +118,7 @@ function mostrarItemsRem(numrem, estado) {
     
     $(".NumeroRemision").html(('00' + numrem).slice(-2));
 
-    if (estado == 4) {
+    if (estado == 3) {
         // $("#Documento").removeAttr("disabled");
         $("#TablaR thead tr").addClass("green darken-3");
         $("#TablaR thead tr").removeClass("red darken-3");

@@ -11,14 +11,14 @@ $(document).ready(function () {
         onCloseEnd: function () { location.reload(); }
     });
 
-    // pone items en el input select
+    
     $.ajax({
         url: "api/remisiones/remisiones",
         method: "GET",
-        data: { 'valor': 2 },
+        data: { 'estado': 2, "franquicia":franquicia },
         dataType: "json",
         success: function (res) {
-
+            console.log(res);
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 

@@ -13,8 +13,29 @@ class ModeloRemision extends Conexion{
      /* ============================================================================================================================
                                                         FUNCIONES   
     ============================================================================================================================*/
-    public function mdlMostrarRem()
+    public function mdlMostrarRem($franquicia,$estado=null)
     {
+        if (isset($estado)) {
+            $stmt= $this->link->prepare(
+            "SELECT no_rem,creada,franquicia,estado
+            FROM remisiones
+            WHERE franquicia=:franquicia
+            AND estado=:estado;");
+            $stmt->bindParam(":estado",$estado,PDO::PARAM_INT); 
+        }else {
+            $stmt= $this->link->prepare(
+            "SELECT no_rem,creada,franquicia,estado
+            FROM remisiones
+            WHERE franquicia=:franquicia");
+        }
+        
+        $stmt->bindParam(":franquicia",$franquicia,PDO::PARAM_STR); 
+
+        $res= $stmt->execute();
+                
+        return $stmt;
+        $stmt->closeCursor();
+        $stmt=null;
     }
 
     // public function mdlSubirReq($cabecera,$items)
@@ -22,7 +43,7 @@ class ModeloRemision extends Conexion{
     {
         $tabla="remisiones";
         
-        $stmt= $this->link->prepare("INSERT INTO $tabla(encargado,ubicacion,franquicia,creada) VALUES(:usuario,:ubicacion,:franquicia,:fecha)");
+        $stmt= $this->link->prepare("INSERT INTO $tabla(encargado,ubicacion,franquicia,creada,estado) VALUES(:usuario,:ubicacion,:franquicia,:fecha,2)");
         $stmt->bindParam(":usuario",$usuario,PDO::PARAM_INT);
         $stmt->bindParam(":ubicacion",$ubicacion,PDO::PARAM_STR);
         $stmt->bindParam(":franquicia",$franquicia,PDO::PARAM_STR);
@@ -98,7 +119,7 @@ class ModeloRemision extends Conexion{
         $stmt->closeCursor();
         $stmt=null;
     }
-
+    
     // public function mdlsubiritemrem()
     // {
 

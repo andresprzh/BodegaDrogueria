@@ -567,12 +567,14 @@ DELIMITER $$
 			
 
 			UPDATE remisiones
-			SET estado=4
+			SET estado=3
 			WHERE no_rem=rem;
 			return true;
 			
 		ELSE
-		
+			UPDATE remisiones
+			SET estado=4
+			WHERE no_rem=rem;
 			return false;
 			
 		END IF;

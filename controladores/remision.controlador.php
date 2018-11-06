@@ -157,21 +157,19 @@ class ControladorRemision{
     // funcion que sube los items
     public function ctrSubirRem($usuario)
     {
+        $resultado=false;
         
         $this->no_rem=$this->modelo->mdlSubirRem($usuario,$this->ubicacion,$this->franquicia,$this->cabecera["fecha"]);
-        
-        
-        foreach ($this->itemsarray as $item) {
-                        
-            if ($this->no_rem!==false) {
+
+        if ($this->no_rem!==false) {
+            
+            foreach ($this->itemsarray as $item) {
                 
                 $resultado=$this->modelo->mdlSubirItem($item,$this->no_rem);
 
-            }else {
-                                
-                return $resultado;
             }
         }
+        
 
         return $resultado;
     }
@@ -181,6 +179,7 @@ class ControladorRemision{
 
         $busqueda=$this->modelo->mdlMostrarRemDoc(1);
         $resultado["documento"]="";
+        
         // return $busqueda->fetchAll();
         while($row = $busqueda->fetch()){
             $pordesc=$row["descuento"]/$row["valor"]*100;
