@@ -1,4 +1,4 @@
-   
+
 <h2 class="header center ">Remisiones</h3>
 
 <!-- <form role="form" method="post" enctype="multipart/form-data" style="padding-left:15px;" id="subir"> -->
@@ -24,11 +24,44 @@
     </form>
 </div>
     
-<!-- <form class="file-upload">
-  <p class="btnup">Upload a file</p>
-  <input type="file" name="myfile" />
-</form> -->
-<div>
+<!-- ============================================================================================================================
+                                                    MODAL VER remision
+============================================================================================================================ -->
+<div id="VerRemisiones" class="modal grey lighten-3">
+
+    <div class="modal-content grey lighten-3">
+
+        <div class="modal-header">
+
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
+            <h4 class="center" >Items con lote</span></h4>
+
+        </div>
+
+        <div class="modal-footer grey lighten-3 ">
+            <button id="Documento" title="GenerarDocumento" onclick="documento()" class="btn right waves-effect green darken-4 col s12 m12 l8" >
+                <i class="fas fa-file-alt"></i>
+            </button>
+        </div>
+
+        <table class="tabla centered " id="TablaL"  >
+                
+                    <thead>
+
+                    <tr  class="white-text green darken-3" >
+                        <th>Descripción</th>
+                        <th>ID item</th>
+                        <th>valor</th>
+                        <th>cantidad</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="tablamodal"></tbody>
+
+        </table>  
+    </div>
+</div>
 
 <style>
 
@@ -70,9 +103,17 @@
     color:gray;
 }
 
-
-
-
+.modal{
+        width:100%;
+    }
+.tabla  td:first-child, .tabla  th:first-child{
+    width:30%;
+    text-align: center;
+}
+.tabla  td:last-child, .tabla  th:last-child{
+    width:30%;
+    text-align: center;
+}
 </style>
 <!-- ============================================================================================================================
                                                         EVENTOS PAGINA REQUERIR    
@@ -82,7 +123,5 @@
     var id_usuario='<?php echo $_SESSION["usuario"]["id"];?>';
 </script>
 <script src="vistas/js/remisiones.js"></script>
-
-</div>
 
 

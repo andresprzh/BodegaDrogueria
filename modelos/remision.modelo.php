@@ -90,8 +90,11 @@ class ModeloRemision extends Conexion{
     public function mdlMostrarRemDoc($no_rem)
     {
         $stmt= $this->link->prepare(
-        "SELECT * 
+        "SELECT item,valor,cantidad,pedido_remisiones.lote AS lote,
+        vencimiento,ubicacion,total,remisiones.no_rem,remisiones.creada,
+        ITEMS.DESCRIPCION,ITEMS.LOTE AS eslote
         FROM pedido_remisiones
+        INNER JOIN ITEMS ON ITEMS.ID_ITEM=pedido_remisiones.item
         INNER JOIN remisiones ON remisiones.no_rem=pedido_remisiones.no_rem
         INNER JOIN franquicias ON franquicias.codigo=remisiones.franquicia
         WHERE pedido_remisiones.no_rem=:no_rem;");

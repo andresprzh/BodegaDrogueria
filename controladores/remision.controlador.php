@@ -181,50 +181,62 @@ class ControladorRemision{
         
         // return $busqueda->fetchAll();
         while($row = $busqueda->fetch()){
-            $pordesc=$row["descuento"]/$row["valor"]*100;
-            $pordesc=round($pordesc,2);
-            $cantidad=number_format($row["cantidad"],3, '.', '');
 
-            // return $resultado["documento"];
-            $no_rem=str_pad("$row[no_rem]",3, "0", STR_PAD_LEFT);
-            $resultado['nomdoc']="REMIS$no_rem.RM0";
+            if ($row["eslote"]=="NO" || ($row['lote']!=null && $row['vencimiento']!=null )) {
+                $pordesc=$row["descuento"]/$row["valor"]*100;
+                $pordesc=round($pordesc,2);
+                
+                $no_rem=str_pad("$row[no_rem]",3, "0", STR_PAD_LEFT);
+                $resultado['nomdoc']="REMIS$no_rem.RM0";
 
-            
-            $resultado["documento"].=str_pad("OC$no_rem", 10, " ", STR_PAD_RIGHT);
-            $resultado["documento"].="2";
-            $resultado["documento"].=str_repeat(" ",20);
-            $resultado["documento"].=str_pad($row["nit"], 13, " ", STR_PAD_RIGHT);
-            $resultado["documento"].=$row["cod_sucursal"];
-            $resultado["documento"].=str_replace("-","",substr($row["creada"],0,10));
-            $resultado["documento"].=str_replace("-","",$row["ubicacion"]);
-            $resultado["documento"].="I";
-            $resultado["documento"].=str_repeat(" ",15);
-            $resultado["documento"].=str_pad($row["item"], 15, " ", STR_PAD_RIGHT);
-            $resultado["documento"].="   ";
-            $resultado["documento"].=$row["unidad"];
-            $resultado["documento"].=str_pad(str_replace(".","",$cantidad), 12, "0", STR_PAD_LEFT)."+";
-            $resultado["documento"].="000000000000+";
-            $resultado["documento"].="1";
-            $resultado["documento"].="013";
-            $resultado["documento"].="03";
-            $resultado["documento"].=str_pad(str_replace(".","",$row["valor"]), 11, "0", STR_PAD_LEFT)."+";
-            $resultado["documento"].="  ";
-            $resultado["documento"].="02";
-            $resultado["documento"].=str_repeat(" ",8);
-            $resultado["documento"].=str_repeat(" ",10);
-            $resultado["documento"].=str_pad(str_replace(".","",$row["total"]), 14, "0", STR_PAD_LEFT)."+";
-            $resultado["documento"].=str_repeat(" ",6);
-            $resultado["documento"].="0000000000000+";
-            $resultado["documento"].=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_RIGHT);
-            $resultado["documento"].=str_pad(str_replace(".","",$row["descuento"]), 11, "0", STR_PAD_LEFT);
-            // $resultado["documento"].=str_repeat("0",4);
-            // $resultado["documento"].=str_repeat("0",12);
-            $resultado["documento"].="0000";
-            $resultado["documento"].="00000000000";
-            $resultado["documento"].="1";
+                
+                $resultado["documento"].=str_pad("OC$no_rem", 10, " ", STR_PAD_RIGHT);
+                $resultado["documento"].="2";
+                $resultado["documento"].=str_repeat(" ",20);
+                $resultado["documento"].=str_pad($row["nit"], 13, " ", STR_PAD_RIGHT);
+                $resultado["documento"].=$row["cod_sucursal"];
+                $resultado["documento"].=str_replace("-","",substr($row["creada"],0,10));
+                $resultado["documento"].=str_replace("-","",$row["ubicacion"]);
+                $resultado["documento"].="I";
+                $resultado["documento"].=str_repeat(" ",15);
+                $resultado["documento"].=str_pad($row["item"], 15, " ", STR_PAD_RIGHT);
+                $resultado["documento"].="   ";
+                $resultado["documento"].=$row["unidad"];
+                $resultado["documento"].=str_pad(str_replace(".","",$row["cantidad"]), 12, "0", STR_PAD_LEFT)."+";
+                $resultado["documento"].="000000000000+";
+                $resultado["documento"].="1";
+                $resultado["documento"].="UNI";
+                $resultado["documento"].="03";
+                // $resultado["documento"].=str_pad(str_replace(".","",$row["valor"]), 11, "0", STR_PAD_LEFT)."+";
+                $resultado["documento"].=str_repeat("0",11)."+";
+                $resultado["documento"].="  ";
+                $resultado["documento"].="02";
+                $resultado["documento"].=str_repeat(" ",8);
+                $resultado["documento"].=str_repeat(" ",10);
+                // $resultado["documento"].=str_pad(str_replace(".","",$row["total"]), 14, "0", STR_PAD_LEFT)."+";
+                $resultado["documento"].=str_repeat("0",14)."+";
+                $resultado["documento"].=str_repeat(" ",6);
+                $resultado["documento"].="0000000000000+";
+                // $resultado["documento"].=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_RIGHT);
+                // $resultado["documento"].=str_pad(str_replace(".","",$row["descuento"]), 11, "0", STR_PAD_LEFT);
+                $resultado["documento"].=str_repeat("0",4);
+                $resultado["documento"].=str_repeat("0",11);
+                $resultado["documento"].=str_repeat("0",4);
+                $resultado["documento"].=str_repeat("0",11);
+                $resultado["documento"].="1";
+                $resultado["documento"].=str_repeat(" ",20);
 
 
-            $resultado["documento"].="\r\n";
+                $resultado["documento"].="\r\n";
+            }else {
+                $resultado["lotes"][]=["item"=>$row["item"],
+                                     "descripcion"=>$row["DESCRIPCION"],
+                                     "cantidad"=>$row["cantidad"],
+                                     "valor"=>$row["valor"],
+                                     "descuento"=>$row["descuento"],
+                                     "total"=>$row["total"]
+                                     ];
+            }
         }
         return $resultado;
     }

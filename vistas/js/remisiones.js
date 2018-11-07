@@ -3,7 +3,14 @@ $(document).ready(function () {
    /* ============================================================================================================================
                                                         INICIALIZACION   
     ============================================================================================================================*/
-   // pone requisiciones en el input select
+   
+    //INICIA EL MODAL
+    $('.modal').modal({
+      onOpenStart: function () {
+          // console.log("hola");
+      }
+    });
+    // pone requisiciones en el input select
   $.ajax({
     url: "api/remisiones/franquicias",
     method: "GET",
@@ -12,7 +19,7 @@ $(document).ready(function () {
     processData: false,
     dataType: "JSON",
     success: function (res) {
-      
+        
         // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
         for (var i in res) {
             
@@ -49,7 +56,8 @@ $(document).ready(function () {
 
   $("#remisiones").submit(function (e) {
     e.preventDefault();
-
+    
+    
     // muestra que se estan cargando los archivos
     $("#submitbutton").attr("disabled", "disabled");//evita que se de doble click en el boton
     $('#remisiones #archivos').attr('disabled', 'disabled');
@@ -90,7 +98,7 @@ $(document).ready(function () {
       data: form_data,
       type: 'POST',
       success: function (res) {
-        
+        // console.log(res);
         // si hay un error al buscar los archivos no genera el documento
         if (!res) {
           swal({
@@ -99,7 +107,7 @@ $(document).ready(function () {
           });
 
           // si no hay error genera le documento y lo manda a decargar
-        } else {
+        } else if(res['documento']) {
           let nomdoc = res['nomdoc'];
 
           let element = document.createElement('a');
@@ -116,14 +124,52 @@ $(document).ready(function () {
           document.getElementById('archivos').value = "";
           $('.file-upload-res').css('text-align', 'center');
 
-          $('.file-upload-res').html('<p class=""><i class="fas fa-upload"></i>Subir</p>');
-
+          $('.file-upload-res').html('<p class=""><i class="fas fa-upload"></i>Subir</p>');         
+        }
+        if (res['lotes']) {
+          $('#TablaL tbody').html("");
           
+          for (var i in res['lotes']) {
+            $('#TablaL tbody').append(`<tr id=[${res['lotes'][i]['item']}}><td>
+            ${res['lotes'][i]['descripcion']} </td><td>    
+            ${res['lotes'][i]['item']} </td><td>    
+            ${res['lotes'][i]['valor']} </td><td>
+            ${res['lotes'][i]['cantidad']}</td>
+            </tr>`);
+          }
+          $('.modal').modal("open")
         }
         // habilita nuevamente input
         $("#submitbutton").removeAttr("disabled");
-        $("#remisiones #archivos").removeAttr("disabled");
+        $("#remisiones #archivos").removeAttr("disabled");  
       }
     });
   });
+
 });
+/* ============================================================================================================================
+                                                   FUNCIONES   
+  ============================================================================================================================*/
+
+  function documento(){
+    let tabla=document.getElementById("TablaL");
+    let items=new Array();
+    for (let i = 1; i < tabla.rows.length; i++) {
+        items[i-1]={
+          "item": (tabla.rows[i].cells[1].innerText).trim(),
+          "valor": parseFloat(tabla.rows[i].cells[2].innerText), 
+          "cantidad":  parseFloat(tabla.rows[i].cells[3].innerText), 
+        }
+        // console.log((tabla.rows[i].cells[1].innerText).trim());
+    }
+    return 0;
+    $.ajax({
+      type: "POST",
+      url: "api/remisiones/doclotes",
+      data: "data",
+      dataType: "dataType",
+      success: function (response) {
+        
+      }
+    });
+  }

@@ -22,18 +22,19 @@ CREATE TABLE IF NOT EXISTS emails(
 );
 
 CREATE TABLE IF NOT EXISTS `ITEMS` (
-	`ID_ITEM` CHAR(6) NOT NULL,
-	`ID_REFERENCIA` CHAR(15) DEFAULT NULL,
-	`DESCRIPCION` CHAR(40) DEFAULT NULL,
-	`ID_LINEA2` CHAR(6) DEFAULT NULL,
-	`ID_GRUPO2` CHAR(6) DEFAULT NULL,
-	`UNIMED_INV_1` CHAR(3) DEFAULT NULL,
-	`UNIMED_EMPAQ` CHAR(3) DEFAULT NULL,
-	`FACTOR_EMPAQ` decimal(20,4) DEFAULT NULL,
-	`PESO` decimal(20,4) DEFAULT NULL,
-	`VOLUMEN` decimal(20,4) DEFAULT NULL,
-	`ULTIMO_COSTO_ED` decimal(20,4) DEFAULT NULL,
-	`FECHA_INGRESO` CHAR(8) DEFAULT NULL,
+	`ID_ITEM` 			CHAR(6) NOT NULL,
+	`ID_REFERENCIA` 	CHAR(15) DEFAULT NULL,
+	`DESCRIPCION` 		CHAR(40) DEFAULT NULL,
+	`ID_LINEA2` 		CHAR(6) DEFAULT NULL,
+	`ID_GRUPO2` 		CHAR(6) DEFAULT NULL,
+	`UNIMED_INV_1` 		CHAR(3) DEFAULT NULL,
+	`UNIMED_EMPAQ` 		CHAR(3) DEFAULT NULL,
+	`FACTOR_EMPAQ` 		decimal(20,4) DEFAULT NULL,
+	`PESO` 				decimal(20,4) DEFAULT NULL,
+	`VOLUMEN` 			decimal(20,4) DEFAULT NULL,
+	`ULTIMO_COSTO_ED`	decimal(20,4) DEFAULT NULL,
+	`FECHA_INGRESO` 	CHAR(8) DEFAULT NULL,
+	`LOTE` 				CHAR(2) DEFAULT "NO",
 	
 	CONSTRAINT ITEMS_PK 
 	PRIMARY KEY (`ID_ITEM`),
@@ -45,9 +46,9 @@ CREATE TABLE IF NOT EXISTS `ITEMS` (
 -- Volcando estructura para tabla BD_BIABLE01.COD_BARRAS
 	
 CREATE TABLE IF NOT EXISTS `COD_BARRAS` (
-  `ID_ITEMS` CHAR(6) DEFAULT NULL,
-  `ID_CODBAR` CHAR(15) BINARY NOT NULL,
-  `UNIMED_VENTA` CHAR(3) DEFAULT NULL,
+  `ID_ITEMS` 			CHAR(6) DEFAULT NULL,
+  `ID_CODBAR` 			CHAR(15) BINARY NOT NULL,
+  `UNIMED_VENTA` 		CHAR(3) DEFAULT NULL,
   
   CONSTRAINT CODBAR_PK 
   PRIMARY KEY (`ID_CODBAR`),
@@ -59,42 +60,41 @@ CREATE TABLE IF NOT EXISTS `COD_BARRAS` (
 
 -- tabla perfiles de usuarios
 CREATE TABLE IF NOT EXISTS perfiles(
-	id_perfil INT(1) NOT NULL AUTO_INCREMENT,
-	des_perfil CHAR(20),
+	id_perfil 			INT(1) NOT NULL AUTO_INCREMENT,
+	des_perfil 			CHAR(20),
 
 	PRIMARY KEY(id_perfil)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 CREATE TABLE IF NOT EXISTS `sedes` (
-  `codigo` CHAR(6) NOT NULL,
-  `descripcion` CHAR(40) DEFAULT NULL,
-  `direccion1` CHAR(40) DEFAULT NULL,
-  `direccion2` CHAR(40) DEFAULT NULL,
-  `direccion3` CHAR(40) DEFAULT NULL,
-  `grupo_co` CHAR(2) DEFAULT NULL,
+  `codigo` 				CHAR(6) NOT NULL,
+  `descripcion` 		CHAR(40) DEFAULT NULL,
+  `direccion1` 			CHAR(40) DEFAULT NULL,
+  `direccion2` 			CHAR(40) DEFAULT NULL,
+  `direccion3` 			CHAR(40) DEFAULT NULL,
+  `grupo_co` 			CHAR(2) DEFAULT NULL,
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS franquicias (
-  `codigo` CHAR(6) NOT NULL,
-  `descripcion` CHAR(40) DEFAULT NULL,
-  `direccion1` CHAR(40) DEFAULT NULL,
-  `cod_sucursal` CHAR(2) DEFAULT 00,
-  `nit` CHAR(12) DEFAULT '000000000',
+  `codigo` 				CHAR(6) NOT NULL,
+  `descripcion`			CHAR(40) DEFAULT NULL,
+  `direccion1` 			CHAR(40) DEFAULT NULL,
+  `cod_sucursal` 		CHAR(2) DEFAULT 00,
+  `nit` 				CHAR(12) DEFAULT '000000000',
   
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuario(
-	id_usuario INT(10) NOT NULL AUTO_INCREMENT,	
-	nombre VARCHAR(40) COLLATE ucs2_spanish_ci,
-	cedula CHAR(12),
-	usuario CHAR(20),
-	password VARCHAR(60) NOT NULL,
-	perfil INT(1),
-	franquicia CHAR(6) NOT NULL DEFAULT "NFRA", 
+	id_usuario 			INT(10) NOT NULL AUTO_INCREMENT,	
+	nombre 				VARCHAR(40) COLLATE ucs2_spanish_ci,
+	cedula 				CHAR(12),
+	usuario 			CHAR(20),
+	password 			VARCHAR(60) NOT NULL,
+	perfil 				INT(1),
+	franquicia 			CHAR(6) NOT NULL DEFAULT "NFRA", 
 
 	PRIMARY KEY(id_usuario),
 	UNIQUE(cedula),
@@ -113,16 +113,16 @@ CREATE TABLE IF NOT EXISTS usuario(
 
 /*tabla de la requisicion a bodega*/
 CREATE TABLE IF NOT EXISTS requisicion(
-	no_req CHAR(10) NOT NULL,
-	creada DATETIME NOT NULL,
-	lo_origen CHAR(3),
-	lo_destino CHAR(3),
-	tip_inventario INT(2),
-	solicitante VARCHAR(40) COLLATE ucs2_spanish_ci,
-	enviado DATETIME,
-	recibido DATETIME,
-	documentos INT(3) DEFAULT 0,
-	estado INT(1) DEFAULT 0,
+	no_req 				CHAR(10) NOT NULL,
+	creada 				DATETIME NOT NULL,
+	lo_origen 			CHAR(3),
+	lo_destino 			CHAR(3),
+	tip_inventario 		INT(2),
+	solicitante 		VARCHAR(40) COLLATE ucs2_spanish_ci,
+	enviado 			DATETIME,
+	recibido 			DATETIME,
+	documentos 			INT(3) DEFAULT 0,
+	estado 				INT(1) DEFAULT 0,
 
 	PRIMARY KEY(no_req),
 
@@ -136,8 +136,8 @@ CREATE TABLE IF NOT EXISTS requisicion(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS  tipo_caja(
-	tipo_caja CHAR(3) NOT NULL,
-	descripcion CHAR(20) NOT NULL,
+	tipo_caja 			CHAR(3) NOT NULL,
+	descripcion 		CHAR(20) NOT NULL,
 	
 	PRIMARY KEY(tipo_caja)
 	
@@ -145,18 +145,18 @@ CREATE TABLE IF NOT EXISTS  tipo_caja(
 
 /*tabla caja*/
 CREATE TABLE IF NOT EXISTS caja(
-	no_caja INT(10) NOT NULL AUTO_INCREMENT,
-	alistador INT(10),
-	encargado_punto INT(10),
-	transportador INT(10),
-	tipo_caja CHAR(3) ,
-	estado INT(1) DEFAULT '0' ,
-	peso FLOAT(6,2) DEFAULT 0,
-	abrir DATETIME ,
-	cerrar DATETIME,
-	enviado DATETIME ,
-   recibido DATETIME,
-   registrado DATETIME,
+	no_caja 			INT(10) NOT NULL AUTO_INCREMENT,
+	alistador 			INT(10),
+	encargado_punto 	INT(10),
+	transportador 		INT(10),
+	tipo_caja 			CHAR(3) ,
+	estado 				INT(1) DEFAULT '0' ,
+	peso 				FLOAT(6,2) DEFAULT 0,
+	abrir 				DATETIME ,
+	cerrar 				DATETIME,
+	enviado 			DATETIME ,
+    recibido 			DATETIME,
+    registrado 			DATETIME,
 
 
 	PRIMARY KEY(no_caja),
@@ -180,13 +180,13 @@ CREATE TABLE IF NOT EXISTS caja(
 
 /*Crea la tabla donde se almacenan los productos pedidos en la requisicion*/
 CREATE TABLE IF NOT EXISTS pedido(
-	item CHAR(6) NOT NULL,
-	no_req CHAR(10) NOT NULL,
-	ubicacion VARCHAR(6) NOT NULL DEFAULT '----',
-	disp  INT(5) NOT NULL,
-	pedido INT(5) NOT NULL,
-	pendientes INT(5) default 0,
-	estado INT(1) NOT NULL default 0,
+	item 				CHAR(6) NOT NULL,
+	no_req 				CHAR(10) NOT NULL,
+	ubicacion 			VARCHAR(6) NOT NULL DEFAULT '----',
+	disp  				INT(5) NOT NULL,
+	pedido 				INT(5) NOT NULL,
+	pendientes 			INT(5) default 0,
+	estado 				INT(1) NOT NULL default 0,
 
 
 
@@ -204,11 +204,11 @@ CREATE TABLE IF NOT EXISTS pedido(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS alistado(
-	item CHAR(6) NOT NULL,
-	no_req CHAR(10) NOT NULL,
-	no_caja INT(10) default 1,
-	alistado INT(5) default 0,
-	estado INT(1) NOT NULL default 1,
+	item 				CHAR(6) NOT NULL,
+	no_req 				CHAR(10) NOT NULL,
+	no_caja 			INT(10) default 1,
+	alistado 			INT(5) default 0,
+	estado 				INT(1) NOT NULL default 1,
 
 	PRIMARY KEY(item,no_caja),
 
@@ -225,11 +225,11 @@ CREATE TABLE IF NOT EXISTS alistado(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS recibido(
-	item CHAR(6) NOT NULL,
-	no_req CHAR(10) NOT NULL,
-	no_caja INT(10) default 1,
-	recibidos INT(5) default 0,
-	estado INT(1) NOT NULL default 0,
+	item 				CHAR(6) NOT NULL,
+	no_req 				CHAR(10) NOT NULL,
+	no_caja 			INT(10) default 1,
+	recibidos 			INT(5) default 0,
+	estado 				INT(1) NOT NULL default 0,
 
 
 	PRIMARY KEY(Item,no_req,no_caja),
@@ -250,15 +250,15 @@ CREATE TABLE IF NOT EXISTS recibido(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS errores(
-	item CHAR(6) NOT NULL,
-	no_req CHAR(10) NOT NULL,
-	no_caja INT(10) default 1,
-	no_caja_recibido INT(10) default 1,
-	recibidos INT(5) default 0,
-	estado INT(1) NOT NULL default 0,
-	ubicacion VARCHAR(6) NOT NULL default '----',
-	pedido INT(5) NOT NULL,
-	alistado INT(5) default 0,
+	item 				CHAR(6) NOT NULL,
+	no_req 				CHAR(10) NOT NULL,
+	no_caja 			INT(10) default 1,
+	no_caja_recibido 	INT(10) default 1,
+	recibidos 			INT(5) default 0,
+	estado 				INT(1) NOT NULL default 0,
+	ubicacion 			VARCHAR(6) NOT NULL default '----',
+	pedido 				INT(5) NOT NULL,
+	alistado 			INT(5) default 0,
 
 
 	PRIMARY KEY(item,no_req,no_caja_recibido),
@@ -284,10 +284,10 @@ CREATE TABLE IF NOT EXISTS errores(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS tareas(
-	id_tarea INT(10) AUTO_INCREMENT,
-	usuario INT(10),
-	creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-	terminacion DATETIME,
+	id_tarea 			INT(10) AUTO_INCREMENT,
+	usuario 			INT(10),
+	creacion 			DATETIME DEFAULT CURRENT_TIMESTAMP,
+	terminacion 		DATETIME,
 	
 	PRIMARY KEY(id_tarea),
 	
@@ -298,9 +298,9 @@ CREATE TABLE IF NOT EXISTS tareas(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS tareas_det(
-	id_tareadet INT(10),
-	id_tarea INT(10),
-	ubicacion VARCHAR(6) NOT NULL,
+	id_tareadet 		INT(10),
+	id_tarea 			INT(10),
+	ubicacion 			VARCHAR(6) NOT NULL,
 	
 	PRIMARY KEY(id_tareadet,id_tarea),
 	
@@ -310,14 +310,12 @@ CREATE TABLE IF NOT EXISTS tareas_det(
 	
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 CREATE TABLE IF NOT EXISTS remisiones(
-	no_rem INT(5) NOT NULL AUTO_INCREMENT,
-	creada DATETIME DEFAULT CURRENT_TIMESTAMP,
-	estado INT(1) DEFAULT 0,
---	ubicacion CHAR(6) DEFAULT '001-BD' ,
-	franquicia CHAR(6) NOT NULL,
-	encargado INT(10) NOT NULL,
+	no_rem 				 INT(5) NOT NULL AUTO_INCREMENT,
+	creada 				 DATETIME DEFAULT CURRENT_TIMESTAMP,
+	estado 				 INT(1) DEFAULT 0,
+	franquicia 			 CHAR(6) NOT NULL,
+	encargado 			 INT(10) NOT NULL,
 	encargado_franquicia INT(10) ,
 
 	PRIMARY KEY(no_rem),
@@ -332,20 +330,21 @@ CREATE TABLE IF NOT EXISTS remisiones(
 
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
 CREATE TABLE IF NOT EXISTS pedido_remisiones(
-	item CHAR(6) NOT NULL,
-	no_rem INT(5) NOT NULL,
-	cantidad  INT(5) NOT NULL,
-	unidad CHAR(5) NOT NULL DEFAULT 'UND',
-	valor FLOAT(11,2) DEFAULT 0,
-	descuento FLOAT(11,2) DEFAULT 0,
-	impuesto FLOAT(8,3) DEFAULT 0,
-	total FLOAT(14,3) DEFAULT 0,
-	costo FLOAT(11,2) DEFAULT 0,
-	rent FLOAT(5,3) DEFAULT 0,
-	ubicacion CHAR(6) DEFAULT '001-BD' ,
-	estado INT(1) NOT NULL DEFAULT 0,
+	item 				CHAR(6) NOT NULL,
+	no_rem 				INT(5) NOT NULL,
+	cantidad  			FLOAT(11,2) NOT NULL,
+	unidad 				CHAR(5) NOT NULL DEFAULT 'UND',
+	valor 				FLOAT(11,2) DEFAULT 0,
+	descuento 			FLOAT(11,2) DEFAULT 0,
+	impuesto 			FLOAT(8,3) DEFAULT 0,
+	total 				FLOAT(14,3) DEFAULT 0,
+	costo 				FLOAT(11,2) DEFAULT 0,
+	rent 				FLOAT(5,3) DEFAULT 0,
+	ubicacion 			CHAR(6) DEFAULT '001-BD' ,
+	lote				CHAR(6),
+	vencimiento			DATE,	
+	estado 				INT(1) NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(item,no_rem),
 
@@ -361,10 +360,10 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS recibido_remisiones(
-	item CHAR(6) NOT NULL,
-	no_rem INT(5) NOT NULL,
-	recibidos INT(5) default 0,
-	estado INT(1) NOT NULL default 0,
+	item 				CHAR(6) NOT NULL,
+	no_rem 				INT(5) NOT NULL,
+	recibidos 			FLOAT(11,2) default 0,
+	estado 				INT(1) NOT NULL default 0,
 
 	PRIMARY KEY(item,no_rem),
 
@@ -380,11 +379,11 @@ CREATE TABLE IF NOT EXISTS recibido_remisiones(
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS errores_remisiones(
-	item CHAR(6) NOT NULL,
-	no_rem INT(5) NOT NULL,
-	recibidos INT(5) default 0,
-	estado INT(1) NOT NULL default 0,
-	alistado INT(5) default 0,
+	item 				CHAR(6) NOT NULL,
+	no_rem 				INT(5) NOT NULL,
+	recibidos 			FLOAT(11,2) default 0,
+	estado 				INT(1) NOT NULL default 0,
+	alistado 			FLOAT(11,2) default 0,
 
 
 	PRIMARY KEY(item,no_rem),
@@ -428,7 +427,7 @@ UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
 REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
 
-*/
+
 REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
 	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
 	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
@@ -467,7 +466,7 @@ REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `dire
 	('XXX', ' C.O PARA CIERRE', '', '', '', '\r'
 ); 
 
-
+*/
 /*******************************************************************************************************************************
 											PROCEDIMIENTOS FUNCIONES Y TRIGGERS BASE DE DATOS
 ********************************************************************************************************************************/
