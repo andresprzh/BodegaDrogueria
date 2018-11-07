@@ -98,7 +98,7 @@ $(document).ready(function () {
       data: form_data,
       type: 'POST',
       success: function (res) {
-        // console.log(res);
+        
         // si hay un error al buscar los archivos no genera el documento
         if (!res) {
           swal({
@@ -133,8 +133,9 @@ $(document).ready(function () {
             $('#TablaL tbody').append(`<tr id=[${res['lotes'][i]['item']}}><td>
             ${res['lotes'][i]['descripcion']} </td><td>    
             ${res['lotes'][i]['item']} </td><td>    
-            ${res['lotes'][i]['valor']} </td><td>
-            ${res['lotes'][i]['cantidad']}</td>
+            ${res['lotes'][i]['cantidad']}</td><td>
+            <input type="text" class="lote" placeholder="lote" required></td><td>
+            <input type="date" class="vencimiento" placeholder="vencimiento" required></td>
             </tr>`);
           }
           $('.modal').modal("open")

@@ -37,9 +37,9 @@
             <h4 class="center" >Items con lote</span></h4>
 
         </div>
-
+        <form onsubmit="documento()" >
         <div class="modal-footer grey lighten-3 ">
-            <button id="Documento" title="GenerarDocumento" onclick="documento()" class="btn right waves-effect green darken-4 col s12 m12 l8" >
+            <button id="Documento" title="GenerarDocumento" tyoe="submit" class="btn right waves-effect green darken-4 col s12 m12 l8" >
                 <i class="fas fa-file-alt"></i>
             </button>
         </div>
@@ -51,8 +51,9 @@
                     <tr  class="white-text green darken-3" >
                         <th>Descripción</th>
                         <th>ID item</th>
-                        <th>valor</th>
                         <th>cantidad</th>
+                        <th>Lote</th>
+                        <th>Vencimiento</th>
                     </tr>
 
                     </thead>
@@ -60,6 +61,7 @@
                     <tbody id="tablamodal"></tbody>
 
         </table>  
+        </form>
     </div>
 </div>
 
@@ -104,8 +106,9 @@
 }
 
 .modal{
-        width:100%;
-    }
+    width:100%;
+    height:80%;
+}
 .tabla  td:first-child, .tabla  th:first-child{
     width:30%;
     text-align: center;
@@ -113,6 +116,15 @@
 .tabla  td:last-child, .tabla  th:last-child{
     width:30%;
     text-align: center;
+}
+
+.tabla input[type='date'] {
+    -moz-appearance:textfield;
+}
+
+.tabla input::-webkit-outer-spin-button,
+.tabla input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
 }
 </style>
 <!-- ============================================================================================================================

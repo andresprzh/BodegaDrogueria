@@ -232,7 +232,6 @@ class ControladorRemision{
                 $resultado["lotes"][]=["item"=>$row["item"],
                                      "descripcion"=>$row["DESCRIPCION"],
                                      "cantidad"=>$row["cantidad"],
-                                     "valor"=>$row["valor"],
                                      "descuento"=>$row["descuento"],
                                      "total"=>$row["total"]
                                      ];
