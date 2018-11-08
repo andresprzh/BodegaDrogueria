@@ -34,12 +34,12 @@
         <div class="modal-header">
 
             <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
-            <h4 class="center" >Items con lote</span></h4>
+            <h4 class="center" >Items con lote remision <span class="remision"></span></h4>
 
         </div>
-        <form onsubmit="documento()" >
+        <form id="formlotes" >
         <div class="modal-footer grey lighten-3 ">
-            <button id="Documento" title="GenerarDocumento" tyoe="submit" class="btn right waves-effect green darken-4 col s12 m12 l8" >
+            <button id="Documento" title="GenerarDocumento" type="submit" class="btn right waves-effect green darken-4 col s12 m12 l8" >
                 <i class="fas fa-file-alt"></i>
             </button>
         </div>

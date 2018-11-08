@@ -63,7 +63,35 @@ if (isset($_GET["ruta"])) {
                 
             
             // print json_encode($resultado);
-            break;  
+            break;
+        /* ============================================================================================================================
+                                            ASIGNA LOTE Y GENERA DOCUMENTO
+        ============================================================================================================================*/    
+        case "doclotes":
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+                
+                if (isset($_POST["items"])) {
+                    
+                    $items=$_POST["items"];
+                    $rem=$_POST["rem"];
+                    
+                    
+                    $controlador=new ControladorRemision();
+                    
+                    
+                    $resultado=$controlador->ctrAsignarLote($items,$rem);
+                    // print json_encode($rem);
+                    // return 0;
+                    if ($resultado) {
+                        $resultado=$controlador->ctrDocRem($rem);
+                    }
+                    print json_encode($resultado);
+                }
+            }
+                
+            
+            // print json_encode($resultado);
+            break;    
         /* ============================================================================================================================
                                                         BUSCA FRANQUICIAS
         ============================================================================================================================*/    

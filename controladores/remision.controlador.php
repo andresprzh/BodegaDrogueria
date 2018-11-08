@@ -153,7 +153,15 @@ class ControladorRemision{
 
     }
 
-    
+    // funcion que signa lote a  los items
+    public function ctrAsignarLote($items,$no_rem)
+    {
+        foreach ($items as $item) {
+            $resultado=$this->modelo->mdlAsignarLote($item,$no_rem);
+        }
+        
+        return  $resultado;
+    }
     // funcion que sube los items
     public function ctrSubirRem($usuario)
     {
@@ -173,21 +181,24 @@ class ControladorRemision{
         return $resultado;
     }
 
-    public function ctrDocRem()
+    // funcion que genera el archivo plano de la remision unificada
+    public function ctrDocRem($no_rem=null)
     {   
-
-        $busqueda=$this->modelo->mdlMostrarRemDoc($this->no_rem);
+        if (!isset($no_rem)) {
+            $no_rem=$this->no_rem;
+        }
+        $busqueda=$this->modelo->mdlMostrarRemDoc($no_rem);
         $resultado["documento"]="";
+        $resultado["no_rem"]=$no_rem;        
         
-        // return $busqueda->fetchAll();
         while($row = $busqueda->fetch()){
-
+            
             if ($row["eslote"]=="NO" || ($row['lote']!=null && $row['vencimiento']!=null )) {
                 $pordesc=$row["descuento"]/$row["valor"]*100;
                 $pordesc=round($pordesc,2);
                 
                 $no_rem=str_pad("$row[no_rem]",3, "0", STR_PAD_LEFT);
-                $resultado['nomdoc']="REMIS$no_rem.RM0";
+                // $resultado['nomdoc']="REMIS$no_rem.RM0";
 
                 
                 $resultado["documento"].=str_pad("OC$no_rem", 10, " ", STR_PAD_RIGHT);
