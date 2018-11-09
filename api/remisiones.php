@@ -18,9 +18,7 @@ if (isset($_GET["ruta"])) {
                                         GENERA DOCUMENTO REMISION
         ============================================================================================================================*/    
         case "docrem":
-            // $controlador=new ControladorRemision();
-            // $resultado=$controlador->ctrDocRem();
-            // print ($resultado["documento"]);
+
             // // print json_encode($resultado);
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                  
@@ -116,25 +114,26 @@ if (isset($_GET["ruta"])) {
                                                         BUSCA FRANQUICIAS
         ============================================================================================================================*/    
         case "remisiones":
-            
+           
             if ($_SERVER["REQUEST_METHOD"] === "GET") {
                 
-                
-                 
                 $modelo=new ModeloRemision();
-                if (isset($_GET["franquicia"])) {
+                if (!isset($_GET["franquicia"]) 
+                   || $_SESSION["usuario"]["perfil"]==1 
+                   || $_SESSION["usuario"]["perfil"]==8) {
+                    
+                    $resultado=$modelo->buscaritem("remisiones");
+                }
+                else {
                     $estado=null;
                     if (isset($_GET["estado"])) {
                         $estado=$_GET["estado"];
                     } 
                     $resultado=$modelo->mdlMostrarRem($_GET["franquicia"],$estado);
-                }else {
-                    $resultado=$modelo->buscaritem("remisiones");
                 }
                 
                 print json_encode($resultado->fetchAll());
                     
-                
             }
                 
             // print json_encode($resultado);

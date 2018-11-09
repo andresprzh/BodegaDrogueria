@@ -65,32 +65,28 @@
   <?php
   
   if(isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"]=="ok"){
-    
-    /* ============================================================================================================================
-                BARRA DE NAVEGACION
-    ============================================================================================================================== */
-    include "modulos/navbar.php";
-    
-    
     // Posibles vistas en el contenido
-    $pages=[
-        "inicio",
-        "remisiones",
-        "requerir",
-        "alistar",
-        "cajas",
-        "pv",
-        "tareas",
-        "usuarios",
-        "Nitem",
-        "salir",
-        "pvcajas",
-        "transportador",
-        "requisiciones",
-        "franquicia",
-        "franquiciaremision"
-        ];
-    $jefe=[
+    $pages=
+    [
+      "inicio",
+      "remisiones",
+      "requerir",
+      "alistar",
+      "cajas",
+      "pv",
+      "tareas",
+      "usuarios",
+      "Nitem",
+      "salir",
+      "pvcajas",
+      "transportador",
+      "requisiciones",
+      "franquicia",
+      "franquiciaremision"
+    ];
+    
+    $jefe=
+    [
       "inicio",
       "requerir",
       "cajas",
@@ -100,31 +96,38 @@
       "requisiciones",
       "salir"
     ];
-    
-    $alistador=[
+
+    $alistador=
+    [
       "inicio",
       "alistar",
       "salir"
     ];
+
     $pv=[
       "inicio",
       "pv",
       "salir",
       "pvcajas"
     ];
-    $franquicia=[
+
+    $franquicia=
+    [
       "inicio",
       "franquicia",
       "franquiciaremision",
       "salir"
     ];
 
-    $logistica=[
+    $logistica=
+    [
       "inicio",
       "remisiones",
       "salir"
     ];
-    $jefed=[
+
+    $jefed=
+    [
       "inicio",
       "requerir",
       "cajas",
@@ -133,11 +136,20 @@
       "salir"
     ];
 
-    $transportador=[
+    $transportador=
+    [
       "inicio",
       "transportador",
       "salir"
     ];
+    /* ============================================================================================================================
+                BARRA DE NAVEGACION
+    ============================================================================================================================== */
+    include "modulos/navbar.php";
+    
+    
+    
+
     echo "<main>";
 
     if (isset($_GET["ruta"])) {

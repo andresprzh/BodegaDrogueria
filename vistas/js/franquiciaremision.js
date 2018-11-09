@@ -115,7 +115,6 @@ function mostrarRemisiones() {
 
 function mostrarItemsRem(numrem, estado) {
     // return 0;
-    
     $(".NumeroRemision").html(('00' + numrem).slice(-2));
 
     if (estado == 3) {

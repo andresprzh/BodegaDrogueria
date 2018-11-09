@@ -414,7 +414,7 @@ CREATE TABLE IF NOT EXISTS errores_remisiones(
 INSERT INTO caja(no_caja) VALUES(1);
 UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
-
+*/
 REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
 	('NFRA','NO ES FRANQUICIA','00','000000000'),
 	('PAL1','PALMIRA 1','01','94506068'),('PAL2','PALMIRA 2','02','94506068'),('PAL3','PALMIRA 3','03','94506068'),
@@ -422,12 +422,14 @@ REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
 	('UBBS','CHAPINERO VASQUEZ BARRENECHE','00','800097434'
 );
 
+/*
 REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe Bodega"),(3,"Alistador"),(4,"Punto de Venta"),(5,"Jefe Bodega Delegado"),(6,"Transportador"),(7,"Franquicia"),(8,"Jefe Logistica");
 UPDATE perfiles SET id_perfil=0 WHERE id_perfil=-1;
 
 REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrador","0","admin","$2y$10$bpNOdujEVRMWB7JtWJX7Y.HPBjVCMSLS/r2YeafW5Mu.wfmyi/iLy",1);
+*/
 
-
+/*
 REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
 	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
 	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
@@ -465,8 +467,8 @@ REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `dire
 	('900', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
 	('XXX', ' C.O PARA CIERRE', '', '', '', '\r'
 ); 
-
 */
+
 /*******************************************************************************************************************************
 											PROCEDIMIENTOS FUNCIONES Y TRIGGERS BASE DE DATOS
 ********************************************************************************************************************************/

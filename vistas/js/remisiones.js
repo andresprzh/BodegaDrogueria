@@ -41,9 +41,15 @@ $(document).ready(function () {
       $('.file-upload-res').css('text-align', 'left');
 
       let lista = '<ul style:>';
+      
       for (let i = 0; i < this.files.length; i++) {
         lista += `<li>${this.files[i].name}</li>`;
+        if (i>10) {
+          lista += `<li>......</li>`;
+          break;
+        }
       }
+
       lista += '</ul>';
       $('.file-upload-res').html(lista);
     } else {
