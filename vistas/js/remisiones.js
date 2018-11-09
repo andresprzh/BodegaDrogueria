@@ -36,7 +36,7 @@ $(document).ready(function () {
                                                         EVENTOS   
     ============================================================================================================================*/
   $('#remisiones #archivos').change(function () {
-
+    
     if (this.files.length > 0) {
       $('.file-upload-res').css('text-align', 'left');
 
@@ -45,7 +45,6 @@ $(document).ready(function () {
         lista += `<li>${this.files[i].name}</li>`;
       }
       lista += '</ul>';
-
       $('.file-upload-res').html(lista);
     } else {
       $('.file-upload-res').css('text-align', 'center');
@@ -99,11 +98,11 @@ $(document).ready(function () {
       data: form_data,
       type: 'POST',
       success: function (res) {
-        console.log(res);
         
         // habilita nuevamente input
         $('#submitbutton').removeAttr('disabled');
         $('#remisiones #archivos').removeAttr('disabled'); 
+        $('#remisiones #archivos').val('');
         $('.file-upload-res').css('text-align', 'center');
         $('.file-upload-res').html(`<p class=''><i class='fas fa-upload'></i>Subir</p>`);    
 
@@ -167,7 +166,6 @@ $(document).ready(function () {
   function documento(){
     
     let tabla=document.getElementById('TablaL');
-    let tr = tabla.getElementsByTagName('tr');
     let items=new Array();
     for (let i = 1; i < tabla.rows.length; i++) {
         items[i-1]={
@@ -190,7 +188,6 @@ $(document).ready(function () {
       dataType: 'JSON', // what to expect back from the PHP script
       data: {'items':items,'rem':no_rem},
       success: function (res) {
-        console.log(res);
         // si hay un error al buscar los archivos no genera el documento
         if (!res) {
           swal({

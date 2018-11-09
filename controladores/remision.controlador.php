@@ -237,6 +237,17 @@ class ControladorRemision{
                 $resultado["documento"].="1";
                 $resultado["documento"].=str_repeat(" ",20);
 
+                $resultado["documento"].=str_repeat(" ",2);
+                $resultado["documento"].=str_repeat(" ",3);
+                $resultado["documento"].=str_repeat(" ",3);//ERROR ¿realmente son 3 columnas?
+                $resultado["documento"].=str_repeat(" ",6);
+                $resultado["documento"].=str_repeat(" ",60);
+                
+                $resultado["documento"].=str_pad($row["lote"], 12, " ", STR_PAD_RIGHT);
+                $resultado["documento"].=str_replace("-","",$row["vencimiento"]);
+
+                
+
 
                 $resultado["documento"].="\r\n";
             }else {
