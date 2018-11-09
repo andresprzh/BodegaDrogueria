@@ -92,13 +92,13 @@ $(document).ready(function () {
     $.ajax({
       url: 'api/remisiones/docrem', // point to server-side PHP script 
       dataType: 'JSON', // what to expect back from the PHP script
-      cache: false,
+      // cache: false,
       contentType: false,
       processData: false,
       data: form_data,
       type: 'POST',
       success: function (res) {
-        
+
         // habilita nuevamente input
         $('#submitbutton').removeAttr('disabled');
         $('#remisiones #archivos').removeAttr('disabled'); 

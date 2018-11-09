@@ -239,7 +239,7 @@ class ControladorRemision{
 
                 $resultado["documento"].=str_repeat(" ",2);
                 $resultado["documento"].=str_repeat(" ",3);
-                $resultado["documento"].=str_repeat(" ",3);//ERROR ¿realmente son 3 columnas?
+                $resultado["documento"].=str_repeat(" ",2);//ERROR ¿realmente son 3 columnas?
                 $resultado["documento"].=str_repeat(" ",6);
                 $resultado["documento"].=str_repeat(" ",60);
                 
