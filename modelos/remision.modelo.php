@@ -105,6 +105,44 @@ class ModeloRemision extends Conexion{
         $stmt->closeCursor();
         return $res;
     }
+    
+    public function mdlSubirItems($items,$no_rem)
+    {
+        $sql="INSERT INTO pedido_remisiones(item,no_rem,cantidad,unidad,valor,descuento,impuesto,total,costo,rent,ubicacion) 
+        VALUES";
+        for ($i=0; $i <count($items) ; $i++) { 
+            $sql.="(:item$i,:no_rem$i,:cantidad$i,:unidad$i,:valor$i,:descuento$i,:impuesto$i,:total$i,:costo$i,:rent$i,:ubicacion$i),";
+            // $keys[]=$i;
+        }
+        $sql=substr($sql,0,-1).";";
+        
+        $stmt= $this->link->prepare($sql);
+        
+        $count=0;
+        // for ($i=0; $i <count($items) ; $i++) { 
+        foreach ($items as $i=> $item) { 
+            $stmt->bindParam(":item$count",$item["item"],PDO::PARAM_STR);
+            $stmt->bindParam(":no_rem$count",$no_rem,PDO::PARAM_INT);
+            $stmt->bindParam(":cantidad$count",$item["cantidad"],PDO::PARAM_INT);
+            $stmt->bindParam(":unidad$count",$item["unidad"],PDO::PARAM_STR);
+            $stmt->bindParam(":valor$count",$item["valor"],PDO::PARAM_STR);
+            $stmt->bindParam(":descuento$count",$item["descuento"],PDO::PARAM_STR);
+            $stmt->bindParam(":impuesto$count",$item["impuesto"],PDO::PARAM_STR);
+            $stmt->bindParam(":total$count",$item["total"],PDO::PARAM_STR);
+            $stmt->bindParam(":costo$count",$item["costo"],PDO::PARAM_STR);
+            $stmt->bindParam(":rent$count",$item["rent"],PDO::PARAM_STR);
+            $stmt->bindParam(":ubicacion$count",$item["local"],PDO::PARAM_STR);
+            // $keys[]=$i;
+            
+            $count++;
+            
+        }
+        // return count($keys);
+        $res= $stmt->execute();
+        return $stmt->errorInfo();
+        $stmt->closeCursor();
+        return $res;
+    }
 
     public function mdlMostrarRemDoc($no_rem)
     {
@@ -141,5 +179,5 @@ class ModeloRemision extends Conexion{
         $stmt->closeCursor();
         $stmt=null;
     }
-    
+   
 }

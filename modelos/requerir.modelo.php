@@ -43,30 +43,32 @@ class ModeloRequierir extends Conexion{
         return $stmt;
     }
 
-    public function mdlMostrarItem($item,$valor){
+    public function mdlMostrarItem($valor){
         
         $tabla='ITEMS';
+        $stmt= $this->link->prepare(
+        "SELECT ID_ITEM,ID_REFERENCIA
+        FROM ITEMS
+        WHERE (ID_ITEM LIKE :valor
+        OR ID_REFERENCIA LIKE :valor)
+        LIMIT 1;"
+        );
+        $stmt->bindParam(":valor",$valor,PDO::PARAM_STR);
+        $stmt->execute();
 
+        
+        // $stmt->closeCursor();
+        return $stmt;
+
+        // cierra la conexion
+        $stmt=null;
         //busca los items
         return $this->buscaritem($tabla,$item,$valor);
     }
 
     public function mdlMostrarItems($req){
        
-        // $stmt= $this->link->prepare('SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion,
-        // ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
-        // caja.no_caja,usuario.nombre,requisicion.lo_origen,requisicion.lo_destino,
-        // MIN(COD_BARRAS.ID_CODBAR) AS ID_CODBAR
-        // FROM COD_BARRAS
-        // INNER JOIN ITEMS ON ID_ITEM=ID_ITEMS	
-        // INNER JOIN pedido ON Item=ID_ITEM	
-        // INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
-        // LEFT JOIN caja ON caja.no_caja=pedido.no_caja
-        // LEFT JOIN usuario ON id_usuario=caja.alistador
-        // WHERE pedido.no_req = :no_req
-        // GROUP BY  pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.alistado,pedido.ubicacion,
-        // ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,
-        // caja.no_caja,usuario.nombre,requisicion.lo_origen,requisicion.lo_destino;');
+       
 
         $stmt= $this->link->prepare('SELECT pedido.item,pedido.estado,pedido.no_req,pedido,pedido.disp,pedido.ubicacion,
         ITEMS.ID_REFERENCIA, ITEMS.ID_REFERENCIA,ITEMS.DESCRIPCION,

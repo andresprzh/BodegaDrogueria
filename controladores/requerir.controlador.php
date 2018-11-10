@@ -227,10 +227,10 @@ class ControladorRequerir{
                     
                      //se busca el id de los item usando la referencia en el documento subido
                     $modelo=new ModeloRequierir();
-                    // $item="ID_REFERENCIA";
+                    
                     $valor=$item["iditem"];
                     
-                    $id_item=$modelo->mdlMostrarItem('ID_REFERENCIA',$valor);
+                    $id_item=$modelo->mdlMostrarItem($valor);
                     $id_item=$id_item->fetch(); 
                               
                     //se reemplaza la referencia del item por su id

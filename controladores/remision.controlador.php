@@ -103,42 +103,46 @@ class ControladorRemision{
                        && strpos($linea, "DROGUERIA SAN")===false){
                         
                         $iditem=trim(substr($linea,0,6)); 
-                        if (!(is_numeric($iditem) && strlen($iditem)==6)) {
+                    
                             
-                            //se busca el id de los item usando la referencia en el documento subido
-                            $modelo=new ModeloRequierir();
-                            // $item="ID_REFERENCIA";
-                            $valor=$iditem;
-                            
-                            $id_item=$modelo->mdlMostrarItem("ID_REFERENCIA",$valor);
-                            $id_item=$id_item->fetch(); 
-                                    
-                            //se reemplaza la referencia del item por su id
-                            $iditem=$id_item["ID_ITEM"];
+                        // busca la exitencia del item
+                        $modelo=new ModeloRequierir();
                         
-                        }
-                        if (!empty($this->itemsarray[$iditem])) {
-                            $this->itemsarray[$iditem]["cantidad"]+=trim(str_replace(",","",substr($linea,55,5)));
-                            $this->itemsarray[$iditem]["valor"]+=trim(str_replace(",","",substr($linea,70,9)));
-                            $this->itemsarray[$iditem]["descuento"]+=trim(str_replace(",","",substr($linea,85,6)));
-                            $this->itemsarray[$iditem]["impuesto"]+=trim(str_replace(",","",substr($linea,94,9)));
-                            $this->itemsarray[$iditem]["total"]+=trim(str_replace(",","",substr($linea,107,9)));
-                            $this->itemsarray[$iditem]["costo"]+=trim(str_replace(",","",substr($linea,119,9)));
-                        }else {
-                            $this->itemsarray[$iditem]["cantidad"]=trim(str_replace(",","",substr($linea,55,5)));
-                            $this->itemsarray[$iditem]["valor"]=trim(str_replace(",","",substr($linea,70,9)));
-                            $this->itemsarray[$iditem]["valor"]=trim(str_replace(",","",substr($linea,70,9)));
-                            $this->itemsarray[$iditem]["descuento"]=trim(str_replace(",","",substr($linea,85,6)));
-                            $this->itemsarray[$iditem]["impuesto"]=trim(str_replace(",","",substr($linea,94,9)));
-                            $this->itemsarray[$iditem]["total"]=trim(str_replace(",","",substr($linea,107,9)));
-                            $this->itemsarray[$iditem]["costo"]=trim(str_replace(",","",substr($linea,119,9)));
-                        }
-                        $this->itemsarray[$iditem]["item"]=$iditem; 
-                        $this->itemsarray[$iditem]["descripcicon"]=trim(substr($linea,6,37)); 
-                        $this->itemsarray[$iditem]["local"]=trim(substr($linea,44,6));
-                        $this->ubicacion=trim(substr($linea,44,6));
-                        $this->itemsarray[$iditem]["unidad"]=trim(str_replace(",","",substr($linea,63,3)));
-                        $this->itemsarray[$iditem]["rent"]=trim((substr($linea,129,6)));
+                        $valor=$iditem;
+                        
+                        $busqueda=$modelo->mdlMostrarItem($valor);
+                        $iditem=$busqueda->fetch(); 
+                        $busqueda->closeCursor();
+                        $iditem=$iditem["ID_ITEM"];
+
+                        
+                        if ($iditem!==null) {
+
+                            if (!empty($this->itemsarray[$iditem])) {
+                                $this->itemsarray[$iditem]["cantidad"]+=trim(str_replace(",","",substr($linea,55,5)));
+                                $this->itemsarray[$iditem]["valor"]+=trim(str_replace(",","",substr($linea,70,9)));
+                                $this->itemsarray[$iditem]["descuento"]+=trim(str_replace(",","",substr($linea,85,6)));
+                                $this->itemsarray[$iditem]["impuesto"]+=trim(str_replace(",","",substr($linea,94,9)));
+                                $this->itemsarray[$iditem]["total"]+=trim(str_replace(",","",substr($linea,107,9)));
+                                $this->itemsarray[$iditem]["costo"]+=trim(str_replace(",","",substr($linea,119,9)));
+                            }else {
+                                $this->itemsarray[$iditem]["cantidad"]=trim(str_replace(",","",substr($linea,55,5)));
+                                $this->itemsarray[$iditem]["valor"]=trim(str_replace(",","",substr($linea,70,9)));
+                                $this->itemsarray[$iditem]["valor"]=trim(str_replace(",","",substr($linea,70,9)));
+                                $this->itemsarray[$iditem]["descuento"]=trim(str_replace(",","",substr($linea,85,6)));
+                                $this->itemsarray[$iditem]["impuesto"]=trim(str_replace(",","",substr($linea,94,9)));
+                                $this->itemsarray[$iditem]["total"]=trim(str_replace(",","",substr($linea,107,9)));
+                                $this->itemsarray[$iditem]["costo"]=trim(str_replace(",","",substr($linea,119,9)));
+                            }
+                            $this->itemsarray[$iditem]["item"]=$iditem; 
+                            // $this->itemsarray[$iditem]["descripcicon"]=trim(substr($linea,6,37)); 
+                            $this->itemsarray[$iditem]["local"]=trim(substr($linea,44,6));
+                            $this->ubicacion=trim(substr($linea,44,6));
+                            $this->itemsarray[$iditem]["unidad"]=trim(str_replace(",","",substr($linea,63,3)));
+                            $this->itemsarray[$iditem]["rent"]=trim((substr($linea,129,6)));
+                        
+                        }    
+                        
                         
                     
                         
@@ -169,12 +173,9 @@ class ControladorRemision{
         
         $this->no_rem=$this->modelo->mdlSubirRem($usuario,$this->franquicia,$this->cabecera["fecha"]);
         if ($this->no_rem!==false) {
-            
-            foreach ($this->itemsarray as $item) {
-                
-                $resultado=$this->modelo->mdlSubirItem($item,$this->no_rem);
 
-            }
+            $resultado=$this->modelo->mdlSubirItems($this->itemsarray,$this->no_rem);
+
         }
         
 
