@@ -60,6 +60,19 @@ $(document).ready(function () {
 
   });
 
+  $('#franquicias').change(function (e) { 
+    e.preventDefault();
+    console.log('hola');
+    $('#divfactura').remove();
+    if ($(this).val()!='UBBS') {
+      
+      $('#entradas').append(`
+      <div class="input-field col s12" id="divfactura">
+          <input id="factura" type="text" class="validate">
+          <label for="factura">Número Faactura</label>
+      </div>`);
+    }
+  });
   $("#remisiones").submit(function (e) {
     e.preventDefault();
 

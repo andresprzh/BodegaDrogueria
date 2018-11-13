@@ -8,7 +8,7 @@
 <div class="row container" >
 
     <form class="file-upload" id="remisiones">
-        <div class="col s12">
+        <div class="col s12" id="entradas">
             <select   list="franquicias" name="franquicias" class="franquicias  " id="franquicias">
                 
             </select>

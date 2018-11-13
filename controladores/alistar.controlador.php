@@ -526,13 +526,14 @@ class ControladorAlistar extends ControladorTareas{
         
         // $resultado["contenido"]=$imprimir;
         // imprime string en la impresora
+        
         try {
-            $connector = new WindowsPrintConnector("LPT1");
+            $connector = new WindowsPrintConnector("epsonliza_contab");
             
             $printer = new Printer($connector);
             $printer -> text("$imprimir");
             $printer -> cut();
-            /* Close printer */
+            // /* Close printer */
             $printer -> close();
                 $resultado["estado"]=true;
         } catch (Exception $e) {
