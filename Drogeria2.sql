@@ -337,7 +337,7 @@ CREATE TABLE IF NOT EXISTS pedido_remisiones(
 	unidad 				CHAR(5) NOT NULL DEFAULT 'UND',
 	valor 				FLOAT(11,2) DEFAULT 0,
 	descuento 			FLOAT(11,2) DEFAULT 0,
-	impuesto 			FLOAT(8,3) DEFAULT 0,
+	impuesto 			FLOAT(11,2) DEFAULT 0,
 	total 				FLOAT(14,3) DEFAULT 0,
 	costo 				FLOAT(11,2) DEFAULT 0,
 	rent 				FLOAT(5,3) DEFAULT 0,

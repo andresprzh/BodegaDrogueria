@@ -132,14 +132,13 @@ class ModeloRemision extends Conexion{
             $stmt->bindParam(":costo$count",$item["costo"],PDO::PARAM_STR);
             $stmt->bindParam(":rent$count",$item["rent"],PDO::PARAM_STR);
             $stmt->bindParam(":ubicacion$count",$item["local"],PDO::PARAM_STR);
-            // $keys[]=$i;
             
             $count++;
             
         }
         // return count($keys);
         $res= $stmt->execute();
-        return $stmt->errorInfo();
+        // return $stmt->errorInfo();
         $stmt->closeCursor();
         return $res;
     }
