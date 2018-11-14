@@ -73,6 +73,7 @@ $(document).ready(function () {
       </div>`);
     }
   });
+
   $("#remisiones").submit(function (e) {
     e.preventDefault();
 
@@ -103,6 +104,10 @@ $(document).ready(function () {
 
     form_data.append('franquicia', franquicia);
     form_data.append('usuario', id_usuario);
+
+    if ($("#factura").val()) {
+      form_data.append('factura',$("#factura").val());
+    }
 
     for (let x = 0; x < ins; x++) {
       form_data.append('files[]', document.getElementById('archivos').files[x]);

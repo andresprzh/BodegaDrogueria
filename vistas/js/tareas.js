@@ -3,7 +3,8 @@ $(document).ready(function () {
 /* ============================================================================================================================
                                                     INICIALIZACION   
 ============================================================================================================================*/
-    $('.modal').modal();    
+    $('.modal').modal();   
+     
 
     // pone requisiciones en el input select
     $.ajax({
@@ -55,7 +56,7 @@ $(document).ready(function () {
             }
         }
     });
-
+    
 /* ============================================================================================================================
                                                     EVENTOS   
 ============================================================================================================================*/
@@ -110,7 +111,17 @@ $(document).ready(function () {
         
         // solo muestra ubicaciones que no estan asignadas
         newubicaciones=diff(ubicaciones,ubicacioneslista);
-        
+        console.log(newubicaciones);
+        let ub='<select  name="selub" id="selub">';
+        for (let i in newubicaciones) {
+            
+            ub+=`<option value="${i}">${i}</option>`;
+        }
+        ub+='</select>'
+        console.log(ub);
+        $('#ub').append(ub);
+        $('#seleubic').modal('open');   
+        /*
         swal({
             title: 'Seleccionar ubicacion',
             input: 'select',
@@ -157,7 +168,7 @@ $(document).ready(function () {
                 });
             }
         });
-        
+        */
     });
 
     $('#listtareas').on('click','a', function () {
@@ -219,7 +230,7 @@ function agregarUbicaciones(iduser) {
                 $('#ubicaciones').html(`<li class="collection-item">No hay ubicaciones asignadas</li>`);
             }
 
-            $('.modal').modal('open');
+            $('#informacion').modal('open');
         }
     });
 

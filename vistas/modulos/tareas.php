@@ -76,6 +76,82 @@
     </div>
 
 </div>
+
+<!-- ============================================================================================================================
+                                                    MODAL SELECCIONAR UBICACIONES
+============================================================================================================================ -->
+<div id="seleubic" class="modal  ">
+
+    <div class="modal-content ">
+
+        <div class="modal-header ">
+        
+            <p class="center " >Asignar Ubiaciones Usuario: <span id="iduser"></span></p>
+
+        </div>
+
+        <form action="#" id="ubic">
+            <p>
+            <label>
+                <input type="checkbox" />
+                <span>Red</span>
+            </label>
+            </p>
+            <p>
+            <label>
+                <input type="checkbox" checked="checked" />
+                <span>Yellow</span>
+            </label>
+            </p>
+            <p>
+            <label>
+                <input type="checkbox" class="filled-in" checked="checked" />
+                <span>Filled in</span>
+            </label>
+            </p>
+            <p>
+            <label>
+                <input id="indeterminate-checkbox" type="checkbox" />
+                <span>Indeterminate Style</span>
+            </label>
+            </p>
+            <p>
+            <label>
+                <input type="checkbox" checked="checked" disabled="disabled" />
+                <span>Green</span>
+            </label>
+            </p>
+            <p>
+            <label>
+                <input type="checkbox" disabled="disabled" />
+                <span>Brown</span>
+            </label>
+            </p><p>
+            <label>
+                <input type="checkbox" disabled="disabled" />
+                <span>Brown</span>
+            </label>
+            </p><p>
+            <label>
+                <input type="checkbox" disabled="disabled" />
+                <span>Brown</span>
+            </label>
+            </p><p>
+            <label>
+                <input type="checkbox" disabled="disabled" />
+                <span>Brown</span>
+            </label>
+            </p><p>
+            <label>
+                <input type="checkbox" disabled="disabled" />
+                <span>Brown</span>
+            </label>
+            </p>
+        </form>
+
+    </div>
+
+</div>
 <!-- ============================================================================================================================
                                                         ESTILOS 
 ============================================================================================================================ -->
@@ -89,6 +165,19 @@
 {
     overflow:hidden; 
     overflow-y:scroll;
+}
+
+#seleubic
+{       
+
+  min-height: 300px;
+  height: 300px;
+  min-width: 100px;
+}
+#seleubic form{
+    min-height:200px;
+    height:200px;
+    overflow-y:auto;
 }
 </style>
 <!-- ============================================================================================================================

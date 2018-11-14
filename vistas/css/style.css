@@ -50,7 +50,6 @@ p,text{
   position: fixed;
   top: 0;
   min-width: 70%;
-  
 }
 .modal.open {
 display: block;
