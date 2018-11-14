@@ -457,7 +457,7 @@ function mostrarItems() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-            console.log(res);
+            // console.log(res);
             // return 0;
             //si encuentra el item mostrarlo en la tabla
             if (res['estado'] != 'error') {
