@@ -472,7 +472,7 @@ class ControladorAlistar extends ControladorTareas{
         //datos de la caja
         $imprimir.=str_pad("C.O      : $caja0", 40, " ", STR_PAD_RIGHT)."\r\n";
         $imprimir.=str_pad("Doc. Alt#: CAJA#$caja", 20, " ", STR_PAD_RIGHT) . str_pad("Fecha : $fecha", 20, " ", STR_PAD_RIGHT)."\r\n";
-        $imprimir.=str_pad("Docto.  #: $req", 20, " ", STR_PAD_RIGHT) . str_pad("Hora  : $hora", 20, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("Req.    #: $req", 20, " ", STR_PAD_RIGHT) . str_pad("Hora  : $hora", 20, " ", STR_PAD_RIGHT)."\r\n";
         $imprimir.=str_pad("Loc. Ori.:       ", 20, " ", STR_PAD_RIGHT) . str_pad("Loc. Desct.: $destino", 20, " ", STR_PAD_RIGHT)."\r\n";
         
         $imprimir.=str_repeat("-",40 )."\r\n";

@@ -319,7 +319,8 @@ class ControladorPV extends ControladorCajas{
     }
     // busca items de una requisicion
     public function ctrBuscarItemrec($numcaja)
-    {
+    {   
+        // return $this->ctrVerificarRegistro($numcaja);
          $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
           
         if ($busqueda->rowCount() > 0) {
@@ -353,12 +354,16 @@ class ControladorPV extends ControladorCajas{
             foreach ($recibidos as $row) {
                 $mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
 
-                $origen=str_replace("BD","",$row["lo_origen"]);
-                $destino=str_replace("VE","",$row["lo_destino"]);
-                $origen=$origen.substr($destino,1,-1);
-                $localicacion=str_replace("-","",$origen.$row["lo_destino"]."I");
+                
+                // $localicacion=str_replace("-","",$row["lo_origen"]."BD".$row["lo_destino"]."VEI");
+                // $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
+                // $item=str_pad($row["iditem"],13+12," ",STR_PAD_RIGHT);
+                // $num=$row["recibidos"]*1000;
+                // $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
+                // $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);
+                $localicacion=str_replace("-","",$row["lo_origen"]."BD".$row["lo_destino"]."VEI");
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
-                $item=str_pad($row["iditem"],13+12," ",STR_PAD_RIGHT);
+                $item=str_pad($row["iditem"],6+12," ",STR_PAD_RIGHT);
                 $num=$row["recibidos"]*1000;
                 $alistado=str_pad($num,12,"0",STR_PAD_LEFT);
                 $alistado=str_pad($alistado,12+32," ",STR_PAD_RIGHT);

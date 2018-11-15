@@ -810,14 +810,14 @@ function mostrarItems(numcaja, estado = null) {
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-
+    console.log(estado);
     return $.ajax({
         url: "api/cajas/cajas",
         method: "POST",
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-
+            
             origen = res["contenido"][0]["origen"];
             destino = res["contenido"][0]["destino"];
 

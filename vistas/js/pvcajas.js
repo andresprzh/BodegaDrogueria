@@ -230,10 +230,9 @@ function mostrarItems(numcaja, estado = null) {
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-
-
+            console.log(res);
+            
             $("#TablaM tbody").html("");
-
 
             var item = res["contenido"];
 

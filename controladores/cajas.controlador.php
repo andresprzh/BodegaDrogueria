@@ -101,10 +101,10 @@ class ControladorCajas extends ControladorAlistar {
             while($row = $busqueda->fetch()){
                 $Mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
                 
-                $origen=str_replace("BD","",$row["lo_origen"]);
-                $destino=str_replace("VE","",$row["lo_destino"]);
-                $destino=$origen.substr($destino,1,-1);
-                $localicacion=str_replace("-","",$row["lo_origen"].$destino."I");
+                // $origen=str_replace("BD","",$row["lo_origen"]);
+                // $destino=str_replace("VE","",$row["lo_destino"]);
+                // $destino=$origen.substr($destino,1,-1);
+                $localicacion=str_replace("-","",$row["lo_origen"]."BD".$row["lo_destino"]."VEI");
                 $localicacion=str_pad($localicacion,11+15," ",STR_PAD_RIGHT);
                 $item=str_pad($row["iditem"],6+12," ",STR_PAD_RIGHT);
                 $num=$row["alistado"]*1000;
