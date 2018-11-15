@@ -35,17 +35,24 @@ if (isset($_GET["ruta"])) {
                     
                     if ($_POST['eliminar']==true) {
 
-                        $resultado=$controlador->ctrEliminarUbicacion($ubicacion,$usuario);
+                        foreach ($ubicacion as $i => $ub) {
+                            $resultado=$controlador->ctrEliminarUbicacion($ub,$usuario);
+                        }
 
                     }else {
 
-                        $resultado=$controlador->ctrAsignarUbicacion($ubicacion,$usuario);
+                        
+                        foreach ($ubicacion as $i => $ub) {
+                            $resultado=$controlador->ctrAsignarUbicacion($ub,$usuario);
+                        }
 
                     }
 
                 }else {
 
-                    $resultado=$controlador->ctrAsignarUbicacion($ubicacion,$usuario);
+                    foreach ($ubicacion as $i => $ub) {
+                        $resultado=$controlador->ctrAsignarUbicacion($ub,$usuario);
+                    }
 
                 }
                 

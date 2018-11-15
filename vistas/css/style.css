@@ -49,7 +49,7 @@ p,text{
   left: 0;
   position: fixed;
   top: 0;
-  min-width: 70%;
+  min-width: 80%;
 }
 .modal.open {
 display: block;

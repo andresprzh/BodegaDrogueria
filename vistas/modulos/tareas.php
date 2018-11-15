@@ -6,7 +6,7 @@
 ============================================================================================================================ -->
 <div class=" fixed" style="padding:15px;" >
 
-    <table class="" id="TablaU"  >
+    <table class="" id="TablaU">
         
         <div class="input-field col s6">
             <input id="buscar" type="text" class="">
@@ -54,12 +54,15 @@
 
         </div>
 
-        <div class="row">
+        <div class="row modal_principal" >
 
         <div class="input-field col s12 " >
 
             <ul class="collection with-header" id="listtareas">
                 <li class="collection-header"><h4 class="center-align">Ubicaciones</h4></li>
+                <div class="progress hide green lighten-4">
+                    <div class="indeterminate green"></div>
+                </div>
                 <li 
                  id="agregarubicacion"  
                  class="collection-item center-align green btn waves-effect waves-light col s12" 
@@ -70,7 +73,9 @@
             </ul>
 
         </div>
-
+        <button class="btn red waves-effect waves-light right" onclick="eliminarub()">
+            Eliminar todas ubicaciones
+        </button>
         </div>
 
     </div>
@@ -84,71 +89,27 @@
 
     <div class="modal-content ">
 
-        <div class="modal-header ">
-        
-            <p class="center " >Asignar Ubiaciones Usuario: <span id="iduser"></span></p>
-
+        <h5 class="center ">Ubicaciones</h5>
+        <div class="progress hide green lighten-4">
+            <div class="indeterminate green"></div>
         </div>
+        <form class="row">
 
-        <form action="#" id="ubic">
-            <p>
-            <label>
-                <input type="checkbox" />
-                <span>Red</span>
-            </label>
-            </p>
-            <p>
-            <label>
-                <input type="checkbox" checked="checked" />
-                <span>Yellow</span>
-            </label>
-            </p>
-            <p>
-            <label>
-                <input type="checkbox" class="filled-in" checked="checked" />
-                <span>Filled in</span>
-            </label>
-            </p>
-            <p>
-            <label>
-                <input id="indeterminate-checkbox" type="checkbox" />
-                <span>Indeterminate Style</span>
-            </label>
-            </p>
-            <p>
-            <label>
-                <input type="checkbox" checked="checked" disabled="disabled" />
-                <span>Green</span>
-            </label>
-            </p>
-            <p>
-            <label>
-                <input type="checkbox" disabled="disabled" />
-                <span>Brown</span>
-            </label>
-            </p><p>
-            <label>
-                <input type="checkbox" disabled="disabled" />
-                <span>Brown</span>
-            </label>
-            </p><p>
-            <label>
-                <input type="checkbox" disabled="disabled" />
-                <span>Brown</span>
-            </label>
-            </p><p>
-            <label>
-                <input type="checkbox" disabled="disabled" />
-                <span>Brown</span>
-            </label>
-            </p><p>
-            <label>
-                <input type="checkbox" disabled="disabled" />
-                <span>Brown</span>
-            </label>
-            </p>
+        <label class="col s2 offset-s8 offset-m10">
+            <input id="check-todos" type="checkbox"/>
+            <span class="black-text" style="font-weight: bold;">Todos</span>
+        </label>
+
+        <div  id="ubic" class="col s12">
+            
+        </div>
+        <button class="btn green waves-effect waves-light left" type="submit" name="action">
+            Asignar
+        </button>
+        <button class="modal-close btn red waves-effect waves-light right">
+            Cancelar
+        </button>
         </form>
-
     </div>
 
 </div>
@@ -158,7 +119,7 @@
 <style>
 #ubicaciones
 {
-    height:200px; 
+    max-height:300px; 
     width:100%;
 }
 #ubicaciones 
@@ -169,15 +130,20 @@
 
 #seleubic
 {       
-
-  min-height: 300px;
-  height: 300px;
-  min-width: 100px;
+    min-height: 380px;
+    height: 380px;
+    min-width: 350px;
+    max-width:600px;
+    
 }
-#seleubic form{
+#seleubic #ubic{
     min-height:200px;
     height:200px;
     overflow-y:auto;
+    
+}
+.modal-content{
+    overflow-y:none;
 }
 </style>
 <!-- ============================================================================================================================

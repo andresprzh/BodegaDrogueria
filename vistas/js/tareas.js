@@ -1,10 +1,10 @@
 $(document).ready(function () {
 
-/* ============================================================================================================================
-                                                    INICIALIZACION   
-============================================================================================================================*/
-    $('.modal').modal();   
-     
+    /* ============================================================================================================================
+                                                        INICIALIZACION   
+    ============================================================================================================================*/
+    $('.modal').modal();
+
 
     // pone requisiciones en el input select
     $.ajax({
@@ -14,29 +14,29 @@ $(document).ready(function () {
         processData: false,
         dataType: "JSON",
         success: function (res) {
-            
+
             if (res['estado'] == 'encontrado') {
-                let usuarios=res['contenido'];
+                let usuarios = res['contenido'];
 
                 // si el resultado es n array
-                if (usuarios.constructor===Array) {
+                if (usuarios.constructor === Array) {
                     for (var i in usuarios) {
                         $("#TablaU tbody").append($(`<tr id=${usuarios[i]["id_usuario"]}><td>
                         ${usuarios[i]["nombre"]}</td><td>
                         ${usuarios[i]["cedula"]}</td><td>
                         <a class="tareanueva btn-floating btn-small waves-effect waves-light white" title="Ver Ubicaciones"><i class="grey-text fas fa-wrench"></i></a></td>
-                        </tr>`));  
-                    } 
-                // si solo hay 1 dato en usuarios
-                }else{
-                    
+                        </tr>`));
+                    }
+                    // si solo hay 1 dato en usuarios
+                } else {
+
                     $("#TablaU tbody").append($(`<tr id=${usuarios["id"]}><td>
                         ${usuarios["nombre"]}</td><td>
                         ${usuarios["cedula"]}</td><td>
                         <a class="tareanueva"><i class="fas fa-wrench"></i></a></td>
-                        </tr>`));  
+                        </tr>`));
                 }
-                  
+
             }
 
         }
@@ -50,48 +50,53 @@ $(document).ready(function () {
         dataType: 'JSON',
         success: function (res) {
             if (res) {
-                
-                ubicaciones=res;
+
+                ubicaciones = res;
 
             }
         }
     });
-    
-/* ============================================================================================================================
-                                                    EVENTOS   
-============================================================================================================================*/
 
-    $("#buscar").keyup(function (e) { 
-        let input, filter, table, tr, nombres,cedulas;
+    /* ============================================================================================================================
+                                                        EVENTOS   
+    ============================================================================================================================*/
+
+    $("#buscar").keyup(function (e) {
+        let input, filter, table, tr, nombres, cedulas;
 
         filter = this.value.toUpperCase();
         table = document.getElementById("TablaU");
         tr = table.getElementsByTagName("tr");
         for (let i = 0; i < tr.length; i++) {
             nombres = tr[i].getElementsByTagName("td")[0];
-            cedulas =tr[i].getElementsByTagName("td")[1];
+            cedulas = tr[i].getElementsByTagName("td")[1];
             if (nombres && cedulas) {
-                if ((nombres.innerHTML.toUpperCase().indexOf(filter) > -1)||(cedulas.innerHTML.toUpperCase().indexOf(filter) > -1)) {
+                if ((nombres.innerHTML.toUpperCase().indexOf(filter) > -1) || (cedulas.innerHTML.toUpperCase().indexOf(filter) > -1)) {
                     tr[i].style.display = "";
                 } else {
                     tr[i].style.display = "none";
                 }
-            }       
+            }
         }
     });
 
     // si se da click en el boton de ver o asignar ubicacion
-    $('#TablaU tbody').on('click','a', function () {
+    $('#TablaU tbody').on('click', 'a', function () {
         // se consigue el id del item y el nombre
         let iduser = $(this).closest('tr').attr('id');
-        const nombre =  $('td:eq(0)', $(this).parents('tr')).text().replace(/(^\s+|\s+$)/g, '');
-        const cedula =  $('td:eq(1)', $(this).parents('tr')).text().replace(/(^\s+|\s+$)/g, '');
+        const nombre = $('td:eq(0)', $(this).parents('tr')).text().replace(/(^\s+|\s+$)/g, '');
+        const cedula = $('td:eq(1)', $(this).parents('tr')).text().replace(/(^\s+|\s+$)/g, '');
         $('#iduser').html(iduser);
         $('#nombre').html(nombre);
         $('#cedula').html(cedula);
 
         agregarUbicaciones(iduser);
-        
+
+    });
+
+    // evita que el botton de cerrar modal haga otra accion
+    $('.modal-close').click(function (e) {
+        e.preventDefault();
     });
 
     // si se da click en el boton de ver o asignar ubicacion
@@ -100,104 +105,128 @@ $(document).ready(function () {
         let lista = document.getElementById('ubicaciones');
         let li = lista.getElementsByTagName('li');
         let items = new Array;
-        
+
         // var ubicacioneslista = li.map(function(x) {
         //     return x.id.substr(1)
         //  });
-        let ubicacioneslista=new Array;
+        let ubicacioneslista = new Array;
         for (let i = 0; i < li.length; i++) {
             ubicacioneslista[li[i].id] = li[i].id;
         }
-        
-        // solo muestra ubicaciones que no estan asignadas
-        newubicaciones=diff(ubicaciones,ubicacioneslista);
-        console.log(newubicaciones);
-        let ub='<select  name="selub" id="selub">';
-        for (let i in newubicaciones) {
-            
-            ub+=`<option value="${i}">${i}</option>`;
-        }
-        ub+='</select>'
-        console.log(ub);
-        $('#ub').append(ub);
-        $('#seleubic').modal('open');   
-        /*
-        swal({
-            title: 'Seleccionar ubicacion',
-            input: 'select',
-            inputOptions: newubicaciones,
-            showCancelButton: true,
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Asignar',
-            confirmButtonClass: 'green darken-3',
-            inputValidator: function (value) {
-                return new Promise(function (resolve, reject) {
-                    if (value !== '') {
-                        resolve();
-                    } else {
-                        reject('You need to select a Tier');
-                    }
-                });
-            }
-        }).then(function (result) {
-            
-            if (result.value) {
-                
-                const ubicacion = result.value;
-                const iduser=$('#iduser').html();
-                // return 0;
-                $.ajax({
-                    type: 'POST',
-                    url: 'api/tareas/dettarea',
-                    data: {'usuario':iduser,'ubicacion':ubicacion},
-                    dataType: 'JSON',
-                    success: function (res) {
-                        
-                        if (res) {
-                            
-                            agregarUbicaciones(iduser);
 
-                        } else {
-                            var toastHTML = `<span class="truncate">No se pudo agregar ubicación</span>`;
-                            M.toast({ html: toastHTML, 
-                                classes: "red darken-4",
-                                displayLength:1500 
-                            });
-                        }
-                    }
-                });
-            }
-        });
-        */
+        // solo muestra ubicaciones que no estan asignadas
+        newubicaciones = diff(ubicaciones, ubicacioneslista);
+
+        let ub = '';
+
+        for (let i in newubicaciones) {
+
+            ub += `
+            <div class="col s6 m3">
+            <label>
+                <input type="checkbox" name="ubicacion" value="${i}"/>
+                <span>${newubicaciones[i]}</span>
+            </label>
+            </div>`;
+        }
+
+        $('#ubic').html('');
+        $('#ubic').append(ub);
+        $('#seleubic').modal('open');
+
     });
 
-    $('#listtareas').on('click','a', function () {
-        let ubicacion = $(this).closest('li').attr('id');
-        const iduser=$('#iduser').html();
+    // se asignan ubicaciones
+    $('#seleubic').on('submit', 'form', function (e) {
+        e.preventDefault();
+
+        $('#seleubic .btn').attr('disabled', true);
+        $('#seleubic input:checkbox').attr('disabled', true);
+        $('#seleubic .progress').removeClass('hide');
+
+        const iduser = $('#iduser').html();
+        let ubicaciones = new Array;
+
+        $.each($("#ubic input:checkbox:checked"), function () {
+            ubicaciones.push($(this).val());
+        });
 
         $.ajax({
             type: 'POST',
             url: 'api/tareas/dettarea',
-            data: {'usuario':iduser,'ubicacion':ubicacion,'eliminar':true},
+            data: { 'usuario': iduser, 'ubicacion': ubicaciones },
             dataType: 'JSON',
             success: function (res) {
-                
+
+                $('#seleubic .btn').removeAttr('disabled');
+                $('#seleubic input:checkbox').removeAttr('disabled');
+                $('#seleubic .progress').addClass('hide');
                 if (res) {
-                    
+
+                    agregarUbicaciones(iduser);
+                    $('#seleubic').modal('close');
+
+                } else {
+                    var toastHTML = `<span class="truncate">No se pudo agregar ubicación</span>`;
+                    M.toast({
+                        html: toastHTML,
+                        classes: "red darken-4",
+                        displayLength: 1500
+                    });
+                }
+
+            }
+        });
+
+    });
+
+    $('#check-todos').change(function (e) {
+        e.preventDefault();
+        var checkbox = document.getElementById('check-todos');
+        if (checkbox.checked) {
+            $.each($("#ubic input:checkbox"), function () {
+                $(this).prop('checked', true);
+            });
+        } else {
+            $.each($("#ubic input:checkbox"), function () {
+                $(this).prop('checked', false);
+            });
+        }
+
+    });
+
+    // elimina ubicacin
+    $('#listtareas').on('click', 'a', function () {
+
+        let ubicacion = new Array;
+        ubicacion[0] = $(this).closest('li').attr('id');
+        const iduser = $('#iduser').html();
+
+        $.ajax({
+            type: 'POST',
+            url: 'api/tareas/dettarea',
+            data: { 'usuario': iduser, 'ubicacion': ubicacion, 'eliminar': true },
+            dataType: 'JSON',
+            success: function (res) {
+
+                if (res) {
+
                     agregarUbicaciones(iduser);
 
                 } else {
-                    
+
                     var toastHTML = `<span class="truncate">No se pudo eliminar ubicación</span>`;
-                    M.toast({ html: toastHTML, 
+                    M.toast({
+                        html: toastHTML,
                         classes: "red darken-4",
-                        displayLength:1500 
+                        displayLength: 1500
                     });
                 }
             }
         });
     });
-    
+
+
 });
 
 /* ============================================================================================================================
@@ -208,7 +237,7 @@ function agregarUbicaciones(iduser) {
     $.ajax({
         type: 'GET',
         url: 'api/tareas/dettarea',
-        data: {'usuario':iduser},
+        data: { 'usuario': iduser },
         dataType: 'JSON',
         success: function (res) {
 
@@ -218,15 +247,15 @@ function agregarUbicaciones(iduser) {
             if (res) {
 
                 for (let i in res) {
-                    
+
                     $('#ubicaciones').append(`
                     <li class="collection-item" id="${i}">
                         <div>${res[i]}<a href="#!" class="secondary-content red-text"><i class="fas fa-times"></i></a></div>
                     </li>`);
                 }
-                
-            }else{
-                
+
+            } else {
+
                 $('#ubicaciones').html(`<li class="collection-item">No hay ubicaciones asignadas</li>`);
             }
 
@@ -238,21 +267,64 @@ function agregarUbicaciones(iduser) {
 
 
 // obtiene conjunto diferencia entre 2 arreglos u objetos
-function diff(a,b) {
-    c=new Array();
-    
+function diff(a, b) {
+    c = new Array();
+
     for (var i in a) {
-        
-        for(var j in b){
-            var include=true;
-            if (a[i]==b[j]) {
-                include=false;
+
+        for (var j in b) {
+            var include = true;
+            if (a[i] == b[j]) {
+                include = false;
                 break;
             }
         }
         if (include) {
-            c[i]=a[i];
+            c[i] = a[i];
         }
     }
     return c;
+}
+
+function eliminarub() {
+
+    $('.modal_principal .btn').attr('disabled', true);
+    $('.modal_principal a').attr('disabled', true);
+    const iduser = $('#iduser').html();
+    $('#listtareas .progress').removeClass('hide');
+
+    let lista = document.getElementById('ubicaciones');
+    let li = lista.getElementsByTagName('li');
+    let ubicaciones = new Array;
+
+    for (let i = 0; i < li.length; i++) {
+        ubicaciones[i] = li[i].id
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: 'api/tareas/dettarea',
+        data: { 'usuario': iduser, 'ubicacion': ubicaciones, 'eliminar': true },
+        dataType: 'JSON',
+        success: function (res) {
+            $('.modal_principal .btn').removeAttr('disabled', true);
+            $('.modal_principal a').removeAttr('disabled');
+            $('#listtareas .progress').addClass('hide');
+
+            if (res) {
+
+                agregarUbicaciones(iduser);
+
+            } else {
+
+                var toastHTML = `<span class="truncate">No se pudo eliminar ubicación</span>`;
+                M.toast({
+                    html: toastHTML,
+                    classes: "red darken-4",
+                    displayLength: 1500
+                });
+            }
+        }
+    });
+
 }
