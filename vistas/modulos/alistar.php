@@ -1,3 +1,4 @@
+<script src="vistas/plugins/sweetalert2/sweetalert2.all.js"></script>
 <!-- ============================================================================================================================
                                                     FORMAULARIO    
 ============================================================================================================================ -->
@@ -5,7 +6,7 @@
     <br>
     <div class="row">
         <div class="col s9 m9 l9">
-            <select   list="requeridos" name="requeridos" class="requeridos browser-default col s12 " id="requeridos">
+            <select   list="requeridos" name="requeridos" class="requeridos browser-default col s12 " id="requeridos" onchange="cambiarRequeridos()">
                 <option value="" disabled selected>Número requisicion</option>
             </select>
         </div>
@@ -205,6 +206,13 @@
         width:20%;
         text-align: center;
     }
+
+    .swal2-input{
+        /* display:float; */
+        min-width:100% !important;
+        
+    }
+
 </style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   

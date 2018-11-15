@@ -18,13 +18,18 @@ $(document).ready(function () {
         success: function (res) {
 
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
-            for (var i in res) {
+            if (res) {
+                for (var i in res) {
+                    
+                    // $("#requeridos").append($('<option id= value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
+                    $("#requeridos").append($(`<option  value="${res[i]['no_req']}">${res[i]['no_req'].substr(4)} ${res[i]['descripcion']}</option>`));
 
-                // $("#requeridos").append($('<option id= value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
-                $("#requeridos").append($(`<option  value="${res[i]['no_req']}">${res[i]['no_req'].substr(4)} ${res[i]['descripcion']}</option>`));
-
+                }
+                if (i==0) {
+                    $("#requeridos").val(res[i]['no_req']);
+                    cambiarRequeridos();
+                }
             }
-
         }
     });
 
@@ -33,14 +38,13 @@ $(document).ready(function () {
     ============================================================================================================================*/
 
     //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
-    $(".requeridos").change(function (e) {
-        $.when(mostrarItems()).done(function () {
-            $.when(mostrarCaja()).done(function () {
-                $("#codbarras").focus();
-            });
-        });
-
-    });
+    // $(".requeridos").change(function (e) {
+    //     $.when(mostrarItems()).done(function () {
+    //         $.when(mostrarCaja()).done(function () {
+    //             $("#codbarras").focus();
+    //         });
+    //     });
+    // });
 
     // FUNCION QUE FILTRA ITEMS POR UBICACION
     $("#ubicacion").change(function (e) {
@@ -149,11 +153,14 @@ $(document).ready(function () {
         // Pregunta si se elimina el item
         swal({
             title: `¿Quitar item ${nomitem}?`,
-            icon: "warning",
-            buttons: ['Cancelar', 'Quitar']
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: 'Quitar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#d33',
         })
-            .then((Quitar) => {
-
+            .then((res) => {
+                let Quitar=res.value;
                 if (Quitar) {
 
                     // elimina el item y vuelve a cargar la tabla de vista
@@ -182,12 +189,15 @@ $(document).ready(function () {
         //si se presiona aceptar se continua con el proceso
         swal({
             title: '¿Cerrar caja?',
-            icon: 'warning',
-            buttons: ['Cancelar', 'Cerrar']
-        }).then((Cerrar) => {
-
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Cerrar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#388e3c',
+        }).then((res) => {
+            let cerrar=res.value;
             //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
-            if (Cerrar) {
+            if (cerrar) {
 
                 // Busca los datos en la tabla
                 let table = document.getElementById('tablaeditable');
@@ -217,7 +227,7 @@ $(document).ready(function () {
                         if (res) {
 
                             swal('¡Caja cerrada exitosamente!', {
-                                icon: 'success',
+                                type: 'success',
                             }).then((event) => {
 
                                 // location.reload(true);
@@ -229,7 +239,7 @@ $(document).ready(function () {
                                 
                                 if (tr.length<1) {
                                     swal('¡Requisicion Terminada!', {
-                                        icon: 'warning',
+                                        type: 'warning',
                                     }).then((event) => {
                                         location.reload();
                                     })
@@ -240,7 +250,7 @@ $(document).ready(function () {
                         } else {
 
                             swal("¡Error al cerrar la caja!", {
-                                icon: "error",
+                                type: "error",
                             });
 
                         }
@@ -259,6 +269,21 @@ $(document).ready(function () {
                                                 FUNCIONES   
 ============================================================================================================================*/
 
+function cambiarRequeridos() {
+    $.when(mostrarItems()).done(function () {
+        $.when(mostrarCaja()).done(function () {
+            $("#codbarras").focus();
+            // obtiene las ubicaciones al recargar tabla
+            var options = $('#ubicacion option');
+            
+            var values = $.map(options ,function(option) {
+                return option.value;
+            });
+            $('#ubicacion').val(values[1]);
+            cambiarUbicacion();
+        });
+    });
+}
 // FUNCION QUE BUSCA EL CODIGO DE BARRAS
 function buscarCodbar() {
 
@@ -271,13 +296,11 @@ function buscarCodbar() {
 
     // ajax para ejecutar un script php mandando los datos
     return $.ajax({
-        // url: 'ajax/alistar.items.ajax.php',//url de la funcion
         url: 'api/alistar/items',//url de la funcion
         type: 'GET',//metodo post para mandar datos
         data: { "codigo": codigo, "req": req },//datos que se enviaran
         dataType: 'JSON',
         success: function (res) {
-
             agregarItem(res, req);
             $('#codbarras').val("");
             $("#codbarras").focus();
@@ -348,18 +371,22 @@ function agregarItem(res, req) {
         let item = res['contenido'];
 
         if (item) {
-            swal(`${item['descripcion']}`, `disponibilidad: ${item['disponibilidad']}\t pendientes: ${item['pendientes']} `, {
-                content: {
-                    element: "input",
-                    attributes: {
-                        placeholder: "Cantidad a alistar",
-                        type: "number",
-                    },
-                },
-                buttons: ["Cancelar", "Alistar"],
-            })
-                .then((value) => {
-                    console.log(value);
+            swal({
+                title: `${item['descripcion']}`,
+                text:`disponibilidad: ${item['disponibilidad']}\t pendientes: ${item['pendientes']} `,
+                input: 'number',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#388e3c',
+                inputValidator: (value) => {
+                  if ((value.toString().length>=13 && value.toString()!='65743328329379842953') || value<0 ) {
+                        $('.swal2-input').val('');
+                        return "Digite una cantidad valida";
+                  }
+                }
+              }).then((res) => {
+                  let value=res.value;
                     // alista el item si se presiona en alistar o se da en enter
                     if (value != null) {
                         // consigue el valor maximo en decenas que puede valer la cantidad de alistados
@@ -371,8 +398,8 @@ function agregarItem(res, req) {
                             pot = pot / 10;
                         } while (pot > 1);
                         let maxvalue = Math.pow(10, a);
-
-                        if (value === '') {
+                        
+                        if (value === '' || value.toString().length==20  || value==0) {
                             value = item['pendientes'];
                         }
 
@@ -387,7 +414,7 @@ function agregarItem(res, req) {
                             }
 
                         } else {
-
+                            
                             var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Cantidad alistada es muy grande</span></p>`;
                             M.toast({
                                 html: toastHTML, classes: "red lighten-2'",
@@ -406,13 +433,14 @@ function agregarItem(res, req) {
                             data: { 'item': item, 'req': req },//datos que se enviaran
                             dataType: 'JSON',
                             success: function (res) {
+                                
                                 if (res) {
                                     //se recargan los datos en las tablas
                                     recargarItems();
                                     $('#codbarras').focus();
                                 } else {
                                     swal('Error al alistar el item', {
-                                        icon: 'error',
+                                        type: 'error',
                                     }).then((value) => {
                                         $('#codbarras').focus();
                                     });
@@ -425,7 +453,7 @@ function agregarItem(res, req) {
 
         } else {
             swal('Item ya fue alistado en otra caja', {
-                icon: 'warning',
+                type: 'warning',
             }).then((value) => {
                 $('#codbarras').focus();
             });
@@ -433,8 +461,10 @@ function agregarItem(res, req) {
         }
         //si no encontro el item regresa el contenido del error(razon por la que no lo encontro)
     } else {
-        swal(res['contenido'], {
-            icon: 'warning',
+        swal({
+            title: res['contenido'],
+            type: 'warning',
+            confirmButtonColor: '#388e3c',
         }).then((value) => {
             $('#codbarras').focus();
         });
@@ -571,7 +601,7 @@ function mostrarCaja() {
                     swal({
                         title: '!No se puede generar caja¡',
                         text: `Caja sin cerrar en la requisicion ${res['contenido']}`,
-                        icon: 'warning',
+                        type: 'warning',
                     })
                         .then((ok) => {
                             // location.reload();

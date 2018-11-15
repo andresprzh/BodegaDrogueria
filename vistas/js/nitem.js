@@ -14,7 +14,7 @@ $(document).ready(function () {
         processData: false,
         dataType: "json",
         success: function (res) {
-
+            
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -31,7 +31,7 @@ $(document).ready(function () {
     /* ============================================================================================================================
                                                         EVENTOS   
     ============================================================================================================================*/
-    //EVENTO AL CAMBIAR ENTRADA reqUERIDOS
+    //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
     $(".requeridos").change(function (e) {
 
         $(".input_item").removeClass("hide");
@@ -43,7 +43,7 @@ $(document).ready(function () {
     $('#formitem').submit(function (e) {
 
         e.preventDefault();
-
+        
         let item = $('#item').val();
         //consigue el numero de requerido
         var requeridos = $(".requeridos").val();
@@ -72,7 +72,7 @@ $(document).ready(function () {
     // agregar los items de la tabla de requisicion a la requisicion
     $("#agitems").click(function (e) {
         e.preventDefault();
-
+        
         //consigue el numero de requerido
         var requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
@@ -175,7 +175,7 @@ function buscarItem(item, req) {
         data: { "item": item, "req": req },
         dataType: "JSON",
         success: function (res) {
-
+            console.log(res);
             if (res["estado"] == "encontrado") {
                 items = res["contenido"];
                 $("#TablaM tbody").html("");

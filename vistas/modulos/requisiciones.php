@@ -66,8 +66,8 @@
                     <tr class="white-text green darken-3">
 
                         <th>Descripción</th>
-                        <th>Disponibles</th>
-                        <th>Pendientes</th>
+                        <th><span class="truncate">Disponibles</span></th>
+                        <th><span class="truncate">Pendientes</span></th>
                         <th>Ubicacion</th>
                         
                     </tr>
@@ -115,6 +115,16 @@
     width:100%;
 }
 
+
+@media(max-width:630px){
+    
+    table#TablaM  td:nth-child(4), th:nth-child(4) {
+        display: none;
+    }
+    table#TablaM  td:nth-child(1), th:nth-child(1) {
+        width:50%;
+    }
+}
 
 </style>
 <!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->

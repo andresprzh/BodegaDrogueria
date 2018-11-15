@@ -327,6 +327,20 @@
     .tablascroll thead {
     width: calc( 100% - 0em )
     }
+
+    @media(max-width:630px){
+    
+    table#TablaM  td:nth-child(1), th:nth-child(1),td:nth-child(2), th:nth-child(2),td:nth-child(3), th:nth-child(3),td:nth-child(5), th:nth-child(5) {
+        display: none;
+    }
+
+    table#TablaM  td:nth-child(4), th:nth-child(4){
+        width: 35%;
+    }
+    /* table#TablaI  td:nth-child(5), th:nth-child(5),td:nth-child(6), th:nth-child(6){
+        width: 20%;
+    } */
+
 </style>
 <!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->
 <script type="text/javascript">

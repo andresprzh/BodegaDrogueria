@@ -57,8 +57,8 @@
             <th>ID item</th>
             <th>Referencia</th>
             <th>Descripción</th>
-            <th>Cantidad</th>
-            <th class='black-text'>Eliminar</th>
+            <th><span class="truncate">Cantidad</span></th>
+            <th><span class="black-text truncate">Eliminar</span></th>
             
         </tr>
 
@@ -120,6 +120,23 @@
     </div>
 
 </div>
+<style>
+
+@media(max-width:630px){
+    
+    table  td:nth-child(1), th:nth-child(1),td:nth-child(2), th:nth-child(2),td:nth-child(3), th:nth-child(3) {
+        display: none;
+    }
+
+    table#TablaI  td:nth-child(4), th:nth-child(4){
+        width: 50%;
+    }
+    table#TablaI  td:nth-child(5), th:nth-child(5),td:nth-child(6), th:nth-child(6){
+        width: 20%;
+    }
+}
+
+</style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   
 ============================================================================================================================ -->

@@ -661,10 +661,11 @@ DELIMITER $$
 	BEFORE UPDATE ON pedido
 	FOR EACH ROW 
 	BEGIN
-		
-		DECLARE numalistados TINYINT;		
-		
+	
 		-- solo modifica si los items no han sido enviados
+		IF new.pendientes>new.pedido THEN
+			SET new.pendientes=new.pedido;
+		END IF;
 		IF new.pendientes<=0 THEN
 			SET new.pendientes=0;
 			IF new.estado<2 THEN
@@ -683,7 +684,7 @@ DELIMITER $$
 	FOR EACH ROW 
 	BEGIN
 		
-		DECLARE numalistados TINYINT;		
+		DECLARE numalistados INT;		
 		
 		SELECT count(estado) INTO numalistados
 		FROM pedido
