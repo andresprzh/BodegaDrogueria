@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `ITEMS` (
 	`ULTIMO_COSTO_ED`	decimal(20,4) DEFAULT NULL,
 	`FECHA_INGRESO` 	CHAR(8) DEFAULT NULL,
 	`LOTE` 				CHAR(2) DEFAULT "NO",
+	`IVA` 				FLOAT(20,2),
 	
 	CONSTRAINT ITEMS_PK 
 	PRIMARY KEY (`ID_ITEM`),
@@ -416,12 +417,12 @@ UPDATE caja SET no_caja=0 WHERE no_caja=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 */
 
-REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
-	('NFRA','NO ES FRANQUICIA','00','000000000'),
-	('PAL1','PALMIRA 1','01','94506068'),('PAL2','PALMIRA 2','02','94506068'),('PAL3','PALMIRA 3','03','94506068'),
-	('SANT','SANTANDER DE QUILICHAO','00','34611591'),
-	('UBBS','CHAPINERO VASQUEZ BARRENECHE','00','800097434'
-);
+-- REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
+-- 	('NFRA','NO ES FRANQUICIA','00','000000000'),
+-- 	('PAL1','PALMIRA 1','01','94506068'),('PAL2','PALMIRA 2','02','94506068'),('PAL3','PALMIRA 3','03','94506068'),
+-- 	('SANT','SANTANDER DE QUILICHAO','00','34611591'),
+-- 	('UBBS','CHAPINERO VASQUEZ BARRENECHE','00','800097434'
+-- );
 
 /*
 REPLACE INTO perfiles VALUES(-1,"Inactivo"),(1,"Administrador"),(2,"Jefe Bodega"),(3,"Alistador"),(4,"Punto de Venta"),(5,"Jefe Bodega Delegado"),(6,"Transportador"),(7,"Franquicia"),(8,"Jefe Logistica");
@@ -431,43 +432,43 @@ REPLACE INTO usuario(nombre,cedula,usuario,password,perfil) VALUES("Administrado
 */
 
 
-REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
-	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
-	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
-	('002', ' VERSALLES', ' CL 23BN 3N 100', '', '', ' 0'),
-	('003', ' CAMINO REAL', ' CL 9 51 05', '', '', ' 0'),
-	('004', ' ALFONSO LOPEZ', ' CL 70 7TBIS 59', '', '', ' 0'),
-	('005', ' INGENIO', ' CR 85C 15 119', '', '', ' 0'),
-	('006', ' VILLA DEL SUR', ' CR 42A 26E 41', '', '', ' 0'),
-	('007', ' PORTADA', ' AV 4OESTE 7 47', '', '', ' 0'),
-	('008', ' SAN FERNANDO', ' CL 5 37 A 65/67', '', '', ' 0'),
-	('009', ' CALIMA LA 14', ' CL 70 1 245 L CENTRO COMERCIAL CALIMA', '', '', ' 0'),
-	('010', ' PLAZA CAICEDO', ' CR 5 12 16 LOCAL 1', '', '', ' 0'),
-	('011', ' VALLE LILI', ' CR 98B 25 130', '', '', ' 0'),
-	('012', ' COSMOCENTRO', ' CL 5 50 106 LC 282', '', '', ' 0'),
-	('013', ' CALLE 7A', ' CL 7 No.30A 12', '', '', ' 0'),
-	('014', ' CENTRO SAN JORGE', ' CR 2 14 34', '', '', ' 0'),
-	('015', ' LA FLORA', ' CL 52 N NRO 5B88', '', '', ' 0'),
-	('016', ' UNICENTRO LOCAL 362', ' CR 100 5 169', '', '', ' 0'),
-	('017', ' ALFAGUARA LOCAL 1 66', ' CL 2#22175 CENTRO COMERCIAL ALFAGUARA', ' A LOCAL 166', '', '\r'),
-	('018', ' ELITE', ' CR 7 1452 LOCAL 156 PRIMER PISO', ' EDIFICIO COMERCIAL CENTRO ELITE', '', '\r'),
-	('019', ' VILLA COLOMBIA', ' CLL 50 12 09 L 102A', '', '', '\r'),
-	('020', ' GASTOS ADMINISTRATIVOS POR REPARTIR', ' CLL 23BN 3N 100', '', '', '\r'),
-	('021', ' VINCULADAS', ' CL 23 B N 3 N 100', '', '', '\r'),
-	('022', ' CALL CENTER', ' CL 23BN 3N 100', '', '', '\r'),
-	('023', ' JARDIN PLAZA', ' CL 16 98 155', '', '', '\r'),
-	('090', ' MEDICAMENTOS', ' CR 2 14 26', '', '', '\r'),
-	('091', ' COSMETICOS', ' CR 2 14 26', '', '', '\r'),
-	('092', ' VARIOS', ' CR 2 14 26', '', '', '\r'),
-	('093', ' REEMPAQUE', ' CR 2 14 26', '', '', '\r'),
-	('099', ' VENTAS AL POR MAYOR (CREDITOS)', ' CR 2 14 34', '', '', '\r'),
-	('100', ' CALLE 7A', ' CL 7 30A 12', '', '', '\r'),
-	('101', ' BOGOTA CHAPINERO', ' CLL 53 13 64', ' CLL 53 13 52', '', '\r'),
-	('102', ' BOGOTA AUTONORTE', ' LOCAL #1 AV CR 45 #97 80', '', '', '\r'),
-	('110', ' GASTOS ADMINISTRATIVOS POR DISTRIBUIR', ' CLL 7 30A12', '', '', '\r'),
-	('900', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
-	('XXX', ' C.O PARA CIERRE', '', '', '', '\r'
-); 
+-- REPLACE INTO `sedes` (`codigo`, `descripcion`, `direccion1`, `direccion2`, `direccion3`, `grupo_co`) VALUES
+-- 	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
+-- 	('001', ' CENTRO', ' CR 2 14 34', '', '', ' 0'),
+-- 	('002', ' VERSALLES', ' CL 23BN 3N 100', '', '', ' 0'),
+-- 	('003', ' CAMINO REAL', ' CL 9 51 05', '', '', ' 0'),
+-- 	('004', ' ALFONSO LOPEZ', ' CL 70 7TBIS 59', '', '', ' 0'),
+-- 	('005', ' INGENIO', ' CR 85C 15 119', '', '', ' 0'),
+-- 	('006', ' VILLA DEL SUR', ' CR 42A 26E 41', '', '', ' 0'),
+-- 	('007', ' PORTADA', ' AV 4OESTE 7 47', '', '', ' 0'),
+-- 	('008', ' SAN FERNANDO', ' CL 5 37 A 65/67', '', '', ' 0'),
+-- 	('009', ' CALIMA LA 14', ' CL 70 1 245 L CENTRO COMERCIAL CALIMA', '', '', ' 0'),
+-- 	('010', ' PLAZA CAICEDO', ' CR 5 12 16 LOCAL 1', '', '', ' 0'),
+-- 	('011', ' VALLE LILI', ' CR 98B 25 130', '', '', ' 0'),
+-- 	('012', ' COSMOCENTRO', ' CL 5 50 106 LC 282', '', '', ' 0'),
+-- 	('013', ' CALLE 7A', ' CL 7 No.30A 12', '', '', ' 0'),
+-- 	('014', ' CENTRO SAN JORGE', ' CR 2 14 34', '', '', ' 0'),
+-- 	('015', ' LA FLORA', ' CL 52 N NRO 5B88', '', '', ' 0'),
+-- 	('016', ' UNICENTRO LOCAL 362', ' CR 100 5 169', '', '', ' 0'),
+-- 	('017', ' ALFAGUARA LOCAL 1 66', ' CL 2#22175 CENTRO COMERCIAL ALFAGUARA', ' A LOCAL 166', '', '\r'),
+-- 	('018', ' ELITE', ' CR 7 1452 LOCAL 156 PRIMER PISO', ' EDIFICIO COMERCIAL CENTRO ELITE', '', '\r'),
+-- 	('019', ' VILLA COLOMBIA', ' CLL 50 12 09 L 102A', '', '', '\r'),
+-- 	('020', ' GASTOS ADMINISTRATIVOS POR REPARTIR', ' CLL 23BN 3N 100', '', '', '\r'),
+-- 	('021', ' VINCULADAS', ' CL 23 B N 3 N 100', '', '', '\r'),
+-- 	('022', ' CALL CENTER', ' CL 23BN 3N 100', '', '', '\r'),
+-- 	('023', ' JARDIN PLAZA', ' CL 16 98 155', '', '', '\r'),
+-- 	('090', ' MEDICAMENTOS', ' CR 2 14 26', '', '', '\r'),
+-- 	('091', ' COSMETICOS', ' CR 2 14 26', '', '', '\r'),
+-- 	('092', ' VARIOS', ' CR 2 14 26', '', '', '\r'),
+-- 	('093', ' REEMPAQUE', ' CR 2 14 26', '', '', '\r'),
+-- 	('099', ' VENTAS AL POR MAYOR (CREDITOS)', ' CR 2 14 34', '', '', '\r'),
+-- 	('100', ' CALLE 7A', ' CL 7 30A 12', '', '', '\r'),
+-- 	('101', ' BOGOTA CHAPINERO', ' CLL 53 13 64', ' CLL 53 13 52', '', '\r'),
+-- 	('102', ' BOGOTA AUTONORTE', ' LOCAL #1 AV CR 45 #97 80', '', '', '\r'),
+-- 	('110', ' GASTOS ADMINISTRATIVOS POR DISTRIBUIR', ' CLL 7 30A12', '', '', '\r'),
+-- 	('900', ' LABORATORIO SAN JORGE LTDA', ' CR 2 14 26', '', '', '\r'),
+-- 	('XXX', ' C.O PARA CIERRE', '', '', '', '\r'
+-- ); 
 
 
 /*******************************************************************************************************************************

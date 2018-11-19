@@ -263,4 +263,88 @@ class ControladorRemision{
         return $resultado;
     }
 
+    public function ctrDocRemCopi($no_rem=null)
+    {
+        if (!isset($no_rem)) {
+            $no_rem=$this->no_rem;
+        }
+        $busqueda=$this->modelo->mdlMostrarRemDoc($no_rem);
+        $resultado["documento"]="";
+        $resultado["no_rem"]=$no_rem;        
+        
+        while($row = $busqueda->fetch()){
+            $cantidad=round($row["cantidad"]);
+            $valor_desc=round($row["valor"]-$row["descuento"]);
+            $pordesc=$row["descuento"]/$row["valor"]*100;// % descuento
+            // $pordesc=round($pordesc,2);
+            $pordesc=number_format($pordesc, 2);
+            $resultado["documento"].="13803".","; //codigo drogueria
+            $resultado["documento"].=str_replace("-","",substr($row["creada"],0,10)).",";
+            $resultado["documento"].=str_pad("22704140", 20, " ", STR_PAD_RIGHT).",";//factura
+            $resultado["documento"].=str_pad($row["ID_REFERENCIA"], 15, " ", STR_PAD_RIGHT).",";//referencia copi
+            $resultado["documento"].=str_pad($row["DESCRIPCION"], 40, " ", STR_PAD_RIGHT).",";
+            $resultado["documento"].=str_pad($cantidad, 7, "0", STR_PAD_LEFT).",";
+            $resultado["documento"].=str_pad($valor_desc, 10, "0", STR_PAD_LEFT).",";
+            $resultado["documento"].=str_pad(round($row["valor"]), 10, "0", STR_PAD_LEFT).",";
+            $resultado["documento"].=str_pad("00.19", 5, "0", STR_PAD_LEFT).",";
+            $resultado["documento"].=str_pad($pordesc, 5, "0", STR_PAD_LEFT).",";
+            $resultado["documento"].=str_pad("J28", 5, " ", STR_PAD_LEFT).",";// codigo de fabricante
+            $resultado["documento"].="0000000000".",";
+            $resultado["documento"].=str_pad(0, 5, " ", STR_PAD_LEFT).",";
+            $resultado["documento"].=str_pad($row["unidad"], 3, " ", STR_PAD_RIGHT).",";
+            $resultado["documento"].="2".",";// no se sabe
+            $resultado["documento"].="01";// no se sabe
+
+            $resultado["documento"].="\r\n";
+
+        }
+        return $resultado;
+    }
+
+    public function ctrDocRemEA($no_rem=null)
+    {
+        if (!isset($no_rem)) {
+            $no_rem=$this->no_rem;
+        }
+        $busqueda=$this->modelo->mdlMostrarRemDoc($no_rem);
+        $resultado["documento"]="";
+        $resultado["no_rem"]=$no_rem;        
+        
+        while($row = $busqueda->fetch()){
+            $cantidad=round($row["cantidad"]);
+            $valor_desc=round($row["valor"]-$row["descuento"]);
+            $pordesc=$row["descuento"]/$row["valor"]*100;// % descuento
+            // $pordesc=round($pordesc,2);
+            $pordesc=number_format($pordesc, 2);
+            $resultado["documento"].=str_pad("22704140", 8, " ", STR_PAD_RIGHT);//factura
+            $resultado["documento"].=str_pad("860026123", 13, " ", STR_PAD_RIGHT);// nit compra
+            $resultado["documento"].="01";
+            $resultado["documento"].=str_replace("-","",substr($row["creada"],0,10));
+            $resultado["documento"].=str_pad("0008", 4, "0", STR_PAD_RIGHT);//codigo de compra
+            $resultado["documento"].=str_pad("002", 3, "0", STR_PAD_RIGHT);//sede
+            $resultado["documento"].="VE";
+            $resultado["documento"].="I";
+            $resultado["documento"].=str_pad($row["codbar"],15, " ", STR_PAD_RIGHT);
+            $resultado["documento"].=str_pad($row["item"],15, " ", STR_PAD_RIGHT);
+            $resultado["documento"].="   ";
+            $resultado["documento"].=str_pad(str_replace(".","",$row["FACTOR_EMPAQ"]), 9, "0", STR_PAD_LEFT);
+            $resultado["documento"].=str_pad($row["unidad"], 3, " ", STR_PAD_RIGHT);
+            $resultado["documento"].=str_pad(str_replace(".","",$row["valor"]), 12, "0", STR_PAD_LEFT)."+";
+            $resultado["documento"].=str_pad("0", 12, "0", STR_PAD_LEFT)."+";//transaccion 2
+            $resultado["documento"].=str_pad(str_replace(".","",$row["ULTIMO_COSTO_ED"]), 11, "0", STR_PAD_LEFT)."+";
+            $resultado["documento"].=str_pad(str_replace(".","",$pordesc), 4, "0", STR_PAD_LEFT);
+            $resultado["documento"].=str_pad(str_replace(".","",0), 4, "0", STR_PAD_LEFT);//descuento 2
+            $resultado["documento"].=str_pad(str_replace(".","","0.19"), 4, "0", STR_PAD_LEFT);//iva
+            $resultado["documento"].="01";//motivo de compra
+            $resultado["documento"].="                       ";
+            $resultado["documento"].="000000";
+            $resultado["documento"].="                                          ";
+            $resultado["documento"].="00000000";
+            $resultado["documento"].="                    ";
+
+            $resultado["documento"].="\r\n";
+
+        }
+        return $resultado;
+    }
 }

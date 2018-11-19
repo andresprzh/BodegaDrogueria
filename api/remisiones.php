@@ -57,6 +57,12 @@ if (isset($_GET["ruta"])) {
                     }
                     print json_encode($resultado);
                 }
+            }else {
+                $controlador=new ControladorRemision();
+                // $resultado=$controlador->ctrDocRemCopi(1);
+                $resultado=$controlador->ctrDocRemEA(1);
+
+                print($resultado["documento"]);
             }
                 
             
