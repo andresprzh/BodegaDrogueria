@@ -60,18 +60,11 @@ $(document).ready(function () {
 
   });
 
-  $('#franquicias').change(function (e) { 
+  $('#franquicias').change(function (e) {
     e.preventDefault();
     console.log('hola');
-    $('#divfactura').remove();
-    if ($(this).val()!='UBBS') {
-      
-      $('#entradas').append(`
-      <div class="input-field col s12" id="divfactura">
-          <input id="factura" type="text" class="validate">
-          <label for="factura">Número Faactura</label>
-      </div>`);
-    }
+
+
   });
 
   $("#remisiones").submit(function (e) {
@@ -105,9 +98,9 @@ $(document).ready(function () {
     form_data.append('franquicia', franquicia);
     form_data.append('usuario', id_usuario);
 
-    if ($("#factura").val()) {
-      form_data.append('factura',$("#factura").val());
-    }
+
+    form_data.append('factura', $("#factura").val());
+
 
     for (let x = 0; x < ins; x++) {
       form_data.append('files[]', document.getElementById('archivos').files[x]);

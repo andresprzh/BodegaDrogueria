@@ -9,9 +9,13 @@
 
     <form class="file-upload" id="remisiones">
         <div class="col s12" id="entradas">
-            <select   list="franquicias" name="franquicias" class="franquicias  " id="franquicias">
+            <select   list="franquicias" name="franquicias" class="franquicias  " id="franquicias" required>
                 
             </select>
+        </div>
+        <div class="input-field col s12" id="divfactura">
+          <input id="factura" type="text" class="validate" required>
+          <label for="factura">Número Faactura</label>
         </div>
         <div class="file-upload-main " >
             <input type="file" id="archivos" webkitdirectory mozdirectory msdirectory odirectory directory multiple required/>           

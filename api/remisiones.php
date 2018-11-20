@@ -32,8 +32,9 @@ if (isset($_GET["ruta"])) {
 
                     $all_files = count($_FILES["files"]["tmp_name"]);
                     $resultado="";
-                    
-                    
+                    $factura=$_POST["factura"];
+                    // print json_encode($factura);
+                    // return 0;
                     for ($i = 0; $i < $all_files; $i++) {  
                         $tipo = finfo_file($fileInfo, $_FILES["files"]["tmp_name"][$i]);
                         // solo permite archivos de texto
@@ -51,17 +52,23 @@ if (isset($_GET["ruta"])) {
                     $resultado=$controlador->ctrSetCabecera();
                     $resultado=$controlador->ctrSetItems();
                     $resultado=$controlador->ctrSubirRem($usuario);
-
+                    $factura=$_POST["factura"];
+                    
                     if ($resultado) {
-                        $resultado=$controlador->ctrDocRem();
+                        if ($franquicia=="UBBS") {
+                            $resultado=$controlador->ctrDocRemEA($factura);
+                        }else {
+                            $resultado=$controlador->ctrDocRemCopi($factura);
+                        }
+                        // $resultado=$controlador->ctrDocRem();
                     }
                     print json_encode($resultado);
                 }
             }else {
                 $controlador=new ControladorRemision();
                 // $resultado=$controlador->ctrDocRemCopi(1);
-                $resultado=$controlador->ctrDocRemEA(1);
-
+                $resultado=$controlador->ctrDocRemEA("22704140",1);
+                // print($resultado);
                 print($resultado["documento"]);
             }
                 

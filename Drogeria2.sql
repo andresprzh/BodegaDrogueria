@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `ITEMS` (
 	`ULTIMO_COSTO_ED`	decimal(20,4) DEFAULT NULL,
 	`FECHA_INGRESO` 	CHAR(8) DEFAULT NULL,
 	`LOTE` 				CHAR(2) DEFAULT "NO",
-	`IVA` 				FLOAT(20,2),
+	`IVA` 				FLOAT(20,2) DEFAULT 0.00,
 	
 	CONSTRAINT ITEMS_PK 
 	PRIMARY KEY (`ID_ITEM`),
@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `sedes` (
   `direccion2` 			CHAR(40) DEFAULT NULL,
   `direccion3` 			CHAR(40) DEFAULT NULL,
   `grupo_co` 			CHAR(2) DEFAULT NULL,
+  `codigo_drog` 		CHAR(5) DEFAULT '13803',
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -83,6 +84,7 @@ CREATE TABLE IF NOT EXISTS franquicias (
   `direccion1` 			CHAR(40) DEFAULT NULL,
   `cod_sucursal` 		CHAR(2) DEFAULT 00,
   `nit` 				CHAR(12) DEFAULT '000000000',
+  `codigo_drog` 		CHAR(5) DEFAULT '13803',
   
   PRIMARY KEY (`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

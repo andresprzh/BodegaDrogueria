@@ -149,7 +149,8 @@ class ModeloRemision extends Conexion{
         "SELECT item,valor,cantidad,pedido_remisiones.lote AS lote,descuento,unidad,
         vencimiento,ubicacion,total,remisiones.no_rem,remisiones.creada,
         nit,cod_sucursal,ITEMS.DESCRIPCION,ITEMS.ID_REFERENCIA,ITEMS.FACTOR_EMPAQ,
-        ITEMS.ULTIMO_COSTO_ED,ITEMS.LOTE AS eslote, MIN(COD_BARRAS.ID_CODBAR) AS codbar
+        ITEMS.ULTIMO_COSTO_ED,ITEMS.IVA,franquicias.codigo_drog,
+        ITEMS.LOTE AS eslote, MIN(COD_BARRAS.ID_CODBAR) AS codbar
         FROM pedido_remisiones
         INNER JOIN ITEMS ON ITEMS.ID_ITEM=pedido_remisiones.item
         INNER JOIN COD_BARRAS ON COD_BARRAS.ID_ITEMS=ITEMS.ID_ITEM
@@ -159,7 +160,7 @@ class ModeloRemision extends Conexion{
         GROUP BY item,valor,cantidad,pedido_remisiones.lote,descuento,unidad,
         vencimiento,ubicacion,total,remisiones.no_rem,remisiones.creada,
         nit,cod_sucursal,ITEMS.DESCRIPCION,ITEMS.ID_REFERENCIA,FACTOR_EMPAQ, 
-        ITEMS.ULTIMO_COSTO_ED,ITEMS.LOTE;");
+        ITEMS.ULTIMO_COSTO_ED,ITEMS.IVA,franquicias.codigo_drog,ITEMS.LOTE;");
 
         $stmt->bindParam(":no_rem",$no_rem,PDO::PARAM_INT); 
 
