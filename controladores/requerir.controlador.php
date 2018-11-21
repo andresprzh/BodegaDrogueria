@@ -4,9 +4,9 @@ class ControladorRequerir{
 
     private $doc_req;
     private $cabecera;
-    private $items;
     public $Estado;
-    private $itemsarray;
+    private $items;
+    private $items_error;
 
     function __construct($doc_req){
         //se asigna el documento a la variable doc_req
@@ -63,7 +63,6 @@ class ControladorRequerir{
                 
                 $resultado=$this->ctrSubirReq();
                 
-                // echo $this->items;
                 
                 if ($resultado) {
                     
@@ -215,67 +214,57 @@ class ControladorRequerir{
             if($linea[0]!='|' &&  $linea[2]!='-' && strripos($linea,':')==false && ord($linea)!=10 && $linea[0]==' '){
                                 
                 //obtienen los datos de cada item por linea
-                $item["iditem"]=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
-                $item["no_req"]=$this->cabecera[0];//se obtiene el numero de requisicion
-                //se cambian las comas del dato por espacios en blanco
-                $item["ubicacion"]=substr($linea,109,6);//ubiacion item
-                $item["disp"]=str_replace(',','',substr($linea,71,5));//cantidad item disponibles
-                $item["pedido"]=substr($linea,86,5);//cantidad item pedidos
-                
+                $iditem=str_replace(' ','',substr($linea,1,11)); //numero referencia o id del item
                
-                if (!(is_numeric($item["iditem"]) && strlen($item["iditem"])==6)) {
-                    
-                     //se busca el id de los item usando la referencia en el documento subido
-                    $modelo=new ModeloRequierir();
-                    
-                    $valor=$item["iditem"];
-                    
-                    $id_item=$modelo->mdlMostrarItem($valor);
-                    $id_item=$id_item->fetch(); 
-                              
-                    //se reemplaza la referencia del item por su id
-                    $item["iditem"]=$id_item["ID_ITEM"];
-                   
-                }
-               
+                // busca la exitencia del item
+                $modelo=new ModeloRequierir();
                 
-                // echo ($item[0]."  ".$item[1]."  ".$item[2]."  ".$item[3]." ".$item[4]."  ".$item[5]."<br>");
+                $valor=$iditem;
+                
+                $busqueda=$modelo->mdlMostrarItem($valor);
 
-                //pone los datos del item en un String
-                $stringItem.="(";
-                foreach ($item as $value) {
-                    $stringItem.="'$value',";
+                // solo agrega items que esten en la base de datos
+                if ($busqueda->rowCount()>0) {
+                    // $busqueda_res=$busqueda->fetch();
+
+                    //obtienen los datos de cada item por linea
+                    $item["iditem"]=$busqueda->fetch()["ID_ITEM"]; //numero referencia o id del item
+                    $item["no_req"]=$this->cabecera[0];//se obtiene el numero de requisicion
+                    //se cambian las comas del dato por espacios en blanco
+                    $item["ubicacion"]=substr($linea,109,6);//ubiacion item
+                    $item["disp"]=str_replace(',','',substr($linea,71,5));//cantidad item disponibles
+                    $item["pedido"]=substr($linea,86,5);//cantidad item pedidos
+                    $this->items[]=$item;
+                }else {
+                    //obtienen los datos de cada item por linea
+                    $item_error["iditem"]=$iditem; //numero referencia o id del item
+                    $item_error["no_req"]=$this->cabecera[0];//se obtiene el numero de requisicion
+                    $item_error["descripcion"]=substr($linea,20,40);//ubiacion item
+                    $item_error["ubicacion"]=substr($linea,109,6);//ubiacion item
+                    $item_error["disp"]=str_replace(',','',substr($linea,71,5));//cantidad item disponibles
+                    $item_error["pedido"]=substr($linea,86,5);//cantidad item pedidos
+                    $this->items_error[]=$item_error;
+                    
+                    
                 }
-                $stringItem=substr($stringItem, 0, -1).'),';
                 
-                $this->itemsarray[]=$item;
-             
-            //busca el numero de requisicion solo si no se ha encontrado
+                $busqueda->closeCursor();
+                
             }
             
         }
-        
-        $stringItem = substr($stringItem, 0, -1).';';
 
-
-        //asigna al parametro de Items todos lo  items encontrados
-        
-        $this->items=$stringItem; 
     }
 
     // funcion que sube los items
     private function ctrSubirReq(){
         $modelo=new ModeloRequierir();
         
-        // $resultado=$modelo->mdlSubirReq($this->cabecera,$this->items);
         $resultado=$modelo->mdlSubirReq($this->cabecera);
 
         if ($resultado==true) {
-            foreach ($this->itemsarray as  $i=> $item) {
-                
-                $resultado=$modelo->mdlSubirItem($item);
-                
-            }
+            $resultado=$modelo->mdlSubirItems($this->items);
+            
             if ($resultado==true) {
                 echo '<script>
                             swal({
@@ -298,7 +287,29 @@ class ControladorRequerir{
                         <p class="red-text text-darken-2">Error al subir la requisición</p> 
                     </div>';
             }
-            
+            if (!empty($this->items_error)) {
+                $hoy = getdate();
+                $fecha=$hoy["year"]."/".$hoy["month"]."/".$hoy["mday"]." ".$hoy["hours"].":".$hoy["minutes"];
+                $documento=str_repeat("=",72 )."\r\n";
+                $documento.="|".str_pad("Fecha: $fecha" ,70," ",STR_PAD_BOTH)."|\r\n";
+                $documento.="|".str_pad("**ITEMS NO ENCONTRADOS EN LA BASE DE DATOS**" ,70," ",STR_PAD_BOTH)."|\r\n";
+                $documento.=str_repeat("=",72 )."\r\n";
+                $documento.=str_pad("ID/REF",25," ",STR_PAD_RIGHT).str_pad("DESCRIPCION",40," ",STR_PAD_RIGHT).
+                str_pad("PEDIDOS",7," ",STR_PAD_LEFT)."\r\n";
+                $documento.=str_repeat("=",72 )."\r\n";
+                foreach ($this->items_error as $error) {
+                    $documento.=str_pad($error["iditem"],25,"-",STR_PAD_RIGHT);
+                    $documento.=str_pad(trim($error["descripcion"]),40,"-",STR_PAD_RIGHT);
+                    $documento.=str_pad(trim($error["pedido"]),7,"-",STR_PAD_LEFT);
+                    $documento.="\r\n";
+                }
+                $filename="errores.txt";
+                $fp=fopen($filename, "w");
+                fwrite($fp,$documento);
+                // header("Content-disposition: attachment;filename=$filename");
+                // readfile($filename);
+                // unlink($filename);
+            }
             return $resultado;
 
         }else {

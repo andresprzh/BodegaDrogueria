@@ -9,6 +9,7 @@ class ModeloRequierir extends Conexion{
         
     }
 
+    // MUESTRA REQUISICIONES
     public function mdlMostrarReq($item=null,$valor=null){
     
         $tabla='requisicion';
@@ -39,10 +40,10 @@ class ModeloRequierir extends Conexion{
         //ejecuta el comando sql
         $stmt->execute();
         //busca las requisiciones
-        // return $this->buscaritem($tabla,$item,$valor);
         return $stmt;
     }
 
+    // MUESTRA 1 ITEM DE LA TABLA ITEMS
     public function mdlMostrarItem($valor){
         
         $tabla='ITEMS';
@@ -66,6 +67,7 @@ class ModeloRequierir extends Conexion{
         return $this->buscaritem($tabla,$item,$valor);
     }
 
+    // MUESTRA TODOS LOS ITEMS DE UNA REQUISICION 
     public function mdlMostrarItems($req){
        
        
@@ -97,7 +99,7 @@ class ModeloRequierir extends Conexion{
         $stmt=null;
     }
 
-    // public function mdlSubirReq($cabecera,$items)
+    // AGREGA LA REQUISICION A LA BASE DE DATOS
     public function mdlSubirReq($cabecera)
     {
         $tabla="requisicion";
@@ -126,18 +128,7 @@ class ModeloRequierir extends Conexion{
         return $res;
     }
 
-    public function mdlSubirPedido($item,$no_req)
-    {
-
-        $stmt= $this->link->prepare("INSERT INTO (item,no_req,ubicacion,disp,pedido) VALUES(:item,:no_req,:ubicacion,:disp,:pedido)");
-
-        $stmt->bindParam(":item",$item["id"],PDO::PARAM_STR);
-        $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
-        $stmt->bindParam(":ubicacion",$item["ubicacion"],PDO::PARAM_STR);
-        $stmt->bindParam(":disp",$item["disp"],PDO::PARAM_INT);
-        $stmt->bindParam(":pedido",$item["pedido"],PDO::PARAM_INT);
-    }
-
+    // ELIMINA UNA  REQUISICION
     public function mdlEliReq($req)
     {
         $tabla="requisicion";
@@ -149,6 +140,7 @@ class ModeloRequierir extends Conexion{
         return $res;
     }
 
+    // AGREGA 1 ITEM DE LA REQUISICION A LA BASE DE DATOS 
     public function mdlSubirItem($item)
     {
         $tabla="pedido";
@@ -160,6 +152,34 @@ class ModeloRequierir extends Conexion{
         $stmt->bindParam(":disp",$item["disp"],PDO::PARAM_INT);
         $stmt->bindParam(":pedido",$item["pedido"],PDO::PARAM_INT);
 
+        $res= $stmt->execute();
+        
+        $stmt->closeCursor();
+        return $res;
+    }
+
+    // AGREGA VARIOS ITEMS DE LA REQUISICION A LA BASE DE DATOS
+    public function mdlSubirItems($items)
+    {
+         $sql="INSERT INTO pedido(item,no_req,ubicacion,disp,pedido)
+        VALUES";
+        for ($i=0; $i <count($items) ; $i++) { 
+            $sql.="(:item$i,:no_req$i,:ubicacion$i,:disp$i,:pedido$i),";
+        }
+        $sql=substr($sql,0,-1).";";
+        
+        $stmt= $this->link->prepare($sql);
+        
+        $count=0;
+        foreach ($items as $i=> $item) { 
+            $stmt->bindParam(":item$count",$item["iditem"],PDO::PARAM_STR);
+            $stmt->bindParam(":no_req$count",$item["no_req"],PDO::PARAM_STR);
+            $stmt->bindParam(":ubicacion$count",$item["ubicacion"],PDO::PARAM_STR);
+            $stmt->bindParam(":disp$count",$item["disp"],PDO::PARAM_INT);
+            $stmt->bindParam(":pedido$count",$item["pedido"],PDO::PARAM_INT);
+            $count++;
+        }
+        
         $res= $stmt->execute();
         
         $stmt->closeCursor();

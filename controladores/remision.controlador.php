@@ -142,13 +142,6 @@ class ControladorRemision{
                             $this->itemsarray[$iditem]["rent"]=trim((substr($linea,129,6)));
                         
                         }    
-                        
-                        
-                    
-                        
-                        // $this->itemsarray[$iditem]=$item;|
-                        
-
                 }
             }
         }
@@ -166,6 +159,7 @@ class ControladorRemision{
         
         return  $resultado;
     }
+
     // funcion que sube los items
     public function ctrSubirRem($usuario)
     {

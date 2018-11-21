@@ -33,8 +33,6 @@ if (isset($_GET["ruta"])) {
                     $all_files = count($_FILES["files"]["tmp_name"]);
                     $resultado="";
                     $factura=$_POST["factura"];
-                    // print json_encode($factura);
-                    // return 0;
                     for ($i = 0; $i < $all_files; $i++) {  
                         $tipo = finfo_file($fileInfo, $_FILES["files"]["tmp_name"][$i]);
                         // solo permite archivos de texto
