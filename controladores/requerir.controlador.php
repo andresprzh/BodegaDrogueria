@@ -7,6 +7,7 @@ class ControladorRequerir{
     public $Estado;
     private $items;
     private $items_error;
+    public $resultado;
 
     function __construct($doc_req){
         //se asigna el documento a la variable doc_req
@@ -23,13 +24,8 @@ class ControladorRequerir{
 
         //si no encuentra el numero de la requisicion no la sube a la base de datos
         if ($valor===null) {
-            
-            echo ('<script>
-                swal({
-                    title: "¡Requisicion no encontrada",
-                    icon: "error",
-                });
-            </script>');  
+            $this->resultado["estado"]=false;
+            $this->resultado["contenido"]="Requisicion no encontrada¡";  
             
         }else{
 
@@ -38,76 +34,63 @@ class ControladorRequerir{
             
             //si la requisicion no existe no busca los items y sube el archivo a la base de datos  
             if($no_req["no_req"]==$valor){
-                
-                echo '<script>
-                        swal({
-                            title: "¡Requisicion ya subida¡",
-                            icon: "error",
-                        });
-                    </script>';       
-                
-                echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                    <p class="red-text text-darken-2">Error: Requisicion '.$this->cabecera[0].' ya subida</p> 
-                </div>';
-
-
-                
-                
-                
-                
+                $this->resultado["estado"]=false;
+                $this->resultado["contenido"]="!Requisicion ".$this->cabecera[0]." ya subida¡";  
+                $this->resultado["no_req"]=$this->cabecera[0];  
             }
             else{
 
                 //busca los datos de los items y los guarda en items
                 $this->ctrSetItems();
                 
-                $resultado=$this->ctrSubirReq();
+                $this->resultado=$this->ctrSubirReq();
                 
                 
-                if ($resultado) {
+                if ($this->resultado["estado"]==true) {
                     
                     $busqueda=$modelo->mdlMostrarItems($this->cabecera[0]);
                    
                     if ($busqueda->rowCount() > 0) {
-                        
-                        echo '<table class="tabla "  >
+                        $this->resultado["items"]=$busqueda->fetchAll();
+                        // echo '<table class="tabla "  >
 
-                        <thead>
+                        // <thead>
                         
-                        <tr class="white-text green darken-3 ">
+                        // <tr class="white-text green darken-3 ">
             
-                            <th>Descripción</th>
-                            <th>Codigo de barras</th>
-                            <th>ID Item</th>
-                            <th>Referencia</th> 
-                            <th>Disponibilidad</th>
-                            <th>Solicitados</th>              
-                            <th>Ubicacion</th>
+                        //     <th>Descripción</th>
+                        //     <th>Codigo de barras</th>
+                        //     <th>ID Item</th>
+                        //     <th>Referencia</th> 
+                        //     <th>Disponibilidad</th>
+                        //     <th>Solicitados</th>              
+                        //     <th>Ubicacion</th>
                             
-                        </tr>
-                        </thead>';
+                        // </tr>
+                        // </thead>';
             
-                        echo '<tbody >';
+                        // echo '<tbody >';
                         
-                        while($row = $busqueda->fetch()){                          
+                        // while($row = $busqueda->fetch()){                          
 
-                                echo '<tr>
-                                    <td>'.$row["DESCRIPCION"].'</td>
-                                    <td>'.$row["ID_CODBAR"].'</td>
-                                    <td>'.$row["item"].'</td>
-                                    <td>'.$row["ID_REFERENCIA"].'</td>
-                                    <td>'.$row["disp"].'</td>
-                                    <td>'.$row["pedido"].'</td>
-                                    <th class="black-text">'.$row["ubicacion"].'</th>
-                                </tr>';
+                        //         echo '<tr>
+                        //             <td>'.$row["DESCRIPCION"].'</td>
+                        //             <td>'.$row["ID_CODBAR"].'</td>
+                        //             <td>'.$row["item"].'</td>
+                        //             <td>'.$row["ID_REFERENCIA"].'</td>
+                        //             <td>'.$row["disp"].'</td>
+                        //             <td>'.$row["pedido"].'</td>
+                        //             <th class="black-text">'.$row["ubicacion"].'</th>
+                        //         </tr>';
 
-                            }
+                        //     }
 
                         
-                        echo '</table> ';
+                        // echo '</table> ';
                     }
                 }
-            } 
+            }
+             
         }   
     }
 
@@ -260,72 +243,79 @@ class ControladorRequerir{
     private function ctrSubirReq(){
         $modelo=new ModeloRequierir();
         
-        $resultado=$modelo->mdlSubirReq($this->cabecera);
+        $ressubida=$modelo->mdlSubirReq($this->cabecera);
 
-        if ($resultado==true) {
-            $resultado=$modelo->mdlSubirItems($this->items);
-            
-            if ($resultado==true) {
-                echo '<script>
-                            swal({
-                                title: "¡Archivo Subido exitosamente¡",
-                                icon: "success"
-                            });
-                    </script>';
+        if ($ressubida==true) {
+            $ressubida=$modelo->mdlSubirItems($this->items);
+                $this->resultado["no_req"]=$this->cabecera[0];
+            if ($ressubida==true) {
+                $this->resultado["estado"]=true;
+                $this->resultado["contenido"]="¡Requisicion ".$this->cabecera[0]." subida Exitosamente";
+                
+                // echo '<script>
+                //             swal({
+                //                 title: "¡Archivo Subido exitosamente¡",
+                //                 icon: "success"
+                //             });
+                //     </script>';
 
-                echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                        <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
-                    </div>';
+                // echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
+                //         <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
+                //     </div>';
             }else {
-                echo '<script>
-                            swal({
-                                title: "¡Error al subir el archivo¡",
-                                icon: "error"
-                            });
-                    </script>';
-                echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                        <p class="red-text text-darken-2">Error al subir la requisición</p> 
-                    </div>';
+                $this->resultado["estado"]=false;
+                
+                $this->resultado["contenido"]="¡Error al subir el archivo¡";
+                // echo '<script>
+                //             swal({
+                //                 title: "¡Error al subir el archivo¡",
+                //                 icon: "error"
+                //             });
+                //     </script>';
+                // echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
+                //         <p class="red-text text-darken-2">Error al subir la requisición</p> 
+                //     </div>';
             }
             if (!empty($this->items_error)) {
                 $hoy = getdate();
                 $fecha=$hoy["year"]."/".$hoy["month"]."/".$hoy["mday"]." ".$hoy["hours"].":".$hoy["minutes"];
-                $documento=str_repeat("=",72 )."\r\n";
-                $documento.="|".str_pad("Fecha: $fecha" ,70," ",STR_PAD_BOTH)."|\r\n";
-                $documento.="|".str_pad("**ITEMS NO ENCONTRADOS EN LA BASE DE DATOS**" ,70," ",STR_PAD_BOTH)."|\r\n";
-                $documento.=str_repeat("=",72 )."\r\n";
-                $documento.=str_pad("ID/REF",25," ",STR_PAD_RIGHT).str_pad("DESCRIPCION",40," ",STR_PAD_RIGHT).
+                $this->resultado["errores"]=str_repeat("=",72 )."\r\n";
+                $this->resultado["errores"].="|".str_pad("Fecha: $fecha" ,70," ",STR_PAD_BOTH)."|\r\n";
+                $this->resultado["errores"].="|".str_pad("**ITEMS NO ENCONTRADOS EN LA BASE DE DATOS**" ,70," ",STR_PAD_BOTH)."|\r\n";
+                $this->resultado["errores"].=str_repeat("=",72 )."\r\n";
+                $this->resultado["errores"].=str_pad("ID/REF",25," ",STR_PAD_RIGHT).str_pad("DESCRIPCION",40," ",STR_PAD_RIGHT).
                 str_pad("PEDIDOS",7," ",STR_PAD_LEFT)."\r\n";
-                $documento.=str_repeat("=",72 )."\r\n";
+                $this->resultado["errores"].=str_repeat("=",72 )."\r\n";
                 foreach ($this->items_error as $error) {
-                    $documento.=str_pad($error["iditem"],25,"-",STR_PAD_RIGHT);
-                    $documento.=str_pad(trim($error["descripcion"]),40,"-",STR_PAD_RIGHT);
-                    $documento.=str_pad(trim($error["pedido"]),7,"-",STR_PAD_LEFT);
-                    $documento.="\r\n";
+                    $this->resultado["errores"].=str_pad($error["iditem"],25,"-",STR_PAD_RIGHT);
+                    $this->resultado["errores"].=str_pad(trim($error["descripcion"]),40,"-",STR_PAD_RIGHT);
+                    $this->resultado["errores"].=str_pad(trim($error["pedido"]),7,"-",STR_PAD_LEFT);
+                    $this->resultado["errores"].="\r\n";
                 }
-                $filename="errores.txt";
-                $fp=fopen($filename, "w");
-                fwrite($fp,$documento);
+                // $filename="errores.txt";
+                // $fp=fopen($filename, "w");
+                // fwrite($fp,$this->resultado["errores"]);
                 // header("Content-disposition: attachment;filename=$filename");
                 // readfile($filename);
                 // unlink($filename);
             }
-            return $resultado;
+            return $this->resultado;
 
         }else {
-            $resultadoel=$modelo->mdlEliReq($this->cabecera[0]);
-
-            echo '<script>
-                            swal({
-                                title: "¡Error al subir el archivo¡",
-                                icon: "error"
-                            });
-                    </script>';
-            echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                    <p class="red-text text-darken-2">Error al subir la requisición</p> 
-                </div>';
+            $this->resultadoel=$modelo->mdlEliReq($this->cabecera[0]);
+            $this->resultado["estado"]=false;
+            $this->resultado["contenido"]="¡Error al subir el archivo¡";
+            // echo '<script>
+            //                 swal({
+            //                     title: "¡Error al subir el archivo¡",
+            //                     icon: "error"
+            //                 });
+            //         </script>';
+            // echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
+            //         <p class="red-text text-darken-2">Error al subir la requisición</p> 
+            //     </div>';
             
-            return $resultado;
+            return $this->resultado;
         }
     }
 

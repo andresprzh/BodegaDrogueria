@@ -25,9 +25,11 @@
             
             
         </div>
-<!-- ============================================================================================================================
+
+    </form>
+    <!-- ============================================================================================================================
                                                     ICONO DE CARGA  
-============================================================================================================================ -->
+    ============================================================================================================================ -->
         <div class="row hide" id="carga"  style="padding-top:15vh;">
 
             <div class="col offset-s4 offset-l6 offset-m5 " >
@@ -53,69 +55,26 @@
         </div>
 
         <div class="row">
-<!-- ============================================================================================================================
-                                                      SUBIR ARCHIVO
-    ============================================================================================================================ -->
-            <?php
-            
-            
-                //comprueba si hay algun error con el archivo
-            if (isset($_FILES["archivo"]["tmp_name"])) {
-                
-                if (0 != $_FILES['archivo']['error']) {
+            <div id="resultado" class="col s11 m10 l6 offset-l3 offset-m1">
+            </div>
+            <table class="tabla hide" id="tabla"  >
 
-                    echo '<script>
-                        swal({
-                            title: "¡Error al subir el acrhivo¡",
-                            icon: "error"
-                        });
-                        </script>';
-                }
-                    //abre el archivo si no hay errores
-                else {
+                <thead>
+                    <tr class="white-text green darken-3 ">
+                        <th>Descripción</th>
+                        <th>Codigo de barras</th>
+                        <th>ID Item</th>
+                        <th>Referencia</th> 
+                        <th>Disponibilidad</th>
+                        <th>Solicitados</th>              
+                        <th>Ubicacion</th>
+                    </tr>
+                </thead>
+                    
+                <tbody></tbody>
 
-
-
-
-                    $tipos_permitidos = array('text/plain','text/x-Algol68');//tipos permitidos de archivos
-                    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-                    $tipo = finfo_file($fileInfo, $_FILES['archivo']['tmp_name']);//tipo de archivo subido
-                        // SI EL ARCHIVO NO ES DE TIPO TEXTO NO LO ABRE
-                        
-                    if (!in_array($tipo, $tipos_permitidos)) {
-                        
-                        echo ('<script>
-                                swal({
-                                    title: "¡Tipo de archivo no valido¡",
-                                    icon: "error"
-                                });
-                                </script> ');
-
-                    } else {
-                        
-                        $archivo = file($_FILES['archivo']['tmp_name']); 
-                            //se crea objeto requerir, que busca y manda los items a la base de datos
-                        $Requerir = new ControladorRequerir($archivo);
-                        if (isset($Requerir)) {
-                            echo ('<script> 
-                            $("#carga").addClass("hide");
-                        </script>');   
-                            }
-                    }
-
-                    finfo_close($fileInfo);
-
-                }
-                
-            
-            }
-            
-
-            ?>
-            
+            </table> 
         </div>
-
-    </form>
 
 <!-- ============================================================================================================================
                                                         EVENTOS PAGINA REQUERIR    
