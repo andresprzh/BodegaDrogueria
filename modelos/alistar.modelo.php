@@ -189,7 +189,7 @@ class ModeloAlistar extends Conexion{
 
         $no_req=$this->req[0];
 
-        $sql="SELECT ID_ITEM,ID_REFERENCIA,ID_CODBAR,DESCRIPCION 
+        $sql="SELECT ID_ITEM,ID_REFERENCIA,DESCRIPCION,MIN(ID_CODBAR) AS ID_CODBAR
         FROM ITEMS
         INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
         LEFT JOIN pedido on item=ID_ITEM
@@ -198,7 +198,8 @@ class ModeloAlistar extends Conexion{
         OR DESCRIPCION LIKE :descripcion
         OR ID_CODBAR = :item)
         AND (no_req <> :no_req
-        OR no_req IS NULL);";
+        OR no_req IS NULL)
+        GROUP BY ID_ITEM,ID_REFERENCIA,DESCRIPCION;";
 
         $stmt= $this->link->prepare($sql);
         $descripcion="%".$item."%";

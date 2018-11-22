@@ -1,7 +1,10 @@
 <?php
 
-class ControladorRequerir{
+class ControladorRequerir extends ControladorLoginUsuario{
 
+    /* ============================================================================================================================
+                                                        ATRIBUTOS   
+    ============================================================================================================================*/
     private $doc_req;
     private $cabecera;
     public $Estado;
@@ -9,6 +12,9 @@ class ControladorRequerir{
     private $items_error;
     public $resultado;
 
+    /* ============================================================================================================================
+                                                        CONSTRUCTOR   
+    ============================================================================================================================*/
     function __construct($doc_req){
         //se asigna el documento a la variable doc_req
         $this->doc_req=$doc_req;
@@ -94,7 +100,9 @@ class ControladorRequerir{
         }   
     }
 
-
+    /* ============================================================================================================================
+                                                        FUNCIONES   
+    ============================================================================================================================*/
     // funcion que asigna la cabecera
     private function ctrSetCabecera(){
 
@@ -281,6 +289,7 @@ class ControladorRequerir{
                 $fecha=$hoy["year"]."/".$hoy["month"]."/".$hoy["mday"]." ".$hoy["hours"].":".$hoy["minutes"];
                 $this->resultado["errores"]=str_repeat("=",72 )."\r\n";
                 $this->resultado["errores"].="|".str_pad("Fecha: $fecha" ,70," ",STR_PAD_BOTH)."|\r\n";
+                $this->resultado["errores"].="|".str_pad("Req: ".$this->cabecera[0] ,70," ",STR_PAD_BOTH)."|\r\n";
                 $this->resultado["errores"].="|".str_pad("**ITEMS NO ENCONTRADOS EN LA BASE DE DATOS**" ,70," ",STR_PAD_BOTH)."|\r\n";
                 $this->resultado["errores"].=str_repeat("=",72 )."\r\n";
                 $this->resultado["errores"].=str_pad("ID/REF",25," ",STR_PAD_RIGHT).str_pad("DESCRIPCION",40," ",STR_PAD_RIGHT).

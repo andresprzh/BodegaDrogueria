@@ -1,19 +1,11 @@
 <?php
 
-
-include "../controladores/requerir.controlador.php";
-
-require "../modelos/conexion.php";
-
-require "../modelos/requerir.modelo.php";
-
 require "cors.php";
 
 if (isset($_GET["ruta"])) {
     
 
     switch ($_GET["ruta"]) {
-        
 
         /* ============================================================================================================================
                                                 sube una requisicion

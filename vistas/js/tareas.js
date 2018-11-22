@@ -49,11 +49,12 @@ $(document).ready(function () {
         data: 'data',
         dataType: 'JSON',
         success: function (res) {
-            if (res) {
+            
+            
 
-                ubicaciones = res;
+            ubicaciones = res;
 
-            }
+            
         }
     });
 
@@ -109,40 +110,46 @@ $(document).ready(function () {
         // var ubicacioneslista = li.map(function(x) {
         //     return x.id.substr(1)
         //  });
+        if (!ubicaciones) {
+            swal({
+                title: 'No hay ubicaciones',
+                type: 'warning',
+                confirmButtonColor:'red',
+              });
+              
+        }else{
         let ubicacioneslista = new Array;
-        for (let i = 0; i < li.length; i++) {
-            ubicacioneslista[li[i].id] = li[i].id;
+            for (let i = 0; i < li.length; i++) {
+                ubicacioneslista[li[i].id] = li[i].id;
+            }
+
+            // solo muestra ubicaciones que no estan asignadas
+            newubicaciones = diff(ubicaciones, ubicacioneslista);
+
+            let ub = '';
+
+            for (let i in newubicaciones) {
+
+                ub += `
+                <div class="col s6 m3">
+                <label>
+                    <input type="checkbox" name="ubicacion" value="${i}"/>
+                    <span>${newubicaciones[i]}</span>
+                </label>
+                </div>`;
+            }
+
+            $('#ubic').html('');
+            $('#ubic').append(ub);
+            $('#seleubic').modal('open');
         }
-
-        // solo muestra ubicaciones que no estan asignadas
-        newubicaciones = diff(ubicaciones, ubicacioneslista);
-
-        let ub = '';
-
-        for (let i in newubicaciones) {
-
-            ub += `
-            <div class="col s6 m3">
-            <label>
-                <input type="checkbox" name="ubicacion" value="${i}"/>
-                <span>${newubicaciones[i]}</span>
-            </label>
-            </div>`;
-        }
-
-        $('#ubic').html('');
-        $('#ubic').append(ub);
-        $('#seleubic').modal('open');
-
     });
 
     // se asignan ubicaciones
     $('#seleubic').on('submit', 'form', function (e) {
         e.preventDefault();
 
-        $('#seleubic .btn').attr('disabled', true);
-        $('#seleubic input:checkbox').attr('disabled', true);
-        $('#seleubic .progress').removeClass('hide');
+        
 
         const iduser = $('#iduser').html();
         let ubicaciones = new Array;
@@ -150,34 +157,40 @@ $(document).ready(function () {
         $.each($("#ubic input:checkbox:checked"), function () {
             ubicaciones.push($(this).val());
         });
+        // console.log(ubicaciones);
+        if (ubicaciones.length>0){
+             
+            $('#seleubic .btn').attr('disabled', true);
+            $('#seleubic input:checkbox').attr('disabled', true);
+            $('#seleubic .progress').removeClass('hide');
 
-        $.ajax({
-            type: 'POST',
-            url: 'api/tareas/dettarea',
-            data: { 'usuario': iduser, 'ubicacion': ubicaciones },
-            dataType: 'JSON',
-            success: function (res) {
+            $.ajax({
+                type: 'POST',
+                url: 'api/tareas/dettarea',
+                data: { 'usuario': iduser, 'ubicacion': ubicaciones },
+                dataType: 'JSON',
+                success: function (res) {
 
-                $('#seleubic .btn').removeAttr('disabled');
-                $('#seleubic input:checkbox').removeAttr('disabled');
-                $('#seleubic .progress').addClass('hide');
-                if (res) {
+                    $('#seleubic .btn').removeAttr('disabled');
+                    $('#seleubic input:checkbox').removeAttr('disabled');
+                    $('#seleubic .progress').addClass('hide');
+                    if (res) {
 
-                    agregarUbicaciones(iduser);
-                    $('#seleubic').modal('close');
+                        agregarUbicaciones(iduser);
+                        $('#seleubic').modal('close');
 
-                } else {
-                    var toastHTML = `<span class="truncate">No se pudo agregar ubicación</span>`;
-                    M.toast({
-                        html: toastHTML,
-                        classes: "red darken-4",
-                        displayLength: 1500
-                    });
+                    } else {
+                        var toastHTML = `<span class="truncate">No se pudo agregar ubicación</span>`;
+                        M.toast({
+                            html: toastHTML,
+                            classes: "red darken-4",
+                            displayLength: 1500
+                        });
+                    }
+
                 }
-
-            }
-        });
-
+            });
+        }
     });
 
     $('#check-todos').change(function (e) {
@@ -240,7 +253,7 @@ function agregarUbicaciones(iduser) {
         data: { 'usuario': iduser },
         dataType: 'JSON',
         success: function (res) {
-
+            
             // refresca ubicaciones
             $('#ubicaciones').html('');
 

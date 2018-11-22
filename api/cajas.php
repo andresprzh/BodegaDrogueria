@@ -1,23 +1,12 @@
 <?php
 
-// include "../controladores/alistar.controlador.php";
-include "../controladores/pv.controlador.php";
-// include "../controladores/cajas.controlador.php";
-
-
-require "../modelos/conexion.php";
-require "../modelos/alistar.modelo.php";
-require "../modelos/requerir.modelo.php";
-require "../modelos/cajas.modelo.php";
-require "../modelos/pv.modelo.php";
-require "../modelos/tareas.modelo.php";
+require "cors.php";
 
 if (isset($_GET['ruta'])) {
     
 
     switch ($_GET['ruta']) {
         
-
         /* ============================================================================================================================
                                                 MUESTRA LAS CAJAS O LOS ITEMS DE LA CAJA
         ============================================================================================================================*/    

@@ -1,17 +1,15 @@
 <?php
 
-// include "../controladores/alistar.controlador.php";
-include "../controladores/transportador.controlador.php";
-
 require "cors.php";
-require "../modelos/conexion.php";
-require "../modelos/transportador.modelo.php";
 
 if (isset($_GET['ruta'])) {
     
 
     switch ($_GET['ruta']) {
         
+        /* ============================================================================================================================
+                                        MUESTRA LOS DESTINOS ASIGNADOS AL TRANSPORTADOR 
+        ============================================================================================================================*/   
         case "destinos":
             $usuario=$_GET['usuario'];
             $modelo=new ModeloTransportador($usuario);
@@ -31,14 +29,18 @@ if (isset($_GET['ruta'])) {
             }
             print json_encode($resultado);
             break;
-        
+        /* ============================================================================================================================
+                                       MUESTRA EL PEDIDO(CAJAS) ASIGNADAS AL TRANSPORTADOR
+        ============================================================================================================================*/   
         case "pedidos":
             $usuario=$_GET["usuario"];
             $controlador= new ControladorTransportador($usuario);
             $resultado=$controlador->ctrBuscarPedidos();
             print json_encode($resultado);
             break;
-
+        /* ============================================================================================================================
+                                ENTREGA ITEMS AL PUNTO DE VENTA CAMBIANDO EL ESTADO DE LA CAJA A ENTREGADO
+        ============================================================================================================================*/   
         case "entregar":
             $cajas=$_POST["cajas"];
             $controlador= new ControladorTransportador();

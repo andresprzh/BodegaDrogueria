@@ -1,5 +1,4 @@
 <?php
-include "alistar.controlador.php";
 
 class ControladorCajas extends ControladorAlistar {
     /* ============================================================================================================================
@@ -266,6 +265,4 @@ class ControladorCajas extends ControladorAlistar {
         return $resultado;
     }
 
-    
-   
 }

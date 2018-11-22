@@ -1,4 +1,28 @@
 <?php
+
+include "../controladores/loginusuario.controlador.php";
+include "../controladores/usuarios.controlador.php";
+include "../controladores/tareas.controlador.php";
+include "../controladores/alistar.controlador.php";
+include "../controladores/cajas.controlador.php";
+include "../controladores/pv.controlador.php";
+include "../controladores/remision.controlador.php";
+include "../controladores/requerir.controlador.php";
+include "../controladores/transportador.controlador.php";
+
+
+require "../modelos/conexion.php";
+require "../modelos/loginusuario.modelo.php";
+require "../modelos/usuarios.modelo.php";
+require "../modelos/tareas.modelo.php";
+require "../modelos/alistar.modelo.php";
+require "../modelos/cajas.modelo.php";
+require "../modelos/pv.modelo.php";
+require "../modelos/remision.modelo.php";
+require "../modelos/requerir.modelo.php";
+require "../modelos/transportador.modelo.php";
+
+
 // function cors() {
 
 // Allow from any origin

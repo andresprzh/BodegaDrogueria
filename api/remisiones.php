@@ -1,12 +1,5 @@
 <?php
 
-include "../controladores/remision.controlador.php";
-
-require "../modelos/conexion.php";
-
-require "../modelos/remision.modelo.php";
-require "../modelos/requerir.modelo.php";
-
 require "cors.php";
 
 if (isset($_GET["ruta"])) {

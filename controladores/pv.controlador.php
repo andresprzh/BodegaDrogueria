@@ -1,6 +1,4 @@
 <?php
-include "cajas.controlador.php";
-
 
 class ControladorPV extends ControladorCajas{
     /* ============================================================================================================================

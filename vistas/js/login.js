@@ -13,7 +13,8 @@ $(document).ready(function () {
             dataType: 'JSON',
             data: { 'username': username, 'password': passowrd },
             success: function (res) {
-                
+                // console.log(res);
+                // return 0;
                 if (res) {
                     window.location = 'inicio';
                 } else {
@@ -22,9 +23,9 @@ $(document).ready(function () {
                 }
 
             },
-            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                alert('Error conexion ' + XMLHttpRequest.readyState);
-            }
+            // error: function(XMLHttpRequest, textStatus, errorThrown) {
+            //     alert('Error conexion ' + XMLHttpRequest.readyState);
+            // }
         });
     });
 });

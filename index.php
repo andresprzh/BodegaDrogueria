@@ -1,9 +1,11 @@
 <?php
 include "controladores/principal.controlador.php";
+include "controladores/loginusuario.controlador.php";
 include "controladores/usuarios.controlador.php";
 include "controladores/requerir.controlador.php";
 
 require "modelos/conexion.php";
+require "modelos/loginusuario.modelo.php";
 require "modelos/usuarios.modelo.php";
 require "modelos/requerir.modelo.php";
 

@@ -1,7 +1,6 @@
 <?php
-include "../controladores/tareas.controlador.php";
 
-// llibreria conectar impresora 
+// libreria conectar impresora 
 require __DIR__ . '/../lib/impresora_mike42/autoload.php';
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;

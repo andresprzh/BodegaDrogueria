@@ -1,6 +1,6 @@
 <?php
 
-class ControladorTransportador{
+class ControladorTransportador extends ControladorLoginUsuario{
 
       /* ============================================================================================================================
                                                         ATRIBUTOS   

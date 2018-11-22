@@ -1,12 +1,5 @@
 <?php
 
-
-include "../controladores/usuarios.controlador.php";
-
-require "../modelos/conexion.php";
-
-require "../modelos/usuarios.modelo.php";
-
 require "cors.php";
 
 if (isset($_GET["ruta"])) {
@@ -55,7 +48,7 @@ if (isset($_GET["ruta"])) {
         ============================================================================================================================*/
         case "usuarios":
             $perfil=$_SESSION["usuario"]["perfil"];
-            $controlador=new ControladorUsuarios();
+            $controlador=new ControladorLoginUsuario();
             
             $resultado=$controlador->ctrBuscarUsuarios($perfil);
             
@@ -77,7 +70,7 @@ if (isset($_GET["ruta"])) {
             $username=$_POST["username"];
             $password=$_POST["password"];
 
-            $controlador = new ControladorUsuarios();
+            $controlador = new ControladorLoginUsuario();
             $resultado=$controlador->ctrIngresoUsuario($username,$password);
             print json_encode($resultado);
             break;

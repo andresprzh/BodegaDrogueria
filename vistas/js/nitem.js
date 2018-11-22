@@ -104,10 +104,9 @@ $(document).ready(function () {
                         type: "POST",
                         url: "api/nitem/agregar",
                         data: { "items": items, "req": req },
-                        // dataType: "JSON",
+                        dataType: "JSON",
                         success: function (res) {
-                            console.log(res);
-                            return 0;
+                                                        
                             if (res) {
                                 swal({
                                     title: `Items agregados exitosamente a la requisición ${requeridos}`,
@@ -175,7 +174,7 @@ function buscarItem(item, req) {
         data: { "item": item, "req": req },
         dataType: "JSON",
         success: function (res) {
-            console.log(res);
+            
             if (res["estado"] == "encontrado") {
                 items = res["contenido"];
                 $("#TablaM tbody").html("");

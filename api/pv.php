@@ -1,14 +1,6 @@
 <?php
 
-include "../controladores/pv.controlador.php";
-
-
-
-require "../modelos/conexion.php";
-require "../modelos/pv.modelo.php";
-require "../modelos/cajas.modelo.php";
-require "../modelos/alistar.modelo.php";
-require "../modelos/tareas.modelo.php";
+require "cors.php";
 
 if (isset($_GET['ruta'])) {
     

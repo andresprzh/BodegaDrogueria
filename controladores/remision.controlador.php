@@ -1,6 +1,6 @@
 <?php
 
-class ControladorRemision{
+class ControladorRemision extends ControladorLoginUsuario{
 
     /* ============================================================================================================================
                                                         ATRIBUTOS   

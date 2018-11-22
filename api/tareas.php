@@ -1,11 +1,5 @@
 <?php
 
-include "../controladores/tareas.controlador.php";
-
-require "../modelos/conexion.php";
-
-require "../modelos/tareas.modelo.php";
-
 require "cors.php";
 
 if (isset($_GET["ruta"])) {
