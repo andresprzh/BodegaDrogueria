@@ -77,7 +77,7 @@ if (isset($_GET['ruta'])) {
             $items=$_POST['items'];
             // print json_encode($items);
             // return 0;
-            $respuesta=$controlador->ctrCerrarCaja($items,$req,$caja['tipocaja'],$caja['pesocaja'],$caja['no_caja']);            
+            $respuesta=$controlador->ctrCerrarCaja($items,$caja['tipocaja'],$caja['pesocaja'],$caja['no_caja']);            
             
             // muestra el vector como dato JSON
             print json_encode($respuesta);

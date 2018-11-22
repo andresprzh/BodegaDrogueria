@@ -20,12 +20,12 @@ $(document).ready(function () {
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             if (res) {
                 for (var i in res) {
-                    
+
                     // $("#requeridos").append($('<option id= value="' + res[i]['no_req'] + '">' + res[i]['no_req'].substr(4) + res[i]['descripcion'] + '</option>'));
                     $("#requeridos").append($(`<option  value="${res[i]['no_req']}">${res[i]['no_req'].substr(4)} ${res[i]['descripcion']}</option>`));
 
                 }
-                if (i==0) {
+                if (i == 0) {
                     $("#requeridos").val(res[i]['no_req']);
                     cambiarRequeridos();
                 }
@@ -48,20 +48,20 @@ $(document).ready(function () {
 
     // FUNCION QUE FILTRA ITEMS POR UBICACION
     $("#ubicacion").change(function (e) {
-        
+
         cambiarUbicacion();
         $("#codbarras").focus();
     });
 
     // EVENTO INPUT  CODIGO DE BARRAS
     $("#codbarras").keyup(function (e) {
-        
-        
+
+
         //si se presiona enter busca el item y lo pone en la pagina
         if (e.which == 13) {
             buscarCodbar();
         }
-        
+
 
     });
 
@@ -160,7 +160,7 @@ $(document).ready(function () {
             confirmButtonColor: '#d33',
         })
             .then((res) => {
-                let Quitar=res.value;
+                let Quitar = res.value;
                 if (Quitar) {
 
                     // elimina el item y vuelve a cargar la tabla de vista
@@ -195,7 +195,7 @@ $(document).ready(function () {
             cancelButtonText: 'Cancelar',
             confirmButtonColor: '#388e3c',
         }).then((res) => {
-            let cerrar=res.value;
+            let cerrar = res.value;
             //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
             if (cerrar) {
 
@@ -223,21 +223,23 @@ $(document).ready(function () {
                     data: { 'req': req, 'tipocaja': tipocaja, 'pesocaja': pesocaja, 'items': items },//datos que se enviaran 
                     dataType: 'JSON',
                     success: function (res) {
-                        
+                        console.log(res);
                         if (res) {
 
-                            swal('¡Caja cerrada exitosamente!', {
+                            swal({
                                 type: 'success',
+                                title: '¡Caja cerrada exitosamente!',
+                                confirmButtonColor: 'green',
                             }).then((event) => {
 
                                 // location.reload(true);
                                 // vuelve a cargar las tablas
-                                
+
                                 recargarItems();
                                 let table = document.getElementById('tablavista');
                                 let tr = table.getElementsByTagName('tr');
-                                
-                                if (tr.length<1) {
+
+                                if (tr.length < 1) {
                                     swal('¡Requisicion Terminada!', {
                                         type: 'warning',
                                     }).then((event) => {
@@ -248,13 +250,45 @@ $(document).ready(function () {
                             });
 
                         } else {
-
-                            swal("¡Error al cerrar la caja!", {
-                                type: "error",
+                            swal({
+                                type: 'error',
+                                title: '¡Error al cerrar la caja!',
+                                confirmButtonColor: 'red',
                             });
-
                         }
 
+                    },
+                    error: function (res) {
+                        console.log(res['estado']);
+                        if (res) {
+
+                            swal({
+                                type: 'success',
+                                title: '¡Caja cerrada exitosamente!',
+                                confirmButtonColor: 'green',
+                            }).then((event) => {
+
+                                recargarItems();
+                                let table = document.getElementById('tablavista');
+                                let tr = table.getElementsByTagName('tr');
+
+                                if (tr.length < 1) {
+                                    swal('¡Requisicion Terminada!', {
+                                        type: 'warning',
+                                    }).then((event) => {
+                                        location.reload();
+                                    })
+                                }
+                                $('.tabs').tabs('select', 'TablaV');
+                            });
+
+                        } else {
+                            swal({
+                                type: 'error',
+                                title: '¡Error al cerrar la caja!',
+                                confirmButtonColor: 'red',
+                            });
+                        }
                     }
                 });
             }
@@ -275,8 +309,8 @@ function cambiarRequeridos() {
             $("#codbarras").focus();
             // obtiene las ubicaciones al recargar tabla
             var options = $('#ubicacion option');
-            
-            var values = $.map(options ,function(option) {
+
+            var values = $.map(options, function (option) {
                 return option.value;
             });
             $('#ubicacion').val(values[1]);
@@ -313,7 +347,7 @@ function buscarCodbar() {
 
 // FUNCIONQ UE QUITA UN ITEM DE LA CAJA
 function eliminarItem(iditem, req) {
-    
+
     return $.ajax({
         type: "POST",
         // url: "ajax/alistar.eliminar.ajax.php",
@@ -338,24 +372,24 @@ function recargarItems() {
 
     // se recarga tablas y ubicacion
     let ubicacion = $('#ubicacion').val();
-    
+
     // console.log(index);
     $.when(mostrarItems()).done(function () {
         $.when(mostrarCaja()).done(function () {
 
             // obtiene las ubicaciones al recargar tabla
             var options = $('#ubicacion option');
-            
-            var values = $.map(options ,function(option) {
+
+            var values = $.map(options, function (option) {
                 return option.value;
             });
 
             // si la ubicacion en la que se estaba trabajando no tiene items , se cambia a otra ubicacion
             if (!values.includes(ubicacion)) {
-                ubicacion=$('#ubicacion option').eq(1).val();
+                ubicacion = $('#ubicacion option').eq(1).val();
             }
             $('#ubicacion').val(ubicacion);
-            
+
             cambiarUbicacion();
         });
     });
@@ -373,83 +407,83 @@ function agregarItem(res, req) {
         if (item) {
             swal({
                 title: `${item['descripcion']}`,
-                text:`disponibilidad: ${item['disponibilidad']}\t pendientes: ${item['pendientes']} `,
+                text: `disponibilidad: ${item['disponibilidad']}\t pendientes: ${item['pendientes']} `,
                 input: 'number',
                 showCancelButton: true,
                 confirmButtonText: 'Aceptar',
                 cancelButtonText: 'Cancelar',
                 confirmButtonColor: '#388e3c',
                 inputValidator: (value) => {
-                  if ((value.toString().length>=13 && value.toString()!='65743328329379842953') || value<0 ) {
+                    if ((value.toString().length >= 13 && value.toString() != '65743328329379842953') || value < 0) {
                         $('.swal2-input').val('');
                         return "Digite una cantidad valida";
-                  }
+                    }
                 }
-              }).then((res) => {
-                  let value=res.value;
-                    // alista el item si se presiona en alistar o se da en enter
-                    if (value != null) {
-                        // consigue el valor maximo en decenas que puede valer la cantidad de alistados
-                        // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
-                        let a = 0;
-                        let pot = item['pedido'];
-                        do {
-                            a++;
-                            pot = pot / 10;
-                        } while (pot > 1);
-                        let maxvalue = Math.pow(10, a);
-                        
-                        if (value === '' || value.toString().length==20  || value==0) {
-                            value = item['pendientes'];
-                        }
+            }).then((res) => {
+                let value = res.value;
+                // alista el item si se presiona en alistar o se da en enter
+                if (value != null) {
+                    // consigue el valor maximo en decenas que puede valer la cantidad de alistados
+                    // EJ: entre 0 y 10 maximo valor=100, entre 11 y 100 maximo valor 1000
+                    let a = 0;
+                    let pot = item['pedido'];
+                    do {
+                        a++;
+                        pot = pot / 10;
+                    } while (pot > 1);
+                    let maxvalue = Math.pow(10, a);
 
-                        if (value < maxvalue * 10) {
+                    if (value === '' || value.toString().length == 20 || value == 0) {
+                        value = item['pendientes'];
+                    }
 
-                            if (value > maxvalue) {
+                    if (value < maxvalue * 10) {
 
-                                var toastHTML = `<p class='truncate black-text'><i class='fas fa-exclamation-circle'></i> Revisar cantidad alistada</span></p>`;
-                                M.toast({
-                                    html: toastHTML, classes: 'yellow lighten-2',
-                                });
-                            }
+                        if (value > maxvalue) {
 
-                        } else {
-                            
-                            var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Cantidad alistada es muy grande</span></p>`;
+                            var toastHTML = `<p class='truncate black-text'><i class='fas fa-exclamation-circle'></i> Revisar cantidad alistada</span></p>`;
                             M.toast({
-                                html: toastHTML, classes: "red lighten-2'",
+                                html: toastHTML, classes: 'yellow lighten-2',
                             });
-                            
-                            value = item['pendientes'];
-                            console.log(value);
-
                         }
-                        item['alistados'] = value;
 
-                        return $.ajax({
-                            // url: 'ajax/alistar.items.ajax.php',//url de la funcion
-                            url: 'api/alistar/items',//url de la funcion
-                            type: 'POST',//metodo post para mandar datos
-                            data: { 'item': item, 'req': req },//datos que se enviaran
-                            dataType: 'JSON',
-                            success: function (res) {
-                                
-                                if (res) {
-                                    //se recargan los datos en las tablas
-                                    recargarItems();
-                                    $('#codbarras').focus();
-                                } else {
-                                    swal('Error al alistar el item', {
-                                        type: 'error',
-                                    }).then((value) => {
-                                        $('#codbarras').focus();
-                                    });
-                                }
-                            }
+                    } else {
+
+                        var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Cantidad alistada es muy grande</span></p>`;
+                        M.toast({
+                            html: toastHTML, classes: "red lighten-2'",
                         });
 
+                        value = item['pendientes'];
+                        console.log(value);
+
                     }
-                });
+                    item['alistados'] = value;
+
+                    return $.ajax({
+                        // url: 'ajax/alistar.items.ajax.php',//url de la funcion
+                        url: 'api/alistar/items',//url de la funcion
+                        type: 'POST',//metodo post para mandar datos
+                        data: { 'item': item, 'req': req },//datos que se enviaran
+                        dataType: 'JSON',
+                        success: function (res) {
+
+                            if (res) {
+                                //se recargan los datos en las tablas
+                                recargarItems();
+                                $('#codbarras').focus();
+                            } else {
+                                swal('Error al alistar el item', {
+                                    type: 'error',
+                                }).then((value) => {
+                                    $('#codbarras').focus();
+                                });
+                            }
+                        }
+                    });
+
+                }
+            });
 
         } else {
             swal('Item ya fue alistado en otra caja', {
@@ -539,7 +573,7 @@ function mostrarCaja() {
     var requeridos = $('.requeridos').val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-    
+
     return $.ajax({
 
         // url: 'ajax/alistar.cajas.ajax.php',
@@ -548,7 +582,7 @@ function mostrarCaja() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-            
+
             //refresca las tablas, para volver a cargar los datos
             $('#tablaeditable').html('');
             $('#TablaE').addClass('hide');

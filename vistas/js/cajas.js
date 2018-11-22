@@ -106,7 +106,7 @@ $(document).ready(function () {
                     // let numerodoc = ('00' + res['no_documento']).slice(-2);
                     // // CREA EL NOMBRE DEL DOCUMENTO A PARTIR DE LA REQUISICION Y LA CAJA
                     // var nomdoc = 'DS' + no_res + 'D' + numerodoc + '.TR1';
-                    var nomdoc=req[0]+'.TR'+res['no_documento'];
+                    var nomdoc = req[0] + '.TR' + res['no_documento'];
 
                     var element = document.createElement('a');
                     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['documento']));
@@ -334,26 +334,26 @@ $(document).ready(function () {
 
     });
 
-    // IMPRIMI LISTA DE ITEMS PARA PEGAR EN LA CAJA A ENVIAR
+    // IMPRIMI LISTA DE ITEMS PARA PEGAR EN LA CAJA Al ENVIAR
     $('#imprimir').click(function (e) {
 
         //consigue el numero de requerido
         let requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
         let req = [requeridos, id_usuario];
-        
+
         // numero de la caja
-        let numcaja=$(".NumeroCaja").html();
-        
+        let numcaja = $(".NumeroCaja").html();
+
         return $.ajax({
             type: 'GET',
             url: 'api/alistar/listadoc',
             data: { 'numcaja': numcaja, 'req': req },
             dataType: 'JSON',
             success: function (res) {
-                
-                 // si hay un error al buscar los archivos no genera el documento
-                 if (!res) {
+
+                // si hay un error al buscar los archivos no genera el documento
+                if (!res) {
                     swal({
                         title: '!Error al generar el documento¡',
                         type: 'error',
@@ -361,8 +361,35 @@ $(document).ready(function () {
 
                     // si no hay error genera le documento y lo manda a decargar
                 } else {
-                    
-                    var nomdoc=numcaja+'.txt';
+
+                    var nomdoc = numcaja + '.txt';
+                    var element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));
+                    element.setAttribute('download', nomdoc);
+
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+
+                    element.click();
+
+                    document.body.removeChild(element);
+
+                    $('.modal').modal('close');
+                    recargarCajas();
+
+                }
+            },
+            error: function (res) {
+                if (!res) {
+                    swal({
+                        title: '!Error al generar el documento¡',
+                        type: 'error',
+                    });
+
+                    // si no hay error genera le documento y lo manda a decargar
+                } else {
+
+                    var nomdoc = numcaja + '.txt';
                     var element = document.createElement('a');
                     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['contenido']));
                     element.setAttribute('download', nomdoc);
@@ -380,53 +407,6 @@ $(document).ready(function () {
                 }
             }
         });
-
-        // //consigue el numero de requerido
-        // let requeridos = $('.requeridos').val();
-
-        // let numcaja = $('.NumeroCaja').html();
-
-        // let datos = $('#TablaM').DataTable().data().toArray();
-
-        // let imprmir = `<h2 style="text-align: Center;" >Caja No: ${numcaja}<h2>
-        //                 <table style="width:100%;" class="centered">
-        //                 <thead>
-        //                     <tr>
-        //                         <th style="text-align: left;">Item</th>
-        //                         <th style="text-align: left;">Cod_barras</th>
-        //                         <th style="text-align: left;">Cant</th>
-        //                     </tr>
-        //                 </thead>
-        //                 <tbody>`;
-        // // let string = ('Item' + ' '.repeat(40)).slice(0, 40) +
-        // //     ('Cod_barras' + ' '.repeat(15)).slice(0, 15) +
-        // //     ('Cant' + ' '.repeat(5)).slice(0, 5) + '\r\n';
-        // // string += '_'.repeat(60) + '\r\n';
-        // let total = 0;
-        // for (var i in datos) {
-        //     // string += (datos[i][3] + ' '.repeat(40)).slice(0, 40);
-        //     // string += (datos[i][0] + ' '.repeat(15)).slice(0, 15);
-        //     // string += ('0'.repeat(5) + datos[i][6]).slice(-5) + '\r\n';
-        //     imprmir += `<tr>
-        //                             <td>${datos[i][3]}</td>
-        //                             <td>${datos[i][0]}</td>
-        //                             <td>${datos[i][6]}</td>
-        //                         </tr>`;
-        //     total += parseInt(datos[i][6]);
-        // }
-        // imprmir += `<tr>
-        //                 <th style="text-align: left;">Total</th>
-        //                 <th style="text-align: left;"></th>
-        //                 <th style="text-align: left;">${total}</th>
-        //             </tr>
-        //             </tbody>
-        //             </table>`;
-
-        // let win = window.open()
-        // win.document.write(imprmir);
-        // win.print()
-        // win.close()
-
 
     });
 
@@ -817,7 +797,7 @@ function mostrarItems(numcaja, estado = null) {
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-            
+
             origen = res["contenido"][0]["origen"];
             destino = res["contenido"][0]["destino"];
 

@@ -12,6 +12,7 @@ class ControladorAlistar extends ControladorTareas{
     ============================================================================================================================*/
     protected $req;
     private $modelo;
+    private $numcaja;//se guarda el numero de la ultima caja cerrada
     private $tipo_inventario=[
         1=>"PRIMA",
         2=>"QUIMICO",
@@ -272,7 +273,7 @@ class ControladorAlistar extends ControladorTareas{
         
         $busqueda=$this->modelo->mdlMostrarNumCaja();
 
-        
+
         $row=$busqueda->fetch();
         
         
@@ -348,7 +349,7 @@ class ControladorAlistar extends ControladorTareas{
     }
     
     //cierra la caja
-    public function ctrCerrarCaja($items,$req,$tipocaja,$pesocaja,$numcaja=null)
+    public function ctrCerrarCaja($items,$tipocaja,$pesocaja,$numcaja=null)
     {
         
         // busca el numero de la ultima acaja abierta por el usuario
@@ -356,6 +357,8 @@ class ControladorAlistar extends ControladorTareas{
             $busqueda = $this->modelo->mdlMostrarNumCaja();
             $numcaja = ($busqueda->fetch());
             $numcaja = $numcaja['numcaja'];
+            $this->numcaja = $numcaja;
+            $busqueda->closeCursor(); 
         }
                 
         for ($i=0; $i <count($items) ; $i++) { 
@@ -366,25 +369,25 @@ class ControladorAlistar extends ControladorTareas{
             $resultado=$this->modelo->mdlCerrarCaja($tipocaja,$pesocaja,$numcaja);
         }
 
-        if ($resultado) {
-            $resultado=$this->ctrDocList($numcaja);
-            return $resultado['estado'];
-        }
+        // if ($resultado) {
+        //     $resultado=$this->ctrDocList($numcaja);
+        //     return $resultado['estado'];
+        // }
 
         return $resultado;
     }
 
     // elimina 1 item de una caja
-    public function ctrEliminarItemCaja($cod_barras,$no_caja=null)
+    public function ctrEliminarItemCaja($cod_barras,$numcaja=null)
     {
         
-        if ($no_caja==null) {
+        if ($numcaja==null) {
             $busqueda=$this->modelo->mdlMostrarNumCaja();
             $row=$busqueda->fetch();
-            $no_caja=$row['numcaja'];
+            $numcaja=$row['numcaja'];
         }
 
-        return $this->modelo->mdlEliminarItemCaja($cod_barras,$no_caja);
+        return $this->modelo->mdlEliminarItemCaja($cod_barras,$numcaja);
 
     }
 
@@ -395,9 +398,12 @@ class ControladorAlistar extends ControladorTareas{
         $busqueda = $this->modelo->mdlMostrarNumCaja();
         $numcaja = ($busqueda->fetch());
         $numcaja = $numcaja['numcaja'];
+        $busqueda->closeCursor();        
 
         $resultado=$this->modelo->mdlAlistarItem($item,$numcaja);
-
+        // if ($resultado) {
+        //     return $numcaja;
+        // }
         return $resultado;   
 
     }
@@ -409,17 +415,17 @@ class ControladorAlistar extends ControladorTareas{
     }
     // CREA LISTA DE ITEMS Y LO MANDA A IMPRIMIR
     public function ctrDocList($numcaja=null){
-
+            
         if ($numcaja==null) {
-            $busqueda = $this->modelo->mdlMostrarNumCaja();
-            $numcaja = ($busqueda->fetch());
-            $numcaja = $numcaja["numcaja"];
+            // $busqueda = $this->modelo->mdlMostrarNumCaja();
+            // $numcaja = ($busqueda->fetch());
+            // $numcaja = $numcaja["numcaja"];
             // libera conexion para hace otra sentencia
-            $busqueda->closeCursor();
+            // $busqueda->closeCursor();
+            $numcaja = $this->numcaja;
         }
         $busqueda=$this->modelo->mdlMostrarDocList($numcaja);
         $datos=$busqueda->fetchAll();
-        
         // obtiene el numero de caja
         $caja0=str_pad($datos[0]["no_caja"], 3, "0", STR_PAD_LEFT);
         $caja=$datos[0]["no_caja"];
@@ -529,16 +535,15 @@ class ControladorAlistar extends ControladorTareas{
         
         try {
             $connector = new WindowsPrintConnector("epsonliza_contab");
-            
+            $connector = new WindowsPrintConnector("hpljp1102");
             $printer = new Printer($connector);
-            $printer -> text("$imprimir");
+            $printer -> text($imprimir);
             $printer -> cut();
-            // /* Close printer */
+            /* Close printer */
             $printer -> close();
-            $resultado["estado"]=true;
+            $resultado["estadoimp"]=true;
         } catch (Exception $e) {
-            $resultado["estado"]=false;
-            echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
+            $resultado["estadoimp"]=false;
         }
         
 

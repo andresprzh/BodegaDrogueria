@@ -62,17 +62,27 @@ if (isset($_GET['ruta'])) {
         case 'empacar':
             // obtienen los datos dela requisicion (numero requisicion y codigo alistador)
             $req=$_POST['req'];
+            
             $tipocaja=$_POST['tipocaja'];
             $pesocaja=$_POST['pesocaja'];
             $items=$_POST['items'];
             
             //crea objeto controlador 
             $controlador=new ControladorAlistar($req);
-                        
-            $respuesta=$controlador->ctrCerrarCaja($items,$req,$tipocaja,$pesocaja);
-
-            print json_encode($respuesta);
+                  
+            $respuesta=$controlador->ctrCerrarCaja($items,$tipocaja,$pesocaja);
+            // $respuesta=false;
             
+
+            if ($respuesta) {
+                $resultado=$controlador->ctrDocList();
+                $resultado['estado']=true;
+                // print json_encode($resultado);
+            }else{
+                $resultado=false;
+            }
+            
+            print json_encode($resultado);
             return 1;
             
             break;
