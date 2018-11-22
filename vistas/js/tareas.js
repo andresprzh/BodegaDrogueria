@@ -41,22 +41,20 @@ $(document).ready(function () {
 
         }
     });
-
+    asignarUbicaciones();
     // guarda las ubicaciones en variable global
-    $.ajax({
-        type: 'GET',
-        url: 'api/tareas/ubicaciones',
-        data: 'data',
-        dataType: 'JSON',
-        success: function (res) {
+    // $.ajax({
+    //     type: 'GET',
+    //     url: 'api/tareas/ubicaciones',
+    //     data: 'data',
+    //     dataType: 'JSON',
+    //     success: function (res) {
             
-            
-
-            ubicaciones = res;
+    //         ubicaciones = res;
 
             
-        }
-    });
+    //     }
+    // });
 
     /* ============================================================================================================================
                                                         EVENTOS   
@@ -152,13 +150,13 @@ $(document).ready(function () {
         
 
         const iduser = $('#iduser').html();
-        let ubicaciones = new Array;
+        let arra_ubc = new Array;
 
         $.each($("#ubic input:checkbox:checked"), function () {
-            ubicaciones.push($(this).val());
+            arra_ubc.push($(this).val());
         });
-        // console.log(ubicaciones);
-        if (ubicaciones.length>0){
+        // console.log(arra_ubc);
+        if (arra_ubc.length>0){
              
             $('#seleubic .btn').attr('disabled', true);
             $('#seleubic input:checkbox').attr('disabled', true);
@@ -167,7 +165,7 @@ $(document).ready(function () {
             $.ajax({
                 type: 'POST',
                 url: 'api/tareas/dettarea',
-                data: { 'usuario': iduser, 'ubicacion': ubicaciones },
+                data: { 'usuario': iduser, 'ubicacion': arra_ubc },
                 dataType: 'JSON',
                 success: function (res) {
 
@@ -175,10 +173,10 @@ $(document).ready(function () {
                     $('#seleubic input:checkbox').removeAttr('disabled');
                     $('#seleubic .progress').addClass('hide');
                     if (res) {
-
+                        asignarUbicaciones();
                         agregarUbicaciones(iduser);
                         $('#seleubic').modal('close');
-
+                        
                     } else {
                         var toastHTML = `<span class="truncate">No se pudo agregar ubicación</span>`;
                         M.toast({
@@ -223,9 +221,9 @@ $(document).ready(function () {
             success: function (res) {
 
                 if (res) {
-
+                    asignarUbicaciones();
                     agregarUbicaciones(iduser);
-
+                    
                 } else {
 
                     var toastHTML = `<span class="truncate">No se pudo eliminar ubicación</span>`;
@@ -278,6 +276,21 @@ function agregarUbicaciones(iduser) {
 
 }
 
+// guarda las ubicaciones en variable global
+function asignarUbicaciones(){
+    $.ajax({
+        type: 'GET',
+        url: 'api/tareas/ubicaciones',
+        data: 'data',
+        dataType: 'JSON',
+        success: function (res) {
+            
+            ubicaciones = res;
+
+            
+        }
+    });
+}
 
 // obtiene conjunto diferencia entre 2 arreglos u objetos
 function diff(a, b) {
@@ -325,7 +338,7 @@ function eliminarub() {
             $('#listtareas .progress').addClass('hide');
 
             if (res) {
-
+                asignarUbicaciones();
                 agregarUbicaciones(iduser);
 
             } else {
@@ -341,3 +354,4 @@ function eliminarub() {
     });
 
 }
+

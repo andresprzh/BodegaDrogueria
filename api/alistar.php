@@ -2,7 +2,6 @@
 
 require "cors.php";
 
-
 if (isset($_GET['ruta'])) {
     
 

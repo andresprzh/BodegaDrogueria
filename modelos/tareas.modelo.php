@@ -59,8 +59,8 @@ class ModeloTareas extends Conexion{
 
             $stmt= $this->link->prepare(
             "SELECT ubicacion  
-            FROM pedido 
-            GROUP BY ubicacion
+            FROM ubicacion
+            WHERE  estado=0
             ORDER BY ubicacion ASC;");
 
         }

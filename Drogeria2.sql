@@ -181,6 +181,14 @@ CREATE TABLE IF NOT EXISTS caja(
 	REFERENCES tipo_caja(tipo_caja)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS ubicacion(
+	ubicacion 			VARCHAR(6) NOT NULL,
+	estado 				INT(1) NOT NULL default 0,
+
+	PRIMARY KEY(ubicacion)
+	
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*Crea la tabla donde se almacenan los productos pedidos en la requisicion*/
 CREATE TABLE IF NOT EXISTS pedido(
 	item 				CHAR(6) NOT NULL,
@@ -309,7 +317,11 @@ CREATE TABLE IF NOT EXISTS tareas_det(
 	
 	CONSTRAINT det_tareas_tareas
 	FOREIGN KEY(id_tarea)
-	REFERENCES tareas(id_tarea)
+	REFERENCES tareas(id_tarea),
+
+	CONSTRAINT det_tareas_ubicacion
+	FOREIGN KEY(ubicacion)
+	REFERENCES ubicacion(ubicacion)
 	
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -497,6 +509,7 @@ DROP TRIGGER IF EXISTS CerrarCaja;
 DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS EstadoRecibidoRemision;
 DROP TRIGGER IF EXISTS AutoincTareas;
+DROP TRIGGER IF EXISTS UbicacionEstado;
 
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
@@ -655,6 +668,11 @@ DELIMITER $$
 
 		SET new.pendientes=new.pedido;				
 		
+		INSERT INTO ubicacion (ubicacion) 
+		SELECT * FROM (SELECT new.ubicacion as ubiacion) as temp
+		WHERE NOT EXISTS (
+			SELECT 1 FROM ubicacion WHERE ubicacion = new.ubicacion
+		) LIMIT 1;
 	END 
 $$
 
@@ -943,7 +961,24 @@ DELIMITER $$
 		ORDER BY id_tareadet DESC
 		LIMIT 1;
 		
-		SET new.id_tareadet=id;	
+		SET new.id_tareadet=id;
+
+		UPDATE ubicacion
+		SET estado=1
+		WHERE ubicacion=new.ubicacion;	
+			
+	END 
+$$
+
+DELIMITER $$
+	CREATE TRIGGER UbicacionEstado
+	BEFORE DELETE ON tareas_det
+	FOR EACH ROW 
+	BEGIN
+
+		UPDATE ubicacion
+		SET estado=0
+		WHERE ubicacion=old.ubicacion;	
 			
 	END 
 $$
