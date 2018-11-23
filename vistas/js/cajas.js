@@ -68,22 +68,25 @@ $(document).ready(function () {
     // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
     $('.Documento').click(function (e) {
         // consigue la id de la tabla seleccionada
-        const tabla = $($(this).parent().parent().find('table')[1]).attr('id');
-
+        const tabla = $($(this).parent().parent().find('table')[0]).attr('id');
+        
         //consigue el numero de requerido
         var requeridos = $('.requeridos').val();
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
 
 
-        var datos = $(`#${tabla}`).DataTable().data().toArray();
-
+        
+        var datos = $(`#${tabla}`).DataTable();
+        
         // obtiene los numeros de las cajas de la tabla seleccionada
         var numcaja = new Array();
-        for (var i in datos) {
-            numcaja[i] = datos[i][0];
+        for (var i in datos.data().toArray()) {
+            numcaja[i] = datos.row(i).id();
+            
         }
-
+        
+        
         $.ajax({
 
             url: 'api/cajas/documento',
@@ -91,7 +94,8 @@ $(document).ready(function () {
             data: { 'req': req, 'numcaja': numcaja },
             dataType: 'JSON',
             success: function (res) {
-
+                // console.log(res);
+                // return 0;
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({
@@ -168,7 +172,7 @@ $(document).ready(function () {
                     }
 
                     //guarda el tipo de caja en una variable
-                    var numcaja = $('.NumeroCaja').html();
+                    var numcaja = $('.NumeroCaja').attr('name');
 
 
                     $.ajax({
@@ -177,6 +181,7 @@ $(document).ready(function () {
                         data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
                         dataType: 'JSON',
                         success: function (res) {
+                            
                             if (res) {
 
                                 swal({
@@ -213,8 +218,8 @@ $(document).ready(function () {
         //id usuario es obtenida de las variables de sesion
         let req = [requeridos, id_usuario];
         // se consigue el numero de la caja
-        let caja = $('.NumeroCaja').html();
-
+        let caja = $('.NumeroCaja').attr('name');
+        
         swal({
             title: `¿Esta seguro de eliminr la caja ${caja}?`,
             type: 'warning',
@@ -261,15 +266,15 @@ $(document).ready(function () {
     // ASIGNA LAS CAJAS A UN TRANSPORTADOR PARA SER ENVIADAS AL PUNTO
     $('#despachar').click(function (e) {
 
-        let datos = $("#TablaC").DataTable().data().toArray();
-
-
-        let cajas = new Array();
-        for (let i in datos) {
-
-            cajas[i] = datos[i][0];
-
+        var datos = $("#TablaC").DataTable();
+        
+        // obtiene los numeros de las cajas de la tabla seleccionada
+        var numcaja = new Array();
+        for (var i in datos.data().toArray()) {
+            numcaja[i] = datos.row(i).id();
+            
         }
+
 
         let resultado;
         ajax('api/cajas/conductor', 'GET').done(function (res) {
@@ -302,7 +307,7 @@ $(document).ready(function () {
                             $.ajax({
                                 url: 'api/cajas/despachar',
                                 method: "POST",
-                                data: { 'cajas': cajas, 'transportador': transportador },
+                                data: { 'cajas': numcaja, 'transportador': transportador },
                                 dataType: 'JSON',
                                 success: function (res) {
                                     if (res) {
@@ -458,7 +463,7 @@ $(document).ready(function () {
 
                 let caja = new Array;
                 caja = {
-                    'no_caja': $('.NumeroCaja').html(),
+                    'no_caja': $('.NumeroCaja').attr('name'),
                     'tipocaja': $('#caja').val(),
                     'pesocaja': $('#peso').val(),
                 }
@@ -470,7 +475,7 @@ $(document).ready(function () {
                     data: { 'req': req, 'caja': caja, 'items': items },//datos que se enviaran 
                     dataType: 'JSON',
                     success: function (res) {
-                        console.log(res);
+                        
 
                         if (res) {
 
@@ -530,7 +535,7 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-            console.log(res);
+            
             let estado_despacho = false;
             let caja = res["contenido"];
 
@@ -596,8 +601,8 @@ function mostrarCajas() {
                         }
                     }
 
-                    $(tablatarget + " tbody").append($(`<tr>
-                                        <td class="numcaja">${caja["no_caja"]}</td>
+                    $(tablatarget + " tbody").append($(`<tr id="${caja["no_caja"]}">
+                                        <td class="numcaja">${caja["num_caja"]}</td>
                                         <td class="alistadores">${caja["alistador"]}</td>
                                         <td class="tipocajas">${caja["tipocaja"]}</td>
                                         <td>${caja["abrir"]}</td>
@@ -661,8 +666,8 @@ function mostrarCajas() {
                                 modal_target = "EditarCaja";
                             }
                         }
-                        $(tablatarget + ' tbody').append($(`<tr>
-                                            <td class="numcaja">${caja[i]["no_caja"]}</td>
+                        $(tablatarget + ' tbody').append($(`<tr id='${caja[i]["no_caja"]}'>
+                                            <td class="numcaja">${caja[i]["num_caja"]}</td>
                                             <td class="alistadores">${caja[i]["alistador"]}</td>
                                             <td class="tipocajas">${caja[i]["tipocaja"]}</td>
                                             <td>${caja[i]["abrir"]}</td>
@@ -725,6 +730,7 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
     //obtienen los datos de la caja para pasarlo al modal
     var datos = tabla.row(e).data();
 
+    var id_caja = tabla.row(e).id();
     var numcaja = datos[0];
     var alistador = datos[1];
     var tipocaja = datos[2];
@@ -732,6 +738,7 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
 
     // se muestran los datos generales de la caja
     $(".NumeroCaja").html(numcaja);
+    $(".NumeroCaja").attr("name", id_caja);
     $("#alistador").html(alistador);
     $("#tipocaja").html(tipocaja);
     $("#cierre").html(cierre);
@@ -777,7 +784,7 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
 
 
     //espera a que la funcion termine para reiniciar las tablas
-    $.when(mostrarItems(numcaja, estado)).done(function () {
+    $.when(mostrarItems(id_caja, estado)).done(function () {
         //Reinicia Tabla
         // table[2] = iniciarTabla("#TablaM");
     });
@@ -919,7 +926,7 @@ function iniciarTabla(tab) {
                 "sPrevious": "Anterior"
             },
         },
-        scrollY: hight,
+        // scrollY: hight,
         scrollCollapse: true,
         paging: false,
 

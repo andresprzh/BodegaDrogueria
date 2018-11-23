@@ -35,6 +35,7 @@ class ControladorCajas extends ControladorAlistar {
                 //guarda los resultados en un arreglo
                 $cajabus=["estado"=>"encontrado",
                            "contenido"=> ["no_caja"=>$row["no_caja"],
+                                            "num_caja"=>$row["num_caja"],
                                            "alistador"=>$row["nombre"],
                                            "tipocaja"=>$row["tipo_caja"],
                                            "abrir"=>$row["abrir"],
@@ -58,6 +59,7 @@ class ControladorCajas extends ControladorAlistar {
 
                     //Muestra todas las cajas
                     $cajabus["contenido"][$cont]=["no_caja"=>$row["no_caja"],
+                                                    "num_caja"=>$row["num_caja"],
                                                     "alistador"=>$row["nombre"],
                                                     "tipocaja"=>$row["tipo_caja"],
                                                     "abrir"=>$row["abrir"],
@@ -97,8 +99,9 @@ class ControladorCajas extends ControladorAlistar {
             $busqueda=$this->modelo->mdlMostrarDocumento($numcaja );
             
             $documento="";
+            
             while($row = $busqueda->fetch()){
-                $Mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
+                $Mensaje=str_pad($row["num_caja"],19,"0",STR_PAD_LEFT);
                 
                 // $origen=str_replace("BD","",$row["lo_origen"]);
                 // $destino=str_replace("VE","",$row["lo_destino"]);

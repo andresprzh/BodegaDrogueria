@@ -58,10 +58,10 @@ class ModeloTareas extends Conexion{
         }else {
 
             $stmt= $this->link->prepare(
-            "SELECT ubicacion  
+            "SELECT ubicacion,tip_inventario  
             FROM ubicacion
             WHERE  estado=0
-            ORDER BY ubicacion ASC;");
+            ORDER BY tip_inventario ASC,ubicacion ASC;");
 
         }
         

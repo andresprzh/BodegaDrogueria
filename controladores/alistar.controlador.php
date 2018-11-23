@@ -78,7 +78,7 @@ class ControladorAlistar extends ControladorTareas{
                         break;
 
                     // 1 si el item ya esta siendo alistado pro alguien
-                    case 1:
+                    default :
                         $itembus["estado"]="error1";
                         $itembus["contenido"]="El item ya fue Alistado";
                         return $itembus;
@@ -115,7 +115,7 @@ class ControladorAlistar extends ControladorTareas{
         $ubicaciones=$this->ctrBuscarUbicaciones($alistador);
         
         $busqueda=$this->modelo->mdlMostrarItems('%%');
-
+        
         if ($busqueda->rowCount() > 0) {
 
             $itembus["estado"]="encontrado";
@@ -359,7 +359,7 @@ class ControladorAlistar extends ControladorTareas{
             $this->numcaja = $numcaja;
             $busqueda->closeCursor(); 
         }
-                
+        
         for ($i=0; $i <count($items) ; $i++) { 
             $resultado=$this->modelo->mdlAlistarItem($items[$i],$numcaja);
         }
@@ -426,8 +426,8 @@ class ControladorAlistar extends ControladorTareas{
         $busqueda=$this->modelo->mdlMostrarDocList($numcaja);
         $datos=$busqueda->fetchAll();
         // obtiene el numero de caja
-        $caja0=str_pad($datos[0]["no_caja"], 3, "0", STR_PAD_LEFT);
-        $caja=$datos[0]["no_caja"];
+        $caja0=str_pad($datos[0]["num_caja"], 3, "0", STR_PAD_LEFT);
+        $caja=$datos[0]["num_caja"];
         // se obtiene el numero de requisicion
         $req=substr($datos[0]["no_req"],-6);
         //se obtiene el destino de la requisicion
@@ -533,7 +533,7 @@ class ControladorAlistar extends ControladorTareas{
         $resultado["contenido"]=$imprimir;
         
         try {
-            $connector = new WindowsPrintConnector("epsonliza_contab");
+            // $connector = new WindowsPrintConnector("epsonliza_contab");
             $connector = new WindowsPrintConnector("hpljp1102");
             $printer = new Printer($connector);
             $printer -> text($imprimir);

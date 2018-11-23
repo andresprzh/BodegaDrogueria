@@ -51,7 +51,7 @@
     ============================================================================================================================ -->
     <div class="col s12 " id="TablaA">
 
-        <table class="datatable centered " id="TablaC" >
+        <table class="tablascroll datatable centered " id="TablaC" >
 
                 <thead>
                 
@@ -93,7 +93,7 @@
     ============================================================================================================================ -->
     <div class="col s12 " id="TablaR">
 
-        <table class="datatable centered " id="TablaCE" >
+        <table class="tablascroll datatable centered " id="TablaCE" >
 
                 <thead>
                 
@@ -316,7 +316,7 @@
 
     .tablascroll tbody {
     display:block;
-    max-height:300px;
+    max-height:250px;
     overflow-y:auto;
     }
     .tablascroll  thead,.tablascroll tbody tr {

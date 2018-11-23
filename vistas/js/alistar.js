@@ -16,7 +16,7 @@ $(document).ready(function () {
         processData: false,
         dataType: "JSON",
         success: function (res) {
-
+            
             // SE MUESTRAN LAS REQUISICIONES EN EL MENU DE SELECCION
             if (res) {
                 for (var i in res) {
@@ -36,15 +36,6 @@ $(document).ready(function () {
     /* ============================================================================================================================
                                                         EVENTOS   
     ============================================================================================================================*/
-
-    //EVENTO AL CAMBIAR ENTRADA REQUERIDOS
-    // $(".requeridos").change(function (e) {
-    //     $.when(mostrarItems()).done(function () {
-    //         $.when(mostrarCaja()).done(function () {
-    //             $("#codbarras").focus();
-    //         });
-    //     });
-    // });
 
     // FUNCION QUE FILTRA ITEMS POR UBICACION
     $("#ubicacion").change(function (e) {
@@ -335,6 +326,7 @@ function buscarCodbar() {
         data: { "codigo": codigo, "req": req },//datos que se enviaran
         dataType: 'JSON',
         success: function (res) {
+                        
             agregarItem(res, req);
             $('#codbarras').val("");
             $("#codbarras").focus();
@@ -521,7 +513,7 @@ function mostrarItems() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-            // console.log(res);
+            
             // return 0;
             //si encuentra el item mostrarlo en la tabla
             if (res['estado'] != 'error') {

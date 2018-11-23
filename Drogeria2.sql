@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS requisicion(
 	creada 				DATETIME NOT NULL,
 	lo_origen 			CHAR(3),
 	lo_destino 			CHAR(3),
-	tip_inventario 		INT(2),
+	tip_inventario 		INT(1),
 	solicitante 		VARCHAR(40) COLLATE ucs2_spanish_ci,
 	enviado 			DATETIME,
 	recibido 			DATETIME,
@@ -149,6 +149,8 @@ CREATE TABLE IF NOT EXISTS  tipo_caja(
 /*tabla caja*/
 CREATE TABLE IF NOT EXISTS caja(
 	no_caja 			INT(10) NOT NULL AUTO_INCREMENT,
+	no_req 				CHAR(10) DEFAULT '0',
+	num_caja			INT(10) DEFAULT 0,
 	alistador 			INT(10),
 	encargado_punto 	INT(10),
 	transportador 		INT(10),
@@ -427,7 +429,9 @@ CREATE TABLE IF NOT EXISTS errores_remisiones(
 );
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
+SET FOREIGN_KEY_CHECKS=0;
 UPDATE caja SET no_caja=0 WHERE no_caja=1;
+SET FOREIGN_KEY_CHECKS=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 */
 
@@ -665,14 +669,22 @@ DELIMITER $$
 	BEFORE INSERT ON pedido
 	FOR EACH ROW 
 	BEGIN
+	
 
-		SET new.pendientes=new.pedido;				
+		DECLARE ubc VARCHAR(6);
+		DECLARE tip_inv INT(1);
 		
-		INSERT INTO ubicacion (ubicacion) 
-		SELECT * FROM (SELECT new.ubicacion as ubiacion) as temp
-		WHERE NOT EXISTS (
-			SELECT 1 FROM ubicacion WHERE ubicacion = new.ubicacion
-		) LIMIT 1;
+		SET new.pendientes=new.pedido;
+		
+		SELECT tip_inventario INTO tip_inv
+		FROM requisicion 
+		WHERE no_req=new.no_req;
+		
+		
+		INSERT INTO ubicacion (ubicacion,tip_inventario) 
+		VALUES(new.ubicacion,tip_inv)
+		ON DUPLICATE KEY UPDATE
+		tip_inventario=tip_inv; 
 	END 
 $$
 
@@ -829,8 +841,24 @@ DELIMITER $$
 	BEFORE UPDATE ON caja
 	FOR EACH ROW 
 	BEGIN
+		DECLARE numcaja INT(10);
+		
 		IF new.estado=1 THEN 
+			
+			SELECT MAX(num_caja) INTO numcaja
+			FROM caja
+			WHERE no_req=new.no_req;
+
+			IF numcaja IS NULL THEN
+				SET numcaja=0;
+			END IF;
+			IF new.num_caja=0 THEN
+				SET new.num_caja=numcaja+1;
+			END IF;
+					
 			SET new.cerrar=now();
+
+
 			UPDATE alistado
 			SET estado=2
 			WHERE alistado.no_caja=new.no_caja;
@@ -970,6 +998,7 @@ DELIMITER $$
 	END 
 $$
 
+-- cambia el estado de ubicacion al eliminar tarea
 DELIMITER $$
 	CREATE TRIGGER UbicacionEstado
 	BEFORE DELETE ON tareas_det
@@ -983,6 +1012,19 @@ DELIMITER $$
 	END 
 $$
 
+-- cambia el estado de ubicacion al eliminar tarea
+DELIMITER $$
+	CREATE TRIGGER DocumentoReq
+	BEFORE UPDATE ON requisicion
+	FOR EACH ROW 
+	BEGIN
+
+		IF new.documentos>9 THEN
+		SET new.documentos=0;
+		END IF;	
+			
+	END 
+$$
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************
 -- *********************************************************************************************************************************************************************************************

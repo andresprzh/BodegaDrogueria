@@ -116,38 +116,79 @@ $(document).ready(function () {
               });
               
         }else{
-        let ubicacioneslista = new Array;
+            let ubicacioneslista = new Array;
             for (let i = 0; i < li.length; i++) {
                 ubicacioneslista[li[i].id] = li[i].id;
             }
 
             // solo muestra ubicaciones que no estan asignadas
             newubicaciones = diff(ubicaciones, ubicacioneslista);
+            let ub=new Array();
+            // ub['2'] = '<div class="card  col s6"><p class="green-text center-align">Eticos</p>';
+            // ub['3'] = '<div class="card  col s6"><p class="green-text center-align">Quimicos</p>';
+            // let ub= ['<div class="card  col s6"><p class="green-text center-align">Eticos</p>',
+            //         '<div class="card  col s6"><p class="green-text center-align">Quimicos</p>'];
 
-            let ub = '';
-
-            for (let i in newubicaciones) {
-
-                ub += `
-                <div class="col s6 m3">
-                <label>
-                    <input type="checkbox" name="ubicacion" value="${i}"/>
-                    <span>${newubicaciones[i]}</span>
-                </label>
-                </div>`;
+            // let ub = '<div class="card  col s6"><p class="green-text center-align">Eticos</p>';
+            // let ub2 = '<div class="card  col s6"><p class="green-text center-align">Quimicos</p>';
+            
+            for (let i in ubicaciones) {
+                
+                switch (ubicaciones[i]['tip_inventario']) {
+                    case '2':
+                        if (!ub[0]) {
+                            ub[0] = '<p class="green-text center-align">Quimicos</p>';
+                        }
+                        ub[0] += `
+                        <div class="col  ">
+                        <label>
+                            <input type="checkbox" name="ubicacion" value="${ubicaciones[i]['ubicacion']}"/>
+                            <span>${ubicaciones[i]['ubicacion']}</span>
+                        </label>
+                        </div>`;
+                        break;
+                    case '3':
+                        if (!ub[1]) {
+                            ub[1] = '<p class="green-text center-align">Eticos</p>';
+                        }
+                        ub[1] += `
+                        <div class="col ">
+                        <label>
+                            <input type="checkbox" name="ubicacion" value="${ubicaciones[i]['ubicacion']}"/>
+                            <span>${ubicaciones[i]['ubicacion']}</span>
+                        </label>
+                        </div>`;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            $('#ubic').html('');
+            
+            let ubs= new Array();
+            for (let i in ub) {
+                if (ub) {
+                    ubs.push(ub[i])
+                }
+            }
+            let col=12/ubs.length;
+            for (let i in ubs) {
+                $('#ubic').append(`
+                <div class="card  col s${col} ">
+                    ${ubs[i]}
+                </div>
+                `);
             }
 
-            $('#ubic').html('');
-            $('#ubic').append(ub);
+            $('#seleubic .card div').addClass(`s${ Math.round(12/(4/ubs.length))}`);
             $('#seleubic').modal('open');
+            
         }
     });
 
     // se asignan ubicaciones
     $('#seleubic').on('submit', 'form', function (e) {
         e.preventDefault();
-
-        
 
         const iduser = $('#iduser').html();
         let arra_ubc = new Array;
@@ -284,9 +325,8 @@ function asignarUbicaciones(){
         data: 'data',
         dataType: 'JSON',
         success: function (res) {
-            
-            ubicaciones = res;
 
+            ubicaciones = res;
             
         }
     });

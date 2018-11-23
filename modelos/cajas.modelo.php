@@ -28,17 +28,17 @@ class ModeloCaja extends Conexion{
     {   
         $no_req=$this->req[0];$persona=$this->req[1];
         if ($estado==null) {
-            $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
+            $sql = 'SELECT caja.no_caja,caja.num_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
             FROM caja 
             LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
             LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
             INNER JOIN usuario ON usuario.id_usuario=Alistador
             WHERE caja.no_caja LIKE :numcaja 
             AND (alistado.no_req=:no_req OR errores.no_req=:no_req)
-            GROUP BY caja.no_caja,caja.estado;';
+            GROUP BY caja.no_caja,caja.num_caja,caja.estado;';
             $stmt= $this->link->prepare($sql);
         }else {
-            $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
+            $sql = 'SELECT caja.no_caja,caja.num_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
             FROM caja 
             LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
             LEFT JOIN errores ON errores.no_caja_recibido=caja.no_caja
@@ -47,7 +47,7 @@ class ModeloCaja extends Conexion{
             AND (alistado.no_req=:no_req OR errores.no_req=:no_req)
             AND caja.estado >= :estado
             AND caja.encargado_punto=:persona
-            GROUP BY caja.no_caja,caja.estado;';
+            GROUP BY caja.no_caja,caja.num_caja,caja.estado;';
             $stmt= $this->link->prepare($sql);
             $stmt->bindParam(":estado",$estado,PDO::PARAM_INT);
             $stmt->bindParam(":persona",$persona,PDO::PARAM_INT);
@@ -172,18 +172,19 @@ class ModeloCaja extends Conexion{
     // muestra los datos necesarios para crear el archivo plano
     public function mdlMostrarDocumento($caja)
     {   
-        $sql="SELECT alistado.item AS iditem,alistado.alistado,no_caja,
+        $sql="SELECT alistado.item AS iditem,alistado.alistado,num_caja,
         lo_origen,lo_destino,documentos
         FROM alistado
+        INNER JOIN caja ON caja.no_caja=alistado.no_caja
         INNER JOIN pedido ON pedido.item=alistado.item
         INNER JOIN requisicion ON requisicion.no_req=pedido.no_req
         WHERE";
         for($i=0;$i<count($caja);$i++) {
 
-            $sql.=" no_caja=:no_caja$i OR";
+            $sql.=" alistado.no_caja=:no_caja$i OR";
         }
         
-        $sql=substr($sql, 0, -2)."ORDER BY no_caja ASC;";
+        $sql=substr($sql, 0, -2)."ORDER BY num_caja ASC;";
         
         $stmt= $this->link->prepare($sql);
         
@@ -192,6 +193,7 @@ class ModeloCaja extends Conexion{
         foreach ($caja as $i => &$numcaja) {
             $stmt->bindParam(":no_caja$i",$numcaja,PDO::PARAM_INT);   
         }  
+        
         $stmt->execute();
         
         return $stmt;  

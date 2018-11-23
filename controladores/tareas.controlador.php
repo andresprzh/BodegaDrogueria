@@ -52,8 +52,15 @@ class ControladorTareas extends ControladorLoginUsuario{
         $busqueda=$this->modelo->mdlBuscarUbicaciones($tarea);
         
         if ($busqueda->rowCount()> 0) {
+            // $res= $busqueda->fetchAll();
             while($row = $busqueda->fetch()){
-                $res[trim($row["ubicacion"])]=trim($row["ubicacion"]);
+                if ($usuario!=null) {
+                    $res[trim($row["ubicacion"])]=trim($row["ubicacion"]);
+                }else {
+                    $res[]=["ubicacion"=>trim($row["ubicacion"]),
+                            "tip_inventario"=>$row["tip_inventario"]];
+                }
+                // $res[trim($row["ubicacion"])]=trim($row["ubicacion"]);
             }
             $busqueda->closeCursor();
         }else{
