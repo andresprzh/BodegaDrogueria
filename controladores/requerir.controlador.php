@@ -51,48 +51,13 @@ class ControladorRequerir extends ControladorLoginUsuario{
                 
                 $this->resultado=$this->ctrSubirReq();
                 
-                
                 if ($this->resultado["estado"]==true) {
                     
                     $busqueda=$modelo->mdlMostrarItems($this->cabecera[0]);
                    
                     if ($busqueda->rowCount() > 0) {
                         $this->resultado["items"]=$busqueda->fetchAll();
-                        // echo '<table class="tabla "  >
-
-                        // <thead>
                         
-                        // <tr class="white-text green darken-3 ">
-            
-                        //     <th>Descripción</th>
-                        //     <th>Codigo de barras</th>
-                        //     <th>ID Item</th>
-                        //     <th>Referencia</th> 
-                        //     <th>Disponibilidad</th>
-                        //     <th>Solicitados</th>              
-                        //     <th>Ubicacion</th>
-                            
-                        // </tr>
-                        // </thead>';
-            
-                        // echo '<tbody >';
-                        
-                        // while($row = $busqueda->fetch()){                          
-
-                        //         echo '<tr>
-                        //             <td>'.$row["DESCRIPCION"].'</td>
-                        //             <td>'.$row["ID_CODBAR"].'</td>
-                        //             <td>'.$row["item"].'</td>
-                        //             <td>'.$row["ID_REFERENCIA"].'</td>
-                        //             <td>'.$row["disp"].'</td>
-                        //             <td>'.$row["pedido"].'</td>
-                        //             <th class="black-text">'.$row["ubicacion"].'</th>
-                        //         </tr>';
-
-                        //     }
-
-                        
-                        // echo '</table> ';
                     }
                 }
             }
@@ -255,34 +220,16 @@ class ControladorRequerir extends ControladorLoginUsuario{
 
         if ($ressubida==true) {
             $ressubida=$modelo->mdlSubirItems($this->items);
-                $this->resultado["no_req"]=$this->cabecera[0];
+            $this->resultado["no_req"]=$this->cabecera[0];
             if ($ressubida==true) {
                 $this->resultado["estado"]=true;
                 $this->resultado["contenido"]="¡Requisicion ".$this->cabecera[0]." subida Exitosamente";
                 
-                // echo '<script>
-                //             swal({
-                //                 title: "¡Archivo Subido exitosamente¡",
-                //                 icon: "success"
-                //             });
-                //     </script>';
-
-                // echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                //         <p class="green-text text-darken-5">Requisicion '.$this->cabecera[0].' subida Exitosamente</p> 
-                //     </div>';
+               
             }else {
                 $this->resultado["estado"]=false;
                 
                 $this->resultado["contenido"]="¡Error al subir el archivo¡";
-                // echo '<script>
-                //             swal({
-                //                 title: "¡Error al subir el archivo¡",
-                //                 icon: "error"
-                //             });
-                //     </script>';
-                // echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-                //         <p class="red-text text-darken-2">Error al subir la requisición</p> 
-                //     </div>';
             }
             if (!empty($this->items_error)) {
                 $hoy = getdate();
@@ -301,12 +248,6 @@ class ControladorRequerir extends ControladorLoginUsuario{
                     $this->resultado["errores"].=str_pad(trim($error["pedido"]),7,"-",STR_PAD_LEFT);
                     $this->resultado["errores"].="\r\n";
                 }
-                // $filename="errores.txt";
-                // $fp=fopen($filename, "w");
-                // fwrite($fp,$this->resultado["errores"]);
-                // header("Content-disposition: attachment;filename=$filename");
-                // readfile($filename);
-                // unlink($filename);
             }
             return $this->resultado;
 
@@ -314,16 +255,7 @@ class ControladorRequerir extends ControladorLoginUsuario{
             $this->resultadoel=$modelo->mdlEliReq($this->cabecera[0]);
             $this->resultado["estado"]=false;
             $this->resultado["contenido"]="¡Error al subir el archivo¡";
-            // echo '<script>
-            //                 swal({
-            //                     title: "¡Error al subir el archivo¡",
-            //                     icon: "error"
-            //                 });
-            //         </script>';
-            // echo '<div class="col s11 m10 l6 offset-l3 offset-m1">
-            //         <p class="red-text text-darken-2">Error al subir la requisición</p> 
-            //     </div>';
-            
+
             return $this->resultado;
         }
     }

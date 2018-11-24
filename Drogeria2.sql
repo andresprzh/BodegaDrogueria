@@ -185,6 +185,7 @@ CREATE TABLE IF NOT EXISTS caja(
 
 CREATE TABLE IF NOT EXISTS ubicacion(
 	ubicacion 			VARCHAR(6) NOT NULL,
+	tip_inventario 		INT(1),
 	estado 				INT(1) NOT NULL default 0,
 
 	PRIMARY KEY(ubicacion)
@@ -420,13 +421,15 @@ CREATE TABLE IF NOT EXISTS errores_remisiones(
 /*******************************************************************************************************************************
 											INICIALIZA REGISTROS BASE DE DATOS 
 ********************************************************************************************************************************/
-/* REPLACE INTO tipo_caja  VALUES 
+/*
+REPLACE INTO tipo_caja  VALUES 
 	('CRT','Caja de cartón'),
 	('CPL','Caja plástica'),
 	('CAP','Canasta plástica'),
 	('GLN','Galon'),
 	('GLA','Galoneta'
 );
+
 -- se llena un primer registro a caja que define las cajas no asignadas
 INSERT INTO caja(no_caja) VALUES(1);
 SET FOREIGN_KEY_CHECKS=0;
@@ -434,7 +437,6 @@ UPDATE caja SET no_caja=0 WHERE no_caja=1;
 SET FOREIGN_KEY_CHECKS=1;
 ALTER TABLE caja AUTO_INCREMENT=0;
 */
-
 -- REPLACE INTO franquicias(codigo,descripcion,cod_sucursal,nit) VALUES
 -- 	('NFRA','NO ES FRANQUICIA','00','000000000'),
 -- 	('PAL1','PALMIRA 1','01','94506068'),('PAL2','PALMIRA 2','02','94506068'),('PAL3','PALMIRA 3','03','94506068'),
