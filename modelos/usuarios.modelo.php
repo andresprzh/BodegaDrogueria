@@ -31,7 +31,8 @@ class ModeloUsuarios extends ModeloLoginUsuario {
       if($res){
         $res=$this->link->lastInsertId();
       }
-       
+      
+      $stmt->closeCursor();
       return $res;
 
       $stmt=null;

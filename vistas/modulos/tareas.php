@@ -88,8 +88,9 @@
 <div id="seleubic" class="modal  ">
 
     <div class="modal-content ">
-
-        <h5 class="center ">Ubicaciones</h5>
+        
+        <h4 class="center green-text">Ubicaciones</h4>
+        </div>
         <div class="progress hide green lighten-4">
             <div class="indeterminate green"></div>
         </div>
@@ -103,12 +104,14 @@
         <div  id="ubic" class="col s12">
             
         </div>
-        <button class="btn green waves-effect waves-light left" type="submit" name="action">
-            Asignar
-        </button>
-        <button class="modal-close btn red waves-effect waves-light right">
-            Cancelar
-        </button>
+        <div class="modal-buttons">
+            <button class="btn green waves-effect waves-light left" type="submit" name="action">
+                Asignar
+            </button>
+            <button class="modal-close btn red waves-effect waves-light right">
+                Cancelar
+            </button>
+        </div>
         </form>
     </div>
 
@@ -117,13 +120,13 @@
                                                         ESTILOS 
 ============================================================================================================================ -->
 <style>
+#informacion{
+    max-height:700px; 
+}
 #ubicaciones
 {
     max-height:300px; 
     width:100%;
-}
-#ubicaciones 
-{
     overflow:hidden; 
     overflow-y:scroll;
 }
@@ -131,19 +134,35 @@
 #seleubic
 {       
     min-height: 380px;
-    height: 380px;
+    max-height: 440px;
     min-width: 350px;
-    max-width:600px;
+    max-width:100%;
     
 }
 #seleubic #ubic .card{
     min-height:200px;
-    height:200px;
+    max-height:250px;
+    max-width:100%;
     overflow-y:auto;
-    
 }
 .modal-content{
     overflow-y:none;
+    max-width:100%;
+}
+.modal-buttons{
+    padding-left:10px;
+    padding-right:10px;
+}
+
+@media(max-width:1000px){
+
+    #ubicaciones
+    {
+        max-height:30vh; 
+    }
+    .collection-header{
+        display:none;
+    }
 }
 </style>
 <!-- ============================================================================================================================

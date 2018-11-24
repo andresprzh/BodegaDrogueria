@@ -42,19 +42,6 @@ $(document).ready(function () {
         }
     });
     asignarUbicaciones();
-    // guarda las ubicaciones en variable global
-    // $.ajax({
-    //     type: 'GET',
-    //     url: 'api/tareas/ubicaciones',
-    //     data: 'data',
-    //     dataType: 'JSON',
-    //     success: function (res) {
-            
-    //         ubicaciones = res;
-
-            
-    //     }
-    // });
 
     /* ============================================================================================================================
                                                         EVENTOS   
@@ -105,17 +92,14 @@ $(document).ready(function () {
         let li = lista.getElementsByTagName('li');
         let items = new Array;
 
-        // var ubicacioneslista = li.map(function(x) {
-        //     return x.id.substr(1)
-        //  });
         if (!ubicaciones) {
             swal({
                 title: 'No hay ubicaciones',
                 type: 'warning',
-                confirmButtonColor:'red',
-              });
-              
-        }else{
+                confirmButtonColor: 'red',
+            });
+
+        } else {
             let ubicacioneslista = new Array;
             for (let i = 0; i < li.length; i++) {
                 ubicacioneslista[li[i].id] = li[i].id;
@@ -123,24 +107,17 @@ $(document).ready(function () {
 
             // solo muestra ubicaciones que no estan asignadas
             newubicaciones = diff(ubicaciones, ubicacioneslista);
-            let ub=new Array();
-            // ub['2'] = '<div class="card  col s6"><p class="green-text center-align">Eticos</p>';
-            // ub['3'] = '<div class="card  col s6"><p class="green-text center-align">Quimicos</p>';
-            // let ub= ['<div class="card  col s6"><p class="green-text center-align">Eticos</p>',
-            //         '<div class="card  col s6"><p class="green-text center-align">Quimicos</p>'];
+            let ub = new Array();
 
-            // let ub = '<div class="card  col s6"><p class="green-text center-align">Eticos</p>';
-            // let ub2 = '<div class="card  col s6"><p class="green-text center-align">Quimicos</p>';
-            
             for (let i in ubicaciones) {
-                
+
                 switch (ubicaciones[i]['tip_inventario']) {
                     case '2':
                         if (!ub[0]) {
                             ub[0] = '<p class="green-text center-align">Quimicos</p>';
                         }
                         ub[0] += `
-                        <div class="col  ">
+                        <div class="col s12 ">
                         <label>
                             <input type="checkbox" name="ubicacion" value="${ubicaciones[i]['ubicacion']}"/>
                             <span>${ubicaciones[i]['ubicacion']}</span>
@@ -152,7 +129,7 @@ $(document).ready(function () {
                             ub[1] = '<p class="green-text center-align">Eticos</p>';
                         }
                         ub[1] += `
-                        <div class="col ">
+                        <div class="col s12">
                         <label>
                             <input type="checkbox" name="ubicacion" value="${ubicaciones[i]['ubicacion']}"/>
                             <span>${ubicaciones[i]['ubicacion']}</span>
@@ -164,14 +141,14 @@ $(document).ready(function () {
                 }
             }
             $('#ubic').html('');
-            
-            let ubs= new Array();
+
+            let ubs = new Array();
             for (let i in ub) {
                 if (ub) {
                     ubs.push(ub[i])
                 }
             }
-            let col=12/ubs.length;
+            let col = 12 / ubs.length;
             for (let i in ubs) {
                 $('#ubic').append(`
                 <div class="card  col s${col} ">
@@ -180,9 +157,9 @@ $(document).ready(function () {
                 `);
             }
 
-            $('#seleubic .card div').addClass(`s${ Math.round(12/(4/ubs.length))}`);
+            $('#seleubic .card div').addClass(`m${Math.round(12 / (4 / ubs.length))}`);
             $('#seleubic').modal('open');
-            
+
         }
     });
 
@@ -196,9 +173,9 @@ $(document).ready(function () {
         $.each($("#ubic input:checkbox:checked"), function () {
             arra_ubc.push($(this).val());
         });
-        // console.log(arra_ubc);
-        if (arra_ubc.length>0){
-             
+
+        if (arra_ubc.length > 0) {
+
             $('#seleubic .btn').attr('disabled', true);
             $('#seleubic input:checkbox').attr('disabled', true);
             $('#seleubic .progress').removeClass('hide');
@@ -217,7 +194,7 @@ $(document).ready(function () {
                         asignarUbicaciones();
                         agregarUbicaciones(iduser);
                         $('#seleubic').modal('close');
-                        
+
                     } else {
                         var toastHTML = `<span class="truncate">No se pudo agregar ubicación</span>`;
                         M.toast({
@@ -264,7 +241,7 @@ $(document).ready(function () {
                 if (res) {
                     asignarUbicaciones();
                     agregarUbicaciones(iduser);
-                    
+
                 } else {
 
                     var toastHTML = `<span class="truncate">No se pudo eliminar ubicación</span>`;
@@ -292,7 +269,7 @@ function agregarUbicaciones(iduser) {
         data: { 'usuario': iduser },
         dataType: 'JSON',
         success: function (res) {
-            
+
             // refresca ubicaciones
             $('#ubicaciones').html('');
 
@@ -318,7 +295,7 @@ function agregarUbicaciones(iduser) {
 }
 
 // guarda las ubicaciones en variable global
-function asignarUbicaciones(){
+function asignarUbicaciones() {
     $.ajax({
         type: 'GET',
         url: 'api/tareas/ubicaciones',
@@ -327,7 +304,7 @@ function asignarUbicaciones(){
         success: function (res) {
 
             ubicaciones = res;
-            
+
         }
     });
 }

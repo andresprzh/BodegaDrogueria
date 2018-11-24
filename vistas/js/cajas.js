@@ -69,24 +69,24 @@ $(document).ready(function () {
     $('.Documento').click(function (e) {
         // consigue la id de la tabla seleccionada
         const tabla = $($(this).parent().parent().find('table')[0]).attr('id');
-        
+
         //consigue el numero de requerido
         var requeridos = $('.requeridos').val();
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
 
 
-        
+
         var datos = $(`#${tabla}`).DataTable();
-        
+
         // obtiene los numeros de las cajas de la tabla seleccionada
         var numcaja = new Array();
         for (var i in datos.data().toArray()) {
             numcaja[i] = datos.row(i).id();
-            
+
         }
-        
-        
+
+
         $.ajax({
 
             url: 'api/cajas/documento',
@@ -181,7 +181,7 @@ $(document).ready(function () {
                         data: { 'req': req, 'numcaja': numcaja, 'items': items },//datos que se enviaran          
                         dataType: 'JSON',
                         success: function (res) {
-                            
+
                             if (res) {
 
                                 swal({
@@ -219,7 +219,7 @@ $(document).ready(function () {
         let req = [requeridos, id_usuario];
         // se consigue el numero de la caja
         let caja = $('.NumeroCaja').attr('name');
-        
+
         swal({
             title: `¿Esta seguro de eliminr la caja ${caja}?`,
             type: 'warning',
@@ -267,23 +267,28 @@ $(document).ready(function () {
     $('#despachar').click(function (e) {
 
         var datos = $("#TablaC").DataTable();
-        
+
         // obtiene los numeros de las cajas de la tabla seleccionada
         var numcaja = new Array();
         for (var i in datos.data().toArray()) {
             numcaja[i] = datos.row(i).id();
-            
+
         }
 
 
-        let resultado;
+
         ajax('api/cajas/conductor', 'GET').done(function (res) {
 
             if (res) {
                 if (res['estado']) {
 
                     let opciones = res['contenido'];
-
+                    if (!opciones) {
+                        swal({
+                            type: 'error',
+                            title: 'No hay transportadores',
+                        })
+                    }
                     swal({
                         title: 'Seleccionar Transportador',
                         input: 'select',
@@ -331,6 +336,11 @@ $(document).ready(function () {
                         }
                     });
 
+                } else {
+                    swal({
+                        type: 'error',
+                        title: res['contenido'],
+                    })
                 }
             }
         })
@@ -475,7 +485,7 @@ $(document).ready(function () {
                     data: { 'req': req, 'caja': caja, 'items': items },//datos que se enviaran 
                     dataType: 'JSON',
                     success: function (res) {
-                        
+
 
                         if (res) {
 
@@ -535,7 +545,7 @@ function mostrarCajas() {
         data: { "req": req },
         dataType: "JSON",
         success: function (res) {
-            
+
             let estado_despacho = false;
             let caja = res["contenido"];
 
@@ -569,104 +579,56 @@ function mostrarCajas() {
                 let modal_target = "EditarCaja";
                 let tablatarget;
 
-                // si solo hay 1 resultado no hace el ciclo for
-                if (caja[0] === undefined) {
+                // cuenta ls posiciones en las tablas c y ce
+                let cont_tablac = 0;
+                let cont_tablace = 0;
+                let cont;
+                for (var i in caja) {
+
                     // reemplaza varoles nul por ---
-                    if (caja["tipocaja"] === null) {
-                        caja["tipocaja"] = "---"
+                    if (caja[i]["tipocaja"] === null) {
+                        caja[i]["tipocaja"] = "---"
                     }
-                    if (caja["abrir"] === null) {
-                        caja["abrir"] = "---"
+                    if (caja[i]["abrir"] === null) {
+                        caja[i]["abrir"] = "---"
                     }
-                    if (caja["cerrar"] === null) {
-                        caja["cerrar"] = "---"
+                    if (caja[i]["cerrar"] === null) {
+                        caja[i]["cerrar"] = "---"
                     }
 
-                    if (caja["estado"] < 2) {
+
+
+                    if (caja[i]["estado"] < 2) {
+
                         estado_despacho = true;
+
                         tablatarget = "#TablaC";
 
-                        if (caja["estado"] != 1) {
+                        cont = cont_tablac;
+                        cont_tablac++;
+
+                        if (caja[i]["estado"] != 1) {
                             estado_despacho = false;
                         }
                         modal_target = "EditarCaja";
                     } else {
+
+
                         tablatarget = "#TablaCE";
+                        // si hay items en la tabla de enviados se activa el boton de generar documento para esta tabla
+                        $("#Documento2").removeAttr("disabled", "disabled");
+
+                        cont = cont_tablace;
+                        cont_tablace++;
 
                         // si la caja ya fue enviada y presenta errores da la opcion de corregirla
-                        if (caja["estado"] == '5') {
+                        if (caja[i]["estado"] == 5) {
                             modal_target = "EditarCaja2";
                         } else {
                             modal_target = "EditarCaja";
                         }
                     }
-
-                    $(tablatarget + " tbody").append($(`<tr id="${caja["no_caja"]}">
-                                        <td class="numcaja">${caja["num_caja"]}</td>
-                                        <td class="alistadores">${caja["alistador"]}</td>
-                                        <td class="tipocajas">${caja["tipocaja"]}</td>
-                                        <td>${caja["abrir"]}</td>
-                                        <td class="cierres">${caja["cerrar"]}</td><td>
-                                        <button  
-                                        onclick="mostrarItemsCaja(0,${caja["estado"]},'${tablatarget}')"  
-                                        title="Revisar"  
-                                        data-target="${modal_target}"
-                                        class="btn modal-trigger waves-effect waves-light ${color[caja["estado"]]}  darken-3">
-                                            <i class="fas fa-${logo[caja["estado"]]}"></i>
-                                        </button></td>+
-                                        </tr>`));
-                } else {
-                    // cuenta ls posiciones en las tablas c y ce
-                    let cont_tablac = 0;
-                    let cont_tablace = 0;
-                    let cont;
-                    for (var i in caja) {
-
-
-                        // reemplaza varoles nul por ---
-                        if (caja[i]["tipocaja"] === null) {
-                            caja[i]["tipocaja"] = "---"
-                        }
-                        if (caja[i]["abrir"] === null) {
-                            caja[i]["abrir"] = "---"
-                        }
-                        if (caja[i]["cerrar"] === null) {
-                            caja[i]["cerrar"] = "---"
-                        }
-
-
-
-                        if (caja[i]["estado"] < 2) {
-
-                            estado_despacho = true;
-
-                            tablatarget = "#TablaC";
-
-                            cont = cont_tablac;
-                            cont_tablac++;
-
-                            if (caja[i]["estado"] != 1) {
-                                estado_despacho = false;
-                            }
-                            modal_target = "EditarCaja";
-                        } else {
-
-
-                            tablatarget = "#TablaCE";
-                            // si hay items en la tabla de enviados se activa el boton de generar documento para esta tabla
-                            $("#Documento2").removeAttr("disabled", "disabled");
-
-                            cont = cont_tablace;
-                            cont_tablace++;
-
-                            // si la caja ya fue enviada y presenta errores da la opcion de corregirla
-                            if (caja[i]["estado"] == 5) {
-                                modal_target = "EditarCaja2";
-                            } else {
-                                modal_target = "EditarCaja";
-                            }
-                        }
-                        $(tablatarget + ' tbody').append($(`<tr id='${caja[i]["no_caja"]}'>
+                    $(tablatarget + ' tbody').append($(`<tr id='${caja[i]["no_caja"]}'>
                                             <td class="numcaja">${caja[i]["num_caja"]}</td>
                                             <td class="alistadores">${caja[i]["alistador"]}</td>
                                             <td class="tipocajas">${caja[i]["tipocaja"]}</td>
@@ -684,13 +646,9 @@ function mostrarCajas() {
 
 
 
-                    }
-
-                    // si todas las cajas estan en estado 1(cerradas), se activa boton de despachar pedido
-
-
                 }
 
+                // si todas las cajas estan en estado 1(cerradas), se activa boton de despachar pedido
                 if (estado_despacho) {
 
                     $("#despachar").removeAttr("disabled", "disabled");
@@ -784,10 +742,7 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
 
 
     //espera a que la funcion termine para reiniciar las tablas
-    $.when(mostrarItems(id_caja, estado)).done(function () {
-        //Reinicia Tabla
-        // table[2] = iniciarTabla("#TablaM");
-    });
+    mostrarItems(id_caja, estado);
 }
 
 // FUNCION QUE PONE LOS ITEMS  EN LA TABLA
@@ -797,7 +752,7 @@ function mostrarItems(numcaja, estado = null) {
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-    console.log(estado);
+
     return $.ajax({
         url: "api/cajas/cajas",
         method: "POST",

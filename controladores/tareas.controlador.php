@@ -23,8 +23,13 @@ class ControladorTareas extends ControladorLoginUsuario{
         // busca la ultima tarea creada para el usuario
         if ($tarea==null) {
             $tarea=$this->modelo->mdlBuscarUltimaTarea($usuario);
-            if ($tarea->rowCount()) {
+            
+            if ($tarea->rowCount()>0) {
                 $tarea=$tarea->fetch()["tarea"];
+                
+            }else {
+                $tarea=$this->modelo->mdlCrearTarea($usuario);
+                
             }
         }
         

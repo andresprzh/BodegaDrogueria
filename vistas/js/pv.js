@@ -60,7 +60,7 @@ $(document).ready(function () {
             data: { "req": req },//datos que se enviaran
             dataType: "JSON",
             success: function (res) {
-                
+
                 if (res !== false) {
                     // SE MUESTRAN LAS CAJAS EN EL MENU DE SELECCION
 
@@ -69,10 +69,8 @@ $(document).ready(function () {
 
                     if (cajas.constructor === Array) {
                         for (var i in cajas) {
-                            $("#cajas").append($('<option value="' + cajas[i] + '">Caja ' + cajas[i] + '</option>'));
+                            $("#cajas").append($('<option value="' + cajas[i]['no_caja'] + '">Caja ' + cajas[i]['num_caja'] + '</option>'));
                         }
-                    } else {
-                        $("#cajas").append($('<option value="' + cajas + '">Caja ' + cajas + '</option>'));
                     }
 
                     var requisicion = res['requisicion']['contenido'];
@@ -224,7 +222,8 @@ $(document).ready(function () {
                         data: { "caja": caja, "req": req, "items": items },//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
-                                                        
+                            // console.log(res);
+                            // return 0;
                             if (res["estado"] == true) {
                                 // crea el documento si no hay errores en los items recibidos
                                 if (res["contenido"]["estado"] == true) {

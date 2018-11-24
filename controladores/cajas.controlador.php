@@ -28,37 +28,12 @@ class ControladorCajas extends ControladorAlistar {
         
         if ($busqueda->rowCount() > 0) {
 
-            if($busqueda->rowCount() == 1){
-
-                $row = $busqueda->fetch();
-
-                //guarda los resultados en un arreglo
-                $cajabus=["estado"=>"encontrado",
-                           "contenido"=> ["no_caja"=>$row["no_caja"],
-                                            "num_caja"=>$row["num_caja"],
-                                           "alistador"=>$row["nombre"],
-                                           "tipocaja"=>$row["tipo_caja"],
-                                           "abrir"=>$row["abrir"],
-                                           "cerrar"=>$row["cerrar"],
-                                           "recibido"=>$row["recibido"],
-                                           "estado"=>$row["estado"]
-                                         ]
-                         ];
-
-                
-                //retorna el item a la funcion
-                return $cajabus;
-
-            }else {
-
-                $cajabus["estado"]="encontrado";
-
-                $cont=0;
+             $cajabus["estado"]="encontrado";
 
                 while($row = $busqueda->fetch()){
 
                     //Muestra todas las cajas
-                    $cajabus["contenido"][$cont]=["no_caja"=>$row["no_caja"],
+                    $cajabus["contenido"][]=["no_caja"=>$row["no_caja"],
                                                     "num_caja"=>$row["num_caja"],
                                                     "alistador"=>$row["nombre"],
                                                     "tipocaja"=>$row["tipo_caja"],
@@ -68,14 +43,8 @@ class ControladorCajas extends ControladorAlistar {
                                                     "estado"=>$row["estado"]
                                                 ];
 
-                    
-                    $cont++;
-
                 }
                 
-
-            }
-
         //si no encuentra resultados devuelve "error"
         }else{
 

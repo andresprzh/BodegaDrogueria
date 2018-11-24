@@ -116,6 +116,7 @@ table tr:nth-child(even){background-color: #f2f2f2;}
   .modal {
     display: none;
     min-height: 80%;
+    max-height: 100vh;
     left: 0;
     position: fixed;
     top: 0;

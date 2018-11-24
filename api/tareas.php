@@ -38,6 +38,8 @@ if (isset($_GET["ruta"])) {
                         
                         foreach ($ubicacion as $i => $ub) {
                             $resultado=$controlador->ctrAsignarUbicacion($ub,$usuario);
+                            print json_encode($resultado);
+                            return 0;
                         }
 
                     }

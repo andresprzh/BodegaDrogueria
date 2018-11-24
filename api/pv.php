@@ -21,14 +21,9 @@ if (isset($_GET['ruta'])) {
             if ($respuesta['estado']=='encontrado') {
                 
                 foreach ($respuesta['contenido'] as $row) {
-                    // print json_encode(isset($row[0]));
-                    // si solo es un resultado
-                    
-                    if (!is_array($row)) {
-                        $res['cajas']=$row;
-                        break;
-                    }
-                    $res['cajas'][$cont]=$row["no_caja"];
+                   
+                    $res['cajas'][]=["no_caja"=>$row["no_caja"],
+                                          "num_caja"=>$row["num_caja"]];
                     $cont++;
                 }   
 

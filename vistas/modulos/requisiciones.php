@@ -111,6 +111,9 @@
     padding:0px;
 }
 
+#tablamodal{
+    max-height:300px;
+}
 .modal{
     width:100%;
 }

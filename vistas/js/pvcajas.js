@@ -44,17 +44,13 @@ $(document).ready(function () {
 
 
         //espera a que la funcion termine para reiniciar las tablas
-        $.when(mostrarCajas()).done(function () {
-
-
-
-        });
+        mostrarCajas();
 
     });
 
     // evento si se da click en generar documento
     $("#Documento").click(function (e) {
-        let numcaja = $('.modal .NumeroCaja').html();
+        let numcaja = $('.modal .NumeroCaja').attr('name');
 
         documento(numcaja);
     });
@@ -81,7 +77,7 @@ function mostrarCajas() {
         data: { 'req': req },
         dataType: 'JSON',
         success: function (res) {
-
+            console.log(res);
             var caja = res['contenido'];
 
             //si no encuentra la caja muestra en pantalla que no se encontro
@@ -108,71 +104,27 @@ function mostrarCajas() {
 
                 let botonestado = '';
 
-                // si solo hay 1 resultado no hace el ciclo for
-                if (caja[0] === undefined) {
+                for (var i in caja) {
 
-
-                    // if (caja["estado"] != 4) {   
-                    //     botonestado = 'disabled';
-                    // }
+                    botonestado = '';
 
                     // reemplaza varoles nul por ---
-                    if (caja['tipocaja'] === null) {
-                        caja['tipocaja'] = '---'
+                    if (caja[i]['tipocaja'] === null) {
+                        caja[i]['tipocaja'] = '---'
                     }
 
-                    $('#cajas').append($(`<li 
-                                          class="collection-item avatar"
-                                          id="${caja["no_caja"]}"
-                                          >
-                                            <i 
-                                            onclick="mostrarItemsCaja(${caja["no_caja"]},${caja["estado"]})" 
-                                            class="fas fa-box circle modal-trigger ${color[caja["estado"]]}" 
-                                            data-target="VerCaja" >
-                                            </i>
-                                            <span class="title">Caja No ${caja["no_caja"]}</span>
-                                            <p>
-                                            Tipo de Caja: ${caja["tipocaja"]}
-                                            <br>
-                                            ${caja["recibido"]}
-                                            </p>
-                                            <button 
-                                            onclick="documento(${caja["no_caja"]})"
-                                            title="GenerarDocumento"
-                                            ${botonestado} 
-                                            class="btn-floating  secondary-content waves-effect green darken-4 " 
-                                            >
-                                                <i class="fas fa-file-alt"></i>
-                                            </button>
-                                        </li>`));
 
-
-                } else {
-                    for (var i in caja) {
-
-                        botonestado = '';
-                        // if (caja[i]["estado"] != 4) {
-                        // if (caja[i]["estado"]) {
-                        //     botonestado = 'disabled';
-                        // }
-
-                        // reemplaza varoles nul por ---
-                        if (caja[i]['tipocaja'] === null) {
-                            caja[i]['tipocaja'] = '---'
-                        }
-
-
-                        $('#cajas').append($(`<li
+                    $('#cajas').append($(`<li
                                               class="collection-item avatar" 
                                               id="${caja[i]["no_caja"]}"
                                               >
                                                 <i
-                                                onclick="mostrarItemsCaja(${caja[i]["no_caja"]},${caja[i]["estado"]})"  
+                                                onclick="mostrarItemsCaja(${caja[i]["no_caja"]},${caja[i]["num_caja"]},${caja[i]["estado"]})"  
                                                 class="fas fa-box circle modal-trigger ${color[caja[i]["estado"]]}" 
                                                 data-target="VerCaja"
                                                 >
                                                 </i>
-                                                <span class="title">Caja No ${caja[i]["no_caja"]}</span>
+                                                <span class="title">Caja No ${caja[i]["num_caja"]}</span>
                                                 <p>
                                                 Tipo de Caja: ${caja[i]["tipocaja"]}
                                                 <br>
@@ -187,11 +139,8 @@ function mostrarCajas() {
                                                 </button>
                                             </li>`));
 
-                    }
                 }
-
                 $('#TablaCajas').removeClass('hide');
-
 
             }
 
@@ -201,10 +150,10 @@ function mostrarCajas() {
 
 }
 
-function mostrarItemsCaja(numcaja, estado, recibido) {
+function mostrarItemsCaja(no_caja, num_caja, estado) {
 
-    $(".NumeroCaja").html(numcaja);
-
+    $(".NumeroCaja").html(num_caja);
+    $(".NumeroCaja").attr('name', no_caja);
     if (estado == 4) {
         // $("#Documento").removeAttr("disabled");
         $("#TablaM thead tr").addClass("green darken-3");
@@ -214,10 +163,10 @@ function mostrarItemsCaja(numcaja, estado, recibido) {
         $("#TablaM thead tr").addClass("red darken-3");
         $("#TablaM thead tr").removeClass("green darken-3");
     }
-    mostrarItems(numcaja, estado);
+    mostrarItems(no_caja, estado);
 }
 
-function mostrarItems(numcaja, estado = null) {
+function mostrarItems(no_caja, estado = null) {
 
     //consigue el numero de requerido
     var requeridos = $(".requeridos").val();
@@ -227,11 +176,10 @@ function mostrarItems(numcaja, estado = null) {
     return $.ajax({
         url: "api/cajas/pvcajas",
         method: "POST",
-        data: { "req": req, "numcaja": numcaja, "estado": estado },
+        data: { "req": req, "numcaja": no_caja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-            console.log(res);
-            
+
             $("#TablaM tbody").html("");
 
             var item = res["contenido"];

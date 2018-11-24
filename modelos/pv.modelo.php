@@ -110,7 +110,6 @@ class ModeloPV extends Conexion{
 
     //modifica registro en tabla para agregar la fecha en la que fue recibido
     public function mdlModCaja($NumCaja,$estado=4){
-        // $this->link->closeCursor();
         $persona=$this->req[1];
 
         $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=:estado,recibido=NOW() WHERE no_caja=:caja;" );
@@ -141,16 +140,6 @@ class ModeloPV extends Conexion{
 
     // muestra los items recibidos de una requisicion
     public function mdlMostrarItemsRec($numcaja){
-        // $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,pedido.no_caja AS cajap,recibido.no_caja AS cajar,pedido.alistado,
-        // recibido.recibidos,pedido.estado AS ped_estado,recibido.estado AS rec_estado,lo_origen,lo_destino,MIN(ID_CODBAR) AS codigo
-        // FROM recibido
-        // INNER JOIN ITEMS ON ITEMS.ID_ITEM=recibido.item
-        // INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
-        // INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
-        // LEFT JOIN  bodegadrogueria.pedido ON pedido.item=recibido.item
-        // WHERE recibido.no_caja=:no_caja
-        // GROUP BY recibido.item,DESCRIPCION ,pedido.no_caja ,recibido.no_caja ,pedido.alistado,
-        // recibido.recibidos,pedido.estado,recibido.estado,lo_origen,lo_destino;";
         $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,alistado.alistado,
         alistado.no_caja AS cajap,recibido.no_caja AS cajar,
         recibido.recibidos,recibido.estado AS rec_estado
@@ -212,14 +201,15 @@ class ModeloPV extends Conexion{
         
 
         // $stmt= $this->link->prepare("CALL buscarcaja(:numcaja,:no_req,3);");
-        $sql = 'SELECT caja.no_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
+        $sql = 'SELECT caja.no_caja,caja.num_caja,caja.estado, usuario.nombre,tipo_caja,abrir,cerrar,recibido
         FROM caja 
         LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
         INNER JOIN usuario ON usuario.id_usuario=Alistador
         WHERE caja.no_caja LIKE :numcaja 
         AND (alistado.no_req=:no_req)
         AND caja.estado = 3
-        GROUP BY caja.no_caja,caja.estado;';
+        GROUP BY caja.no_caja,caja.num_caja,caja.estado
+        ORDER BY caja.num_caja ASC;';
         $stmt= $this->link->prepare($sql);
 
         $stmt->bindParam(":numcaja",$numcaja,PDO::PARAM_STR);
@@ -237,9 +227,10 @@ class ModeloPV extends Conexion{
     // muestra items recibidos de una requisicion
     public function mdlMostrarrecibidos($caja){
         
-        $sql="SELECT item as iditem,recibido.no_req,no_caja,recibidos,recibido.estado,requisicion.lo_origen,requisicion.lo_destino
+        $sql="SELECT item as iditem,recibido.no_req,recibido.no_caja,num_caja,recibidos,recibido.estado,requisicion.lo_origen,requisicion.lo_destino
         FROM recibido
         INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
+        INNER JOIN caja ON caja.no_caja=recibido.no_caja
         WHERE ";
 
         // si caja es un array concatena todos los numeros de caja en la condicion
@@ -247,10 +238,10 @@ class ModeloPV extends Conexion{
 
             for($i=0;$i<count($caja);$i++) {
 
-            $sql.=" no_caja=:no_caja$i OR";
+            $sql.=" recibido.no_caja=:no_caja$i OR";
             }
             
-            $sql=substr($sql, 0, -2)."ORDER BY no_caja ASC;";
+            $sql=substr($sql, 0, -2)."ORDER BY num_caja ASC;";
             $stmt= $this->link->prepare($sql);
     
             foreach ($caja as $i => &$numcaja) {
@@ -259,7 +250,7 @@ class ModeloPV extends Conexion{
         
         // si es solo una caja
         }else {
-            $sql.="no_caja=:no_caja;";
+            $sql.="recibido.no_caja=:no_caja ORDER BY num_caja ASC;";
             $stmt= $this->link->prepare($sql );
             $stmt->bindParam(":no_caja",$caja,PDO::PARAM_INT);
         }

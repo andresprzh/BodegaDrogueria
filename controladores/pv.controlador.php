@@ -50,47 +50,24 @@ class ControladorPV extends ControladorCajas{
         
         if ($busqueda->rowCount() > 0) {
 
-            if($busqueda->rowCount() == 1){
+            $cajabus["estado"]="encontrado";
 
-                $row = $busqueda->fetch();
+            $cont=0;
 
-                //guarda los resultados en un arreglo
-                $cajabus=["estado"=>"encontrado",
-                           "contenido"=> ["no_caja"=>$row["no_caja"],
-                                           "alistador"=>$row["nombre"],
-                                           "tipocaja"=>$row["tipo_caja"],
-                                           "abrir"=>$row["abrir"],
-                                           "cerrar"=>$row["cerrar"],
-                                           "recibido"=>$row["recibido"],
-                                         ]
-                         ];
+            while($row = $busqueda->fetch()){
+
+                //Muestra todas las cajas
+                $cajabus["contenido"][]=["no_caja"=>$row["no_caja"],
+                                                "num_caja"=>$row["num_caja"],
+                                                "alistador"=>$row["nombre"],
+                                                "tipocaja"=>$row["tipo_caja"],
+                                                "abrir"=>$row["abrir"],
+                                                "cerrar"=>$row["cerrar"],
+                                                "recibido"=>$row["recibido"],
+                                            ];
 
                 
-                //retorna el item a la funcion
-                return $cajabus;
-
-            }else {
-
-                $cajabus["estado"]="encontrado";
-
-                $cont=0;
-
-                while($row = $busqueda->fetch()){
-
-                    //Muestra todas las cajas
-                    $cajabus["contenido"][$cont]=["no_caja"=>$row["no_caja"],
-                                                    "alistador"=>$row["nombre"],
-                                                    "tipocaja"=>$row["tipo_caja"],
-                                                    "abrir"=>$row["abrir"],
-                                                    "cerrar"=>$row["cerrar"],
-                                                    "recibido"=>$row["recibido"],
-                                                ];
-
-                    
-                    $cont++;
-
-                }
-                
+                $cont++;
 
             }
 
@@ -350,7 +327,7 @@ class ControladorPV extends ControladorCajas{
             $i=0;
             $resultado["string"]="";
             foreach ($recibidos as $row) {
-                $mensaje=str_pad($row["no_caja"],19,"0",STR_PAD_LEFT);
+                $mensaje=str_pad($row["num_caja"],19,"0",STR_PAD_LEFT);
 
                 
                 // $localicacion=str_replace("-","",$row["lo_origen"]."BD".$row["lo_destino"]."VEI");

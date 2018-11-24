@@ -103,6 +103,10 @@ class ModeloTareas extends Conexion{
         $stmt->bindParam(":usuario",$usuario,PDO::PARAM_STR);
 
         $res=$stmt->execute();
+        if($res){
+            $res=$this->link->lastInsertId();
+        }
+       
         $stmt->closeCursor();
         return $res;
         // cierra la conexion
