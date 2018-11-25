@@ -14,7 +14,7 @@ $(document).ready(function () {
         processData: false,
         dataType: "json",
         success: function (res) {
-            
+
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION
             for (var i in res) {
 
@@ -43,7 +43,7 @@ $(document).ready(function () {
     $('#formitem').submit(function (e) {
 
         e.preventDefault();
-        
+
         let item = $('#item').val();
         //consigue el numero de requerido
         var requeridos = $(".requeridos").val();
@@ -72,7 +72,7 @@ $(document).ready(function () {
     // agregar los items de la tabla de requisicion a la requisicion
     $("#agitems").click(function (e) {
         e.preventDefault();
-        
+
         //consigue el numero de requerido
         var requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
@@ -106,7 +106,7 @@ $(document).ready(function () {
                         data: { "items": items, "req": req },
                         dataType: "JSON",
                         success: function (res) {
-                                                        
+
                             if (res) {
                                 swal({
                                     title: `Items agregados exitosamente a la requisición ${requeridos}`,
@@ -174,13 +174,18 @@ function buscarItem(item, req) {
         data: { "item": item, "req": req },
         dataType: "JSON",
         success: function (res) {
-            
+
             if (res["estado"] == "encontrado") {
+
                 items = res["contenido"];
                 $("#TablaM tbody").html("");
-                if (items.constructor === Array) {
+
+                if (items.length > 1) {
+
                     $(".modal").modal("open");
+
                     for (var i in items) {
+
                         $("#TablaM tbody").append($(`
                                 <tr id=${items[i]["iditem"]}><td >
                                     ${items[i]["codigo"]}</td><td >
@@ -192,16 +197,22 @@ function buscarItem(item, req) {
                                     </button>
                                 </tr>`)
                         );
+
                     }
+
                 } else {
+
                     insertarItem(items);
+
                 }
 
             } else {
+
                 swal({
                     title: `No se encontraron los Items`,
                     icon: "error",
                 });
+
             }
         }
     });

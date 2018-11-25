@@ -213,42 +213,20 @@ class ControladorAlistar extends ControladorTareas{
         // return $busqueda;
         if ($busqueda->rowCount() > 0) {
 
-            if($busqueda->rowCount() == 1){
+            $itembus["estado"]=["encontrado"];
 
-                $row = $busqueda->fetch();
 
-                //guarda los resultados en un arreglo
-                $itembus=["estado"=>"encontrado",
-                           "contenido"=> ["codigo"=>$row["ID_CODBAR"],
-                                           "iditem"=>$row["ID_ITEM"],  
-                                           "referencia"=>$row["ID_REFERENCIA"],
-                                           "descripcion"=>$row["DESCRIPCION"],
-                                         ]
-                         ];
-                
-               
-                return $itembus;
-
-            }else {
-
-                $itembus["estado"]=["encontrado"];
-
-                $cont=0;
-
-                while($row = $busqueda->fetch()){
-                        
-                    $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                        "iditem"=>$row["ID_ITEM"],  
-                                        "referencia"=>$row["ID_REFERENCIA"],
-                                        "descripcion"=>$row["DESCRIPCION"],
-                                        ];
-                    $cont++;
-
-                }
-
-                return $itembus;
+            while($row = $busqueda->fetch()){
+                    
+                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                                    "iditem"=>$row["ID_ITEM"],  
+                                    "referencia"=>$row["ID_REFERENCIA"],
+                                    "descripcion"=>$row["DESCRIPCION"],
+                                    ];
 
             }
+
+            return $itembus;
 
         //si no encuentra resultados devuelve "error"
         }else{
@@ -329,6 +307,7 @@ class ControladorAlistar extends ControladorTareas{
                     return $itembus;
                     break;
                 }
+
                 $itembus["contenido"][]= $row;                 
 
             }
@@ -368,11 +347,6 @@ class ControladorAlistar extends ControladorTareas{
             $resultado=$this->modelo->mdlCerrarCaja($tipocaja,$pesocaja,$numcaja);
         }
 
-        // if ($resultado) {
-        //     $resultado=$this->ctrDocList($numcaja);
-        //     return $resultado['estado'];
-        // }
-
         return $resultado;
     }
 
@@ -400,9 +374,7 @@ class ControladorAlistar extends ControladorTareas{
         $busqueda->closeCursor();        
 
         $resultado=$this->modelo->mdlAlistarItem($item,$numcaja);
-        // if ($resultado) {
-        //     return $numcaja;
-        // }
+
         return $resultado;   
 
     }
