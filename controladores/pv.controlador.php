@@ -143,62 +143,9 @@ class ControladorPV extends ControladorCajas{
 
             $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
 
-            $resultado["estado"]="ok";
-
-            if ($busqueda->rowCount()>0) {
-                $recibidos=$busqueda->fetchAll();
-                $i=0;
-                foreach ($recibidos as $row) {
-
-                    switch ($row["rec_estado"]) {
-                        
-                        case 0:
-                            
-                            if ($row["recibidos"]==0) {
-
-                                $mensajeitem="item no recibido";
-                            }else {
-                                
-                                $mensajeitem="Se recibieron menos items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];
-                            }
-                            break;
-
-                        case 1:
-                            
-                            $mensajeitem="Se recibieron mas items, recibidos: ".$row["recibidos"]." alistados: ".$row["alistado"];                        
-                            break;
-
-                        case 2:
-                            
-                            $mensajeitem="El item  recibido no estaba en la requisicion";
-                            break;
-
-                        case 3:
-                            
-                            if ($row["cajap"]==1) {
-                                $mensajeitem="El item recibido no está alistado en niguna caja";
-                            }else{
-                                $mensajeitem="El item recibido fue alistado en la caja ".$row["cajap"]." y recibido en la caja ".$row["cajar"];
-                            }
-                            break;
-                        
-                        default:
-                            // $resultado["item"][$i]["descripcion"]=$row["DESCRIPCION"];
-                            // $resultado["item"][$i]["iditem"]=$row["item"];
-                            // $i++;
-                            break;
-                    }
-                    if ($row["rec_estado"] != 4) {
-                        $resultado["estado"]="error0";
-                        $resultado["item"][$i]=$row;
-                        $resultado["item"][$i]["mensaje"]=$mensajeitem;
-                        $i++;
-                    }
-                    
-                }
-            }else {
-                $resultado["estado"]="error1";
-            }
+            $resultado= $this->ctrMostrarItemsError($busqueda);
+            $busqueda->closeCursor();
+            
         }
         return $resultado;
         

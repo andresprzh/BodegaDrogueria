@@ -253,7 +253,7 @@ $(document).ready(function () {
                                     });
                                 } else if (res["contenido"]["estado"] == "error0") {
                                     $('.modal').modal('open');
-                                    let item = res["contenido"]["item"];
+                                    let item = res["contenido"]["contenido"];
                                     $("#tablamodal").html("");
                                     for (var i in item) {
                                         $("#tablamodal").append($(`<tr><td>

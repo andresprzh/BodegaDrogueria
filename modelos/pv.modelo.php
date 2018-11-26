@@ -24,9 +24,7 @@ class ModeloPV extends Conexion{
     // busca y muestra un item
     public function mdlMostrarItemPV($cod_bar){
         $tabla="ITEMS";
-        // $item='ID_CODBAR';
         
-        // return $this->buscaritem($tabla,$item,$cod_bar);
         $stmt= $this->link->prepare("SELECT * FROM COD_BARRAS  
         INNER JOIN ITEMS ON ID_ITEM=ID_ITEMS
         WHERE ID_CODBAR=:cod_bar OR ID_ITEM=:cod_bar OR ID_REFERENCIA=:cod_bar OR LOWER(DESCRIPCION) = :cod_bar;" );
@@ -40,7 +38,7 @@ class ModeloPV extends Conexion{
 
     // registra el item en la abla de recibidos
     public function mdlRegistrarItems($items,$numcaja){   
-        // guarda datos de la requisicion
+        
         $no_req=$this->req[0];$persona=$this->req[1];
         $datos="";
         for($i=0;$i<count($items);$i++) {
@@ -74,8 +72,8 @@ class ModeloPV extends Conexion{
     }
 
     // registra el item en la abla de recibidos_remisiones
-    public function mdlRegistrarRemision($items,$rem){   
-        // guarda datos de la requisicion
+    public function mdlRegistrarRemision($items,$rem){ 
+        
         $no_rem=$rem['no_rem'];$persona=$rem['id_usuario'];
         $datos="";
         for($i=0;$i<count($items);$i++) {
@@ -141,12 +139,14 @@ class ModeloPV extends Conexion{
     // muestra los items recibidos de una requisicion
     public function mdlMostrarItemsRec($numcaja){
         $sql="SELECT recibido.item AS iditem,DESCRIPCION AS descripcion,alistado.alistado,
-        alistado.no_caja AS cajap,recibido.no_caja AS cajar,
-        recibido.recibidos,recibido.estado AS rec_estado
+        cajap.num_caja AS cajap,cajar.num_caja AS cajar,
+        recibido.recibidos,recibido.estado
         FROM recibido
         INNER JOIN ITEMS ON ITEMS.ID_ITEM=recibido.item
         INNER JOIN requisicion ON requisicion.no_req=recibido.no_req
         LEFT JOIN  alistado ON alistado.item=recibido.item
+        INNER JOIN caja AS cajar ON cajar.no_caja=recibido.no_caja
+        INNER JOIN caja AS cajap ON cajap.no_caja=alistado.no_caja
         WHERE recibido.no_caja=:no_caja";
 
         $stmt= $this->link->prepare($sql );

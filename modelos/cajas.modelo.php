@@ -147,15 +147,16 @@ class ModeloCaja extends Conexion{
     public function mdlMostrarItemError($numcaja)
     {
         
-        $sql="SELECT errores.item,errores.no_req,errores.no_caja,errores.estado,errores.ubicacion,errores.recibidos,errores.alistado,
-        MIN(ID_CODBAR) AS ID_CODBAR,ID_REFERENCIA,DESCRIPCION
+        $sql="SELECT errores.item AS iditem,errores.no_req,cajar.num_caja AS cajar, cajap.num_caja AS cajap, 
+        errores.estado,errores.ubicacion,errores.recibidos,errores.alistado,
+        MIN(ID_CODBAR) AS codigo ,ID_REFERENCIA AS referencia,DESCRIPCION AS descripcion
         FROM errores
         INNER JOIN ITEMS ON ID_ITEM=errores.item
         INNER JOIN COD_BARRAS ON ID_ITEMS=ID_ITEM
-        INNER JOIN recibido ON recibido.item=errores.item
+        INNER JOIN caja AS cajar ON cajar.no_caja=errores.no_caja_recibido
+        INNER JOIN caja AS cajap ON cajap.no_caja=errores.no_caja
         WHERE errores.no_caja_recibido = :no_caja
-        AND recibido.no_caja = :no_caja
-        AND recibido.estado <> 4
+        AND errores.estado <> 4
         GROUP BY errores.item,errores.no_req,errores.no_caja,errores.estado,errores.ubicacion,errores.recibidos,errores.alistado;";
 
         $stmt= $this->link->prepare($sql);

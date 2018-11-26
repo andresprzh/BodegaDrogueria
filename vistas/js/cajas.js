@@ -59,7 +59,6 @@ $(document).ready(function () {
 
             table[0] = iniciarTabla('#TablaC');
             table[1] = iniciarTabla('#TablaCE');
-            // table = iniciarTabla('.datatable');
 
         });
 
@@ -94,8 +93,6 @@ $(document).ready(function () {
             data: { 'req': req, 'numcaja': numcaja },
             dataType: 'JSON',
             success: function (res) {
-                // console.log(res);
-                // return 0;
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({
@@ -658,8 +655,6 @@ function mostrarCajas() {
                     $("#Documento").attr("disabled", "disabled");
                 }
 
-                // $("#TablaCajas").removeClass("hide");
-
 
             }
 
@@ -759,7 +754,8 @@ function mostrarItems(numcaja, estado = null) {
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-
+            console.log(res);
+            // return 0;
             origen = res["contenido"][0]["origen"];
             destino = res["contenido"][0]["destino"];
 
@@ -808,17 +804,17 @@ function mostrarItems(numcaja, estado = null) {
 
                     case 5:
                         for (var i in item) {
-                            if (item[i]['no_caja'] == 0) {
-                                item[i]['no_caja'] = '---';
+                            if (item[i]['cajar'] == 0) {
+                                item[i]['cajar'] = '---';
                             }
                             // guarda el id del item en el id de la fila y el estaod en el nombre de la fila
                             $("#tablaerror").append($(`<tr id='${item[i]['iditem']}' name='${item[i]['estado']}'><td> 
                             ${item[i]['descripcion']}</td><td> 
-                            ${item[i]['no_caja']}</td><td> 
-                            ${item[i]['no_cajaR']}</td><td> 
-                            <input type= 'number' min='1' class='alistados eliminaritem' value='${item[i]['alistados']}'></td><td> 
+                            ${item[i]['cajap']}</td><td> 
+                            ${item[i]['cajar']}</td><td> 
+                            <input type= 'number' min='1' class='alistados eliminaritem' value='${item[i]['alistado']}' disbled></td><td> 
                             ${item[i]['recibidos']}</td><td '> 
-                            ${item[i]['problema']}</td>
+                            ${item[i]['mensaje']}</td>
                             </tr>`
                             ));
 

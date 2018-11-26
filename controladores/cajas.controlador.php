@@ -59,7 +59,7 @@ class ControladorCajas extends ControladorAlistar {
     }
 
     // crea documento de texto
-    // public function ctrDocumento($items,$numcaja)
+    
     public function ctrDocumento($numcaja)
     {
         $res=false;
@@ -120,11 +120,20 @@ class ControladorCajas extends ControladorAlistar {
     {
         $busqueda = $this->modelo->mdlMostrarItemError($numcaja);
         
+        $itembus= $this->ctrMostrarItemsError($busqueda);
+        $busqueda->closeCursor();
+        return $itembus;        
+
+    }
+
+    // genera los mensajes para los items qcon errores
+    protected function ctrMostrarItemsError($busqueda)
+    {
         if ($busqueda->rowCount() > 0) {
 
             $itembus["estado"]="encontrado";
 
-            $cont=0;
+           
             
             while($row = $busqueda->fetch()){
 
@@ -153,10 +162,10 @@ class ControladorCajas extends ControladorAlistar {
 
                     case 3:
                         $mensaje="Caja diferente";
-                        if ($row["no_caja"]==1) {
+                        if ($row["cajap"]==0) {
                             $mensajeitem="El item recibido no está alistado en niguna caja";
                         }else{
-                            $mensajeitem="El item recibido fue alistado en la caja ".$row["no_caja"]." y recibido en la caja ".$numcaja;
+                            $mensajeitem="El item recibido fue alistado en la caja ".$row["cajap"]." y recibido en la caja ".$row["cajar"];
                         }
                         break;
                     
@@ -164,21 +173,13 @@ class ControladorCajas extends ControladorAlistar {
                         $mensaje="Ok";
                         break;
                 }
-                                
-                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
-                                    "iditem"=>$row["item"],    
-                                    "no_caja"=>$row["no_caja"],
-                                    "no_cajaR"=>$numcaja,
-                                    "referencia"=>$row["ID_REFERENCIA"],
-                                    "descripcion"=>$row["DESCRIPCION"],
-                                    'ubicacion'=>$row["ubicacion"],
-                                    "recibidos"=>$row["recibidos"],
-                                    "alistados"=>$row["alistado"],
-                                    "estado"=>$row["estado"],
-                                    "problema"=>$mensajeitem
-                                    ];
-                $cont++;
-
+                if ($row["estado"] != 4) {
+                    $itemdat=$row;
+                    $itemdat["mensaje"]=$mensajeitem;
+                    $itembus["estado"]="error0";
+                    $itembus["contenido"][]=$itemdat;
+                }      
+ 
             }
 
             return $itembus;
@@ -190,15 +191,11 @@ class ControladorCajas extends ControladorAlistar {
                     'contenido'=>"Items no encontrados!"];
 
         }
-
     }
-
     //modifica la caja despues de ser resivida en el PV
     public function ctrModificarCaja($numcaja,$items)
     {   
-        // $busqueda=$this->modelo->mdlVerificarCaja($numcaja);
-        // $row = $busqueda->fetch();
-        // return $row['cantidad'];
+        
 
         for ($i=0; $i <count($items) ; $i++) {
             //modifica los items
