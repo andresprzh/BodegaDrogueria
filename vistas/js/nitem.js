@@ -225,7 +225,7 @@ function insertarItem(item) {
     }));
 
     if (!ids.includes(item["iditem"])) {
-        $("#TablaI tbody").append($(`
+        $("#TablaI tbody").prepend($(`
             <tr id=${item["iditem"]}><td >
                 ${item["codigo"]}</td><td >
                 ${item["iditem"]}</td><td >
