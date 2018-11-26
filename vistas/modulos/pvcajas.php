@@ -64,7 +64,7 @@
                     <tr  class="white-text green darken-3" >
                         <th>Descripción</th>
                         <th>ID item</th>
-                        <th>Recibidos</th>
+                        <th id= "mensaje">Recibidos</th>
                     </tr>
 
                     </thead>

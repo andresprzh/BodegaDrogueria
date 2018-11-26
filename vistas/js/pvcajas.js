@@ -172,14 +172,15 @@ function mostrarItems(no_caja, estado = null) {
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-
+    
+    
     return $.ajax({
         url: "api/cajas/pvcajas",
         method: "POST",
         data: { "req": req, "numcaja": no_caja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-
+            
             $("#TablaM tbody").html("");
 
             var item = res["contenido"];
@@ -191,20 +192,30 @@ function mostrarItems(no_caja, estado = null) {
             //en caso de contrar el item mostrarlo en la tabla
             else {
 
-                // $("#Rerror").hide();
+                
 
                 var item = res["contenido"];
-
-
-                for (var i in item) {
-                    $("#TablaM tbody").append($(`<tr id="${item[i]['iditem']}"><td>
-                        ${item[i]['descripcion']} </td><td>    
-                        ${item[i]['iditem']} </td><td>
-                        ${item[i]['recibidos']}</td>
-                        </tr>`));
-
-
+                
+                if (estado==5) {
+                    $('#mensaje').html('Error');
+                    for (var i in item) {
+                        $("#TablaM tbody").append($(`<tr id="${item[i]['iditem']}"><td>
+                            ${item[i]['descripcion']} </td><td>    
+                            ${item[i]['iditem']} </td><td>
+                            ${item[i]["mensaje"]}</td>
+                            </tr>`));
+                    }
+                }else{
+                    $('#mensaje').html('Recibidos');
+                    for (var i in item) {
+                        $("#TablaM tbody").append($(`<tr id="${item[i]['iditem']}"><td>
+                            ${item[i]['descripcion']} </td><td>    
+                            ${item[i]['iditem']} </td><td>
+                            ${item[i]["recibidos"]}</td>
+                            </tr>`));
+                    }
                 }
+                
 
             }
 
@@ -230,7 +241,6 @@ function documento(numcaja) {
             // console.log(res);
             if (res['estado'] == true) {
 
-                // let numcaja = $('#cajas').val();
                 // obtiene los 3 ultimos caracteres de la requisicion
                 let no_req = req[0].substr(req[0].length - 3);
                 numcaja = ('00' + numcaja).slice(-2);

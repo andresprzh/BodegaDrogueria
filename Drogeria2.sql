@@ -516,6 +516,7 @@ DROP TRIGGER IF EXISTS EstadoRecibido;
 DROP TRIGGER IF EXISTS EstadoRecibidoRemision;
 DROP TRIGGER IF EXISTS AutoincTareas;
 DROP TRIGGER IF EXISTS UbicacionEstado;
+DROP TRIGGER IF EXISTS DocumentoReq;
 
 -- funcion que busca la ultima caja abierta por el alistador pers
 DELIMITER $$
@@ -539,7 +540,7 @@ DELIMITER $$
 	CREATE FUNCTION VerificarCaja(numcaja INT(10),req CHAR(10))
 	RETURNS TINYINT(1)
 	BEGIN
-		DECLARE cantidad TINYINT;
+		DECLARE cantidad INT(1);
 		-- actualiza el estado de los items recibidos de una requisicion para recalcular el estado
 		UPDATE recibido
 		SET estado=0

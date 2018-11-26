@@ -265,23 +265,22 @@ class ModeloPV extends Conexion{
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
         
-        // $stmt= $this->link->prepare('SELECT COUNT(item) AS cantidad
-        // FROM recibido
-        // WHERE no_caja=:no_caja
-        // AND no_req=:no_req
-        // AND estado <>4;
-        // ');
 
         $stmt= $this->link->prepare('SELECT VerificarCaja(:no_caja,:no_req) AS verificar ');
 
         $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
         $stmt->bindParam(":no_req",$no_req,PDO::PARAM_STR);
 
-        $res=$stmt->execute();
+        // $res=$stmt->execute();
+        if ($stmt->execute()) {
+            $res["estado"]=$stmt->fetch()["verificar"];
+        }else {
+            $res=false;
+        }
         $stmt->closeCursor();  
         // retorna el resultado de la sentencia
 	    return $res;
-        // $stmt->closeCursor();  
+         
         // cierra la conexion
         $stmt=null;
     }

@@ -138,13 +138,19 @@ class ControladorPV extends ControladorCajas{
     private function ctrVerificarRegistro($numcaja){
         
         $resultado=false;
+        $estado=$this->modelo->mdlVerificarCaja($numcaja);
+        
+        if ($estado) {
 
-        if ($this->modelo->mdlVerificarCaja($numcaja)) {             
+            if ($estado["estado"]==1) {
 
-            $busqueda=$this->modelo->mdlMostrarItemsRec($numcaja);
+                $resultado["estado"]="ok";
 
-            $resultado= $this->ctrMostrarItemsError($busqueda);
-            $busqueda->closeCursor();
+            }else {
+
+                $resultado=$this->ctrBuscarItemError($numcaja);
+                
+            }
             
         }
         return $resultado;

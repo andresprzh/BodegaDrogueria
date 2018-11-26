@@ -201,14 +201,18 @@ if (isset($_GET['ruta'])) {
             if (isset($_POST['numcaja'])) {
 
                 $numcaja=$_POST['numcaja'];
+
                 // regresa el resultado de la buqueda como un objeto JSON
                 if (isset($_POST['estado'])) {
-                                
-                    $respuesta=$controlador->ctrBuscarItemrec($numcaja);
                     
+                    if ($_POST['estado']==5) {
+                        $respuesta=$controlador->ctrBuscarItemError($numcaja);
+                    }else {
+                        $respuesta=$controlador->ctrBuscarItemrec($numcaja);
+                    }
+                       
                 }
-                
-                
+                  
             // si no se paso el numero de la caja busca todas las cajas de la requisicion  seleccionada
             }else{
                 $numcaja='%%';

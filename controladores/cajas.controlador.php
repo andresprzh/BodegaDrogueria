@@ -120,15 +120,6 @@ class ControladorCajas extends ControladorAlistar {
     {
         $busqueda = $this->modelo->mdlMostrarItemError($numcaja);
         
-        $itembus= $this->ctrMostrarItemsError($busqueda);
-        $busqueda->closeCursor();
-        return $itembus;        
-
-    }
-
-    // genera los mensajes para los items qcon errores
-    protected function ctrMostrarItemsError($busqueda)
-    {
         if ($busqueda->rowCount() > 0) {
 
             $itembus["estado"]="encontrado";
@@ -182,16 +173,21 @@ class ControladorCajas extends ControladorAlistar {
  
             }
 
-            return $itembus;
+            // return $itembus;
 
         //si no encuentra resultados devuelve "error"
         }else{
 
-            return ['estado'=>"error",
+            $itembus= ['estado'=>"error",
                     'contenido'=>"Items no encontrados!"];
 
         }
+        
+        $busqueda->closeCursor();
+        return $itembus;        
+
     }
+
     //modifica la caja despues de ser resivida en el PV
     public function ctrModificarCaja($numcaja,$items)
     {   
