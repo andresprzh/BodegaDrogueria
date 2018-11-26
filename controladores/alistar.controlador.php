@@ -218,7 +218,7 @@ class ControladorAlistar extends ControladorTareas{
 
             while($row = $busqueda->fetch()){
                     
-                $itembus["contenido"][$cont]=["codigo"=>$row["ID_CODBAR"],
+                $itembus["contenido"][]=["codigo"=>$row["ID_CODBAR"],
                                     "iditem"=>$row["ID_ITEM"],  
                                     "referencia"=>$row["ID_REFERENCIA"],
                                     "descripcion"=>$row["DESCRIPCION"],
@@ -385,7 +385,8 @@ class ControladorAlistar extends ControladorTareas{
         return $resultado;
     }
     // CREA LISTA DE ITEMS Y LO MANDA A IMPRIMIR
-    public function ctrDocList($numcaja=null){
+    public function ctrDocList($numcaja=null)
+    {
             
         if ($numcaja==null) {
             // $busqueda = $this->modelo->mdlMostrarNumCaja();

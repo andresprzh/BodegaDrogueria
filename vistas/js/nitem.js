@@ -174,7 +174,7 @@ function buscarItem(item, req) {
         data: { "item": item, "req": req },
         dataType: "JSON",
         success: function (res) {
-
+            console.log(res);
             if (res["estado"] == "encontrado") {
 
                 items = res["contenido"];
@@ -202,7 +202,7 @@ function buscarItem(item, req) {
 
                 } else {
 
-                    insertarItem(items);
+                    insertarItem(items[0]);
 
                 }
 
