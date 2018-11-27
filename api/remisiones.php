@@ -43,7 +43,8 @@ if (isset($_GET["ruta"])) {
                     $resultado=$controlador->ctrSetCabecera();
                     $resultado=$controlador->ctrSetItems();
                     $resultado=$controlador->ctrSubirRem($usuario);
-                    $factura=$_POST["factura"];
+                    
+                    
                     
                     if ($resultado) {
                         if ($franquicia=="UBBS") {
