@@ -60,8 +60,58 @@
 
 <div class="modal-content">
 
-    <div class="modal-header">
-        
+        <div class="modal-header">
+
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
+            <h4 class="center" >Caja No <span class="NumeroCaja"></span></h4>
+            
+            <table class="centered no-border" >
+                <thead>
+                    <tr>
+                        <th>Alistador: <span id="alistador"></span></th>
+                        <th>Tipo Caja: <span id="tipocaja"></span></th>
+                        <th>Fecha cierre: <span id="cierre"></span></th>
+                    </tr>
+                    <tr>
+                        <th>Origen: <span id="origen">001-BD CENTRO</span></th>
+                        <th>destino: <span id="destino"></span></th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+
+        <div class="modal-footer grey lighten-3 row">
+            <button id="eliminar" title="Eliminar Caja" class="btn  waves-effect red darken-4 col s2 m2 l1 left" >
+                <i class="fas fa-ban"></i>
+            </button>
+            <button id="cambiar" title="Reasignar caja" class="btn waves-effect green darken-4 col s2 m2 l1 center" >
+                <i class="fas fa-user"></i>
+            </button>
+            <button id="imprimir" title="Impriir Lista de items" class="btn waves-effect green darken-4 col s2 m2 l1 right" >
+                <i class="fas fa-print"></i>
+            </button>
+            
+        </div>
+        <form id="formmodal">
+            <table class="tablascroll centered " id="TablaM"  >
+                    
+                        <thead>
+
+                        <tr  class="white-text green darken-3" >
+
+                            <th>Codigo de barras</th>
+                            <th>ID item</th>
+                            <th>Referencia</th>
+                            <th>Descripción</th>
+                            <th>Disponibilidad</th>
+                            <th>Pedidos</th>
+                            <th>Alistados</th>
+                            <th>Ubicacion</th>
+
+                        </tr>
+
+                        </thead>
 
         <a href="#!" class="modal-close waves-effect waves-green btn-flat right"><i class='fas fa-times'></i></a>
         <h4 class="center" id="TituloCaja"></h4>

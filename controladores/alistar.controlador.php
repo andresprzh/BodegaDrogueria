@@ -52,10 +52,11 @@ class ControladorAlistar {
                         $itembus["estado"]='encontrado';
                         break;
 
-                    // 1 si el item ya esta siendo alistado pro alguien
-                    case 1:
-                        $itembus["estado"]='error1';
-                        $itembus["contenido"]='Item en alistamiento por '.$itembus['contenido']['alistador'];
+                    // 1 si el item ya esta siendo alistado por alguien
+                    default :
+                        $itembus["estado"]="error1";
+                        $itembus["contenido"]="El item ya fue Alistado";
+                        return $itembus;
                         break;
 
                     // 2 si el item ya fue alistado en la caja
