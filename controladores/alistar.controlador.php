@@ -102,7 +102,7 @@ class ControladorAlistar extends ControladorTareas{
         }else{
 
             return ['estado'=>"error",
-                    'contenido'=>"Item no encontrado en la base de datos!"];
+                    'contenido'=>"Item no encontrado en la requisicion!"];
 
         }
     }
@@ -506,8 +506,8 @@ class ControladorAlistar extends ControladorTareas{
         $resultado["contenido"]=$imprimir;
         
         try {
-            $connector = new WindowsPrintConnector("epsonliza_contab");
-            // $connector = new WindowsPrintConnector("hpljp1102");
+            // $connector = new WindowsPrintConnector("epsonliza_contab");
+            $connector = new WindowsPrintConnector("hpljp1102");
             $printer = new Printer($connector);
             $printer -> text($imprimir);
             $printer -> cut();

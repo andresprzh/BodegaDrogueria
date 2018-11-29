@@ -108,9 +108,9 @@ if (isset($_GET["ruta"])) {
         ============================================================================================================================*/
         case "usuarios":
 
-            $modelo=new Conexion();
+            $modelo=new ModeloTareas();
 
-            $res=$modelo->buscaritem("usuario","perfil",3);
+            $res=$modelo->mdlMostrarAlistadores();
             $resultado["estado"]=false;
             if ($res->rowCount() >0) {
                 $resultado["contenido"]=$res->fetchAll();

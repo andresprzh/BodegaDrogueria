@@ -132,5 +132,30 @@ class ModeloTareas extends Conexion{
         // cierra la conexion
         $stmt=null;
     }
+
+    public function mdlMostrarAlistadores()
+    {
+        $stmt= $this->link->prepare(
+            "SELECT id_usuario,nombre,cedula,IF(COUNT(ubicacion)>0,1,0) AS ubicaciones
+            FROM usuario
+            LEFT JOIN tareas ON tareas.usuario=id_usuario
+            LEFT JOIN tareas_det ON tareas_det.id_tarea=tareas.id_tarea
+            WHERE perfil=3
+            GROUP BY id_usuario,nombre,cedula
+            ORDER BY nombre ASC;
+            ");
+        
+        $res=$stmt->execute();
+        
+        if ($res) {
+            return $stmt;
+        }else {
+            return $res;
+        }
+        $stmt->closeCursor();
+        
+        // cierra la conexion
+        $stmt=null;
+    }
     
 }

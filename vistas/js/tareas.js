@@ -14,27 +14,22 @@ $(document).ready(function () {
         processData: false,
         dataType: "JSON",
         success: function (res) {
-
+            
             if (res['estado'] == 'encontrado') {
                 let usuarios = res['contenido'];
-
+                let colores=["grey","green"]
                 // si el resultado es n array
                 if (usuarios.constructor === Array) {
+                   
                     for (var i in usuarios) {
+                        
                         $("#TablaU tbody").append($(`<tr id=${usuarios[i]["id_usuario"]}><td>
                         ${usuarios[i]["nombre"]}</td><td>
                         ${usuarios[i]["cedula"]}</td><td>
-                        <a class="tareanueva btn-floating btn-small waves-effect waves-light white" title="Ver Ubicaciones"><i class="grey-text fas fa-wrench"></i></a></td>
+                        <a class="tareanueva btn-floating btn-small waves-effect waves-light white " title="Ver Ubicaciones"><i class="${colores[usuarios[i]['ubicaciones']]}-text fas fa-wrench"></i></a></td>
                         </tr>`));
                     }
-                    // si solo hay 1 dato en usuarios
-                } else {
-
-                    $("#TablaU tbody").append($(`<tr id=${usuarios["id"]}><td>
-                        ${usuarios["nombre"]}</td><td>
-                        ${usuarios["cedula"]}</td><td>
-                        <a class="tareanueva"><i class="fas fa-wrench"></i></a></td>
-                        </tr>`));
+                    
                 }
 
             }
@@ -269,7 +264,7 @@ function agregarUbicaciones(iduser) {
         data: { 'usuario': iduser },
         dataType: 'JSON',
         success: function (res) {
-
+            
             // refresca ubicaciones
             $('#ubicaciones').html('');
 

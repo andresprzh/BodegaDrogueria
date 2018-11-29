@@ -206,13 +206,17 @@ class ModeloCaja extends Conexion{
 
     public function mdlMostrarUsuarioSinCaja()
     {   
-        $sql="SELECT id_usuario,usuario.nombre 
-        FROM usuario
-        LEFT JOIN caja ON caja.alistador=id_usuario
-        LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
-        WHERE perfil=3
-        AND (caja.estado<>0 OR item IS NULL)
-        GROUP BY id_usuario,usuario.nombre;";
+        $sql="SELECT id_usuario,nombre
+        FROM (SELECT id_usuario,usuario.nombre,
+            MIN(caja.no_caja) AS no_caja , MIN(caja.estado) AS estado,MIN(item) AS item
+            FROM usuario
+            LEFT JOIN caja ON caja.alistador=id_usuario
+            LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
+            WHERE perfil=3
+            GROUP BY id_usuario,usuario.nombre
+            ) as temp
+        WHERE estado<>0
+        OR item IS NULL;";
         
         $stmt= $this->link->prepare($sql);
         

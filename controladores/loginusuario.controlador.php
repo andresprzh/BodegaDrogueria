@@ -55,11 +55,8 @@ class ControladorLoginUsuario {
                                           "franquicia" => $respuesta["franquicia"]
                                         ];
                     
-                    // echo '<script>
-                    //         window.location="inicio";
-                    //       </script>';
+                    
                     return $_SESSION["usuario"];
-                    // return true;
                     
                 //de lo contrario muestra un mensaje de alerta
                 }else {
@@ -83,45 +80,9 @@ class ControladorLoginUsuario {
         
         if ($busqueda->rowCount() > 0) {
 
-            if($busqueda->rowCount() == 1){
-
-                $row = $busqueda->fetch();
-
-                //guarda los resultados en un arreglo
-                $usuarios=["estado"=>'encontrado',
-                           "contenido"=> ["id"=>$row["id_usuario"],
-                                            "usuario"=>$row["usuario"],
-                                           "nombre"=>$row["nombre"],
-                                           "cedula"=>$row["cedula"],
-                                           "perfil"=>$row["perfil"]
-                                         ]
-                         ];
-               
-                //retorna el usuario a la funcion
-                return $usuarios;
-
-            }else {
-
-                $usuarios["estado"]="encontrado";
-
-                $cont=0;
-
-                while($row = $busqueda->fetch()){
-                        
-                        $usuarios["contenido"][$cont]=["id"=>$row["id_usuario"],
-                                                    "usuario"=>$row["usuario"],
-                                                    "nombre"=>$row["nombre"],
-                                                    "cedula"=>$row["cedula"],
-                                                    "perfil"=>$row["perfil"]
-                                                    ];
-                        
-                        $cont++;
-
-                }
-
-                return $usuarios;
-
-            }
+            $usuarios["estado"]="encontrado";
+            $usuarios["contenido"]=$busqueda->fetchAll();
+            return $usuarios;
 
         //si no encuentra resultados devuelve "error"
         }else{

@@ -102,12 +102,12 @@ $(document).ready(function () {
 
                     // si no hay error genera le documento y lo manda a decargar
                 } else {
-                    // // OBTIENE LOS 3 ULTIMOS CARACTERES DE LA REQUISICION
-                    // var no_res = req[0].substr(req[0].length - 3);
+                    
+                                        
                     // let numerodoc = ('00' + res['no_documento']).slice(-2);
-                    // // CREA EL NOMBRE DEL DOCUMENTO A PARTIR DE LA REQUISICION Y LA CAJA
-                    // var nomdoc = 'DS' + no_res + 'D' + numerodoc + '.TR1';
-                    var nomdoc = req[0] + '.TR' + res['no_documento'];
+                    let no_req=req[0].substr(1,2)+req[0].substr(req[0].length-6);
+                    // CREA EL NOMBRE DEL DOCUMENTO A PARTIR DE LA REQUISICION Y LA CAJA
+                    var nomdoc = no_req+ '.TR' + res['no_documento'];
 
                     var element = document.createElement('a');
                     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['documento']));
@@ -436,7 +436,7 @@ $(document).ready(function () {
         let req = [requeridos, id_usuario];
 
         // numero de la caja
-        let numcaja = $(".NumeroCaja").html();
+        let numcaja = $(".NumeroCaja").attr('name');
 
         return $.ajax({
             type: 'GET',
@@ -444,7 +444,7 @@ $(document).ready(function () {
             data: { 'numcaja': numcaja, 'req': req },
             dataType: 'JSON',
             success: function (res) {
-
+                
                 // si hay un error al buscar los archivos no genera el documento
                 if (!res) {
                     swal({
@@ -473,6 +473,7 @@ $(document).ready(function () {
                 }
             },
             error: function (res) {
+                
                 if (!res) {
                     swal({
                         title: '!Error al generar el documento¡',

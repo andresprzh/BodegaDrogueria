@@ -83,7 +83,7 @@ class ControladorUsuarios extends ControladorLoginUsuario{
         // busca si el usuario ya existe
         $item = ['usuario','cedula'];
         $valor = [$datosusario['usuario'],$datosusario['cedula']];
-        $busqueda = $this->modelo->mdlMostrarUsuarios(1,$item,$valor);
+        $busqueda = $this->modelo->buscaritem('usuario',$item,$valor);
         $resultado['estado']='encontrado';
         if ($busqueda->rowCount() > 0) {
             return "Usuario ya existe";
@@ -101,7 +101,7 @@ class ControladorUsuarios extends ControladorLoginUsuario{
         // busca si la cedula o usuario estan disponibles
         $item = ['usuario','cedula'];
         $valor = [$datosusario['usuario'],$datosusario['cedula']];
-        $busqueda = $this->modelo->mdlMostrarUsuarios(1,$item,$valor);
+        $busqueda = $this->modelo->buscaritem('usuario',$item,$valor);
         $resultado['estado']='encontrado';
         if ($busqueda->rowCount() > 1) {
             return "No pueden existir 2 usuarios con la misma cedula o nombre de usuario";

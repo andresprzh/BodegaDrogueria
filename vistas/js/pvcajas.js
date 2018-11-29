@@ -294,13 +294,11 @@ function documentoAll() {
             // console.log(res);
             if (res['estado'] == true) {
 
-                // let numcaja = $('#cajas').val();
-                // obtiene los 3 ultimos caracteres de la requisicion
-                // let no_req = req[0].substr(req[0].length - 3);
+                
                 // numcaja = ('00' + numcaja).slice(-2);
-
+                let no_req=req[0].substr(1,2)+req[0].substr(req[0].length-6);
                 // crea el nombre del documento a partir de la requisicion y la caja
-                let nomdoc = req[0] + '.TR1';
+                let nomdoc = no_req[0] + '.TR1';
 
                 let element = document.createElement('a');
                 element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['string']));

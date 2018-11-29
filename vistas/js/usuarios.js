@@ -31,11 +31,11 @@ $(document).ready(function () {
         if (this.id=='addusuario') {
             
             //cambia titulo modal
-            $('#iduser').html("nuevo");
+            $('#iduser').html('nuevo');
         
-            $('#nombre').val("");
-            $('#cedula').val("");
-            $('#usuario').val("");
+            $('#nombre').val('');
+            $('#cedula').val('');
+            $('#usuario').val('');
             $('#perfil').val(3);
             // INICIA MENU DE SELECCION
             $('select').formSelect();
@@ -71,23 +71,23 @@ $(document).ready(function () {
     } );
 
     // input para buscar usuario en la tabla
-    $("#buscar").keyup(function (e) { 
+    $('#buscar').keyup(function (e) { 
         let input, filter, table, tr, nombres,cedulas;
 
         filter = this.value.toUpperCase();
-        table = document.getElementById("TablaU");
-        tr = table.getElementsByTagName("tr");
+        table = document.getElementById('TablaU');
+        tr = table.getElementsByTagName('tr');
         for (let i = 0; i < tr.length; i++) {
-            usuarios = tr[i].getElementsByTagName("td")[0];
-            nombres =tr[i].getElementsByTagName("td")[1];
-            cedulas =tr[i].getElementsByTagName("td")[2];
-            perfil =tr[i].getElementsByTagName("td")[3];
+            usuarios = tr[i].getElementsByTagName('td')[0];
+            nombres =tr[i].getElementsByTagName('td')[1];
+            cedulas =tr[i].getElementsByTagName('td')[2];
+            perfil =tr[i].getElementsByTagName('td')[3];
             if (nombres && cedulas) {
                 if ((usuarios.innerHTML.toUpperCase().indexOf(filter) > -1)||(nombres.innerHTML.toUpperCase().indexOf(filter) > -1)||
                     (cedulas.innerHTML.toUpperCase().indexOf(filter) > -1)||(perfil.innerHTML.toUpperCase().indexOf(filter) > -1)) {
-                    tr[i].style.display = "";
+                    tr[i].style.display = '';
                 } else {
-                    tr[i].style.display = "none";
+                    tr[i].style.display = 'none';
                 }
             }       
         }
@@ -95,13 +95,13 @@ $(document).ready(function () {
 
     // si se agrga o modifica usuarios
     $('.modal').on('submit', 'form', function (event) {
-        var buttonid = $(this).find("button:focus").attr('id');
+        var buttonid = $(this).find('button:focus').attr('id');
         
         
         event.preventDefault();
         swal({
-            title: "¿Agregar Usuario?",
-            icon: "warning",
+            title: '¿Agregar Usuario?',
+            icon: 'warning',
             buttons: ['Cancelar', 'Agregar']
         })
             .then((Cerrar) => {
@@ -122,71 +122,45 @@ $(document).ready(function () {
                     }
                     
                     $.ajax({
-                        type: "POST",
-                        url: "api/usuarios/modificar",
-                        data: {"datosusuario":datosusuario,"button":buttonid},
-                        dataType: "JSON",
+                        type: 'POST',
+                        url: 'api/usuarios/modificar',
+                        data: {'datosusuario':datosusuario,'button':buttonid},
+                        dataType: 'JSON',
                         success: function (res) {
-
+                            
                             // si se modifica o inserta el usuario el ajax regresa el id de dicho usuario
                             if (!isNaN(parseFloat(res))) {
-                                $('#iduser').html("");
-                                $('#nombre').val("");
-                                $('#cedula').val("");
-                                $('#usuario').val("");
-                                $('#password').val("");
-                                $('#perfil').val("");
-                                let perfil=$(`#perfil option[value="${datosusuario['perfil']}"]`).text();
+                                $('#iduser').html('');
+                                $('#nombre').val('');
+                                $('#cedula').val('');
+                                $('#usuario').val('');
+                                $('#password').val('');
+                                $('#perfil').val('');
+                                let perfil=$(`#perfil option[value='${datosusuario['perfil']}']`).text();
 
-                                if (buttonid=="agregar") {
+                                if (buttonid=='agregar') {
                                     swal({
-                                        title: "Usuario Agregado",
-                                        icon: "success",
-                                    })
-                                    .then(()=>{
-                                        
-                                        
-                                        // muestra el nuevo usuario en la tabla
-                                        $("#TablaU tbody").append($(`
-                                            <tr id=${res}><td>
-                                                ${datosusuario["usuario"]}</td><td>
-                                                ${datosusuario["nombre"]}</td><td>
-                                                ${datosusuario["cedula"]}</td><td class='perfiles' name='${datosusuario['perfil']}'>
-                                                ${perfil}</td><td>
-                                                <button  title='Editar Usuario' data-target='editarusuario' class='editar modal-trigger btn-floating btn-small waves-effect waves-light tea darken-1 ' > 
-                                                    <i class='fas fa-user-edit'></i> 
-                                                </button>
-                                            </tr>`)
-                                        )
-
-                                    }) 
+                                        title: 'Usuario Agregado',
+                                        icon: 'success',
+                                    });
                                 }else{
                                     swal({
-                                        title: "Usuario modificado",
-                                        icon: "success",
-                                    }).then(()=>{
-
-                                        // se obtiene la fila donde esta el usuario
-                                        let fila=$('#TablaU tbody ').find(`#${datosusuario['id']}`);
-                                        // console.log(fila.text());
-                                        $('td:eq(0)', fila).text(datosusuario['usuario']);
-                                        $('td:eq(1)', fila).text(datosusuario['nombre']);
-                                        $('td:eq(2)', fila).text(datosusuario['cedula']);
-                                        $('td:eq(3)', fila).text(perfil);
-
-                                    }) ;
+                                        title: 'Usuario modificado',
+                                        icon: 'success',
+                                    });
                                 }
                                 // cierra el modal
+                                CargarUsuarios();
                                 $('.modal').modal('close'); 
                             }else if(res==false){
                                 swal({
-                                    title: "No se pudo agregar o modificar el usuario",
-                                    icon: "error",
+                                    title: 'No se pudo agregar o modificar el usuario',
+                                    icon: 'error',
                                 });
                             }else{
                                 swal({
                                     title: res,
-                                    icon: "error",
+                                    icon: 'error',
                                 });
                             }
                         }
@@ -217,16 +191,16 @@ $(document).ready(function () {
 function CargarPerfiles() {
     
     return $.ajax({
-        type: "GET",
-        url: "api/usuarios/perfiles",
-        dataType: "JSON",
+        type: 'GET',
+        url: 'api/usuarios/perfiles',
+        dataType: 'JSON',
         success: function (res) {
             
             if (res['estado'] == 'encontrado') {
                 var perfiles=res['contenido'];
                                 
                 for (var i in perfiles) {
-                    $("#perfil").append($('<option value="'+perfiles[i]['id']+'">'+perfiles[i]['perfil']+'</option>'));
+                    $('#perfil').append($(`<option value='${perfiles[i]['id']}'>${perfiles[i]['perfil']}</option>`));
                 }   
 
                 // INICIA MENU DE SELECCION
@@ -241,49 +215,29 @@ function CargarPerfiles() {
 function CargarUsuarios() {
     
     return $.ajax({
-        type: "GET",
-        url: "api/usuarios/usuarios",
-        dataType: "JSON",
+        type: 'GET',
+        url: 'api/usuarios/usuarios',
+        dataType: 'JSON',
         success: function (res) {
-            // console.log(res);
+            
             if (res['estado'] == 'encontrado') {
                 var usuarios=res['contenido'];
-                
-                // si el resultado es n array
-                if (usuarios.constructor===Array) {
-                    for (var i in usuarios) {
-                        // obtiene el perfil del usuario dle menu de seleccion
-                        let perfil=$(`#perfil option[value="${usuarios[i]['perfil']}"]`).text();
-                        $("#TablaU tbody").append($(`
-                            <tr id=${usuarios[i]["id"]}><td >
-                                ${usuarios[i]["usuario"]}</td><td >
-                                ${usuarios[i]["nombre"]}</td><td >
-                                ${usuarios[i]["cedula"]}</td><td  class='perfiles' name='${usuarios[i]['perfil']}'>
-                                ${perfil}</td><td>
-                                <button  title='Editar Usuario' data-target='editarusuario' class='editar modal-trigger btn-floating btn-small waves-effect waves-light tea darken-1 ' > 
-                                    <i class='fas fa-user-edit'></i> 
-                                </button>
-                            </tr>`)
-                        );  
-                    } 
-                // si solo hay 1 dato en usuarios
-                }else{
-                    
-                    // obtiene el perfil del usuario dle menu de seleccion cargado anteriormente
-                    
-                    let perfil=$(`#perfil option[value="${usuarios['perfil']}"]`).text();
-                    $("#TablaU tbody").append($(`
-                        <tr id=${usuarios["id"]}><td>
-                            ${usuarios["usuario"]}</td><td>
-                            ${usuarios["nombre"]}</td><td>
-                            ${usuarios["cedula"]}</td><td class='perfiles' name='${usuarios['perfil']}'>
+                $('#TablaU tbody').html('');
+                for (var i in usuarios) {
+                    // obtiene el perfil del usuario deL menu de seleccion
+                    let perfil=$(`#perfil option[value='${usuarios[i]['perfil']}']`).text();
+                    $('#TablaU tbody').append($(`
+                        <tr id=${usuarios[i]['id']}><td >
+                            ${usuarios[i]['usuario']}</td><td >
+                            ${usuarios[i]['nombre']}</td><td >
+                            ${usuarios[i]['cedula']}</td><td  class='perfiles' name='${usuarios[i]['perfil']}'>
                             ${perfil}</td><td>
                             <button  title='Editar Usuario' data-target='editarusuario' class='editar modal-trigger btn-floating btn-small waves-effect waves-light tea darken-1 ' > 
                                 <i class='fas fa-user-edit'></i> 
                             </button>
                         </tr>`)
-                    )
-                }
+                    );  
+                } 
             }
         }    
     });
@@ -292,15 +246,16 @@ function CargarUsuarios() {
 function cargarfranquicias() {
     
     return $.ajax({
-        type: "GET",
-        url: "api/usuarios/franquicias",
-        dataType: "JSON",
+        type: 'GET',
+        url: 'api/usuarios/franquicias',
+        dataType: 'JSON',
         success: function (res) {
-            
             if (res) {
                 
                 for (let i in res) {
-                   $("#franquicia").append($('<option value="'+res[i]['codigo']+'">'+res[i]['descripcion']+'</option>'));
+
+                   $('#franquicia').append($(`<option value='${res[i]['codigo']}'>${res[i]['descripcion']}</option>`));
+
                 }
                 
             }

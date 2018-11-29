@@ -13,8 +13,7 @@ $(document).ready(function () {
             dataType: 'JSON',
             data: { 'username': username, 'password': passowrd },
             success: function (res) {
-                // console.log(res);
-                // return 0;
+                
                 if (res) {
                     window.location = 'inicio';
                 } else {
