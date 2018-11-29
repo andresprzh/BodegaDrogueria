@@ -48,8 +48,8 @@ class ControladorCajas extends ControladorAlistar {
         //si no encuentra resultados devuelve "error"
         }else{
 
-            $cajabus= ['estado'=>"error",
-                    'contenido'=>"Caja no encontrado en la base de datos!"];
+            $cajabus= ["estado"=>"error",
+                    "contenido"=>"Caja no encontrado en la base de datos!"];
 
         }
         // libera conexion para hace otra sentencia
@@ -57,9 +57,33 @@ class ControladorCajas extends ControladorAlistar {
         return $cajabus;
 
     }
+    public function ctrBuscarUsuarioSinCaja()
+    {
+        $busqueda=$this->modelo->mdlMostrarUsuarioSinCaja();
+        
+        if ($busqueda->rowCount() > 0) {
 
+             $resultado["estado"]="encontrado";
+
+                while($row = $busqueda->fetch()){
+
+                    //Muestra todas las cajas
+                    $resultado["contenido"][$row["id_usuario"]]=$row["nombre"];
+
+                }
+                $busqueda->closeCursor();
+        //si no encuentra resultados devuelve "error"
+        }else{
+
+            $resultado= ["estado"=>"error",
+                    "contenido"=>"no hay alistadores disponibles!"];
+
+        }
+        // libera conexion para hace otra sentencia
+        $busqueda->closeCursor();
+        return $resultado;
+    }
     // crea documento de texto
-    
     public function ctrDocumento($numcaja)
     {
         $res=false;
@@ -219,7 +243,7 @@ class ControladorCajas extends ControladorAlistar {
       
         return $resultado;
     }
-
+   
     // asigna cajas  a un transportador para ser enviada
     public function ctrDespacharCajas($cajas,$transportador)
     {   

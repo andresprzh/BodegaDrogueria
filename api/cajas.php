@@ -227,6 +227,36 @@ if (isset($_GET['ruta'])) {
             print json_encode($respuesta);
             return 1;
             break;
+        
+        /* ============================================================================================================================
+                                                    REASIGNA CAJA A OTRO USUARIO O ALISTADOR
+        ============================================================================================================================*/
+        case "reasignar":
+            $numcaja=$_POST["numcaja"];
+            $alistador=$_POST["alistador"];
+
+            $modelo=new ModeloCaja();
+            $respuesta=$modelo->mdlReasignarCaja($numcaja,$alistador);
+            
+            
+            // muestra el vector como dato JSON
+            print json_encode($respuesta);
+            return 1;
+            break;
+
+        /* ============================================================================================================================
+                                                BUSCA LOS USUARIOS QUE NO TENGAN CAGAS ABIERTAS
+        ============================================================================================================================*/
+        case "usuarios":
+           
+            $controlador=new ControladorCajas();
+            $respuesta=$controlador->ctrBuscarUsuarioSinCaja();
+            
+            
+            // muestra el vector como dato JSON
+            print json_encode($respuesta);
+            return 1;
+            break;
 
     }
     

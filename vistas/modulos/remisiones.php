@@ -15,7 +15,7 @@
         </div>
         <div class="input-field col s12" id="divfactura">
           <input id="factura" type="text" class="validate" required>
-          <label for="factura">Número Faactura</label>
+          <label for="factura">Número Factura</label>
         </div>
         <div class="file-upload-main " >
             <input type="file" id="archivos" webkitdirectory mozdirectory msdirectory odirectory directory multiple required/>           

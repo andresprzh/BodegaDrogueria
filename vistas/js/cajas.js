@@ -346,6 +346,87 @@ $(document).ready(function () {
 
     });
 
+    $('#reasignar').click(function (e) {
+
+        let numcaja = $('.NumeroCaja').attr('name');
+
+        console.log(numcaja);
+        ajax('api/cajas/usuarios', 'GET').done(function (res) {
+            
+            if (res) {
+                if (res['estado']) {
+
+                    let opciones = res['contenido'];
+                    if (!opciones) {
+                        swal({
+                            type: 'error',
+                            title: 'No hay alistadores',
+                        })
+                    }
+                    swal({
+                        title: 'Reasignar Caja',
+                        text: 'Seleccionar alistador',
+                        input: 'select',
+                        inputOptions: opciones,
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancelar',
+                        confirmButtonText: 'Asignar',
+                        confirmButtonClass: 'green darken-3',
+                        inputValidator: function (value) {
+                            return new Promise(function (resolve, reject) {
+                                if (value !== '') {
+                                    resolve();
+                                } else {
+                                    reject('Por favor seleccione un Alistador');
+                                }
+                            });
+                        }
+                    }).then(function (result) {
+                        if (result.value) {
+                            // console.log(result.value);
+                            // return 0;
+                            alistador = result.value;
+                            $.ajax({
+                                url: 'api/cajas/reasignar',
+                                method: "POST",
+                                data: { 'numcaja': numcaja, 'alistador': alistador },
+                                dataType: 'JSON',
+                                success: function (res) {
+                                                                        
+                                    if (res) {
+                                        swal({
+                                            type: 'success',
+                                            html: 'Cajas reasignada correctamente'
+                                        }).then(function (res) {
+                                            recargarCajas();
+                                            $('.modal').modal('close');
+                                        });
+
+                                    } else {
+                                        swal({
+                                            type: 'error',
+                                            html: 'No se pudo reasignar la caja'
+                                        });
+                                    }
+                                }
+                            });
+
+                        }
+                    });
+
+                } else {
+                    swal({
+                        type: 'error',
+                        title: res['contenido'],
+                    })
+                }
+            }
+        })
+
+        return 0;
+
+    });
+
     // IMPRIMI LISTA DE ITEMS PARA PEGAR EN LA CAJA Al ENVIAR
     $('#imprimir').click(function (e) {
 
@@ -705,26 +786,31 @@ function mostrarItemsCaja(e, estado, nombre_tabla) {
             $("#eliminar").removeAttr("disabled");
             $("#imprimir").attr("disabled", "disabled");
             $("#inputcerrar").removeClass("hide");
+            $("#reasignar").removeClass("hide");
             break;
         case 1:
             $("#imprimir").removeAttr("disabled");
             $("#eliminar").removeAttr("disabled");
             $("#inputcerrar").addClass("hide");
+            $("#reasignar").addClass("hide");
             break;
         case 2:
             $("#imprimit").removeAttr("disabled");
             $("#eliminar").attr("disabled", "disabled");
             $("#inputcerrar").addClass("hide");
+            $("#reasignar").addClass("hide");
             break;
         case 3:
             $("#imprimit").attr("disabled", "disabled");
             $("#eliminar").attr("disabled", "disabled");
             $("#inputcerrar").addClass("hide");
+            $("#reasignar").addClass("hide");
             break;
         case 4:
             $("#imprimir").attr("disabled", "disabled");
             $("#eliminar").attr("disabled", "disabled");
             $("#inputcerrar").addClass("hide");
+            $("#reasignar").addClass("hide");
             break;
 
         default:
@@ -754,7 +840,7 @@ function mostrarItems(numcaja, estado = null) {
         data: { "req": req, "numcaja": numcaja, "estado": estado },
         dataType: "JSON",
         success: function (res) {
-            console.log(res);
+            
             // return 0;
             origen = res["contenido"][0]["origen"];
             destino = res["contenido"][0]["destino"];
@@ -853,8 +939,7 @@ function iniciarTabla(tab) {
 
     tabla = $(tab).DataTable({
 
-        responsive: true,
-
+        
         "bLengthChange": false,
         "bFilter": true,
         "sDom": '<"top">t<"bottom"irp><"clear">',
@@ -891,8 +976,8 @@ function iniciarTabla(tab) {
 function ajax(url, method) {
 
     return $.ajax({
-        url: 'api/cajas/conductor',
-        method: 'GET',
+        url: url,
+        method: method,
         dataType: 'JSON'
 
     });

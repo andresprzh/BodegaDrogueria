@@ -204,6 +204,27 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
+    public function mdlMostrarUsuarioSinCaja()
+    {   
+        $sql="SELECT id_usuario,usuario.nombre 
+        FROM usuario
+        LEFT JOIN caja ON caja.alistador=id_usuario
+        LEFT JOIN alistado ON alistado.no_caja=caja.no_caja
+        WHERE perfil=3
+        AND (caja.estado<>0 OR item IS NULL)
+        GROUP BY id_usuario,usuario.nombre;";
+        
+        $stmt= $this->link->prepare($sql);
+        
+        $stmt->execute();
+        
+        return $stmt;  
+        
+        // cierra la conexion
+        $stmt->closeCursor();
+        $stmt=null;
+    }
+
     // modifica los items despues de recibidos en el punto de venta
     public function mdlModificarItem($items,$numcaja)
     {
@@ -271,17 +292,12 @@ class ModeloCaja extends Conexion{
         $stmt=null;
     }
 
+
     //verifica el estado de la caja
     public function mdlVerificarCaja($numcaja)
     {
         $no_req=$this->req[0];$alistador=$this->req[1];
         
-        // $stmt= $this->link->prepare('SELECT COUNT(item) AS cantidad
-        // FROM recibido
-        // WHERE no_caja=:no_caja
-        // AND no_req=:no_req
-        // AND estado <>4;
-        // ');
 
         $stmt= $this->link->prepare('SELECT VerificarCaja(:no_caja,:no_req) AS verificar ');
 
@@ -292,7 +308,7 @@ class ModeloCaja extends Conexion{
         $stmt->closeCursor();  
         // retorna el resultado de la sentencia
 	    return $res;
-        // $stmt->closeCursor();  
+        
         // cierra la conexion
         $stmt=null;
     }
@@ -330,6 +346,23 @@ class ModeloCaja extends Conexion{
         // cierra la conexion
         $stmt=null;
 
+    }
+
+    public function mdlReasignarCaja($numcaja,$alistador)
+    {
+        $stmt= $this->link->prepare('CALL CambiarCaja(:no_caja,:alistador)');
+        
+        $stmt->bindParam(":no_caja",$numcaja,PDO::PARAM_INT);
+        $stmt->bindParam(":alistador",$alistador,PDO::PARAM_INT);
+
+        $res=$stmt->execute();
+        
+        $stmt->closeCursor();  
+        // retorna el resultado de la sentencia
+	    return $res;
+        // $stmt->closeCursor();  
+        // cierra la conexion
+        $stmt=null;
     }
 
 }

@@ -158,14 +158,23 @@
 
         </div>
 
-        <div class="modal-footer grey lighten-3">
+        <div class="modal-footer grey lighten-3 row ">
+                <div class="col s4 m2 l1 left">
+                    <button id="eliminar" title="Eliminar Caja" class="btn  waves-effect red darken-4  col s12">
+                        <i class="fas fa-ban"></i>
+                    </button>
+                </div>
+                <div class="col s4 m2 l1 offset-m3 offset-l4">
+                    <button id="reasignar" title="Reasignar caja" class="btn  waves-effect orange darken-4  col s12" >
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+                <div class="col s4 m2 l1 right">
+                    <button id="imprimir" title="Impriir Lista de items" class="btn  waves-effect green darken-4  col s12">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
             
-            <button id="imprimir" title="Impriir Lista de items" class="btn right waves-effect green darken-4 col s12 m12 l8" >
-                <i class="fas fa-print"></i>
-            </button>
-            <button id="eliminar" title="Eliminar Caja" class="btn left waves-effect red darken-4 col s12 m12 l8" >
-                <i class="fas fa-ban"></i>
-            </button>
         </div>
         <form id="formmodal">
             <table class="tablascroll centered " id="TablaM"  >
@@ -194,7 +203,7 @@
             
             <div class="row hide" id="inputcerrar">
 
-                <div class="input-field col s4 m6 l4 " >
+                <div class="input-field col s4 l4 " >
 
                     <select   name='caja'  class='carcaja browser-default grey lighten-3' style='border-bottom: 1px solid grey;' id='caja'>
                         
@@ -208,14 +217,14 @@
 
                 </div>
 
-                <div class="input-field center col s4 m6 l4 input_barras">
+                <div class="input-field center col s4  l4 input_barras">
 
                     <input  id="peso" type="number" class="validate" required>
                     <label for="peso" class="right">Peso en kg</label>
 
                 </div> 
 
-                <div class="input-field col s4 m2 l2">
+                <div class="input-field col s4 l2">
 
                     <button id="cerrar" type="submit" class="btn waves-effect green darken-4 col s12 m12 l8" >
                         Cerrar

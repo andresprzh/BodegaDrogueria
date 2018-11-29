@@ -499,6 +499,7 @@ DROP FUNCTION IF EXISTS NumeroCaja;
 DROP FUNCTION IF EXISTS VerificarCaja;
 DROP FUNCTION IF EXISTS VerificarRemision;
 DROP PROCEDURE IF EXISTS BuscarCod;
+DROP PROCEDURE IF EXISTS CambiarCaja;
 
 
 /* ELIMINA TRIGGER SI EXISTEN */
@@ -654,6 +655,40 @@ DELIMITER $$
 	END 
 $$
 
+-- Cambia las ubicaciones y caja abierta de un usuario por otro
+DELIMITER $$
+	CREATE PROCEDURE CambiarCaja(IN numerocaja CHAR(10),IN user_new INT(10))
+	BEGIN
+	
+		DECLARE user_old INT(10);
+		DECLARE tarea_old INT(10);
+		DECLARE tarea_new INT(10);
+
+		SELECT usuario.id_usuario,tareas.id_tarea INTO user_old,tarea_old
+		FROM caja
+		INNER JOIN usuario ON usuario.id_usuario=caja.alistador
+		INNER JOIN tareas ON tareas.usuario=usuario.id_usuario
+		WHERE no_caja=numerocaja;
+		
+		SELECT id_tarea INTO tarea_new
+		FROM tareas
+		WHERE usuario=user_new;
+		
+		DELETE 
+		FROM caja
+		WHERE alistador=user_new
+		AND estado=0;
+		
+		UPDATE caja
+		SET alistador=user_new
+		WHERE no_caja=numerocaja;
+		
+		UPDATE tareas_det
+		SET id_tarea=tarea_new
+		WHERE id_tarea=tarea_old;
+		
+	END 
+$$
 -- trigger que crea tarea la crear usuario
 DELIMITER $$
 	CREATE TRIGGER CrearTarea
