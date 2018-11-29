@@ -18,7 +18,7 @@ $(document).ready(function () {
         title: '¿Terminar rquisición?',
         icon: 'warning',
         buttons: ['Cancelar', 'Terminar']
-    }).then((Cerrar) => {
+        }).then((Cerrar) => {
 
         //si se le da click en cerrar procede a pasar los items a la caja y a cerrarla
         if (Cerrar) {
@@ -136,7 +136,7 @@ function mostrarReq(){
         data: { 'valor': 3 },
         dataType: 'JSON',
         success: function (res) {
-
+            console.log(res);
             let color = {
                 0: 'grey',
                 1: 'orange',

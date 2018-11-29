@@ -12,6 +12,13 @@ class ControladorAlistar extends ControladorTareas{
     protected $req;
     private $modelo;
     private $numcaja;//se guarda el numero de la ultima caja cerrada
+    private $tipo_cajas=[
+        "CAP"=>"CANASTA",
+        "CPL"=>"CAJPLAS",
+        "CRT"=>"CAJA",
+        "GLA"=>"GALONETA",
+        "GLN"=>"GALON",
+    ];
     private $tipo_inventario=[
         1=>"PRIMA",
         2=>"QUIMICO",
@@ -387,7 +394,7 @@ class ControladorAlistar extends ControladorTareas{
     // CREA LISTA DE ITEMS Y LO MANDA A IMPRIMIR
     public function ctrDocList($numcaja=null)
     {
-            
+        
         if ($numcaja==null) {
             // $busqueda = $this->modelo->mdlMostrarNumCaja();
             // $numcaja = ($busqueda->fetch());
@@ -398,6 +405,9 @@ class ControladorAlistar extends ControladorTareas{
         }
         $busqueda=$this->modelo->mdlMostrarDocList($numcaja);
         $datos=$busqueda->fetchAll();
+
+        $tipocaja=$this->tipo_cajas[$datos[0]["tipo_caja"]];
+        
         // obtiene el numero de caja
         $caja0=str_pad($datos[0]["num_caja"], 3, "0", STR_PAD_LEFT);
         $caja=$datos[0]["num_caja"];
@@ -421,7 +431,7 @@ class ControladorAlistar extends ControladorTareas{
         //se obtiene la lista de items de la caja
         $item="";
         foreach ($datos as $value) {
-
+            
             $iditem=$value["item"];
             $descripcion=substr(trim($value["descripcion"]," \t\n\r"),0,22);
             $um=$value["um"];
@@ -449,7 +459,7 @@ class ControladorAlistar extends ControladorTareas{
 
         //datos de la caja
         $imprimir.=str_pad("C.O      : $caja0", 40, " ", STR_PAD_RIGHT)."\r\n";
-        $imprimir.=str_pad("Doc. Alt#: CAJA#$caja", 20, " ", STR_PAD_RIGHT) . str_pad("Fecha : $fecha", 20, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("Doc. Alt#: $tipocaja#$caja", 20, " ", STR_PAD_RIGHT) . str_pad("Fecha : $fecha", 20, " ", STR_PAD_RIGHT)."\r\n";
         $imprimir.=str_pad("Req.    #: $req", 20, " ", STR_PAD_RIGHT) . str_pad("Hora  : $hora", 20, " ", STR_PAD_RIGHT)."\r\n";
         $imprimir.=str_pad("Loc. Ori.:       ", 20, " ", STR_PAD_RIGHT) . str_pad("Loc. Desct.: $destino", 20, " ", STR_PAD_RIGHT)."\r\n";
         
@@ -464,7 +474,7 @@ class ControladorAlistar extends ControladorTareas{
 
         // datos generales de la caja
         $imprimir.=str_pad("USUARIO ING. $alistador", 40, " ", STR_PAD_RIGHT)."\r\n\r\n";
-        $imprimir.=str_pad("Obervacion: PEDIDO $observacion CAJA#$caja ", 40, " ", STR_PAD_RIGHT)."\r\n";
+        $imprimir.=str_pad("Obervacion: PEDIDO $observacion $tipocaja#$caja ", 40, " ", STR_PAD_RIGHT)."\r\n";
         $imprimir.=str_pad("          : $destinodes", 40, " ", STR_PAD_RIGHT)."\r\n\r\n";
         $imprimir.=str_pad("RECIBI CONFORME: ", 40, "_", STR_PAD_RIGHT)."\r\n";
 
@@ -477,7 +487,7 @@ class ControladorAlistar extends ControladorTareas{
         $imprimir.=str_repeat("\r\n",3 );
 
         $imprimir.=str_pad("PEDIDO   #: $req", 40, " ", STR_PAD_BOTH)."\r\n";
-        $imprimir.=str_pad("EMPAQUE  #: CAJA#$caja", 40, " ", STR_PAD_BOTH)."\r\n\r\n";
+        $imprimir.=str_pad("EMPAQUE  #: $tipocaja#$caja", 40, " ", STR_PAD_BOTH)."\r\n\r\n";
 
         $imprimir.=str_pad("FECHA   : $fecha", 40, " ", STR_PAD_RIGHT)."\r\n";
         $imprimir.=str_pad("ORIGEN  :            ", 40, " ", STR_PAD_RIGHT)."\r\n";
@@ -487,27 +497,11 @@ class ControladorAlistar extends ControladorTareas{
 
         $imprimir.=str_repeat("\r\n",5 );
         
-        
-        // try
-        // {
-        //     $fp=fsockopen("192.168.0.41", 9100);
-        //     fwrite($fp, $imprimir);
-        //     fclose($fp);
-
-        //     echo 'Successfully Printed';
-        // }
-        // catch (Exception $e) 
-        // {
-        //     echo 'Caught exception: ',  $e->getMessage(), "\r\n";
-        // }
-        
-        // $resultado["contenido"]=$imprimir;
-        // imprime string en la impresora
         $resultado["contenido"]=$imprimir;
         
         try {
-            // $connector = new WindowsPrintConnector("epsonliza_contab");
-            $connector = new WindowsPrintConnector("hpljp1102");
+            $connector = new WindowsPrintConnector("epsonliza_contab");
+            // $connector = new WindowsPrintConnector("hpljp1102");
             $printer = new Printer($connector);
             $printer -> text($imprimir);
             $printer -> cut();
@@ -518,9 +512,6 @@ class ControladorAlistar extends ControladorTareas{
             $resultado["estadoimp"]=false;
         }
         
-
-
-        // $resultado["estado"]=true;
         return $resultado;
         
     }

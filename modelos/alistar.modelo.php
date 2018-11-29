@@ -128,7 +128,7 @@ class ModeloAlistar extends Conexion{
         $no_req=$this->req[0];$alistador=$this->req[1];
 
         $stmt= $this->link->prepare("SELECT alistado.item,ITEMS.DESCRIPCION AS descripcion,alistado.alistado,ITEMS.UNIMED_INV_1 AS um,caja.peso,
-        caja.num_caja,caja.cerrar,requisicion.no_req,requisicion.lo_destino,sedes.descripcion AS sede,UPPER(usuario.nombre) AS nombre,
+        caja.num_caja,caja.cerrar,caja.tipo_caja,requisicion.no_req,requisicion.lo_destino,sedes.descripcion AS sede,UPPER(usuario.nombre) AS nombre,
         requisicion.tip_inventario,UPPER(DATE_FORMAT(cerrar, '%Y/%b/%d')) AS fecha ,DATE_FORMAT(cerrar,'%h:%h %p') AS hora 
         FROM alistado
         INNER JOIN caja ON caja.no_caja=alistado.no_caja

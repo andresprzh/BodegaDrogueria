@@ -11,32 +11,42 @@ class ModeloRequierir extends Conexion{
 
     // MUESTRA REQUISICIONES
     public function mdlMostrarReq($item=null,$valor=null){
-    
+        
         $tabla='requisicion';
+        
         if ($valor==null) {
-            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion,tip_inventario
+            $stmt= $this->link-> prepare("SELECT requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
+            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedido
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
-            WHERE $item = 0;");
+            INNER JOIN pedido ON pedido.no_req=requisicion.no_req
+            WHERE requisicion.estado = 0
+            GROUP BY  requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
+            requisicion.estado,sedes.descripcion,tip_inventario;");
         }else if($item=='estado') {
             
-            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion,tip_inventario
+            $stmt= $this->link-> prepare("SELECT requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
+            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedido
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
-            WHERE $item < :$item;");
+            INNER JOIN pedido ON pedido.no_req=requisicion.no_req
+            WHERE requisicion.estado < :item
+            GROUP BY  requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
+            requisicion.estado,sedes.descripcion,tip_inventario;");
         }else {
-            $stmt= $this->link-> prepare("SELECT no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,estado,
-            sedes.descripcion,tip_inventario
+            $stmt= $this->link-> prepare("SELECT requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
+            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedido
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
-            WHERE $item = :$item;");
+            INNER JOIN pedido ON pedido.no_req=requisicion.no_req
+            WHERE requisicion.estado = :item
+            GROUP BY  requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
+            requisicion.estado,sedes.descripcion,tip_inventario;");
             
         }
         
         //para evitar sql injection
-        $stmt->bindParam(":".$item,$valor,PDO::PARAM_STR);
+        $stmt->bindParam(":item",$valor,PDO::PARAM_STR);
         //ejecuta el comando sql
         $stmt->execute();
         //busca las requisiciones
