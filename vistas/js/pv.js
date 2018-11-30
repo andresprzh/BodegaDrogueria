@@ -4,7 +4,7 @@ $(document).ready(function () {
                                                         INICIALIZACION   
     ============================================================================================================================*/
     // INICIA DATATABLE
-    table = iniciar_tabla();
+    // table = iniciar_tabla();
 
     // INICIAR MODAL
     $('.modal').modal({
@@ -317,6 +317,26 @@ function BuscarCodBar() {
         dataType: 'json',
         success: function (res) {
 
+            filter = this.value.toUpperCase();
+            table = document.getElementById(".tablas");
+            tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');;
+            for (let i = 0; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName("td");
+                if (td) {
+                    for (let j = 0; j < td.length; j++) {
+                        
+                        if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            
+                        }
+                        
+                    }
+                    if ((nombres.innerHTML.toUpperCase().indexOf(filter) > -1) || (cedulas.innerHTML.toUpperCase().indexOf(filter) > -1)) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
             var tabla = $('table.tablas').DataTable();
             var datos = tabla.data().toArray()
             var items = new Array;
