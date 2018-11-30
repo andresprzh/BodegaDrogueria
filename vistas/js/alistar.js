@@ -139,7 +139,7 @@ $(document).ready(function () {
         let iditem = $(this).closest('tr').attr('id').substr(1);
 
 
-        const nomitem = $('td:first', $(this).parents('tr')).text();;
+        const nomitem = $('td:first', $(this).parents('tr')).text();
 
         // Pregunta si se elimina el item
         swal({

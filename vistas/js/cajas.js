@@ -12,7 +12,7 @@ $(document).ready(function () {
     });
 
     // INICIA DATATABLE
-    table = iniciarTabla('.datatable');
+    // table = iniciarTabla('.datatable');
 
     // pone items en el input select
     $.ajax({
@@ -55,12 +55,7 @@ $(document).ready(function () {
         // desabilita los botones de generar documento
         $(".Documento").attr("disabled", "disabled");
         //espera a que la funcion termine para reiniciar las tablas
-        $.when(mostrarCajas()).done(function () {
-
-            table[0] = iniciarTabla('#TablaC');
-            table[1] = iniciarTabla('#TablaCE');
-
-        });
+        mostrarCajas();
 
     });
 
@@ -71,21 +66,23 @@ $(document).ready(function () {
 
         //consigue el numero de requerido
         var requeridos = $('.requeridos').val();
+        
         //id usuario es obtenida de las variables de sesion
         var req = [requeridos, id_usuario];
 
+        // Busca los datos en la tabla
+        let table = document.getElementById(tabla);
+        let tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        
+        let numcaja = new Array;
 
+        for (let i = 0; i < tr.length; i++) {
 
-        var datos = $(`#${tabla}`).DataTable();
-
-        // obtiene los numeros de las cajas de la tabla seleccionada
-        var numcaja = new Array();
-        for (var i in datos.data().toArray()) {
-            numcaja[i] = datos.row(i).id();
-
+            numcaja[i] =  tr[i].id;
+            
         }
-
-
+        
+        
         $.ajax({
 
             url: 'api/cajas/documento',
@@ -263,17 +260,20 @@ $(document).ready(function () {
     // ASIGNA LAS CAJAS A UN TRANSPORTADOR PARA SER ENVIADAS AL PUNTO
     $('#despachar').click(function (e) {
 
-        var datos = $("#TablaC").DataTable();
+        
+        // Busca los datos en la tabla
+        let table = document.getElementById('TablaC');
+        let tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
-        // obtiene los numeros de las cajas de la tabla seleccionada
-        var numcaja = new Array();
-        for (var i in datos.data().toArray()) {
-            numcaja[i] = datos.row(i).id();
+        let numcaja = new Array;
 
+        for (let i = 0; i < tr.length; i++) {
+
+            numcaja[i] =  tr[i].id;
+            
         }
 
-
-
+        
         ajax('api/cajas/conductor', 'GET').done(function (res) {
 
             if (res) {
@@ -604,13 +604,9 @@ function mostrarCajas() {
 
     // borra y limpia tabla de cajas alistadas
     $('#TablaC tbody').html('');
-    $("#TablaC").DataTable().clear();
-    $("#TablaC").DataTable().destroy();
 
     // borra y limpia tabla de cajas enviadas
     $('#TablaCR tbody').html('');
-    $("#TablaCE").DataTable().clear();
-    $("#TablaCE").DataTable().destroy();
 
     //consigue el numero de requerido
     let requeridos = $(".requeridos").val();
@@ -714,7 +710,7 @@ function mostrarCajas() {
                                             <td>${caja[i]["abrir"]}</td>
                                             <td class="cierres">${caja[i]["cerrar"]}</td><td>
                                             <button  
-                                            onclick="mostrarItemsCaja(${cont},${caja[i]["estado"]},'${tablatarget}')"  
+                                            onclick="mostrarItemsCaja(this,${caja[i]["estado"]})"  
                                             title="Revisar"  
                                             data-target="${modal_target}" 
                                             class="btn modal-trigger waves-effect waves-light ${color[caja[i]["estado"]]} darken-3">
@@ -748,29 +744,22 @@ function mostrarCajas() {
 
 // RECARGA LOS DATOS DE  LAS TABLAS 
 function recargarCajas() {
-    //espera a que la funcion termine para reiniciar las tablas
-    $.when(mostrarCajas()).done(function () {
-
-        table[0] = iniciarTabla('#TablaC');
-        table[1] = iniciarTabla('#TablaCE');
-
-    });
+    mostrarCajas();
 }
 //FUNCION SI SE DA CLICK EN BOTON DOCUMENTO(MUESTRA ITEMS DE 1 CAJA ESPECIFICA)
-function mostrarItemsCaja(e, estado, nombre_tabla) {
+function mostrarItemsCaja(e, estado) {
 
 
-    let tabla = $(nombre_tabla).DataTable();
+    var td=$('td', $(e).parents('tr'));
 
-    //obtienen los datos de la caja para pasarlo al modal
-    var datos = tabla.row(e).data();
+    var id_caja = $(e).closest('tr').attr('id');  
 
-    var id_caja = tabla.row(e).id();
-    var numcaja = datos[0];
-    var alistador = datos[1];
-    var tipocaja = datos[2];
-    var cierre = datos[4];
+    var numcaja = $('td:first', $(e).parents('tr')).text();
+    var alistador =$(td[1]).text();
+    var tipocaja = $(td[2]).text();
+    var cierre = $(td[3]).text();
 
+    
     // se muestran los datos generales de la caja
     $(".NumeroCaja").html(numcaja);
     $(".NumeroCaja").attr("name", id_caja);
@@ -928,49 +917,6 @@ function mostrarItems(numcaja, estado = null) {
         }
 
     });
-
-}
-
-// FUNCION QUE INICIA DATATABLE
-function iniciarTabla(tab) {
-    let hight = "600px";
-    if (tab === "#TablaM") {
-        hight = "350px";
-    }
-
-    tabla = $(tab).DataTable({
-
-        
-        "bLengthChange": false,
-        "bFilter": true,
-        "sDom": '<"top">t<"bottom"irp><"clear">',
-
-        "language": {
-            "sProcessing": "Procesando...",
-            "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "Ningún dato disponible en esta tabla",
-            "sInfo": "_TOTAL_ Items",
-            "sInfoEmpty": "",
-            "sInfoFiltered": "(filtrado _MAX_ registros)",
-            "sSearch": "Buscar:",
-            "sUrl": "",
-            "sInfoThousands": ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior"
-            },
-        },
-        // scrollY: hight,
-        scrollCollapse: true,
-        paging: false,
-
-
-    });
-
-    return tabla;
 
 }
 
