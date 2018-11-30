@@ -97,6 +97,11 @@
 </div>
 
 <style>
+.progress div{
+    width:0%;
+    transition: width 2s,background-color 1s;
+}
+
 .collapsible-secondary { 
     position: absolute; 
     right: 0; 

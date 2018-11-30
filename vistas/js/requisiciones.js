@@ -69,7 +69,6 @@ function mostrarItemsReq(requisicion) {
     let req = [requisicion[0], id_usuario];
 
     
-
     $("#requeridos").html(requisicion[0]);
     $("#solicitante").html(requisicion[3]);
     $("#tipoinv").html(requisicion[4]);
@@ -142,9 +141,12 @@ function mostrarReq(){
                 1: 'orange',
                 2: 'green'
             };
-
+            
             // SE MUESTRAN LAS reqUISICIONES EN EL MENU DE SELECCION  
             for (var i in res) {
+                let completadoporc=Math.round(res[i]['completado'])
+                let completado=res[i]['pedidos']-res[i]['pendientes'];
+
                 const req = '["' + [
                     res[i]['no_req'],
                     res[i]['descripcion'],
@@ -165,6 +167,14 @@ function mostrarReq(){
                     >Ver</button>
                     
                 </div>
+                <div class='row prog'>
+                    <div class='progress col s10 m11'>
+                        <div class="determinate green" style="width: ${completadoporc}%"></div>
+                    </div>
+                    <div class='col s2 m1'>
+                        <p class="right green-text" style='font-size:12px;'>${completado}/${res[i]['pedidos']}</p>
+                    </div>
+                </div>
                 <div class='collapsible-body '>
                     <table class='centered black-text'>
                         <thead>
@@ -180,6 +190,7 @@ function mostrarReq(){
                     </table>
                 </div>
                 </li>`));
+
             }
 
         }

@@ -16,7 +16,8 @@ class ModeloRequierir extends Conexion{
         
         if ($valor==null) {
             $stmt= $this->link-> prepare("SELECT requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
-            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedido
+            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedidos, 
+            (1-SUM(pendientes)/SUM(pedido))*100 AS completado
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
             INNER JOIN pedido ON pedido.no_req=requisicion.no_req
@@ -26,7 +27,8 @@ class ModeloRequierir extends Conexion{
         }else if($item=='estado') {
             
             $stmt= $this->link-> prepare("SELECT requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
-            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedido
+            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedidos, 
+            (1-SUM(pendientes)/SUM(pedido))*100 AS completado
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
             INNER JOIN pedido ON pedido.no_req=requisicion.no_req
@@ -35,7 +37,8 @@ class ModeloRequierir extends Conexion{
             requisicion.estado,sedes.descripcion,tip_inventario;");
         }else {
             $stmt= $this->link-> prepare("SELECT requisicion.no_req,creada,lo_origen,lo_destino,solicitante,enviado,recibido,
-            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedido
+            requisicion.estado,sedes.descripcion,tip_inventario,SUM(pendientes) AS pendientes,SUM(pedido) AS pedidos, 
+            (1-SUM(pendientes)/SUM(pedido))*100 AS completado
             FROM $tabla 
             INNER JOIN sedes ON requisicion.lo_destino=sedes.codigo
             INNER JOIN pedido ON pedido.no_req=requisicion.no_req
