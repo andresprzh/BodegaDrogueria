@@ -46,7 +46,7 @@ $(document).ready(function () {
         $(".SelectCaja").removeClass("hide");
         // oculta el input donde se ingresa el codigo de barras
         $(".input_barras").addClass("hide");
-        $("#Registrar").addClass("hide");
+        $("#TablaV").addClass("hide");
         //consigue el numero de requerido
         var requeridos = $(".requeridos").val();
         //id usuario es obtenida de las variables de sesion
@@ -94,7 +94,7 @@ $(document).ready(function () {
     // EVENTO AL CAMBIAR LA ENTRADA DE CAJAS
     $("#cajas").change(function (e) {
         $(".input_barras").removeClass("hide");
-        $("#Registrar").addClass("hide");
+        $("#TablaV").addClass("hide");
         $("#codbarras").focus();
     });
 
@@ -152,36 +152,13 @@ $(document).ready(function () {
     // EVENTO SI SE PRESIONA 1 BOTON EN LA TABLA EDITABLE(ELIMINAR ITEM)
     $("#tablaeditable").on("click", "button", function (e) {
 
-
-        var dt = $.fn.dataTable.tables();
-        var tabla = $(dt).DataTable();
-
-
-        celda = table.cell(this);
-
-        var fila = table.row(this)
-
-        // si la tabla es responsive
-        if (fila.data() == undefined) {
-
-            fila = $(this).parents("tr");
-            if (fila.hasClass("child")) {
-                fila = fila.prev();
-            }
-        } else {
-            fila = this;
-        }
-
-
-        tabla.row(fila).remove().draw("false");
-
-
-
+        $(this).closest('tr').remove();
+        
     });
 
     // EVENTO SI SE PRESIONA EL BOTON DE REGISTRAR
     $("#Registrar").click(function (e) {
-
+        
         swal({
             title: "¿Registrar items?",
             icon: "warning",
@@ -189,7 +166,7 @@ $(document).ready(function () {
 
         })
             .then((registrar) => {
-
+                
                 //si se le da click en Resgitrar procede a generar e reporte
                 if (registrar) {
 
@@ -201,19 +178,18 @@ $(document).ready(function () {
                     //id usuario es obtenida de las variables de sesion
                     var req = [requeridos, id_usuario];
 
+                    // Busca los datos en la tabla
+                    let table = document.getElementById("tabla");
+                    let tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');;
+                    let items = new Array;
 
-                    var tabla = $('table.tablas').DataTable();
-                    // se obtienen todos los datos de la tabla en una matriz
-                    var datos = tabla.data().toArray();
+                    for (let i = 0; i < tr.length; i++) {
 
-                    // se guerda en un arreglo los datos de codigo de Baras y la cantidad recibido                    
-                    var items = new Array();
-                    for (var i in datos) {
                         items[i] = {
-                            "codbarras": datos[i][1],
-                            "item": datos[i][2],
-                            "recibidos": $(datos[i][4]).val()
-                        }
+                            'iditem': tr[i].id,
+                            'codbarras': tr[i].getElementsByTagName('td')[1].innerHTML.replace(/(^\s+|\s+$)/g, ''),
+                            'recibidos': $(tr[i]).find('input').val(),
+                        };
                     }
 
                     $.ajax({
@@ -288,6 +264,17 @@ $(document).ready(function () {
     });
 
 
+    // EVENTO SI SE ELIMINA UN ELEMENTO DE LA TABLA    
+    $('table tbody').bind("DOMNodeRemoved", function(e)
+    {
+        // let table = document.getElementById("tabla");
+        let tr = this.parentNode.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        
+        if (tr.length<2) {
+            this.parentNode.parentNode.classList.add("hide");
+        }
+
+    });
 });
 
 
@@ -308,7 +295,7 @@ function BuscarCodBar() {
     var requeridos = $(".requeridos").val();
     //id usuario es obtenida de las variables de sesion
     var req = [requeridos, id_usuario];
-
+    
     // ajax para ejecutar un script php mandando los datos
     return $.ajax({
         url: 'api/pv/items',//url de la funcion
@@ -316,116 +303,59 @@ function BuscarCodBar() {
         data: { "codigo": codigo, "req": req },//datos que se enviaran
         dataType: 'json',
         success: function (res) {
-
-            filter = this.value.toUpperCase();
-            table = document.getElementById(".tablas");
-            tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');;
-            for (let i = 0; i < tr.length; i++) {
-                let td = tr[i].getElementsByTagName("td");
-                if (td) {
-                    for (let j = 0; j < td.length; j++) {
+            if (res) {
+            
+                filter = codigo.toUpperCase();
+                table = document.getElementById("tabla");
+                tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');;
+                
+                if (res["estado"] == 'encontrado') {
+                    var cantr = 1;
+                    let pos=-1;
+                    for (let i = 0; i < tr.length; i++) {
+                        let td = tr[i].getElementsByTagName("td");
                         
-                        if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
-                            
+                        if (td) {
+                            for (let j = 0; j < td.length; j++) {
+                                pos=td[j].innerHTML.toUpperCase().indexOf(filter);
+                                if (pos > -1) {break;}
+                            }
                         }
-                        
+                        if (pos > -1) {
+                            // incrementa la cantidad
+                            td[4].getElementsByTagName('input')[0].value=cantr+parseInt(td[4].getElementsByTagName('input')[0].value);
+                            break;
+                        }
                     }
-                    if ((nombres.innerHTML.toUpperCase().indexOf(filter) > -1) || (cedulas.innerHTML.toUpperCase().indexOf(filter) > -1)) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
+                    //si no encuentra el item en la tabla agrga el item a la tabla
+                    if (pos == -1)  {
+
+                        var item = res['contenido'];
+                        $("#tabla tbody").prepend($(`
+                            <tr id=${item["iditem"]}><td >
+                                ${item["descripcion"]}</td><td>
+                                ${item["codigo"]}</td><td >
+                                ${item["iditem"]}</td><td >
+                                ${item["referencia"]}</td><td>
+                                <input type= 'number' class="validate" value="${cantr}"> </td><td>
+                                <button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' > 
+                                    <i class='fas fa-times'></i>
+                                </button>
+                            </tr>`)
+                        );
                     }
+                    $("#TablaV").removeClass("hide");
+                    $("#codbarras").focus();
+
+                }else{
+
+                    swal({
+                        title: res['contenido'],
+                        icon: "error"
+                    });
                 }
             }
-            var tabla = $('table.tablas').DataTable();
-            var datos = tabla.data().toArray()
-            var items = new Array;
-            items[0] = datos.map(function (value, index) { return value[0]; });
-            items[1] = datos.map(function (value, index) { return value[1]; });
-            items[2] = datos.map(function (value, index) { return value[2]; });
-            items[3] = datos.map(function (value, index) { return value[3]; });
-            if (res["estado"] == 'encontrado') {
-                var cantr = 1;
-
-                //busca si el item ya esta n la tabla
-
-                for (let index = 0; index < 4; index++) {
-                    var pos = items[index].indexOf(codigo);
-                    if (pos >= 0) {
-                        break;
-                    }
-                }
-                //si encuentra el item en la tabla acumula el item en la columna de recibido
-                if (pos >= 0) {
-
-                    // se acumula la cantidad recibida
-                    cantr += parseInt($(datos[pos][4]).val());
-
-                    tabla.cell(pos, 4).data('<input type="number" class="validate" value="' + cantr + '">').draw();
-                    // si no encuentra el item en la tabla lo agrega a esta    
-                } else {
-
-                    var item = res['contenido'];
-
-                    // agrega datos en la tabla
-                    tabla.row.add([
-                        item['descripcion'],
-                        item['codigo'],
-                        item['iditem'],
-                        item['referencia'],
-                        // cantr
-                        '<input type="number" class="validate" value="' + cantr + '">',
-                        "<button  title='Eliminar Item' class='btn-floating btn-small waves-effect waves-light red darken-3 ' >" +
-                        "<i class='fas fa-times'></i>" +
-                        "</button>"
-                    ]).draw(false);
-                }
-                $("#Registrar").removeClass("hide");
-                $("#codbarras").focus();
-            }
-
         }
 
     });
-}
-
-// FUNCION QUE INICIA DATATABLE
-function iniciar_tabla(tabla) {
-
-    if (!tabla) {
-        tabla = "table.datatable";
-    }
-
-    var tabla = $(tabla).DataTable({
-
-        "bLengthChange": false,
-        "bFilter": true,
-        "sDom": '<"top">t<"bottom"irp><"clear">',
-        "pageLength": 5,
-        "language": {
-            "sProcessing": "Procesando...",
-            "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "Ningún dato disponible en esta tabla",
-            "sInfo": "_TOTAL_ Items",
-            "sInfoEmpty": "",
-            "sInfoFiltered": "(filtrado _MAX_ registros)",
-            "sSearch": "Buscar:",
-            "sUrl": "",
-            "sInfoThousands": ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior"
-            },
-        },
-        scrollY: "600px",
-        scrollCollapse: true,
-        paging: false
-
-    });
-
-    return tabla;
-
 }

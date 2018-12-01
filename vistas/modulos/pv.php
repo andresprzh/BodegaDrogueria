@@ -62,7 +62,7 @@
 ============================================================================================================================
 ============================================================================================================================-->
 
-<div class="col s12" style="padding: 20px;"id="TablaV" >
+<div class="col s12 hide" style="padding: 20px;" id="TablaV" >
 
     <h4 class="header center " >Items</h4>     
 
@@ -88,14 +88,13 @@
     </table> 
 
     <div class="input-field" >
-
-        <button id="Registrar" class="btn waves-effect red darken-4 col s12 m12 l8 hide" >
+        <button id="Registrar" class="btn waves-effect red darken-4 col s12 m12 l8 " >
             Registrar
         </button>
-
-        <button id="documento" title="Generar Documento" class="btn waves-effect green darken-4 col s12 m12 l8 hide " >
+    </div>
+        <!-- <button id="documento" title="Generar Documento" class="btn waves-effect green darken-4 col s12 m12 l8 hide " >
             <i class="far fa-file-alt"></i>
-        </button>
+        </button> -->
        
 </div>
 
