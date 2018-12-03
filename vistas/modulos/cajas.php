@@ -337,9 +337,16 @@
     .tablascroll thead {
         width: calc( 100% - 0em )
     }
-    .tablascroll  td:nth-child(1),
-    .tablascroll th:nth-child(1){
+    #contenido table  td:nth-child(1),
+    #contenido table th:nth-child(1){
         width:5%;
+    }
+    #TablaM  td:nth-child(1),#TablaM th:nth-child(1)
+    {
+        width: 30%;
+    }
+    #TablaM  td:nth-child(2),#TablaM th:nth-child(2){
+        width: 17%;
     }
     @media(max-width:870px){
         
@@ -358,11 +365,11 @@
         }
 
         #TablaM  td:nth-child(1),#TablaM th:nth-child(1){
-            width: 35%;
+            width: 40%;
         }
 
-        .tablascroll  td:nth-child(1),
-        .tablascroll th:nth-child(1){
+        #contenido table  td:nth-child(1),
+        #contenido table  th:nth-child(1){
             width:15%;
         }
         #contenido table td:nth-child(3),#contenido table th:nth-child(3),
