@@ -558,9 +558,9 @@ DELIMITER $$
 		IF cantidad=0 THEN
 			
 			-- cambia el estado de la caja a recibida
-			UPDATE caja
-			SET estado=4
-			WHERE no_caja=numcaja;
+			-- UPDATE caja
+			-- SET estado=4
+			-- WHERE no_caja=numcaja;
 			return true;
 			
 		ELSE

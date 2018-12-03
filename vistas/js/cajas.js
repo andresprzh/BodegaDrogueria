@@ -57,73 +57,6 @@ $(document).ready(function () {
 
     });
 
-    // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
-    $('.Documento').click(function (e) {
-        // consigue la id de la tabla seleccionada
-        const tabla = $($(this).parent().parent().find('table')[0]).attr('id');
-
-        //consigue el numero de requerido
-        var requeridos = $('.requeridos').val();
-        
-        //id usuario es obtenida de las variables de sesion
-        var req = [requeridos, id_usuario];
-
-        // Busca los datos en la tabla
-        let table = document.getElementById(tabla);
-        let tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-        
-        let numcaja = new Array;
-
-        for (let i = 0; i < tr.length; i++) {
-
-            numcaja[i] =  tr[i].id;
-            
-        }
-        
-        
-        $.ajax({
-
-            url: 'api/cajas/documento',
-            method: 'GET',
-            data: { 'req': req, 'numcaja': numcaja },
-            dataType: 'JSON',
-            success: function (res) {
-                // si hay un error al buscar los archivos no genera el documento
-                if (!res) {
-                    swal({
-                        title: '!Error al generar el documento¡',
-                        type: 'error',
-                    });
-
-                    // si no hay error genera le documento y lo manda a decargar
-                } else {
-                    
-                                        
-                    // let numerodoc = ('00' + res['no_documento']).slice(-2);
-                    let no_req=req[0].substr(1,2)+req[0].substr(req[0].length-6);
-                    // CREA EL NOMBRE DEL DOCUMENTO A PARTIR DE LA REQUISICION Y LA CAJA
-                    var nomdoc = no_req+ '.TR' + res['no_documento'];
-
-                    var element = document.createElement('a');
-                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['documento']));
-                    element.setAttribute('download', nomdoc);
-
-                    element.style.display = 'none';
-                    document.body.appendChild(element);
-
-                    element.click();
-
-                    document.body.removeChild(element);
-
-                    $('.modal').modal('close');
-                    recargarCajas();
-
-                }
-            }
-        });
-
-    });
-
     // EVENTO SI SE PRESIONA EL BOTON MODIFICAR
     $('#modificar').on('click', function (e) {
 
@@ -257,7 +190,7 @@ $(document).ready(function () {
 
     // ASIGNA LAS CAJAS A UN TRANSPORTADOR PARA SER ENVIADAS AL PUNTO
     $('#despachar').click(function (e) {
-
+        e.preventDefault();
         
         // Busca los datos en la tabla
         let table = document.getElementById('TablaC');
@@ -267,8 +200,18 @@ $(document).ready(function () {
 
         for (let i = 0; i < tr.length; i++) {
 
-            numcaja[i] =  tr[i].id;
+            if (tr[i].getElementsByTagName('input')[0].checked) {
+                numcaja[i] =  tr[i].id;
+            }
             
+        }
+
+        if (numcaja.length<1) {
+            var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Seleccionar al menos 1 caja</span></p>`;
+            M.toast({
+                html: toastHTML, classes: "yellow lighten-2'",
+            });
+            return false;
         }
 
         
@@ -593,6 +536,87 @@ $(document).ready(function () {
 
     });
 
+    // EVENTO SI SE DA CLICK EN EL BOTON DE GENERAR DOCUMENTO
+    $('.formtabla').submit(function(e){
+        e.preventDefault();
+        
+        // consigue la id de la tabla seleccionada
+        const tabla = $($(this).find('table')[0]).attr('id');
+
+        //consigue el numero de requerido
+        var requeridos = $('.requeridos').val();
+        
+        //id usuario es obtenida de las variables de sesion
+        var req = [requeridos, id_usuario];
+
+        // Busca los datos en la tabla
+        let table = document.getElementById(tabla);
+        let tr = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        
+        let numcaja = new Array;
+        
+
+        for (let i = 0; i < tr.length; i++) {
+
+            if (tr[i].getElementsByTagName('input')[0].checked) {
+                numcaja[i] =  tr[i].id;
+            }
+            
+        }
+        
+        if (numcaja.length<1) {
+            var toastHTML = `<p class="truncate black-text"><i class="fas fa-exclamation-circle"></i>Seleccionar al menos 1 caja</span></p>`;
+            M.toast({
+                html: toastHTML, classes: "yellow lighten-2'",
+            });
+            return false;
+        }
+        $.ajax({
+
+            url: 'api/cajas/documento',
+            method: 'GET',
+            data: { 'req': req, 'numcaja': numcaja },
+            dataType: 'JSON',
+            success: function (res) {
+                console.log(res);
+                // si hay un error al buscar los archivos no genera el documento
+                if (!res) {
+                    swal({
+                        title: '!Error al generar el documento¡',
+                        type: 'error',
+                    });
+                    
+                    // si no hay error genera le documento y lo manda a decargar
+                } else {
+                    
+                                        
+                    // let numerodoc = ('00' + res['no_documento']).slice(-2);
+                    let no_req=req[0].substr(1,2)+req[0].substr(req[0].length-6);
+                    // CREA EL NOMBRE DEL DOCUMENTO A PARTIR DE LA REQUISICION Y LA CAJA
+                    var nomdoc = no_req+ '.TR' + res['no_documento'];
+
+                    var element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res['documento']));
+                    element.setAttribute('download', nomdoc);
+
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+
+                    element.click();
+
+                    document.body.removeChild(element);
+
+                    $('.modal').modal('close');
+                    // recargarCajas();
+                    
+                }
+                
+            }
+        });
+
+        
+    })
+
 });
 
 /* ============================================================================================================================
@@ -763,10 +787,10 @@ function mostrarItemsCaja(e, estado) {
 
     var id_caja = $(e).closest('tr').attr('id');  
 
-    var numcaja = $('td:first', $(e).parents('tr')).text();
-    var alistador =$(td[1]).text();
-    var tipocaja = $(td[2]).text();
-    var cierre = $(td[3]).text();
+    var numcaja = $(td[1]).text();
+    var alistador =$(td[2]).text();
+    var tipocaja = $(td[3]).text();
+    var cierre = $(td[4]).text();
 
     
     // se muestran los datos generales de la caja

@@ -10,6 +10,7 @@ $(document).ready(function () {
     $('.modal').modal({
         onCloseEnd: function () { location.reload(); }
     });
+
     // pone items en el input select
     $.ajax({
         url: "api/alistar/requisiciones",
@@ -30,9 +31,6 @@ $(document).ready(function () {
 
         }
     });
-
-
-
 
     /* ============================================================================================================================
                                                         EVENTOS   
@@ -109,38 +107,6 @@ $(document).ready(function () {
 
     });
 
-
-    // EVENTO CUANDO SE MODIFICA UNA CELDA DE LA TABLA
-    $('#tablaeditable').on('change', 'td', function () {
-
-        // guarda el valor dle input en datatable
-        var tabla = $('#tabla').DataTable();
-
-
-        var cantr = $(this).find("input").val();
-        var fila = tabla.row(this);
-
-        // si la tabla es responsive
-        if (fila.data() == undefined) {
-
-            var fila = $(this).parents('tr');
-            if (fila.hasClass('child')) {
-                fila = fila.prev();
-            }
-
-            tabla.row(fila).cell(fila, 4).data('<input type="number" class="validate" value="' + cantr + '">').draw()
-
-        } else {
-
-            tabla.cell(this).data('<input type="number" class="validate" value="' + cantr + '">').draw()
-        }
-
-
-
-
-    });
-
-
     // EVENTO SI SE PRESIONA EL BOTON DE AGREGAR CODIGO DE BARRAS(+)
     $("#agregar").click(function (e) {
 
@@ -191,14 +157,14 @@ $(document).ready(function () {
                             'recibidos': $(tr[i]).find('input').val(),
                         };
                     }
-
+                    
                     $.ajax({
                         url: "api/pv/registrar",
                         type: "POST",//metodo post para mandar datos
                         data: { "caja": caja, "req": req, "items": items },//datos que se enviaran
                         dataType: "JSON",
                         success: function (res) {
-
+                            
                             if (res["estado"] == true) {
                                 // crea el documento si no hay errores en los items recibidos
                                 if (res["contenido"]["estado"] == true) {

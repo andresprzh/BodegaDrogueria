@@ -45,16 +45,16 @@ class ModeloPV extends Conexion{
             $datos.="(:item$i,:no_req,:no_caja,:recibidos$i),";
         }
 
-        $datos=substr($datos, 0, -1).' ';
+        $datos=substr($datos, 0, -1).';';
 
         $sql='REPLACE INTO recibido(item,no_req,no_caja,recibidos) VALUES'. $datos;
         
-
+        
         $stmt= $this->link->prepare($sql);
 
         $i=0;
         foreach ($items as $row) {
-            $stmt->bindParam(":item$i",$row['item'],PDO::PARAM_STR);
+            $stmt->bindParam(":item$i",$row['iditem'],PDO::PARAM_STR);
             $stmt->bindParam(":recibidos$i",$row['recibidos'],PDO::PARAM_INT);
             $i++;
         }
@@ -64,7 +64,7 @@ class ModeloPV extends Conexion{
         
         
         $res= $stmt->execute();
-        
+        return $stmt->errorInfo();
         // libera conexion para hace otra sentencia
         $stmt->closeCursor();
         return ($res);  
@@ -110,7 +110,7 @@ class ModeloPV extends Conexion{
     public function mdlModCaja($NumCaja,$estado=4){
         $persona=$this->req[1];
 
-        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=:estado,recibido=NOW() WHERE no_caja=:caja;" );
+        $stmt= $this->link->prepare("UPDATE caja SET encargado_punto=:persona,estado=:estado,registrado=NOW() WHERE no_caja=:caja;" );
         
         $stmt->bindParam(":persona",$persona,PDO::PARAM_INT);
         $stmt->bindParam(":estado",$estado,PDO::PARAM_INT);
@@ -310,6 +310,7 @@ class ModeloPV extends Conexion{
         // cierra la conexion
         $stmt=null;
     }
+    
     // muestra ubicacion 
     public function mdlMostrarUbicacion($franquicia)
     {

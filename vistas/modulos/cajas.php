@@ -48,7 +48,7 @@
     <!-- ============================================================================================================================
                                                 Tabla que lista todas las cajas Alistadas 
     ============================================================================================================================ -->
-    <div class="col s12 hide" id="TablaA">
+    <form class="formtabla col s12 hide" id="TablaA" >
 
         <table class="tablascroll centered " id="TablaC" >
 
@@ -78,7 +78,7 @@
                 <button id="despachar" class="left btn waves-effect tea darken-4 col s4 m2 l2"  disabled>
                     Despachar cajas
                 </button>
-                <button id="Documento" title="GenerarDocumento" class="Documento btn right waves-effect green darken-4 col s4 m2 l2" disabled>
+                <button id="Documento" type="submit" title="GenerarDocumento" class="Documento btn right waves-effect green darken-4 col s4 m2 l2" disabled>
                     <i class="fas fa-file-alt"></i> Documento
                 </button>
                 
@@ -86,12 +86,12 @@
             
         </div>
 
-    </div>
+    </form>
 
      <!-- ============================================================================================================================
                                                 Tabla que lista todas las cajas Resibidas 
     ============================================================================================================================ -->
-    <div class="col m12 hide" id="TablaR">
+    <form class="formtabla col m12 hide" id="TablaR" class="formtabla">
 
         <table class="tablascroll centered  " id="TablaCE" >
 
@@ -119,7 +119,7 @@
             <!-- <div class="right input-field col s4 m2 l2"> -->
                 
                 
-                <button id="Documento2" title="GenerarDocumento" class=" Documento btn right waves-effect green darken-4 col s6 m2 l2" disabled>
+                <button id="Documento2" type="submit" title="GenerarDocumento" class=" Documento btn right waves-effect green darken-4 col s6 m2 l2" disabled>
                     <i class="fas fa-file-alt"></i> Documento
                 </button>
                 
@@ -127,7 +127,7 @@
             
         </div>
 
-    </div>
+    </form>
     
 </div>
 
@@ -339,7 +339,7 @@
     }
     .tablascroll  td:nth-child(1),
     .tablascroll th:nth-child(1){
-        width:%;
+        width:5%;
     }
     @media(max-width:870px){
         

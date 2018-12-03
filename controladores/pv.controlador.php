@@ -89,9 +89,9 @@ class ControladorPV extends ControladorCajas{
         
         // agrega los datos en la tabla de recibidos
         $resultado["estado"]=$this->modelo->mdlRegistrarItems($items,$numcaja);
-
+        
         //si registra los items, modifica la tabla de pedido para que la caja aperezca como recibida
-        if ($resultado==true) {
+        if ($resultado["estado"]==true) {
             $resultado["estado"]=$this->modelo->mdlModCaja($numcaja);
             if($resultado["estado"]==true){
                 
