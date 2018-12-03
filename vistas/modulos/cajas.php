@@ -1,10 +1,9 @@
-<!-- USA SWEETALERT2 -->
 <script src="vistas/plugins/sweetalert2/sweetalert2.all.js"></script>
 <h2 class="header center ">Pedido</h2>
 <!-- ============================================================================================================================
                                                 INPUT SELECCIONAR REQUISICION   
 ============================================================================================================================ -->
-<div class="row">
+<div class="row ">
 
     <div class="input-field col s9 m10 l11 " >
 
@@ -24,7 +23,7 @@
     
 </div>
 
-<div class="divider green darken-4"></div>
+<!-- <div class="divider green darken-4"></div> -->
 
 
 <div class="row " id="contenido">
@@ -49,14 +48,15 @@
     <!-- ============================================================================================================================
                                                 Tabla que lista todas las cajas Alistadas 
     ============================================================================================================================ -->
-    <div class="col s12 " id="TablaA">
+    <div class="col s12 hide" id="TablaA">
 
-        <table class="tablascroll datatable centered " id="TablaC" >
+        <table class="tablascroll centered " id="TablaC" >
 
                 <thead>
                 
                     <tr class="white-text green darken-3 ">
 
+                        <th><i class="fas fa-check"></i></th>
                         <th># Caja</th>
                         <th>Alistador</th>
                         <th>Tipo de caja</th>
@@ -75,10 +75,10 @@
 
             <!-- <div class="right input-field col s4 m2 l2"> -->
                 
-                <button id="despachar" class="left btn waves-effect tea darken-4 col s6 m2 l2"  disabled>
+                <button id="despachar" class="left btn waves-effect tea darken-4 col s4 m2 l2"  disabled>
                     Despachar cajas
                 </button>
-                <button id="Documento" title="GenerarDocumento" class="Documento btn right waves-effect green darken-4 col s6 m2 l2" disabled>
+                <button id="Documento" title="GenerarDocumento" class="Documento btn right waves-effect green darken-4 col s4 m2 l2" disabled>
                     <i class="fas fa-file-alt"></i> Documento
                 </button>
                 
@@ -91,14 +91,15 @@
      <!-- ============================================================================================================================
                                                 Tabla que lista todas las cajas Resibidas 
     ============================================================================================================================ -->
-    <div class="col s12 " id="TablaR">
+    <div class="col m12 hide" id="TablaR">
 
-        <table class="tablascroll datatable centered " id="TablaCE" >
+        <table class="tablascroll centered  " id="TablaCE" >
 
                 <thead>
                 
                     <tr class="white-text green darken-3 ">
 
+                        <th><i class="fas fa-check"></i></th>
                         <th># Caja</th>
                         <th>Alistador</th>
                         <th>Tipo de caja</th>
@@ -183,10 +184,10 @@
 
                         <tr  class="white-text green darken-3" >
 
+                            <th>Descripción</th>
                             <th>Codigo de barras</th>
                             <th>ID item</th>
                             <th>Referencia</th>
-                            <th>Descripción</th>
                             <th>Disponibilidad</th>
                             <th>Pedidos</th>
                             <th>Alistados</th>
@@ -334,21 +335,46 @@
     table-layout:fixed;
     }
     .tablascroll thead {
-    width: calc( 100% - 0em )
+        width: calc( 100% - 0em )
     }
-
-    @media(max-width:630px){
+    .tablascroll  td:nth-child(1),
+    .tablascroll th:nth-child(1){
+        width:%;
+    }
+    @media(max-width:870px){
+        
+        #TablaM td:nth-child(3),#TablaM th:nth-child(3),
+        #TablaM  td:nth-child(4),#TablaM th:nth-child(4) {
+            display: none;
+        }
+    }
+    @media(max-width:680px){
     
-    table#TablaM  td:nth-child(1), th:nth-child(1),td:nth-child(2), th:nth-child(2),td:nth-child(3), th:nth-child(3),td:nth-child(5), th:nth-child(5) {
-        display: none;
-    }
+        #TablaM td:nth-child(2),#TablaM th:nth-child(2),
+        #TablaM td:nth-child(3),#TablaM th:nth-child(3),
+        #TablaM  td:nth-child(4),#TablaM th:nth-child(4),
+        #TablaM  td:nth-child(5),#TablaM th:nth-child(5) {
+            display: none;
+        }
 
-    table#TablaM  td:nth-child(4), th:nth-child(4){
-        width: 35%;
+        #TablaM  td:nth-child(1),#TablaM th:nth-child(1){
+            width: 35%;
+        }
+
+        .tablascroll  td:nth-child(1),
+        .tablascroll th:nth-child(1){
+            width:15%;
+        }
+        #contenido table td:nth-child(3),#contenido table th:nth-child(3),
+        #contenido table td:nth-child(4),#contenido table th:nth-child(4),
+        #contenido table td:nth-child(5),#contenido table th:nth-child(5) {
+            display: none;
+        }
+        /* table#TablaI  td:nth-child(5), th:nth-child(5),td:nth-child(6), th:nth-child(6){
+            width: 20%;
+        } */
     }
-    /* table#TablaI  td:nth-child(5), th:nth-child(5),td:nth-child(6), th:nth-child(6){
-        width: 20%;
-    } */
+    
 
 </style>
 <!-- GUARDA EL NOMBRE DEL USUARIO DE LA SESION EN UNA VARIABLE DE JS -->

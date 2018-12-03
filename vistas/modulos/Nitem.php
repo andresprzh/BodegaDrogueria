@@ -25,7 +25,7 @@
         
         <div class="input-field col s12 m1 l1 hide input_item">
 
-            <button type="submit" id="agregar" title="Buscar Item extra"  class="btn-floating waves-effect waves-light green darken-3 " required >
+            <button type="submit" id="agregar" title="Buscar Item extra"  class="btn waves-effect waves-light green darken-3 col s12 " required >
                 <i class="fas fa-plus"></i>
             </button>
             

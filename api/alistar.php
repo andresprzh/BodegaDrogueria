@@ -21,7 +21,6 @@ if (isset($_GET['ruta'])) {
             //crea caja nueva para el usuario
             $respuesta=$controlador->ctrCrearCaja();
 
-
             
             print json_encode( $respuesta);
             

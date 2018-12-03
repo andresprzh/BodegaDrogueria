@@ -149,6 +149,20 @@
         width:30%;
         text-align: center;
     }
+    
+    @media(max-width:680px){
+    
+        #tabla td:nth-child(3),#tabla th:nth-child(3),
+        #tabla td:nth-child(4),#tabla   th:nth-child(4) {
+            display: none;
+        }
+    }
+    @media(max-width:380px){
+        
+        #tabla td:nth-child(2),#tabla th:nth-child(2){
+            display: none;
+        }
+    }
 </style>
 <!-- ============================================================================================================================
                                                     SCRIPTS JAVASCRIPT   

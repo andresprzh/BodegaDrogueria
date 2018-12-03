@@ -75,7 +75,7 @@ class ControladorCajas extends ControladorAlistar {
         //si no encuentra resultados devuelve "error"
         }else{
 
-            $resultado= ["estado"=>"error",
+            $resultado= ["estado"=>false,
                     "contenido"=>"no hay alistadores disponibles!"];
 
         }
