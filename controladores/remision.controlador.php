@@ -150,7 +150,7 @@ class ControladorRemision extends ControladorLoginUsuario{
 
     }
 
-    // funcion que signa lote a  los items
+    // funcion que asigna lote a  los items
     public function ctrAsignarLote($items,$no_rem)
     {
         foreach ($items as $item) {
@@ -257,6 +257,7 @@ class ControladorRemision extends ControladorLoginUsuario{
         return $resultado;
     }
 
+    // funcion que genera archivo plano de copidrogas de la remision
     public function ctrDocRemCopi($factura=null,$no_rem=null)
     {
         if (!isset($no_rem)) {
@@ -297,6 +298,7 @@ class ControladorRemision extends ControladorLoginUsuario{
         return $resultado;
     }
 
+    // funcion que genera archivo plano de EA de la remision
     public function ctrDocRemEA($factura=null,$no_rem=null)
     {
         if (!isset($no_rem)) {

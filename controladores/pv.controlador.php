@@ -134,7 +134,7 @@ class ControladorPV extends ControladorCajas{
         return $requisicion;
     }
 
-    // crea archivo plano de la caja recibida
+    // verifica las cajas registradas
     private function ctrVerificarRegistro($numcaja){
         
         $resultado=false;
@@ -312,7 +312,7 @@ class ControladorPV extends ControladorCajas{
     // crea documento de la remision
     public function ctrDocumentoRemision($franquicia,$rem)
     {      
-        // busca la descripcion dela franquicia
+        // busca la descripcion de la franquicia
         $busqueda=$this->modelo->mdlMostrarUbicacion($franquicia);
         $franquiciadesc=$busqueda->fetch()[0];
         $busqueda->closeCursor();
@@ -454,16 +454,8 @@ class ControladorPV extends ControladorCajas{
         $resultado["estado"]=$this->modelo->mdlRegistrarRemision($items,$rem);
 
         if ($resultado==true) {
-            $resultado["contenido"]=$this->ctrDocumentoRemision($franquicia,$rem['no_rem']);
-            // $documento=$this->ctrDocumentoRemision($franquicia,$rem['no_rem']);
-            // $resultado["contenido"]=$this->ctrVerificarRemision($rem['no_rem']);
-            
-            // if ($resultado["contenido"]["estado"]=="error0") {
-            //     $resultado["contenido"]["documento"]=$documento.$resultado["contenido"]["documento"];
-            // }else {
-            //     $resultado["contenido"]["documento"]=$documento;
-            // }
-            
+
+            $resultado["contenido"]=$this->ctrDocumentoRemision($franquicia,$rem['no_rem']);         
             
         }
         

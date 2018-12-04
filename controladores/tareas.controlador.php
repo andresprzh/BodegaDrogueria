@@ -19,7 +19,8 @@ class ControladorTareas extends ControladorLoginUsuario{
                                                         FUNCIONES   
     ============================================================================================================================*/
 
-    function ctrAsignarUbicacion($ubicacion,$usuario,$tarea=null){
+    // asigna ubiacion a un usuario
+    public function ctrAsignarUbicacion($ubicacion,$usuario,$tarea=null){
         // busca la ultima tarea creada para el usuario
         if ($tarea==null) {
             $tarea=$this->modelo->mdlBuscarUltimaTarea($usuario);
@@ -37,8 +38,8 @@ class ControladorTareas extends ControladorLoginUsuario{
         return $res;
     }   
 
-
-    function ctrBuscarUbicaciones($usuario=null,$tarea=null){
+    // busca ubiaciones
+    public function ctrBuscarUbicaciones($usuario=null,$tarea=null){
         
         if ($usuario!=null && $tarea==null ) {
             
@@ -75,15 +76,16 @@ class ControladorTareas extends ControladorLoginUsuario{
         return $res;
     }
 
-    function ctrCrearTareas($usuario){
+    // crea una nueva tarea para un usuario
+    public function ctrCrearTareas($usuario){
         
         $res=$this->modelo->mdlCrearTarea($usuario);
 
         return $res;
     }
 
-
-    function ctrEliminarUbicacion($ubicacion,$usuario,$tarea=null){
+    // elimina una ubicacion de una tarea de un usuario
+    public function ctrEliminarUbicacion($ubicacion,$usuario,$tarea=null){
         // busca la ultima tarea creada para el usuario
         if ($tarea==null) {
             $tarea=$this->modelo->mdlBuscarUltimaTarea($usuario);

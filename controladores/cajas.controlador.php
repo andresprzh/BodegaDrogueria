@@ -119,7 +119,8 @@ class ControladorCajas extends ControladorAlistar {
     }
 
     //elimina la caja
-    public function ctrEliminar($numcaja){
+    public function ctrEliminar($numcaja)
+    {
         // cambia items de la caja a no alistados
         $res = $this->modelo->mdlEliminarItems($numcaja);
         
@@ -212,7 +213,7 @@ class ControladorCajas extends ControladorAlistar {
 
     }
 
-    //modifica la caja despues de ser resivida en el PV
+    //modifica la caja despues de ser resibida en el PV
     public function ctrModificarCaja($numcaja,$items)
     {   
         

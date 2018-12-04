@@ -7,7 +7,7 @@ class ControladorRequerir extends ControladorLoginUsuario{
     ============================================================================================================================*/
     private $doc_req;
     private $cabecera;
-    public $Estado;
+    // public $Estado;
     private $items;
     private $items_error;
     public $resultado;
