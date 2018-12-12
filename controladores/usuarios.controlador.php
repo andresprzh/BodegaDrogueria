@@ -27,44 +27,18 @@ class ControladorUsuarios extends ControladorLoginUsuario{
 
         if ($busqueda->rowCount() > 0) {
 
-            if($busqueda->rowCount() == 1){
+            $perfiles["estado"]="encontrado";
 
-                $row = $busqueda->fetch();
 
-                //guarda los resultados en un arreglo
-                $perfiles=["estado"=>'encontrado',
-                           "contenido"=> ["id"=>$row["id_perfil"],
-                                        "perfil"=>$row["des_perfil"]
-                                         ]
-                         ];
-               
-                //retorna el item a la funcion
-                return $perfiles;
-
-            }else {
-
-                $perfiles["estado"]="encontrado";
-
-                $cont=0;
-
-                while($row = $busqueda->fetch()){
-
-                    //solo muestra los items que no estan alistados
+            while($row = $busqueda->fetch()){
                     
-                        
-                        $perfiles["contenido"][$cont]=["id"=>$row["id_perfil"],
-                                                    "perfil"=>$row["des_perfil"],
-                                                    ];
-                        
-                        $cont++;
-
-                    
-
-                }
-
-                return $perfiles;
-
+                $perfiles["contenido"][]=["id"=>$row["id_perfil"],
+                                            "perfil"=>$row["des_perfil"],
+                                            ];
+            
             }
+
+            return $perfiles;
 
         //si no encuentra resultados devuelve "error"
         }else{
