@@ -31,22 +31,16 @@
              <div class='card-panel  red darken-4 hide' id='error'>Error al ingresas, vuelva a intentar</div>
             </center>
 
-              <?php
-        
-                // $login = new ControladorUsuarios();
-                // $login->ctrIngresoUsuario();
-
-              ?>
-
           </form>
 
         </div>
 
       </div>
-     
+      
     </center>
+    <a style="position:absolute; bottom:0; right:0; color:green"  href="http://www.freepik.com">Background Designed by creativeart / Freepik</a>    
   </main>
-
+  
 <script src="vistas/js/login.js">
 
 </script>

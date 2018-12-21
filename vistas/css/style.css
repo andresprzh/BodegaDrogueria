@@ -35,7 +35,7 @@ p,text{
   background: url("../imagenes/plantilla/back.png");
   background-size:cover;
 
-  
+  height: 100%;  
 }
 
 .login-box{
